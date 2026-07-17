@@ -1,0 +1,35 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="plonetheme.derico">
+
+  <i18n:registerTranslations directory="locales" />
+
+  <include file="permissions.zcml" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Plonetheme Derico"
+      description="A Plone addon package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/default"
+      />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="Plonetheme Derico (uninstall)"
+      description="Uninstalls plonetheme.derico"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/uninstall"
+      />
+
+  <genericsetup:importStep
+      name="plonetheme.derico-uninstall"
+      title="Plonetheme Derico uninstall"
+      description="Uninstall plonetheme.derico"
+      handler="plonetheme.derico.setuphandlers.uninstall"
+      />
+
+</configure>
