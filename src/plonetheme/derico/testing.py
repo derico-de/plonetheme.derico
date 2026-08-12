@@ -2,7 +2,9 @@
 import os
 
 import plone.app.theming
+import plone.pageletlayout
 import plone.restapi
+import plonetheme.clara
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
@@ -22,6 +24,13 @@ class PlonethemeDericoLayer(PloneSandboxLayer):
         os.environ.setdefault("zope_i18n_compile_mo_files", "true")
         self.loadZCML(package=plone.app.theming)
         self.loadZCML(package=plone.restapi)
+        # derico is a token layer on Clara, which is itself a theme on
+        # plone.pageletlayout. z3c.autoinclude wires this up in a real
+        # instance; the sandbox layer has to load the chain by hand so
+        # profile-plonetheme.clara:default exists when derico's
+        # dependency-profile install asks for it.
+        self.loadZCML(package=plone.pageletlayout)
+        self.loadZCML(package=plonetheme.clara)
         self.loadZCML(package=plonetheme.derico)
 
     def setUpPloneSite(self, portal):

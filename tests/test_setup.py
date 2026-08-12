@@ -4,6 +4,11 @@ from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 
+from plonetheme.derico.interfaces import IPlonethemeDericoLayer
+
+
+BUNDLE = "plone.bundles/plonetheme-derico"
+
 
 class TestSetup:
     """Test installation and setup."""
@@ -17,13 +22,61 @@ class TestSetup:
         installer = api.addon.get_installer(self.portal)
         assert installer.is_product_installed("plonetheme.derico")
 
+    def test_base_theme_installed(self):
+        """derico is a token layer: installing it must bring Clara along."""
+        installer = api.addon.get_installer(self.portal)
+        assert installer.is_product_installed("plonetheme.clara")
+
     def test_browserlayer(self):
         """Test browserlayer is registered."""
-        # Add an actual browserlayer check if your addon registers one, e.g.:
-        # from plone.browserlayer import utils
-        # from plonetheme.derico.interfaces import IPlonethemeDericoLayer
-        # assert IPlonethemeDericoLayer in utils.registered_layers()
-        assert True
+        from plone.browserlayer import utils
+
+        assert IPlonethemeDericoLayer in utils.registered_layers()
+
+    def test_bundle_registered_and_enabled(self):
+        assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is True
+        assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
+            "++resource++plonetheme.derico/derico.css"
+        )
+
+    def test_bundle_loads_after_clara(self):
+        """Documented order.
+
+        The cascade does not actually depend on it — derico.css is unlayered
+        and Clara's tokens sit in `@layer tokens` — but a reader should not
+        have to know that to understand the stack.
+        """
+        assert api.portal.get_registry_record(f"{BUNDLE}.depends") == "plonetheme-clara"
+        assert (
+            api.portal.get_registry_record("plone.bundles/plonetheme-clara.enabled")
+            is True
+        )
+
+    def test_ships_no_second_javascript_or_stylesheet(self):
+        """One override sheet: no forked Bootstrap, no second behaviour bundle."""
+        assert not api.portal.get_registry_record(
+            f"{BUNDLE}.jscompilation", default=""
+        )
+
+    def test_site_logo_is_the_derico_mark(self):
+        from plone.formwidget.namedfile.converter import b64decode_file
+
+        logo = api.portal.get_registry_record("plone.site_logo")
+        assert logo, "the brand mark is the one part of the design that is not a token"
+        filename, data = b64decode_file(logo)
+        assert filename == "derico-logo.svg"
+        assert b"<svg" in data
+
+    def test_static_resources_are_traversable(self):
+        """The bundle URL has to resolve, or the whole theme silently vanishes."""
+        css = self.portal.restrictedTraverse(
+            "++resource++plonetheme.derico/derico.css"
+        )
+        assert css is not None
+        logo = self.portal.restrictedTraverse(
+            "++resource++plonetheme.derico/derico-logo.svg"
+        )
+        assert logo is not None
 
 
 class TestUninstall:
@@ -39,3 +92,8 @@ class TestUninstall:
     def test_addon_uninstalled(self):
         """Test addon is uninstalled."""
         assert not self.installer.is_product_installed("plonetheme.derico")
+
+    def test_browserlayer_removed(self):
+        from plone.browserlayer import utils
+
+        assert IPlonethemeDericoLayer not in utils.registered_layers()

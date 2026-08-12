@@ -1,0 +1,181 @@
+/* plonetheme.derico — „Jahresringe" on Clara.
+ *
+ * THE ENTIRE THEME. One later bundle, one `:root` block, no Sass, no template
+ * overrides, no component rules — exactly the customization contract Clara
+ * documents (plonetheme.clara/docs/clara-theming-architecture.md §1.5).
+ *
+ * Because this file is UNLAYERED and Clara declares its tokens inside
+ * `@layer tokens`, every declaration here wins over Clara regardless of bundle
+ * order: in the CSS cascade unlayered styles beat layered ones. The
+ * `depends` key in registry.xml is therefore about load order for humans, not
+ * about the cascade.
+ *
+ * ── What is overridden, and why ────────────────────────────────────────────
+ * The rule applied throughout (guarded by tests/test_override_minimality.py):
+ * a Clara token is overridden ONLY when it carries Clara's own identity —
+ * Plone blue or Klarsicht amber — or when the Jahresringe design names a
+ * different, visibly different value. Everything Clara got right for us is
+ * inherited untouched. Notably NOT overridden:
+ *
+ *   · the whole type scale — Clara's --clara-text-* / --plone-text-* steps are
+ *     already bit-identical to the Jahresringe scale, down to the 15px label
+ *     floor and the flat 1rem body
+ *   · the fonts — both designs are Literata + Source Sans 3, self-hosted by
+ *     Clara; derico ships no font files
+ *   · --plone-measure (76rem), --plone-radius-* and the 3xs…l space steps —
+ *     already identical
+ *   · the error/danger family — the Jahresringe red oklch(0.45 0.18 28)
+ *     resolves to #a2080c, which is Clara's --clara-error exactly
+ *   · every layout primitive, every --bs-* bridge line, every component hook
+ *
+ * ── Colour authoring ───────────────────────────────────────────────────────
+ * Values are authored in oklch(), matching the design source of record
+ * (docs/design/derico.de/site/assets/site.css). Clara authors
+ * sRGB because its Sass compile needs matching literals; derico has no Sass
+ * build, so the perceptual coordinates ship as-is. The sRGB hex beside each
+ * value is the measured conversion, and the contrast ratios in the comments
+ * are measured, not derived — see DESIGN.md, "Measure, Don't Derive".
+ */
+
+:root {
+  /* ══ 1. The Jahresringe ladder — derico's own vocabulary ════════════════
+   * New declarations, not overrides. One cyan hue (OKLCH 215.55) anchored at
+   * the brand's exact #039fba, plus the copper complement. "Don't put a raw
+   * hex in a rule — --derico-brand is the only place the brand colour is
+   * written" (DESIGN.md §6). */
+  --derico-brand:            oklch(0.64705 0.1142 215.55); /* #039fba — exact brand cyan: logo, rings, UI geometry */
+  --derico-brand-text:       oklch(0.49 0.09 215.55);      /* #006d81 — links; 5.82:1 on ground, 5.09:1 on band-soft */
+  --derico-brand-hover:      oklch(0.42 0.085 215.55);     /* #00586a — deep cyan step */
+  --derico-brand-fill-hover: oklch(0.74 0.10 215.55);      /* #55bbd3 — hover fill for cyan controls */
+  --derico-brand-deep:       oklch(0.36 0.065 215.55);     /* #004553 — toolbar ground; ground on it 10.33:1 */
+  --derico-on-brand:         oklch(0.18 0.035 215);        /* #00151b — 5.94:1 on exact brand cyan */
+
+  --derico-ground:    oklch(0.99 0.003 215);      /* #fafcfd — page */
+  --derico-surface:   oklch(0.965 0.012 215);     /* #ebf6f8 — quiet surface */
+  --derico-band:      oklch(0.88 0.085 215.55);   /* #94e6fb — the committed cyan band */
+  --derico-band-soft: oklch(0.94 0.035 215.55);   /* #d2f2fa — mega-panel ground */
+  --derico-ink:       oklch(0.22 0.02 225);       /* #101d22 — 16.72:1 on ground */
+  --derico-ink-soft:  oklch(0.38 0.03 225);       /* #31464e — 9.64:1 on ground */
+  --derico-rule:      oklch(0.84 0.025 215);      /* #b9cfd5 — hairlines */
+  --derico-band-rule: oklch(0.58 0.055 215.55);   /* #53838f — structural rules; 4.07:1 on ground */
+
+  /* Copper is the present tense: the one CTA fill, the live edge. Fill and
+     text are separate steps so both clear their own bar (DESIGN.md §2,
+     "Orange Needs Separate Fill And Text Steps"). */
+  --derico-copper:         oklch(0.57 0.18 50);   /* #c64c00 — CTA fill; 4.60:1 on ground, 3.38:1 on band */
+  --derico-copper-hover:   oklch(0.52 0.18 50);   /* #b43b00 */
+  --derico-copper-text:    oklch(0.49 0.18 55);   /* #a83500 — 6.43:1 on ground, 4.72:1 on band */
+  --derico-on-copper:      oklch(0.99 0.004 50);  /* #fefbf9 — 4.60:1 on the copper fill */
+  --derico-copper-surface: oklch(0.95 0.04 55);   /* #ffe8d6 — warning/notice tint on the copper hue */
+
+  --derico-info-surface: oklch(0.96 0.028 215.55); /* #def7fe — brand-text on it 5.38:1 */
+  --derico-success:      oklch(0.39 0.10 155);     /* #00542c — 8.86:1 on ground */
+  --derico-success-text: oklch(0.33 0.085 155);    /* #004221 — hover/active step */
+
+  /* ══ 2. Clara's ladder, re-pointed ═════════════════════════════════════
+   * Clara paints every rule it owns through these private tokens, so moving
+   * the ladder moves the whole theme — header, mega menu, footer, toolbar,
+   * content views, Bootstrap bridge — with no component rules here. */
+  --clara-brand:            var(--derico-brand);
+  --clara-brand-text:       var(--derico-brand-text);
+  --clara-brand-hover:      var(--derico-brand-hover);
+  --clara-brand-fill-hover: var(--derico-brand-fill-hover);
+  --clara-brand-deep:       var(--derico-brand-deep);
+  --clara-on-brand:         var(--derico-on-brand);
+
+  --clara-ground:    var(--derico-ground);
+  --clara-surface:   var(--derico-surface);
+  --clara-band:      var(--derico-band);
+  --clara-band-soft: var(--derico-band-soft);
+  --clara-ink:       var(--derico-ink);
+  --clara-ink-soft:  var(--derico-ink-soft);
+  --clara-rule:      var(--derico-rule);
+  --clara-band-rule: var(--derico-band-rule);
+
+  /* Clara's amber role IS the accent role — "the one CTA fill, published
+     state". Copper takes it over wholesale, which is why .clara-button, the
+     mega-menu accents, the footer link hover and the published-state marker
+     all turn copper without a single rule being restated here. */
+  --clara-amber:       var(--derico-copper);
+  --clara-amber-hover: var(--derico-copper-hover);
+  --clara-amber-text:  var(--derico-copper-text);
+  /* Clara's amber is light enough to take an ink label; copper is not —
+     measured 3.63:1 for ink on copper, so the near-white label is required. */
+  --clara-on-amber:    var(--derico-on-copper);
+
+  /* The warning family rides the same accent hue (Clara ties --clara-warning
+     to --clara-amber, which now resolves to copper). Its text/surface/on-fill
+     steps are pinned to Klarsicht ambers in Clara and must follow the hue. */
+  --clara-warning-text:    var(--derico-copper-text);
+  --clara-warning-surface: var(--derico-copper-surface);
+  --clara-on-warning:      var(--derico-on-copper);
+
+  /* Info is brand-coloured by definition, so its tint has to leave Plone blue. */
+  --clara-info-surface: var(--derico-info-surface);
+
+  /* The design names its own green; Plone renders status messages constantly,
+     so the difference from Clara's #2e7d52 is visible. Surface and border
+     steps compose fine with it and stay Clara's. */
+  --clara-success:      var(--derico-success);
+  --clara-success-text: var(--derico-success-text);
+
+  /* Jahresringe's footer sits flat on the page ground with a hairline, not on
+     a coloured band — the cyan band is spent on the contact block above it. */
+  --clara-footer-ground: var(--derico-ground);
+
+  /* Klarsicht rings its amber pill with an ink hairline because amber is light
+     enough to need the edge. Copper is not: it clears 4.60:1 against the page
+     ground on its own, and the Jahresringe button spec draws no border. Set to
+     the fill rather than `transparent` so the border BOX survives — the pill
+     keeps its metrics and still has an edge in forced-colors mode. */
+  --clara-button-border-color: var(--derico-copper);
+
+  /* ══ 3. --plone-* roles whose MEANING differs from Clara's mapping ══════
+   * Value-only differences are handled by the ladder above. These three are
+   * genuine semantic re-mappings, so they are stated at the contract level. */
+
+  /* Jahresringe hovers links into copper rather than into a deeper brand step
+     ("a:hover { color: var(--copper-text) }" in the design source). Clara maps
+     link-hover to --clara-brand-hover, which stays in use for --plone-color-
+     info-text and must not become copper. */
+  --plone-color-link-hover: var(--derico-copper-text);
+
+  /* Clara pins these two toolbar-chrome tokens to the literal Plone blue
+     #65addc rather than to a role, so the ladder cannot reach them. */
+  --plone-link-color-on-dark: var(--derico-brand-fill-hover);
+  --plone-state-published:    var(--derico-brand-fill-hover);
+
+  /* ══ 4. Rhythm ═════════════════════════════════════════════════════════
+   * 3xs…l are already identical to the Jahresringe scale. Only the three
+   * section-rhythm steps are longer here — the band-to-band breathing room
+   * the design is built on. Clara's $spacers remap reads these at runtime, so
+   * any .p-5 / .mb-5 in third-party markup follows too. */
+  --plone-space-xl:  clamp(3rem, 2.75rem + 1vw, 4rem);
+  --plone-space-2xl: clamp(4.5rem, 3.7rem + 3vw, 7.5rem);
+  --plone-space-3xl: clamp(6rem, 5rem + 4vw, 10rem);
+}
+
+/* ══ 5. Dark mode ════════════════════════════════════════════════════════
+ * Jahresringe is a light-only design (`color-scheme: light`), but Plone's
+ * toolbar exposes a dark switch, and Clara's dark block re-declares the
+ * identity roles with literal blues that the ladder above cannot reach.
+ * These flips keep the hue consistent wherever dark chrome does appear;
+ * the state greens and reds stay Clara's.
+ *
+ * KNOWN BASE ISSUE: Clara's dark mode is incomplete regardless of this block —
+ * see README.md, "Findings against the base". */
+[data-bs-theme="dark"] {
+  --plone-color-primary:        oklch(0.78 0.10 215.55);  /* #62c8e0 — 8.44:1 on Clara's dark ground */
+  --plone-color-primary-hover:  oklch(0.85 0.075 215.55); /* #94dbed */
+  --plone-color-primary-active: oklch(0.92 0.045 215.55); /* #c4edf8 */
+  --plone-color-link:           oklch(0.85 0.075 215.55); /* #94dbed — 10.58:1 */
+  --plone-color-link-hover:     oklch(0.92 0.045 215.55); /* #c4edf8 */
+  --plone-color-focus-ring:     oklch(0.92 0.045 215.55); /* #c4edf8 */
+  --plone-color-info:           oklch(0.78 0.10 215.55);
+  --plone-color-info-border:    oklch(0.78 0.10 215.55);
+  --plone-color-info-text:      oklch(0.92 0.045 215.55);
+  --plone-color-info-surface:   oklch(0.28 0.05 215.55);  /* #002f38 */
+  /* the copper accent lifted onto a dark ground (the design's own
+     --hero-copper step, used where copper meets the petrol wash) */
+  --clara-amber-text:           oklch(0.80 0.13 65);      /* #f7ab5d — 8.50:1 */
+}

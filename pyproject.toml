@@ -1,7 +1,7 @@
 [project]
 name = "plonetheme.derico"
 version = "1.0.0a1"
-description = "A Plone addon package"
+description = "Jahresringe — the derico.de brand as a token layer on plonetheme.clara"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "GPL-2.0-or-later"}
@@ -25,6 +25,10 @@ keywords = ["Plone", "CMS"]
 
 dependencies = [
     "Plone>=6.2",
+    # The base theme. It pulls in plone.pageletlayout (the rendering machinery
+    # and markup contract) and ships the one compiled stylesheet; derico only
+    # re-points its tokens.
+    "plonetheme.clara",
     "setuptools<81",
     "plone.classicui",
     "Paste",
@@ -122,6 +126,13 @@ preview = true
 
 [tool.uv]
 constraint-dependencies = ["Products.CMFPlone==6.2.1"]
+
+# Both are checked out beside this package in the playground. Clara declares
+# plone.pageletlayout as its own path source, but uv only honours the sources
+# table of the project being resolved, so the transitive one is repeated here.
+[tool.uv.sources]
+"plonetheme.clara" = { path = "sources/plonetheme.clara", editable = true }
+"plone.pageletlayout" = { path = "sources/plone.pageletlayout", editable = true }
 
 [dependency-groups]
 dev = ["invoke", "watchdog"]
