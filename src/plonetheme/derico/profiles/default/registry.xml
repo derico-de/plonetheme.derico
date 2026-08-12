@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+
+  <!-- derico's ENTIRE theme: one bundle whose whole content is a `:root`
+       token override on top of Clara (see static/derico.css and
+       plonetheme.clara/docs/clara-theming-architecture.md §1.5).
+
+       No Sass, no second Bootstrap compile, no template overrides. Clara
+       already ships the @layer declaration, Bootstrap, the layout primitives,
+       the Bootstrap token bridge and every component hook in its single
+       clara.min.css; this bundle only moves the values those rules read.
+
+       `depends` documents the intent and fixes load order. The cascade does
+       not actually rely on it: Clara declares its tokens inside
+       `@layer tokens`, derico.css is unlayered, and unlayered declarations
+       beat layered ones no matter which file the browser sees first.
+
+       No `expression`: Clara styles every Plone page (Diazo is off), so the
+       override has to reach every page too. -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico">
+    <value key="csscompilation">++resource++plonetheme.derico/derico.css</value>
+    <value key="depends">plonetheme-clara</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
+  </records>
+
+</registry>

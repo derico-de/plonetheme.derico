@@ -91,4 +91,10 @@ blobs/
 
 # Project specific
 *.log
+*.pid
 .DS_Store
+
+# sources/ holds editable checkouts of the base packages (see pyproject
+# [tool.uv.sources]); the symlinks are environment-local.
+sources/*
+!sources/.gitkeep

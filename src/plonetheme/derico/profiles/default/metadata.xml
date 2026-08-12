@@ -3,5 +3,10 @@
   <version>1000</version>
   <dependencies>
     <dependency>profile-plone.app.registry:default</dependency>
+    <!-- derico is a values-only theme layered on Clara: installing derico
+         installs Clara, which in turn installs plone.pageletlayout: the
+         rendering machinery, the markup contract, the primitives, and the
+         plone token defaults. derico then re-points the ladder. -->
+    <dependency>profile-plonetheme.clara:default</dependency>
   </dependencies>
 </metadata>

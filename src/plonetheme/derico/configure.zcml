@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:plone="http://namespaces.plone.org/plone"
@@ -9,12 +10,23 @@
 
   <include file="permissions.zcml" />
 
+  <!-- The token override sheet and the brand mark, served at
+       ++resource++plonetheme.derico/ and linked by the bundle registered in
+       profiles/default/registry.xml. This is the whole theme payload —
+       derico ships no fonts (Clara self-hosts the same Literata / Source
+       Sans 3 pair) and no compiled Bootstrap. -->
+  <browser:resourceDirectory
+      name="plonetheme.derico"
+      directory="static"
+      />
+
   <genericsetup:registerProfile
       name="default"
       title="Plonetheme Derico"
-      description="A Plone addon package"
+      description="Jahresringe — the derico.de brand, as a token layer on Clara"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/default"
+      post_handler=".setuphandlers.post_install"
       />
 
   <genericsetup:registerProfile
@@ -30,6 +42,12 @@
       title="Plonetheme Derico uninstall"
       description="Uninstall plonetheme.derico"
       handler="plonetheme.derico.setuphandlers.uninstall"
+      />
+
+  <!-- Keep the uninstall profile out of the Add-ons control panel. -->
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="plonetheme.derico-hiddenprofiles"
       />
 
 </configure>
