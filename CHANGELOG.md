@@ -2,6 +2,10 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Remove the `plone.bundles/plonetheme-derico` registry records on uninstall
+  (`profiles/uninstall/registry.xml`), so derico.css stops loading once the
+  add-on is removed.
+
 - **Re-base on `plonetheme.clara` and ship the „Jahresringe" identity as a pure
   token layer.** The package was an empty `backend_addon` scaffold; it is now a
   theme. `static/derico.css` is the entire stylesheet: one `:root` block plus a

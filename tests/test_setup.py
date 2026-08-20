@@ -97,3 +97,11 @@ class TestUninstall:
         from plone.browserlayer import utils
 
         assert IPlonethemeDericoLayer not in utils.registered_layers()
+
+    def test_bundle_records_removed(self):
+        """No orphaned bundle: derico.css must stop loading after uninstall."""
+        assert api.portal.get_registry_record(f"{BUNDLE}.enabled", default=None) is None
+        assert (
+            api.portal.get_registry_record(f"{BUNDLE}.csscompilation", default=None)
+            is None
+        )
