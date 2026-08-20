@@ -131,8 +131,8 @@ constraint-dependencies = ["Products.CMFPlone==6.2.1"]
 # plone.pageletlayout as its own path source, but uv only honours the sources
 # table of the project being resolved, so the transitive one is repeated here.
 [tool.uv.sources]
-"plonetheme.clara" = { path = "sources/plonetheme.clara", editable = true }
-"plone.pageletlayout" = { path = "sources/plone.pageletlayout", editable = true }
+"plonetheme.clara" = { path = "../plonetheme.clara", editable = true }
+"plone.pageletlayout" = { path = "../plone.pageletlayout", editable = true }
 
 [dependency-groups]
 dev = ["invoke", "watchdog"]
