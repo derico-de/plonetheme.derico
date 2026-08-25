@@ -1,0 +1,6 @@
+packages:
+  - '.'
+# pnpm blocks dependency build scripts by default; without this, esbuild never
+# installs its platform binary and `vite build` dies on a missing binary.
+allowBuilds:
+  esbuild: true

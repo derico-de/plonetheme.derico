@@ -20,6 +20,20 @@
       directory="static"
       />
 
+  <!-- The brand blocks' editor bundles, built from bundle-src/ and committed.
+       A SECOND directory, and `++plone++` rather than `++resource++`: the
+       contract's cache-buster names `++plone++` (blockaddons.py:170), and
+       double-registering one directory under both directives would give every
+       file two public URLs — two URLs for one JS module is exactly the
+       duplicate-instance failure the contract exists to prevent (ticket 04 §3).
+       Reserved entirely for build output; `emptyOutDir` wipes it on every
+       build, so nothing hand-written may live there. -->
+  <plone:static
+      name="plonetheme.derico.blocks"
+      type="plone"
+      directory="static-blocks"
+      />
+
   <genericsetup:registerProfile
       name="default"
       title="Plonetheme Derico"

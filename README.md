@@ -3,11 +3,18 @@
 **„Jahresringe" — the derico.de brand, as a token layer on
 [plonetheme.clara](../plonetheme.clara).**
 
-The whole theme is one stylesheet of custom properties:
+Almost all of the theme is one stylesheet of custom properties:
 `src/plonetheme/derico/static/derico.css`. No Sass, no Bootstrap compile, no
-template overrides, no component rules — Clara ships all of that, and derico
-only moves the values its rules read. Plus one brand mark, which is the single
-part of the design that cannot be a token.
+template overrides — Clara ships all of that, and derico mostly moves the
+values its rules read. Plus one brand mark, which is the single part of the
+design that cannot be a token.
+
+The exception is the **brand blocks**: designs that are not a value Clara's
+rules already read, so they ship their own component rules and their own
+editor-side JavaScript. The Derico Hero is the first. Their source lives in
+[`bundle-src/`](bundle-src/README.md) and their built, committed artifacts in
+`src/plonetheme/derico/static-blocks/` — installing the theme never requires
+Node, but changing a block requires a rebuild.
 
 ```
 plone.pageletlayout   rendering machinery + markup contract, no CSS
@@ -15,7 +22,7 @@ plone.pageletlayout   rendering machinery + markup contract, no CSS
 plonetheme.clara      the one compiled bundle: @layer, Bootstrap 5.3,
                       primitives, --bs-* bridge, components, token defaults
       ↑
-plonetheme.derico     ~60 lines of :root, and a logo
+plonetheme.derico     ~60 lines of :root, a logo, and the brand blocks
 ```
 
 ## Install

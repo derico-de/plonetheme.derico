@@ -1,7 +1,8 @@
 # Build: the Derico Hero's editor half
 
 Type: task
-Status: open
+Status: in-progress
+Assignee: md@derico.de
 Blocked by: 14, 02, 04, 06, 11, 13, 15
 
 ## Question

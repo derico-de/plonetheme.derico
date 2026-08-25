@@ -1,0 +1,29 @@
+{
+  "name": "plonetheme-derico-blocks",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Editor-side bundles for plonetheme.derico's brand blocks (Aurora block add-on contract).",
+  "type": "module",
+  "packageManager": "pnpm@11.22.0",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@plone/registry": "4.0.0-alpha.1",
+    "@plone/types": "3.0.0-alpha.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.20.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "jsdom": "^26.1.0",
+    "postcss": "^8.5.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.0.8",
+    "vitest": "^3.2.4"
+  }
+}

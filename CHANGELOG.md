@@ -2,10 +2,49 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The Derico Hero's editor half.** `bundle-src/` is a small pnpm/Vite
+  workspace whose build emits committed artifacts into `static-blocks/`
+  (`hero.js` + a scope-wrapped `blocks.css`), served as
+  `++plone++plonetheme.derico.blocks`. Its entry point registers ONE block per
+  bundle and returns the config object the loader requires, with
+  `defaultBlockWidth: 'full'` — the whole of the full-bleed wiring, which works
+  only because the block's schema deliberately declares no `blockWidth`. The
+  sidebar widgets are namespaced (`derico_textarea`, `derico_ring_legend`,
+  `derico_reference`) rather than claiming the generic keys in a global,
+  last-wins registry. Both `edit` and `view` are implemented from one set of
+  components, so the canvas and the published page render the same markup under
+  the same `.derico-hero` root — never Aurora's `.block-derico-hero` wrapper
+  stamp, which is only column-width in the canvas and would clip the breakout.
+  27 vitest cases cover the seven-case degradation table and the registration
+  contract; `tests/test_hero_sheet.py` adds nine that pin the shipped sheet's
+  wrap ladder, stacking context and namespace containment.
+
+- **The blocks are served, built and guarded.** `static-blocks/` is registered
+  as `++plone++plonetheme.derico.blocks` — a second static directory, and
+  `++plone++` rather than `++resource++`, because one directory under both
+  directives would give every file two public URLs. `invoke build-blocks` and
+  `invoke test-blocks` wrap the pnpm workspace, and a new CI job typechecks,
+  tests and builds it, then runs `git diff --exit-code` over the artifacts:
+  committed build output rots the moment someone edits source and forgets to
+  rebuild, and that check is the only thing that makes committing it safe.
+  `tests/test_block_addon_lockstep.py` pins the vendored `scope-wrap.ts` to
+  upstream and will pin the declared `block_api` floor once the record lands.
+  `bundle-src/README.md` carries the workspace's prose, because nothing
+  hand-written may live in `static-blocks/` — the build wipes it.
+
+- **`--derico-text-display` is no longer published.** The hero states its own
+  `clamp(2.4rem, 1.4rem + 5cqi, 5rem)` — container-relative, because the hero
+  is viewport-minus-toolbar for every logged-in user — instead of reading the
+  alias, and it is the only block that sets a display-sized headline. That left
+  the alias published and read by nobody, which the token layer's own guard
+  calls dead weight: published, not hoarded. `derico.css` §3 now re-publishes
+  three of Clara's private type tokens, and the alias returns the day a block
+  reads it.
+
 - **The token layer gains the two things a brand block cannot reach itself.**
-  `derico.css` re-publishes Clara's four private type tokens as
-  `--derico-text-display`, `--derico-text-lede`, `--derico-text-label` and
-  `--derico-font-display` — aliases, never values, so this file stays the
+  `derico.css` re-publishes Clara's private type tokens as
+  `--derico-text-lede`, `--derico-text-label` and `--derico-font-display` —
+  aliases, never values, so this file stays the
   theme's one seam onto Clara and a block sheet speaks only `--derico-*` and
   `--plone-*`. And it gains §7, the first rule in the sheet that is not a token
   declaration: when the Derico Hero is the *first* block on a blocks-view page,
