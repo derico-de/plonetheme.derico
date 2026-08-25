@@ -1,8 +1,14 @@
 /* plonetheme.derico — „Jahresringe" on Clara.
  *
- * THE ENTIRE THEME. One later bundle, one `:root` block, no Sass, no template
- * overrides, no component rules — exactly the customization contract Clara
- * documents (plonetheme.clara/docs/clara-theming-architecture.md §1.5).
+ * THE THEME'S TOKEN LAYER. One later bundle, no Sass, no template overrides —
+ * the customization contract Clara documents
+ * (plonetheme.clara/docs/clara-theming-architecture.md §1.5), with one
+ * deliberate exception: §7. A rule earns its place in this file only when
+ * nothing else in the theme can reach the thing it styles. That is true of
+ * exactly one thing — the page chrome AROUND a brand block. A block ships its
+ * own stylesheet, but that sheet is scope-wrapped at packaging time and
+ * `scope-wrap.ts` rewrites `body` to `:where(:scope)`, putting <body>
+ * permanently out of its reach.
  *
  * Because this file is UNLAYERED and Clara declares its tokens inside
  * `@layer tokens`, every declaration here wins over Clara regardless of bundle
@@ -130,7 +136,20 @@
      keeps its metrics and still has an edge in forced-colors mode. */
   --clara-button-border-color: var(--derico-copper);
 
-  /* ══ 3. --plone-* roles whose MEANING differs from Clara's mapping ══════
+  /* ══ 3. Clara's private type tokens, re-published for the brand blocks ══
+   * These four carry no `--plone-*` equivalent (only --plone-text-s /
+   * --plone-text-xs alias the label step), so a brand block's stylesheet
+   * cannot reach them through the public ladder. It must not reach for the
+   * `--clara-*` name either: this file is the theme's ONE seam onto Clara —
+   * it already writes ~30 --clara-* tokens — so a Clara rename has to break
+   * one file, not every block sheet as well. Aliases, never values: the
+   * scale itself stays Clara's, inherited untouched (see the header). */
+  --derico-text-display: var(--clara-text-display);
+  --derico-text-lede:    var(--clara-text-lede);
+  --derico-text-label:   var(--clara-text-label);
+  --derico-font-display: var(--clara-font-display);
+
+  /* ══ 4. --plone-* roles whose MEANING differs from Clara's mapping ══════
    * Value-only differences are handled by the ladder above. These three are
    * genuine semantic re-mappings, so they are stated at the contract level. */
 
@@ -145,7 +164,7 @@
   --plone-link-color-on-dark: var(--derico-brand-fill-hover);
   --plone-state-published:    var(--derico-brand-fill-hover);
 
-  /* ══ 4. Rhythm ═════════════════════════════════════════════════════════
+  /* ══ 5. Rhythm ═════════════════════════════════════════════════════════
    * 3xs…l are already identical to the Jahresringe scale. Only the three
    * section-rhythm steps are longer here — the band-to-band breathing room
    * the design is built on. Clara's $spacers remap reads these at runtime, so
@@ -155,7 +174,7 @@
   --plone-space-3xl: clamp(6rem, 5rem + 4vw, 10rem);
 }
 
-/* ══ 5. Dark mode ════════════════════════════════════════════════════════
+/* ══ 6. Dark mode ════════════════════════════════════════════════════════
  * Jahresringe is a light-only design (`color-scheme: light`), but Plone's
  * toolbar exposes a dark switch, and Clara's dark block re-declares the
  * identity roles with literal blues that the ladder above cannot reach.
@@ -178,4 +197,39 @@
   /* the copper accent lifted onto a dark ground (the design's own
      --hero-copper step, used where copper meets the petrol wash) */
   --clara-amber-text:           oklch(0.80 0.13 65);      /* #f7ab5d — 8.50:1 */
+}
+
+/* ══ 7. The page chrome above a brand block ══════════════════════════════
+ * The one rule in this file that is not a token declaration, and the only
+ * kind of rule that may ever join it: it styles the page AROUND a block,
+ * which the block's own sheet cannot reach (see the header).
+ *
+ * `blocks_view.pt` deliberately leaves the content-title and
+ * content-description slots unfilled, so Plone renders the breadcrumbs, the
+ * contentheader and the byline above the first block. The Derico Hero opens
+ * the page with a full-bleed photograph and has to sit flush under Clara's
+ * header hairline, exactly as the Jahresringe mockup does — so when it is
+ * the FIRST block, that chrome goes. Mirrors Clara's own
+ * `body:has(.clara-home)` treatment (_clara-components.scss §Homepage).
+ *
+ * No gap is closed by hand: every bit of vertical space above the first
+ * block lives on these elements themselves (`.element-breadcrumbs`
+ * padding-block-start, `.element-contentheader` padding-block), and Clara
+ * sets `--plone-layout-space: 0` on `.plone-layout`, so removing them from
+ * the grid is the whole of it. `.element-body` carries padding-block-END
+ * only and is deliberately left alone — the hero opens the page, it does
+ * not close it.
+ *
+ * `.element-byline` is aspirational and `#section-byline` is the live hook;
+ * both are listed because Clara lists both.
+ *
+ * PUBLIC VIEW ONLY. The selector keys on `.aurora-blocks-view`, which
+ * `@@aurora-edit` does not emit, so the editing canvas keeps its chrome —
+ * it is a working surface, where the title and breadcrumbs orient the
+ * author. */
+body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-breadcrumbs,
+body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-contentheader,
+body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-byline,
+body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-byline {
+  display: none;
 }

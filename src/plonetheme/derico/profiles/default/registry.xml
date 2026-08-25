@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
 
-  <!-- derico's ENTIRE theme: one bundle whose whole content is a `:root`
-       token override on top of Clara (see static/derico.css and
-       plonetheme.clara/docs/clara-theming-architecture.md §1.5).
+  <!-- derico's token layer: one bundle, almost all of it a `:root` token
+       override on top of Clara (see static/derico.css and
+       plonetheme.clara/docs/clara-theming-architecture.md §1.5). The one
+       exception is derico.css §7, which hides the page chrome above a brand
+       block — a block's own sheet is scope-wrapped and cannot reach <body>.
 
        No Sass, no second Bootstrap compile, no template overrides. Clara
        already ships the @layer declaration, Bootstrap, the layout primitives,
