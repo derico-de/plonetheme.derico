@@ -9,6 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      BLICCA_TOKEN: ${{ secrets.BLICCA_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -28,8 +30,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[test]"
 
+      # The lockstep guards (hero ticket 04 §9) skip unless
+      # plone.blicca.auroraeditor is resolvable — and a guard that always skips
+      # reads green while protecting nothing, which is worse than no guard.
+      # This is the job where pytest runs, so the checkout goes here.
+      #
+      # That package is PRIVATE, so this needs a token with read access to it.
+      # Until the BLICCA_TOKEN secret is set the step is skipped, the guards
+      # skip with it, and the vendored plugin is unprotected on CI — set the
+      # secret to close that. `actions/checkout` refuses paths outside the
+      # workspace, so the guards are pointed at it explicitly rather than by
+      # sibling convention.
+      - name: Check out plone.blicca.auroraeditor
+        if: env.BLICCA_TOKEN != ''
+        uses: actions/checkout@v4
+        with:
+          repository: derico-de/plone.blicca.auroraeditor
+          token: ${{ env.BLICCA_TOKEN }}
+          path: .siblings/plone.blicca.auroraeditor
+
       - name: Run tests
         run: pytest -v
+        env:
+          BLICCA_CHECKOUT: ${{ github.workspace }}/.siblings/plone.blicca.auroraeditor
 
   lint:
     runs-on: ubuntu-latest
@@ -47,3 +70,41 @@ jobs:
 
       - name: Run ruff
         run: ruff check .
+
+  # Hero ticket 04 §10. `static-blocks/` is committed build output and nothing
+  # rebuilds it at install time, so it rots the moment someone edits source and
+  # forgets to rebuild. The `git diff --exit-code` is the only thing that makes
+  # committing artifacts safe rather than merely convenient.
+  #
+  # Single-repo on purpose: vendoring `scope-wrap.ts` (04 §7) is what bought
+  # this job its independence from a sibling checkout.
+  blocks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: bundle-src/.nvmrc
+          cache: pnpm
+          cache-dependency-path: bundle-src/pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm --dir bundle-src install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm --dir bundle-src typecheck
+
+      - name: Test
+        run: pnpm --dir bundle-src test
+
+      - name: Build
+        run: pnpm --dir bundle-src build
+
+      # If this fails, someone edited bundle-src/src/ and did not rebuild.
+      - name: Committed artifacts match their source
+        run: git diff --exit-code -- src/plonetheme/derico/static-blocks/

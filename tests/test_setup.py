@@ -33,6 +33,24 @@ class TestSetup:
 
         assert IPlonethemeDericoLayer in utils.registered_layers()
 
+    def test_block_bundles_are_served(self):
+        """The editor bundles are only useful if they have a URL.
+
+        A second static directory, `++plone++` rather than `++resource++`,
+        because the contract's cache-buster names `++plone++` and one
+        directory under both directives would give every file two public URLs
+        (hero ticket 04 §3). Registration is ZCML, so nothing else in the
+        install would notice it missing — the artifacts would simply 404.
+        """
+        from plone.resource.interfaces import IResourceDirectory
+        from zope.component import getUtility
+
+        directory = getUtility(
+            IResourceDirectory, name="++plone++plonetheme.derico.blocks"
+        )
+        assert "hero.js" in directory.listDirectory()
+        assert "blocks.css" in directory.listDirectory()
+
     def test_bundle_registered_and_enabled(self):
         assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is True
         assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (

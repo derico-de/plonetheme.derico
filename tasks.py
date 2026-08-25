@@ -1,4 +1,7 @@
 """Invoke tasks for plonetheme.derico."""
+import shutil
+
+from invoke import Exit
 from invoke import task
 
 
@@ -117,6 +120,37 @@ print("Created site: SITE_ID")
         c.run(f"uv run zconsole run var/{instance}/etc/zope.conf {script_path}")
     finally:
         os.unlink(script_path)
+
+
+@task
+def build_blocks(c):
+    """Build the brand blocks' editor bundles into static-blocks/.
+
+    The artifacts are committed and nothing rebuilds them at install time, so
+    run this after every change under bundle-src/src/ — CI runs
+    `git diff --exit-code` over static-blocks/ and fails if you forget.
+    """
+    if not shutil.which("pnpm"):
+        raise Exit(
+            "pnpm is required to build the block bundles and was not found on "
+            "PATH. Install it with `corepack enable`, or see bundle-src/README.md.",
+            code=1,
+        )
+    c.run("pnpm --dir bundle-src install")
+    c.run("pnpm --dir bundle-src build")
+
+
+@task
+def test_blocks(c):
+    """Typecheck and unit-test the block bundles (vitest)."""
+    if not shutil.which("pnpm"):
+        raise Exit(
+            "pnpm is required to test the block bundles and was not found on "
+            "PATH. Install it with `corepack enable`, or see bundle-src/README.md.",
+            code=1,
+        )
+    c.run("pnpm --dir bundle-src typecheck")
+    c.run("pnpm --dir bundle-src test")
 
 
 @task

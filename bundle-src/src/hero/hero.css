@@ -1,0 +1,428 @@
+/* The Derico Hero.
+ *
+ * Packaging wraps this whole file in
+ *   @scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)
+ *       to (.aurora-pattern-island)
+ * so it styles the editing canvas, the editor's portals and the public page
+ * from one source (contract §6.1). Three roots where the wrapper passes two:
+ * a block's sheet has to reach the published page as well.
+ *
+ * Rules of the road, all of them measured rather than assumed (ticket 07):
+ *
+ * - Every selector descends from `.derico-hero`, the component's OWN root,
+ *   never from Aurora's `.block-derico-hero` wrapper stamp. The wrapper is
+ *   the full-bleed box on the view but only the column box in the canvas, so
+ *   painting the hero on it clips the breakout in the editor.
+ * - The hero never sets `width`. The breakout is Blicca's, on the wrapper
+ *   (view) and the inner container (canvas), and `defaultBlockWidth: 'full'`
+ *   is the whole of the wiring.
+ * - Class names are the mockup's, so this sheet and
+ *   `docs/design/derico.de/site/assets/site.css` stay diffable. Descent, not
+ *   renaming, is what keeps `.kicker` and `.button` from colliding with the
+ *   scope root's shared territory.
+ * - `--clara-*` is never named here. The type tokens Clara keeps private
+ *   reach this file as `--derico-*` aliases published by `derico.css` §3,
+ *   which is the theme's one seam onto Clara. Three of them, not four: the
+ *   display step is not aliased, because this block states its own headline
+ *   ramp (ticket 15 §3) and no other block reads it.
+ */
+
+/* ── the block ───────────────────────────────────────────────────────────── */
+
+.derico-hero {
+  /* 06 §2 — the hero's own composition, declared on the hero and not on the
+   * scope root every other add-on sheet shares. Promote to derico.css only
+   * when a second brand block actually wants the wash. */
+  --derico-hero-ground: oklch(0.18 0.035 215);
+  --derico-hero-wash-mobile: radial-gradient(ellipse 35% 81.9% at -9% 100%,
+    oklch(0.18 0.04 215 / 0) 0%,
+    oklch(0.18 0.04 215 / 0) 55%,
+    oklch(0.18 0.04 215 / 0.78) 65%,
+    oklch(0.18 0.04 215 / 0.78) 100%);
+  --derico-hero-wash-wide-color: oklch(0.18 0.04 215 / 0.72);
+  --derico-hero-ink: oklch(0.99 0.004 215);
+  --derico-hero-ink-soft: oklch(0.93 0.018 215);
+  --derico-hero-copper: oklch(0.82 0.13 65);
+  --derico-hero-ring: oklch(0.82 0.13 65);
+  --derico-hero-ring-now: var(--derico-brand);
+  --derico-hero-rule: oklch(0.72 0.045 213);
+
+  position: relative;
+  overflow: hidden;
+  /* 06 §8 — a container query, not a media query. The hero's box is
+   * `100vw − var(--aurora-full-bleed-offset)`, so at a 900px viewport with
+   * the toolbar out a viewport query fires at 896 while the hero is 680 and
+   * the second column's `minmax(24rem, …)` overflows — a real defect for
+   * exactly the logged-in administrator this block is built for. Measured:
+   * the canvas hero is 42.5rem there and correctly stays single-column. */
+  container-type: inline-size;
+  /* Ticket 07, measured: `container-type: inline-size` computes
+   * `contain: none` and `position: relative; z-index: auto` is no stacking
+   * context either, so without this the `z-index: -2` media escapes to the
+   * ROOT stacking context and the hero's own opaque ground paints over it —
+   * the photograph vanishes on both surfaces and the result looks
+   * deliberate. 06 §8 dropped this on the theory that container-type brings
+   * `contain: layout`. It does not. */
+  isolation: isolate;
+  /* The Plate editable computes `white-space: pre-wrap` and it inherits into
+   * everything rendered inside it, breaking the headline mid-token where the
+   * public view keeps it whole. Safe to normalise because every field is
+   * edited in the sidebar and nothing in here is contenteditable. Parity
+   * comes from STATING the value, not from which value. */
+  white-space: normal;
+  padding-block: var(--plone-space-xl) var(--plone-space-l);
+  color: var(--derico-hero-ink);
+  background: var(--derico-hero-ground);
+}
+
+.derico-hero .hero-media,
+.derico-hero .hero-wash {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+}
+.derico-hero .hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+.derico-hero .hero-wash {
+  z-index: -1;
+  background: var(--derico-hero-wash-mobile);
+}
+
+/* 06 §7 — the mockup's `.shell` formula folded in, over `--plone-measure`
+ * (76rem, bit-identical to the mockup's `--site-max`). No `.shell` element
+ * and no new token. */
+.derico-hero .home-hero__grid {
+  position: relative;
+  width: min(100% - clamp(2rem, 6vw, 6rem), var(--plone-measure));
+  margin-inline: auto;
+  display: grid;
+  gap: var(--plone-space-xl);
+  align-items: center;
+}
+
+/* ── the wrap ladder (ticket 15) ─────────────────────────────────────────── */
+
+/* Rung 1, and THE guarantee. A grid or flex item floors at `min-content`, so
+ * without this the copy cell grows to its longest word — measured at 320px
+ * inside a 288px shell — and the hero's `overflow: hidden` clips it. Stated
+ * once over every grid and flex item in the block rather than six times over
+ * the elements that happen to overflow today, because the mechanism is
+ * identical everywhere and a headline nobody has written yet is covered. */
+.derico-hero .home-hero__grid > *,
+.derico-hero .action-row > *,
+.derico-hero .ring-legend > * {
+  min-width: 0;
+}
+
+/* Rung 2. Keeps an unfittable word visible — and it measurably CANNOT stand
+ * in for rung 1, because `overflow-wrap` does not feed intrinsic sizing.
+ * Rung 3 is `hyphens`, a labelled enhancement: it turns that break into a
+ * syllable break wherever the engine has a dictionary for the page language,
+ * and silently does nothing where it does not. `lang` is inherited from
+ * `main_template`; the block neither stamps it nor offers a field for it. */
+.derico-hero h1,
+.derico-hero .kicker,
+.derico-hero .lede,
+.derico-hero .ring-legend dt,
+.derico-hero .ring-legend dd,
+.derico-hero .action-row > * {
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* ── copy ────────────────────────────────────────────────────────────────── */
+
+.derico-hero .kicker {
+  color: var(--derico-hero-copper);
+  font-family: var(--derico-font-display);
+  font-size: var(--derico-text-lede);
+  font-style: italic;
+}
+.derico-hero h1 {
+  max-width: 14.5ch;
+  margin-block-start: var(--plone-space-2xs);
+  color: var(--derico-hero-ink);
+  font-family: var(--derico-font-display);
+  /* Stated here, NOT as an override of `--derico-text-display`: that alias
+   * means "Clara's display size" and Clara's own consumers read it. This
+   * clamp is one design's voice.
+   *
+   * `cqi`, not `vw`: the hero is viewport-minus-toolbar for every logged-in
+   * user on BOTH surfaces (measured 1220 at a 1440 viewport on the public
+   * view too), so a `vw` ramp sizes the headline against a box the page does
+   * not have — which is the 320px clipping defect in miniature. The slope,
+   * not the floor, is what had to move: at 320 the old ramp returns its
+   * middle term, so lowering the floor changed nothing there. */
+  font-size: clamp(2.4rem, 1.4rem + 5cqi, 5rem);
+  letter-spacing: -0.02em;
+}
+.derico-hero .lede {
+  margin-block-start: var(--plone-space-m);
+  color: var(--derico-hero-ink-soft);
+  font-size: var(--derico-text-lede);
+  line-height: 1.55;
+}
+
+.derico-hero .action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--plone-space-s);
+  margin-block-start: var(--plone-space-l);
+}
+
+/* 06 §5 — the block owns its CTA. Clara's `.clara-button` lives in
+ * `@layer components`, and `scope-wrap.ts` flattens `@layer` out of the
+ * editor bundle: unlayered beats layered, so inside the canvas Aurora's
+ * scoped preflight `button { background-color: transparent }` wins while on
+ * the public view Clara wins — same markup, two appearances. And
+ * `.clara-text-link` is `color: var(--clara-ink)`, invisible on this wash, so
+ * it needed overriding regardless. */
+.derico-hero .button {
+  min-height: 2.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.72rem 1.35rem;
+  border: 0;
+  border-radius: var(--plone-radius-pill);
+  background: var(--derico-copper);
+  color: var(--derico-on-copper);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 140ms linear,
+    transform 140ms var(--plone-ease-out-quint);
+}
+.derico-hero .button:hover {
+  background: var(--derico-copper-hover);
+  color: var(--derico-on-copper);
+}
+.derico-hero .button:active { transform: scale(0.98); }
+
+.derico-hero .quiet-link {
+  color: var(--derico-hero-ink);
+  font-weight: 700;
+  text-underline-offset: 0.3em;
+}
+.derico-hero .quiet-link:hover { color: var(--derico-hero-copper); }
+
+/* ── the rings figure ────────────────────────────────────────────────────── */
+
+.derico-hero .rings-figure {
+  width: min(100%, 34rem);
+  margin-inline: auto;
+}
+.derico-hero .rings-stage { position: relative; }
+.derico-hero .rings-disc {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+.derico-hero .rings-disc circle {
+  fill: none;
+  stroke: var(--derico-hero-ring);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+.derico-hero .rings-disc .ring-thin { stroke-width: 1.5; }
+.derico-hero .rings-disc .ring-now {
+  stroke: var(--derico-hero-ring-now);
+  stroke-width: 4;
+}
+.derico-hero .rings-disc .ring-future { stroke-dasharray: 5 8; }
+
+.derico-hero .ring-markers {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.derico-hero .ring-markers li {
+  position: absolute;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--derico-hero-ground);
+  border-radius: 50%;
+  color: var(--derico-hero-ground);
+  background: var(--derico-hero-ring);
+  font-size: var(--derico-text-label);
+  font-weight: 700;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+}
+.derico-hero .ring-markers li:nth-child(1) { left: 41.62%; top: 44.04%; }
+.derico-hero .ring-markers li:nth-child(2) { left: 50.44%; top: 31.28%; }
+.derico-hero .ring-markers li:nth-child(3) { left: 59.85%; top: 17.66%; }
+.derico-hero .ring-markers li:nth-child(4) { left: 67.65%; top: 6.38%; }
+.derico-hero .ring-markers .is-now { background: var(--derico-hero-ring-now); }
+
+/* The legend is HTML BENEATH the SVG precisely so it does not scale with the
+ * graphic: ticket 07 measured captions at 15px on both surfaces at both 1440
+ * and 375, which is Clara's label floor exactly. */
+.derico-hero .ring-legend { margin-block-start: var(--plone-space-s); }
+.derico-hero .ring-legend > div {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: var(--plone-space-2xs);
+  padding-block: var(--plone-space-2xs);
+  border-top: 1px solid var(--derico-hero-rule);
+}
+.derico-hero .ring-legend dt {
+  font-weight: 700;
+  color: var(--derico-hero-ring);
+}
+.derico-hero .ring-legend dd {
+  grid-column: 2;
+  margin: -0.35rem 0 0;
+  color: var(--derico-hero-ink-soft);
+  font-size: var(--derico-text-label);
+}
+.derico-hero .ring-legend b { color: var(--derico-hero-ring); }
+.derico-hero .ring-legend .is-now dt,
+.derico-hero .ring-legend .is-now b { color: var(--derico-hero-ring-now); }
+
+/* ── the 56rem switch (06 §8) ────────────────────────────────────────────── */
+
+@container (min-width: 56rem) {
+  .derico-hero .hero-wash {
+    background: var(--derico-hero-wash-wide-color);
+    /* 06 §9 — fixed pixel stops, measured from the hero's left edge, which
+     * is where the copy column's inset is measured from too; both shift
+     * together with the toolbar. Percentages would stretch the gradient's
+     * softness with the viewport, which is what the fixed stops prevent. */
+    mask-image:
+      linear-gradient(90deg,
+        rgb(0 0 0 / 0.85) 0 300px,
+        black 420px),
+      radial-gradient(ellipse 49% 58.5% at left bottom,
+        transparent 0 55%,
+        black 65% 100%);
+    mask-composite: intersect;
+  }
+  .derico-hero .home-hero__grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr);
+  }
+}
+
+/* ── animations: public view only (06 §6) ────────────────────────────────── */
+
+/* `:scope.aurora-blocks-view`, not a bare `.aurora-blocks-view` descendant
+ * selector: inside `@scope` the latter would look for a DESCENDANT carrying
+ * the class. Written this way the rules are a deliberate one-surface seam, so
+ * the copy does not re-settle and the rings do not re-grow on every keystroke
+ * in the canvas. */
+@media (prefers-reduced-motion: no-preference) {
+  :scope.aurora-blocks-view .derico-hero h1,
+  :scope.aurora-blocks-view .derico-hero .kicker,
+  :scope.aurora-blocks-view .derico-hero .lede,
+  :scope.aurora-blocks-view .derico-hero .action-row {
+    animation: derico-hero-settle 760ms var(--plone-ease-out-quint) backwards;
+  }
+  :scope.aurora-blocks-view .derico-hero .lede { animation-delay: 90ms; }
+  :scope.aurora-blocks-view .derico-hero .action-row { animation-delay: 160ms; }
+  :scope.aurora-blocks-view .derico-hero .rings-disc circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: derico-hero-grow-ring 950ms var(--plone-ease-out-quint) backwards;
+  }
+  :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(2) { animation-delay: 45ms; }
+  :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(3) { animation-delay: 90ms; }
+  :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(4) { animation-delay: 135ms; }
+  :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(5) { animation-delay: 180ms; }
+  :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(6) { animation-delay: 225ms; }
+  :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(7) { animation-delay: 270ms; }
+}
+
+/* `scope-wrap.ts` hoists `@keyframes` out of the wrap, so these names are
+ * global across the whole page — hence the prefix. */
+@keyframes derico-hero-settle { from { transform: translateY(0.75rem); } }
+@keyframes derico-hero-grow-ring { from { transform: scale(0.94); } }
+
+/* ── the editor's own chrome ─────────────────────────────────────────────── */
+
+/* The nag, and the three sidebar widgets. Both live OUTSIDE `.derico-hero`:
+ * the nag so the block's palette cannot reach it, the widgets because the
+ * sidebar is a portal into `#sidebar`, which the wrapper deliberately renders
+ * inside the `.aurora-editor` scope root so add-on sheets can style it. The
+ * scope LIMIT keeps all of this out of the content browser, which is a
+ * `.aurora-pattern-island`. */
+
+.derico-hero-incomplete {
+  margin-block-start: var(--plone-space-2xs);
+  color: var(--derico-ink-soft);
+  font-size: var(--derico-text-label);
+  font-style: italic;
+}
+
+.derico-hero-widget {
+  display: block;
+  border: 0;
+  padding: 0;
+  margin: 0 0 var(--plone-space-s);
+}
+.derico-hero-widget label,
+.derico-hero-widget > legend {
+  display: block;
+  margin-block-end: var(--plone-space-2xs);
+  font-size: var(--derico-text-label);
+  font-weight: 600;
+}
+.derico-hero-widget textarea,
+.derico-hero-widget input[type='text'] {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--derico-rule);
+  border-radius: 0.375rem;
+  background: var(--derico-surface);
+  color: var(--derico-ink);
+  font: inherit;
+  font-size: var(--derico-text-label);
+}
+.derico-hero-widget textarea { resize: vertical; }
+.derico-hero-widget__description {
+  margin-block-start: var(--plone-space-2xs);
+  color: var(--derico-ink-soft);
+  font-size: var(--derico-text-label);
+}
+.derico-hero-widget__picked {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--plone-space-2xs);
+  margin: 0 0 var(--plone-space-2xs);
+  font-size: var(--derico-text-label);
+}
+.derico-hero-widget__picked span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.derico-hero-widget__picked button {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--derico-copper-text);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.derico-hero-widget__ring {
+  padding-block: var(--plone-space-2xs);
+  border-top: 1px solid var(--derico-rule);
+}
+.derico-hero-widget__ring > span {
+  float: inline-end;
+  color: var(--derico-copper-text);
+  font-weight: 700;
+}
+.derico-hero-widget__ring.is-now > span { color: var(--derico-brand-text); }

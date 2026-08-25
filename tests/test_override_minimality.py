@@ -33,10 +33,7 @@ CLARA = CLARA_PATH.read_text() if CLARA_PATH else ""
 
 BLOCK_SHEETS = css_tools.block_stylesheets()
 
-needs_block_sheets = pytest.mark.skipif(
-    not BLOCK_SHEETS,
-    reason="no brand-block stylesheet is built yet (bundle-src/ output)",
-)
+needs_block_sheets = css_tools.needs_block_sheets
 
 #: The one non-token rule `derico.css` is allowed to carry: the page chrome
 #: above a brand block (derico.css §7). It styles the page AROUND a block,
@@ -61,15 +58,13 @@ CHROME_TARGETS = {
 #: exists to consume them, which is why they are exempted below and checked
 #: by their own test instead.
 PUBLISHED_TO_BLOCK_SHEETS = {
-    "--derico-text-display",
     "--derico-text-lede",
     "--derico-text-label",
     "--derico-font-display",
 }
 
 
-def _normalise(selector):
-    return re.sub(r"\s+", " ", selector).strip()
+_normalise = css_tools.normalise_selector
 
 
 def _is_chrome_suppression(selector):

@@ -22,6 +22,8 @@ import math
 import re
 from pathlib import Path
 
+import pytest
+
 
 HERE = Path(__file__).resolve().parent
 PACKAGE = HERE.parent
@@ -88,7 +90,7 @@ def _blocks(css):
             return
         selector = css[index:brace].strip().strip("}").strip()
         selector = selector.rsplit("}", 1)[-1].strip()
-        if selector.startswith("@layer") or selector.startswith("@media") or selector.startswith("@supports"):
+        if selector.startswith(("@layer", "@media", "@supports", "@scope")):
             # descend into the at-rule body
             index = brace + 1
             continue
@@ -105,6 +107,35 @@ def _blocks(css):
             return
         yield selector, css[brace + 1 : end]
         index = end + 1
+
+
+def rules(css):
+    """Every STYLE rule in `css` as (selector, body), at-rules flattened.
+
+    The block sheets need this: `_blocks` was written for token sheets, where
+    the only question is what `:root` declares, but a block's sheet is all
+    ordinary rules and they arrive wrapped in the `@scope` that packaging adds.
+
+    At-rules that are not style rules — `@keyframes` above all, whose `from`
+    and `to` blocks have no selector to speak of — are dropped here rather than
+    at each call site.
+    """
+    for selector, body in _blocks(css):
+        if not selector.startswith("@"):
+            yield selector, body
+
+
+def normalise_selector(selector):
+    """One selector, whitespace-collapsed, for comparing against a literal."""
+    return re.sub(r"\s+", " ", selector).strip()
+
+
+BLOCK_SHEETS = block_stylesheets()
+
+needs_block_sheets = pytest.mark.skipif(
+    not BLOCK_SHEETS,
+    reason="no brand-block stylesheet is built yet (bundle-src/ output)",
+)
 
 
 def declarations(css, selectors):

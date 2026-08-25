@@ -137,14 +137,21 @@
   --clara-button-border-color: var(--derico-copper);
 
   /* ══ 3. Clara's private type tokens, re-published for the brand blocks ══
-   * These four carry no `--plone-*` equivalent (only --plone-text-s /
+   * These three carry no `--plone-*` equivalent (only --plone-text-s /
    * --plone-text-xs alias the label step), so a brand block's stylesheet
    * cannot reach them through the public ladder. It must not reach for the
    * `--clara-*` name either: this file is the theme's ONE seam onto Clara —
    * it already writes ~30 --clara-* tokens — so a Clara rename has to break
    * one file, not every block sheet as well. Aliases, never values: the
-   * scale itself stays Clara's, inherited untouched (see the header). */
-  --derico-text-display: var(--clara-text-display);
+   * scale itself stays Clara's, inherited untouched (see the header).
+   *
+   * The display step is deliberately NOT among them. The hero — the only
+   * block that sets a display-sized headline — states its own
+   * `clamp(2.4rem, 1.4rem + 5cqi, 5rem)` instead (hero ticket 15 §3), because
+   * the ramp has to be measured against the block's container and not against
+   * Clara's viewport-based scale. That left `--derico-text-display` published
+   * and read by nobody, which is dead weight: published, not hoarded. Re-add
+   * it the day a block actually reads it. */
   --derico-text-lede:    var(--clara-text-lede);
   --derico-text-label:   var(--clara-text-label);
   --derico-font-display: var(--clara-font-display);
