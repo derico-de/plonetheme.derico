@@ -90,8 +90,11 @@ spec exists for it.
   Note Aurora's own `full` means `--block-width: 100%` (`block-width-plugin.ts:54`),
   i.e. the container — the viewport bleed is Blicca's addition and Blicca's to
   maintain.
-- **The block fixes its own width; the author never chooses it.** No per-`@type`
-  default width exists today in either half (ticket 11), so this needs building.
+- **The block fixes its own width; the author never chooses it.** Settled by
+  ticket 11 — Aurora's `defaultBlockWidth` on the `blocksConfig` entry already
+  does this, and the charting note that "no per-`@type` default width exists
+  today in either half" was wrong. One key in the theme's `install()`; nothing
+  to build in either half.
 - Any GenericSetup profile XML change gets an upgrade step, even at `1.0.0a1` —
   scaffold via `plonecli add upgrade_step`, narrowed to the affected import step.
 
@@ -180,7 +183,184 @@ spec exists for it.
   missing portrait centre-crops the wide; the canvas previews one plain scale.
   Narrowed [ticket 12](issues/12-picture-helper-api-status.md).
 
+- [Decide: what CSS the hero needs, and how it coexists with the theme](issues/06-css-and-full-bleed.md)
+  — three premises wrong again. **No header overlap**: the mockup's header is
+  opaque with a hairline and the hero follows it in flow; the real top-edge
+  problem is Plone's own breadcrumbs/contentheader/byline above the first block,
+  fixed by a chrome-suppression rule in **`derico.css`** (the scope wrap rewrites
+  `body`, so the block sheet can never reach it) — public view only, gated on the
+  hero being first. **Load order needs no fixing**: `main_template.pt` puts
+  `style_slot` after `plone.htmlhead`, so the block sheet always follows
+  `derico.css`, and inheritance proximity settles the tokens regardless.
+  **Clara's component rules are unusable**: `scope-wrap.ts` flattens `@layer`, so
+  the editor's preflight is unlayered and beats `@layer components` in the canvas
+  but not on the view — so Clara's *tokens* are inherited and its *rules* never
+  reused; the block owns its CTA. The `--hero-*` palette is the block's, renamed
+  `--derico-hero-*` and declared on `.block-derico-hero` (not the shared scope
+  root); Clara's private type tokens are re-published as `--derico-text-*` by
+  `derico.css`, keeping one seam. Mockup class names kept, every selector
+  descending from `.block-derico-hero`. **Container queries, not media queries**
+  — the hero is `100vw − toolbar`, so a viewport query overflows the two-column
+  grid for the very administrator the Destination names; `contain: layout` comes
+  free and retires `isolation: isolate`. Animations and `@keyframes` are
+  public-view-only and prefixed. `derico.css` stops being a pure token sheet:
+  three tests in `test_override_minimality.py` widen rather than go.
+
+- [Prototype: does the rings figure survive inside the editing canvas?](issues/07-prototype-rings-in-canvas.md)
+  — **the rings survive; the box around them did not.** Disc 527px at 1440 and
+  314px at 375, markers 28px throughout, legend captions **15px — Clara's label
+  floor exactly**, never under. No editor rendering needed. Three corrections
+  came out of the pixels. **`.block-derico-hero` is the wrong hook**: Aurora
+  stamps `block-<@type>` on the wrapper, which is the full-bleed box on the view
+  (1220 @220) but the column box in the canvas (1134.9 @262.5), so painting the
+  hero on it makes its own `overflow: hidden` clip the breakout — the component
+  needs its own `.derico-hero` root, after which both surfaces measure 1220 @220
+  identically (corrects 06 §2/§4). **`isolation: isolate` comes back**:
+  `container-type: inline-size` computes `contain: none`, supplies no stacking
+  context, and the `z-index: -2` media falls behind the hero's opaque ground —
+  the photograph vanishes on both surfaces (corrects 06 §8's mechanism, not its
+  container query, which measurement vindicated: at a 900px viewport the hero is
+  42.5rem and correctly stays single-column). **The Plate editable's
+  `white-space: pre-wrap` and `overflow-wrap: break-word` inherit into the
+  block** — indentation alone inflated the rings figure 76%, and the headline
+  breaks mid-token in the canvas where the view keeps it whole. Surfaced
+  [ticket 15](issues/15-headline-at-320.md): the mockup itself clips its
+  headline at 320, inherited rather than caused by the canvas.
+
+- [Decide and build: how a brand block fixes its own width without offering the author a choice](issues/11-per-type-default-block-width.md)
+  — **nothing needed building; the ticket's premises were wrong on both halves.**
+  Aurora already resolves a ploneBlock's width as `styleFields.blockWidth ??
+  {defaultValue: blocksConfig[@type].defaultBlockWidth}`
+  (`style-fields-plugin.ts:67`, upstream-tested), and Blicca already composes
+  `StyleFieldsKit`. So the mirror rule is met by **adoption**: one key,
+  `defaultBlockWidth: 'full'`, in the theme's own `install()` (ticket 08) — no
+  Blicca field, no record key, no `plateBlocksConfig` entry, and it does **not**
+  land in Blicca as the ticket claimed. The editor **materialises**
+  `blockWidth` onto the node at insert, so `plate.py` reads an explicit width
+  and the server needs **zero change** — both behaviours already pinned by
+  existing tests. Rejected a `default_block_width` record field: it would
+  declare the width twice, which is the drift "two code paths, one answer" was
+  meant to prevent. **Suppressing the control was already done by ticket 02** —
+  omitting `blockWidth` from the schema *is* the branch that triggers the
+  fallback, and declaring both hands the control back. Left as a **default, not
+  an override**. Accepted limit: an API/migration/fixture-authored node renders
+  `default`. Built: contract **§1.4** + the empty `defaultBlockWidth` table
+  cell + `news/44.feature`.
+
+- [Decide and build: does the hero reach into Blicca's unpromised image helpers, or do they get promoted?](issues/12-picture-helper-api-status.md)
+  — **promoted, but not the function the ticket named.** `image_model` is the
+  wrong shape: the hero discards its `srcset` (`Img2PictureTag` builds the
+  sourceset) and its `alt` (the `<picture>` is `aria-hidden`), and it lacks the
+  SVG guard, which lives in `picture_tag`. And the gap was never image-only —
+  `path_of` is equally unpromised and the hero needs it for `cta_href` /
+  `link_href` regardless. So §5.2 gains **one seam, two functions**: `path_of`
+  and a new **`image_source(item, image_field=None)` → `{src, width, height}`
+  or `None`** — `picture_tag`'s preamble lifted whole, `None` meaning "do not
+  build a `<picture>`". Free functions, not `BaseBlockView` methods.
+  `picture_tag` is **refactored onto it** (a promised copy nobody exercises
+  drifts) and stays unpromised *with its reason now written down*: one image,
+  `lazy=True` fixed, returns a `str` — so art direction goes through
+  `Img2PictureTag` directly, which is now the documented path, not a
+  workaround. Corrects ticket 05: `picture_tag` *could* express art direction
+  by splicing two calls; the real disqualifier is the `str` → re-parse round
+  trip. The load-bearing new sentence: **`block_api` cannot version this** —
+  §2.2 covers the JS facades alone, so the Python surface is versioned by the
+  distribution, and ticket 09 gains an `install_requires` floor. Extracted
+  from five call sites, not designed from the hero, which is what answers "an
+  API commitment made from one example". Built in Blicca: 20 unit tests
+  standing in for the add-ons that import it; 202 pass.
+
+- [Build: Blicca's object browser forwards selectableTypes and upload](issues/13-object-browser-forward-props.md)
+  — **built, but not through the props the ticket named.** Aurora already
+  spells this: its object browser reads `selectableTypes` from
+  `widgetOptions.pattern_options` (`isSelectable`, cmsui
+  `ObjectBrowserWidget/utils.ts`), and **`plone.restapi` already serializes
+  relation fields with that same envelope**, carrying pat-contentbrowser
+  option names verbatim. So Blicca reads Aurora's envelope rather than
+  claiming top-level keys of its own — a hero schema written the ticket's way
+  would have lost its restriction the day the substitution is dropped for
+  Aurora's widget. `upload` has no Aurora counterpart (Aurora's ImageWidget
+  owns upload itself) and rides the same open bag, degrading to browse-only
+  upstream. **Only these two keys** — `maximumSelectionSize` is deliberately
+  left to `mode`, since two ways to say one width is the drift ticket 11
+  rejected. Corrects ticket 02's snippet in place. Also: `mode: 'image'` /
+  `mode: 'link'` are dead **everywhere** — `ObjectBrowserWidgetMode` is
+  `'multiple' | 'single'`, yet Aurora's own teaser and image schemas ship
+  them, so upstream's teaser image override is unrestricted too. **Not a
+  block-api bump** — §2.2 covers the JS facades alone, so like §5.2's Python
+  surface this is versioned by the distribution; host stays 1.1. Shipped:
+  contract **§1.5**, `news/46.feature`, and an e2e that records the options
+  pat-contentbrowser is *constructed* with (patternslib adopts a pre-created
+  registry Proxy). Its fixture-free case — the shipped widget pulled from the
+  registry through URL-imported facades, because the import map only exists
+  when an add-on survived filtering — was confirmed RED then GREEN in the
+  sandbox, along with the negative case; the full sidebar path needs the
+  helloaddon ZCML this instance does not load.
+
+- [Build: the token-layer changes the hero needs](issues/14-theme-layer-changes.md)
+  — **built; nothing was re-decided, but three confirmations turned into
+  mechanisms.** `derico.css` gains §3 (four `--derico-text-*`/`--derico-font-`
+  `display` aliases of Clara's private type tokens) and §7 (the
+  chrome-suppression rule, 06 §1 verbatim; 07's correction holds — the
+  `.block-derico-hero` wrapper stamp was free for it). **"No gap is added" is
+  now measured**: all the space above the first block sits on the three hidden
+  elements themselves and Clara zeroes `.plone-layout`'s row-gap, so the three
+  `display: none` declarations *are* the whole of "flush" — and Clara's
+  companion `.element-body { padding-block-end: 0 }` is deliberately not
+  mirrored, since the hero opens the page rather than closing it. `:first-child`
+  verified against the markup: `plate.py` **skips** the title node rather than
+  emitting an empty wrapper. **"No upgrade step" confirmed with a mechanism**,
+  not an absence — Plone builds the bundle URL with `unique=True` and
+  `webresource` derives that key from a **hash of the file's bytes**, so editing
+  `derico.css` busts its own cache; no `last_compilation`, no registry value
+  changed. The tests were **pinned, not allow-listed**: the exception is matched
+  structurally, its body must be exactly `display: none`, exactly one such rule
+  may exist, and the narrowness assertions are on the guard constant rather than
+  on the matched selector (which would be circular). The four aliases are
+  **exempt** from the usage test rather than skipping it wholesale — 04 §9's
+  "a guard that always skips protects nothing" applies to the other ~25 tokens,
+  which are checkable today. One guard goes past the ticket on purpose and is
+  **binding on ticket 08**: a block sheet may never name `--clara-*`, which is
+  the whole reason the aliases exist. Two now-false self-descriptions
+  (`derico.css`'s header, `registry.xml`'s comment) fixed here; the wider README
+  rewrite stays with **04 §12**. 103 passed, 2 skipped; every guard
+  mutation-checked red-then-green.
+
+- [Decide: what the hero's headline does when its longest word will not fit](issues/15-headline-at-320.md)
+  — **the ticket asked the wrong question: the box overflows, not the words.**
+  The copy cell is a grid item, so it floors at `min-content` and grew to
+  **320px inside a 288px shell** (383 with a longer compound); the hero's
+  `overflow: hidden` then cut it. The answer is a **ladder** whose guarantee is
+  a layout rule: `min-width: 0` on the hero's grid/flex items (holds for a
+  headline nobody has written yet), then `overflow-wrap: break-word` — which
+  measured **cannot** substitute for it, since it does not feed intrinsic
+  sizing — then the ramp, then `hyphens: auto` as a labelled enhancement that
+  is a **no-op in this Chromium** (no dictionaries), so tests assert the
+  declaration and never the rendering. Two of the ticket's four options were
+  premised on the wrong mechanism. **Lowering the clamp's floor does nothing
+  at 320**: the clamp returns its middle term there, so the slope had to
+  change — `clamp(2.4rem, 1.4rem + 5cqi, 5rem)`, chosen over a flatter
+  candidate that bought the fit by shrinking the whole mid-range 9%. **`cqi`,
+  not `vw`**, because 07's table shows the hero is 1220 @220 on the *public
+  view* too: the box is viewport-minus-toolbar for every logged-in user, so a
+  `vw` ramp is the 320 defect in miniature. Stated on `.derico-hero h1`, never
+  as a token override (§3 is aliases, and Clara reads them). Scope is one rule
+  over every grid/flex item in the block, `14.5ch` stays, `lang` is inherited
+  and never stamped or offered as a field, and the budget is a README line, not
+  a caption. Corrects 07: break-word does **not** change the desktop wrap —
+  `white-space: pre-wrap` alone did — which amends the `overflow-wrap: normal`
+  instruction 07 wrote into 08 and 09. **The design source is fixed in this
+  ticket** (verified: cell 288, zero hero and document overflow at 320, 1440
+  unchanged), so the mockup is a trustworthy reference for the next brand
+  block. Measurements:
+  [`assets/15-wrap-measurements.md`](assets/15-wrap-measurements.md).
+
 ## Not yet specified
+
+- **A print stylesheet for the theme.** The mockup ships a whole-page
+  `@media print` block; derico ships none. Ruled off ticket 06 as theme-wide
+  rather than block-local — the site will want one, but not from this effort's
+  tickets.
 
 - **The rest of the mockup as brand blocks.** The manifesto grid, the service
   atlas / Balkenlage, and the field-guide definition list are all "beyond
@@ -216,9 +396,39 @@ spec exists for it.
 - **Authoring the derico.de homepage content**, or migrating the mockup's copy
   into Plone. The destination is the block, not the page.
 
+- **Fixing the inert block-width picker in the floating toolbar.**
+  `BlockWidthToolbarButton` renders for every ploneBlock and offers all four
+  widths, but `setBlockWidth` excludes `PLONE_BLOCK_TYPE`, so no option does
+  anything. Found on [ticket 11](issues/11-per-type-default-block-width.md).
+  Pre-existing and Blicca-wide — it hits the native image, teaser and listing
+  blocks identically — so fixing it is not this hero's work and not this map's
+  destination. Blicca's to file. (Whether the toolbar even appears for a *void*
+  selected ploneBlock is unconfirmed; if it does not, there is nothing to fix.)
+
 - **Promoting a generic `textarea` widget into Blicca.** `QuantaTextAreaField`
   ships unregistered (`@plone/components/src/index.ts:77`) and every schema
   field without a widget falls back to a single-line input. Ticket 02 chose to
   namespace the hero's own (`derico_textarea`) rather than claim the generic
   key from a theme; whether Blicca should register one deliberately is Blicca's
   call, not this effort's.
+
+- **Aurora's own object_browser schemas carry dead keys.** `mode: 'image'`
+  (teaser `preview_image`), `mode: 'link'` (image `href`) and `allowExternals`
+  have no consumer in Aurora or Blicca — so upstream's teaser image override
+  accepts any content type, and no field anywhere can offer an external URL.
+  Found on [ticket 13](issues/13-object-browser-forward-props.md) while
+  choosing the envelope. The hero is unaffected: it declares `single` plus
+  `selectableTypes`, and its links are content picks by design. Whether Blicca
+  should restrict the teaser's image override, or implement an external-URL
+  affordance, is Blicca's call under the mirror rule — not this map's
+  destination.
+
+- **`path_of` mangles non-http schemes.** `urlparse("mailto:…").path` is
+  truthy, so the scheme is stripped rather than the value returned whole.
+  Pre-existing and latent in `teaser_block` / `video_block`; found on
+  [ticket 12](issues/12-picture-helper-api-status.md) while testing the
+  promotion. The hero is unaffected — its links are object_browser content
+  picks, always http(s) — and changing a function with four existing call
+  sites, one of them an external-video URL path, is a regression risk in a
+  ticket about images. Documented as a limit in §5.2 and pinned by a test;
+  fixing it is Blicca's call, not this map's destination.

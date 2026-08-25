@@ -6,6 +6,13 @@ value Clara already has, when it names a token Clara does not define, and when
 Clara drifts away from a value derico is currently relying on inheriting.
 
 They parse text only: no Plone, no browser, no Sass.
+
+Scope: these tests guard `static/derico.css`. Since the theme grew brand
+blocks, that is no longer all the CSS the theme ships — each block's own
+scope-wrapped sheet under `static-blocks/` is a different file with different
+rules, and a green run here is a claim about the token layer, not about the
+whole theme. The two places the block sheets do appear below are the corpus
+for token usage, and the seam guard that keeps them off `--clara-*`.
 """
 
 import re
@@ -23,6 +30,69 @@ needs_clara = pytest.mark.skipif(
     reason="plonetheme.clara's compiled bundle is not available",
 )
 CLARA = CLARA_PATH.read_text() if CLARA_PATH else ""
+
+BLOCK_SHEETS = css_tools.block_stylesheets()
+
+needs_block_sheets = pytest.mark.skipif(
+    not BLOCK_SHEETS,
+    reason="no brand-block stylesheet is built yet (bundle-src/ output)",
+)
+
+#: The one non-token rule `derico.css` is allowed to carry: the page chrome
+#: above a brand block (derico.css §7). It styles the page AROUND a block,
+#: which the block's own sheet cannot reach — `scope-wrap.ts` rewrites `body`
+#: to `:where(:scope)`. Matched structurally rather than as a literal string,
+#: so reformatting the sheet does not break the guard while any OTHER
+#: component rule still does.
+CHROME_PREFIX = (
+    "body:has(.aurora-blocks-view > .block:first-child.block-derico-hero)"
+)
+CHROME_TARGETS = {
+    ".element-breadcrumbs",
+    ".element-contentheader",
+    ".element-byline",
+    "#section-byline",
+}
+
+#: Tokens `derico.css` publishes FOR the brand-block sheets rather than using
+#: itself: Clara's private type tokens, re-exported under a `--derico-*` name
+#: so a block sheet speaks one vocabulary and a Clara rename breaks one file
+#: (hero ticket 06 §3). They read as declared-but-unused until a block sheet
+#: exists to consume them, which is why they are exempted below and checked
+#: by their own test instead.
+PUBLISHED_TO_BLOCK_SHEETS = {
+    "--derico-text-display",
+    "--derico-text-lede",
+    "--derico-text-label",
+    "--derico-font-display",
+}
+
+
+def _normalise(selector):
+    return re.sub(r"\s+", " ", selector).strip()
+
+
+def _is_chrome_suppression(selector):
+    """True for the §7 rule, and for nothing that merely resembles it."""
+    parts = [part.strip() for part in _normalise(selector).split(",")]
+    if not parts or any(not part for part in parts):
+        return False
+    return all(
+        part.startswith(CHROME_PREFIX)
+        and part[len(CHROME_PREFIX) :].strip() in CHROME_TARGETS
+        for part in parts
+    )
+
+
+def _block_sheet_text():
+    return "\n".join(
+        css_tools.strip_comments(path.read_text()) for path in BLOCK_SHEETS
+    )
+
+
+def _stylesheet_corpus():
+    """Every stylesheet this package ships: the token layer plus the blocks."""
+    return "\n".join([css_tools.strip_comments(DERICO), _block_sheet_text()])
 
 
 def _derico_light():
@@ -49,27 +119,78 @@ def _effective_light():
 # --------------------------------------------------------------------------
 
 def test_sheet_declares_only_root_level_selectors():
-    """No component rules, no element selectors — the customization contract."""
+    """No component rules, no element selectors — the customization contract.
+
+    One exception, and it is not a loophole: the §7 chrome-suppression rule
+    styles the page AROUND a brand block, which the block's own scope-wrapped
+    sheet is structurally unable to reach. Every other rule is still a gap in
+    Clara's token contract.
+    """
     selectors = {
-        re.sub(r"\s+", " ", selector).strip()
-        for selector, _ in css_tools._blocks(DERICO)
+        _normalise(selector) for selector, _ in css_tools._blocks(DERICO)
     }
     allowed = {":root", '[data-bs-theme="dark"]'}
-    assert selectors <= allowed, (
-        f"derico.css must stay a token sheet; found {sorted(selectors - allowed)}. "
+    offenders = sorted(
+        selector
+        for selector in selectors
+        if selector not in allowed and not _is_chrome_suppression(selector)
+    )
+    assert not offenders, (
+        f"derico.css must stay a token sheet; found {offenders}. "
         "A design change that needs a rule is a gap in Clara's token contract — "
-        "fix it there, do not fork the component here."
+        "fix it there, do not fork the component here. The one exception is "
+        "the page chrome around a brand block, which no block sheet can reach."
     )
 
 
 def test_sheet_declares_nothing_but_custom_properties():
-    for _, body in css_tools._blocks(DERICO):
-        for declaration in css_tools.strip_comments(body).split(";"):
-            declaration = declaration.strip()
-            if declaration:
-                assert declaration.startswith("--"), (
-                    f"non-token declaration in derico.css: {declaration!r}"
-                )
+    """...and the one rule that does paint may only hide, never style."""
+    for selector, body in css_tools._blocks(DERICO):
+        declarations = [
+            declaration.strip()
+            for declaration in css_tools.strip_comments(body).split(";")
+            if declaration.strip()
+        ]
+        if _is_chrome_suppression(selector):
+            assert declarations == ["display: none"], (
+                "the chrome-suppression rule may only remove chrome; it "
+                f"declares {declarations}. Anything else is a component rule "
+                "wearing its selector."
+            )
+            continue
+        for declaration in declarations:
+            assert declaration.startswith("--"), (
+                f"non-token declaration in derico.css: {declaration!r}"
+            )
+
+
+def test_the_chrome_rule_is_present_and_stays_narrow():
+    """Exactly one chrome rule, admitted by a guard that has not widened.
+
+    The two assertions are on CHROME_PREFIX rather than on the matched
+    selector — asserting the latter would be circular, since nothing reaches
+    them unless the prefix already matched. The prefix is the part that can
+    quietly drift: loosen it and `_is_chrome_suppression` waves through a rule
+    that also strips the editing canvas, or one that fires for a hero sitting
+    anywhere on the page.
+    """
+    assert ".aurora-blocks-view" in CHROME_PREFIX, (
+        "the chrome rule must key on the public blocks view, which "
+        "@@aurora-edit does not emit — the canvas is a working surface, where "
+        "the title and breadcrumbs orient the author (hero ticket 06 §1)"
+    )
+    assert ":first-child" in CHROME_PREFIX, (
+        "the chrome only goes when the hero OPENS the page; a hero further "
+        "down the page leaves the breadcrumbs and title alone"
+    )
+    matched = [
+        selector
+        for selector, _ in css_tools._blocks(DERICO)
+        if _is_chrome_suppression(selector)
+    ]
+    assert len(matched) == 1, (
+        f"expected exactly one chrome-suppression rule, found {len(matched)}"
+    )
 
 
 def test_sheet_ships_no_second_stylesheet_machinery():
@@ -98,14 +219,89 @@ def test_every_override_targets_a_token_clara_defines():
 
 
 def test_every_derico_token_is_used():
-    """The --derico-* ladder is vocabulary, not decoration."""
-    body = css_tools.strip_comments(DERICO)
+    """The --derico-* ladder is vocabulary, not decoration.
+
+    The corpus is every stylesheet the theme ships — the token layer plus the
+    brand blocks' sheets — because since the blocks arrived, a token declared
+    here may legitimately be read only over there. The four tokens published
+    FOR those sheets are exempt and have their own test: they would read as
+    dead until the first block is built.
+    """
+    corpus = _stylesheet_corpus()
     declared = {
         name for name in _derico_light() if name.startswith("--derico-")
     }
-    for name in sorted(declared):
-        references = len(re.findall(rf"var\(\s*{re.escape(name)}\b", body))
+    for name in sorted(declared - PUBLISHED_TO_BLOCK_SHEETS):
+        references = len(re.findall(rf"var\(\s*{re.escape(name)}\b", corpus))
         assert references >= 1, f"{name} is declared but never used"
+
+
+def test_published_aliases_are_aliases_of_claras_own_tokens():
+    """derico.css is the theme's one seam onto Clara, in both directions.
+
+    Each published token must BE an alias — a bare `var(--clara-*)` — and not
+    a value of its own. A value would fork Clara's type scale silently; an
+    alias means a Clara rename breaks this file and nothing else.
+    """
+    light = _derico_light()
+    for name in sorted(PUBLISHED_TO_BLOCK_SHEETS):
+        assert name in light, (
+            f"{name} is published for the block sheets but derico.css does "
+            "not declare it"
+        )
+        assert re.fullmatch(r"var\(\s*--clara-[\w-]+\s*\)", light[name]), (
+            f"{name} must alias a --clara-* token verbatim, not restate a "
+            f"value; it declares {light[name]!r}"
+        )
+
+
+@needs_clara
+def test_published_aliases_still_point_at_something_clara_defines():
+    """A Clara rename must fail loudly here, not resolve to nothing in a block."""
+    clara = _clara_light()
+    light = _derico_light()
+    missing = []
+    for name in sorted(PUBLISHED_TO_BLOCK_SHEETS):
+        target = re.findall(r"--clara-[\w-]+", light.get(name, ""))
+        if not target or target[0] not in clara:
+            missing.append(f"{name} -> {target[0] if target else '?'}")
+    assert not missing, (
+        "these aliases point at tokens Clara no longer defines: "
+        + ", ".join(missing)
+    )
+
+
+@needs_block_sheets
+def test_published_aliases_reach_a_block_sheet():
+    """Published, not hoarded: an alias nobody reads is dead weight."""
+    corpus = _block_sheet_text()
+    for name in sorted(PUBLISHED_TO_BLOCK_SHEETS):
+        references = len(re.findall(rf"var\(\s*{re.escape(name)}\b", corpus))
+        assert references >= 1, (
+            f"{name} is published for the block sheets and none of them reads "
+            "it — either a block should use it, or it should not be published"
+        )
+
+
+@needs_block_sheets
+def test_block_sheets_never_name_a_clara_token():
+    """The reason the aliases exist (hero ticket 06 §3).
+
+    A block sheet speaks `--derico-*` and `--plone-*` only. If it reached for
+    `--clara-*` directly, a Clara rename would break every block sheet instead
+    of this one file, and the seam would be a seam in name only.
+    """
+    leaked = {}
+    for path in BLOCK_SHEETS:
+        names = sorted(
+            set(re.findall(r"--clara-[\w-]+", css_tools.strip_comments(path.read_text())))
+        )
+        if names:
+            leaked[path.name] = names
+    assert not leaked, (
+        "block stylesheets must not name Clara's tokens directly; re-publish "
+        f"them through derico.css instead: {leaked}"
+    )
 
 
 # --------------------------------------------------------------------------

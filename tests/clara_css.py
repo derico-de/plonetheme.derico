@@ -26,6 +26,21 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 PACKAGE = HERE.parent
 DERICO_CSS = PACKAGE / "src" / "plonetheme" / "derico" / "static" / "derico.css"
+BLOCK_STATIC = PACKAGE / "src" / "plonetheme" / "derico" / "static-blocks"
+
+
+def block_stylesheets():
+    """The brand blocks' scope-wrapped sheets, if `bundle-src` has built them.
+
+    `static-blocks/` is build output served as `++plone++plonetheme.derico.blocks`
+    (hero ticket 04 §3) and it is committed, so a normal checkout has it — but
+    it does not exist at all until the first block entry point lands, and Vite
+    empties it on every build. Callers treat "absent" as "no block sheets yet",
+    never as an error.
+    """
+    if not BLOCK_STATIC.is_dir():
+        return []
+    return sorted(BLOCK_STATIC.glob("*.css"))
 
 
 def clara_bundle_path():

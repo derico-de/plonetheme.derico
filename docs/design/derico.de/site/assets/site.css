@@ -79,7 +79,17 @@
   --text-lede: clamp(1.125rem, 1.06rem + 0.35vw, 1.35rem);
   --text-title: clamp(1.35rem, 1.2rem + 0.7vw, 1.75rem);
   --text-heading: clamp(2rem, 1.45rem + 2.3vw, 3.5rem);
-  --text-display: clamp(2.75rem, 1.85rem + 4vw, 5rem);
+  /* Re-ramped from clamp(2.75rem, 1.85rem + 4vw, 5rem). At a 320px viewport
+     the copy column is 288px and "Anwendungen," measured 320px at the old
+     44px, so the headline could not fit at the one width where the hero is a
+     single column of type. Lowering the FLOOR alone does not fix it: at 320
+     the old ramp returns its middle term (42.4px, word 308px), not its floor.
+     The slope had to change. 1.4rem + 5vw gives 38.4px at 320 (word 279px,
+     9px of slack) while tracking the old ramp where the design is usually
+     seen — 60.8px at 768 against the old 60.3 — and reaches the 5rem cap at
+     1152px instead of 1260. The hero h1 is this token's only consumer.
+     See .home-hero h1 below for the rest of the ladder. */
+  --text-display: clamp(2.4rem, 1.4rem + 5vw, 5rem);
 
   --space-3xs: 0.25rem;
   --space-2xs: 0.5rem;
@@ -416,6 +426,35 @@ a:hover { color: var(--copper-text); }
   margin-block-start: var(--space-xs);
   font-size: var(--text-display);
   letter-spacing: -0.02em;
+}
+
+/* A word wider than its column used to be CLIPPED, not wrapped, and the cause
+   was layout rather than type: a grid or flex item floors at min-content, so
+   the copy cell grew to the longest word (320px at a 320px viewport, 383px
+   with a longer compound) and pushed itself past the 288px shell, where the
+   hero's own `overflow: hidden` cut it off. The grid already pins its columns
+   with minmax(0, ...) at >=56rem; the single-column range never got it.
+
+   Three rungs, each catching what the one above cannot:
+     1. min-width: 0 pins the box. This alone guarantees nothing is clipped.
+     2. overflow-wrap: break-word keeps an unfittable word visible. It does NOT
+        feed intrinsic sizing, so it can never substitute for rung 1.
+     3. hyphens: auto turns that break into a syllable break where the browser
+        has a dictionary for the page language. An enhancement, never the
+        guarantee — plenty of engines silently do nothing here. */
+.home-hero__grid > *,
+.home-hero .action-row > *,
+.home-hero .ring-legend > * { min-width: 0; }
+
+.home-hero h1,
+.home-hero .kicker,
+.home-hero .lede,
+.home-hero .ring-legend dt,
+.home-hero .ring-legend dd,
+.home-hero .action-row > * {
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .lede {

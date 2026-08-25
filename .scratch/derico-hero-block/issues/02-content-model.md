@@ -82,13 +82,16 @@ the default widget is a single-line `TextField` (`widgets.ts:17`).
                   mode: 'single', allowExternals: true,
                   selectedItemAttrs: ['@id'] },
 
+    // pattern_options envelope — corrected by ticket 13, see below
     image_wide:     { title: 'Wide image', widget: 'object_browser',
                       mode: 'single', allowExternals: false,
-                      selectableTypes: ['Image'], upload: true,
+                      widgetOptions: { pattern_options: {
+                        selectableTypes: ['Image'], upload: true } },
                       selectedItemAttrs: ['@id'] },
     image_portrait: { title: 'Portrait image', widget: 'object_browser',
                       mode: 'single', allowExternals: false,
-                      selectableTypes: ['Image'], upload: true,
+                      widgetOptions: { pattern_options: {
+                        selectableTypes: ['Image'], upload: true } },
                       selectedItemAttrs: ['@id'] },
 
     legend:     { title: 'Ring legend', widget: 'derico_ring_legend' },
@@ -101,8 +104,13 @@ No field id collides with a registered widget key — the sidebar resolves
 so a field named `image` would silently take the image widget. `image_wide` /
 `image_portrait` avoid it and declare `object_browser` explicitly.
 
-`selectableTypes` and `upload` are **not yet forwarded** by Blicca's widget —
-see ticket 13, which blocks 08.
+> **Corrected by [ticket 13](13-object-browser-forward-props.md).** These two
+> keys are **not** top-level schema keys: they ride
+> `widgetOptions.pattern_options`, which is Aurora's own envelope for
+> content-browser options (Aurora's object browser reads `selectableTypes`
+> from it, and `plone.restapi` already serializes relation fields that way).
+> The snippet above is updated. Blicca now forwards them; 08 is unblocked on
+> this point.
 
 ### Editing surface: sidebar, canvas is a preview
 

@@ -2,6 +2,22 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The token layer gains the two things a brand block cannot reach itself.**
+  `derico.css` re-publishes Clara's four private type tokens as
+  `--derico-text-display`, `--derico-text-lede`, `--derico-text-label` and
+  `--derico-font-display` — aliases, never values, so this file stays the
+  theme's one seam onto Clara and a block sheet speaks only `--derico-*` and
+  `--plone-*`. And it gains §7, the first rule in the sheet that is not a token
+  declaration: when the Derico Hero is the *first* block on a blocks-view page,
+  the breadcrumbs, contentheader and byline above it are hidden, so the hero
+  sits flush under Clara's header hairline. It has to live here because a
+  block's own stylesheet is scope-wrapped and `body` is rewritten out of its
+  reach. Public view only — `@@aurora-edit` keeps its chrome. This narrows the
+  "any selector beyond `:root`/dark" claim below: the minimality tests were
+  widened, not dropped, and now also pin the rule to `display: none`, admit
+  exactly one of it, and check that the published aliases really alias Clara
+  and are really read by a block sheet.
+
 - Remove the `plone.bundles/plonetheme-derico` registry records on uninstall
   (`profiles/uninstall/registry.xml`), so derico.css stops loading once the
   add-on is removed.

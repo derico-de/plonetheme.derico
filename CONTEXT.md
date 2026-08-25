@@ -15,9 +15,12 @@ variants; the other two were deleted.
 _Avoid_: growth rings (as a name for the whole language), the derico look
 
 **Token layer**:
-The part of the theme that is only a `:root` override of Clara's public
-`--plone-*` token API — colours, fonts, measure, radii, and nothing else.
-_Avoid_: skin, override sheet
+The part of the theme that carries the Jahresringe values onto Clara by
+re-pointing its tokens — colours, fonts, measure, radii. Almost all of it is
+token declarations, and a rule earns its place there only when nothing else in
+the theme can reach the thing it styles: a brand block's own stylesheet is
+scope-wrapped and so can never touch the page around the block.
+_Avoid_: skin, override sheet, tokens-only layer
 
 **Rings figure**:
 The Jahresringe signature graphic: a disc of concentric circles with numbered
@@ -41,7 +44,22 @@ belongs to a designed page, not to general authoring.
 _Avoid_: custom block, theme block, hero block, block add-on (that is the
 generic mechanism a brand block is built on, not a synonym)
 
+**Hero wash**:
+The darkening that lets the Derico Hero's words sit on its photograph — a
+gradient over the image, keyed to the side the copy is on, not a flat tint over
+the whole picture. It belongs to the hero's composition, not to the Jahresringe
+palette.
+_Avoid_: overlay, scrim, tint, gradient
+
 **Derico Hero**:
 The brand block for the derico.de homepage opening: image, kicker, headline,
 lede, two calls to action, and the rings figure with its four-entry legend.
 _Avoid_: hero banner, homepage block, the hero
+
+**Headline budget**:
+The headline length the Derico Hero's design holds at every width — roughly a
+longest word of fourteen characters. Advice about voice, not a rule: the block's
+CSS keeps any headline visible, so exceeding the budget costs typographic
+quality rather than legibility. Written down for whoever writes the copy, never
+enforced on the author.
+_Avoid_: max length, character limit, headline validation

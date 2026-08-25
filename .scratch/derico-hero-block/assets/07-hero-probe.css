@@ -1,0 +1,236 @@
+/* Ticket 07 probe — NOT the shipping sheet.
+ *
+ * The CSS ticket 06 decided, extracted from the mockup
+ * (docs/design/derico.de/site/assets/site.css) and transformed by 06's
+ * decisions, so the rings can be looked at inside @@aurora-edit before
+ * either half of the block exists. Throwaway: 08/09 write the real sheet.
+ *
+ * Written UNSCOPED. Packaging wraps it to
+ * (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view); the probe is
+ * injected into a live page instead, so the wrap is simulated by nothing at
+ * all — which is fine for geometry, and is called out where it matters.
+ *
+ * Token mapping applied (06 §"three categories"):
+ *   --brand         -> --derico-brand          --site-max   -> --plone-measure
+ *   --copper*       -> --derico-copper*        --space-*    -> --plone-space-*
+ *   --ink-soft      -> --derico-ink-soft       --radius-pill-> --plone-radius-pill
+ *   --rule          -> --derico-rule           --ease-out   -> --plone-ease-out-quint
+ *   --text-display  -> --derico-text-display   --text-lede  -> --derico-text-lede
+ *   --text-label    -> --derico-text-label     --font-display -> --derico-font-display
+ *   --hero-*        -> --derico-hero-*, declared on .block-derico-hero
+ */
+
+/* ── ticket 14 stub ────────────────────────────────────────────────────────
+ * The four --derico-text-* and --derico-font-display aliases belong in derico.css
+ * and ticket 14 has not landed. Declared here so the probe runs today; DELETE
+ * this block once 14 is built, and the probe still has to look identical. */
+:root {
+  --derico-text-display: var(--clara-text-display, clamp(2.75rem, 1.85rem + 4vw, 5rem));
+  --derico-text-lede:    var(--clara-text-lede, clamp(1.125rem, 1.06rem + 0.35vw, 1.35rem));
+  --derico-text-label:   var(--clara-text-label, 0.9375rem);
+  --derico-font-display: var(--clara-font-display, "Literata", georgia, serif);
+}
+
+/* ── the block ────────────────────────────────────────────────────────────── */
+
+.block-derico-hero {
+  /* 06 §2 — the hero's own composition, on the block, not the scope root. */
+  --derico-hero-ground: oklch(0.18 0.035 215);
+  --derico-hero-wash-mobile: radial-gradient(ellipse 35% 81.9% at -9% 100%,
+    oklch(0.18 0.04 215 / 0) 0%,
+    oklch(0.18 0.04 215 / 0) 55%,
+    oklch(0.18 0.04 215 / 0.78) 65%,
+    oklch(0.18 0.04 215 / 0.78) 100%);
+  --derico-hero-wash-wide-color: oklch(0.18 0.04 215 / 0.72);
+  --derico-hero-ink: oklch(0.99 0.004 215);
+  --derico-hero-ink-soft: oklch(0.93 0.018 215);
+  --derico-hero-copper: oklch(0.82 0.13 65);
+  --derico-hero-ring: oklch(0.82 0.13 65);
+  --derico-hero-ring-now: var(--derico-brand);
+  --derico-hero-rule: oklch(0.72 0.045 213);
+
+  position: relative;
+  overflow: hidden;
+  /* 06 §8 — container query, not media query. */
+  container-type: inline-size;
+  /* TICKET 07 CORRECTION — measured, not reasoned. 06 §8 dropped the mockup's
+   * `isolation: isolate` on the theory that container-type brings contain:
+   * layout and so supplies the stacking context. It does not: Chrome computes
+   * `contain: none` for `container-type: inline-size`, and
+   * `position: relative; z-index: auto` is no stacking context either. Without
+   * one, the z-index:-2 .hero-media escapes to the root stacking context and
+   * the hero's own opaque ground paints straight over it — the photograph
+   * vanishes on BOTH surfaces. Keep the isolate. */
+  isolation: isolate;
+  padding-block: var(--plone-space-xl) var(--plone-space-l);
+  color: var(--derico-hero-ink);
+  background: var(--derico-hero-ground);
+  /* 06 "Consequences" — the hero never sets its own width. */
+}
+
+.block-derico-hero .hero-media,
+.block-derico-hero .hero-wash { position: absolute; z-index: -2; inset: 0; }
+.block-derico-hero .hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+.block-derico-hero .hero-wash { z-index: -1; background: var(--derico-hero-wash-mobile); }
+
+/* 06 §7 — the mockup's .shell formula folded in; no .shell element, no token. */
+.block-derico-hero .home-hero__grid {
+  position: relative;
+  width: min(100% - clamp(2rem, 6vw, 6rem), var(--plone-measure));
+  margin-inline: auto;
+  display: grid;
+  gap: var(--plone-space-xl);
+  align-items: center;
+}
+
+.block-derico-hero .kicker {
+  color: var(--derico-hero-copper);
+  font-family: var(--derico-font-display);
+  font-size: var(--derico-text-lede);
+  font-style: italic;
+}
+.block-derico-hero h1 {
+  max-width: 14.5ch;
+  margin-block-start: var(--plone-space-2xs);
+  color: var(--derico-hero-ink);
+  font-family: var(--derico-font-display);
+  font-size: var(--derico-text-display);
+  letter-spacing: -0.02em;
+}
+.block-derico-hero .lede {
+  margin-block-start: var(--plone-space-m);
+  color: var(--derico-hero-ink-soft);
+  font-size: var(--derico-text-lede);
+  line-height: 1.55;
+}
+
+.block-derico-hero .action-row {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--plone-space-s); margin-block-start: var(--plone-space-l);
+}
+/* 06 §5 — the block owns its CTA; Clara's component rules lose to the
+ * scoped preflight in the canvas. */
+.block-derico-hero .button {
+  min-height: 2.875rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.72rem 1.35rem;
+  border: 0;
+  border-radius: var(--plone-radius-pill);
+  background: var(--derico-copper);
+  color: var(--derico-on-copper);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 140ms linear, transform 140ms var(--plone-ease-out-quint);
+}
+.block-derico-hero .button:hover { background: var(--derico-copper-hover); color: var(--derico-on-copper); }
+.block-derico-hero .button:active { transform: scale(0.98); }
+.block-derico-hero .quiet-link {
+  color: var(--derico-hero-ink);
+  font-weight: 700;
+  text-underline-offset: 0.3em;
+}
+.block-derico-hero .quiet-link:hover { color: var(--derico-hero-copper); }
+
+/* ── the rings figure ─────────────────────────────────────────────────────── */
+
+.block-derico-hero .rings-figure { width: min(100%, 34rem); margin-inline: auto; }
+.block-derico-hero .rings-stage { position: relative; }
+.block-derico-hero .rings-disc { width: 100%; height: auto; overflow: hidden; }
+.block-derico-hero .rings-disc circle {
+  fill: none;
+  stroke: var(--derico-hero-ring);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+.block-derico-hero .rings-disc .ring-thin { stroke-width: 1.5; }
+.block-derico-hero .rings-disc .ring-now { stroke: var(--derico-brand); stroke-width: 4; }
+.block-derico-hero .rings-disc .ring-future { stroke-dasharray: 5 8; }
+
+.block-derico-hero .ring-markers { position: absolute; inset: 0; padding: 0; margin: 0; list-style: none; pointer-events: none; }
+.block-derico-hero .ring-markers li {
+  position: absolute;
+  width: 1.75rem; height: 1.75rem;
+  display: grid; place-items: center;
+  border: 2px solid var(--derico-hero-ground);
+  border-radius: 50%;
+  color: var(--derico-hero-ground);
+  background: var(--derico-hero-ring);
+  font-size: var(--derico-text-label);
+  font-weight: 700; line-height: 1;
+  transform: translate(-50%, -50%);
+}
+.block-derico-hero .ring-markers li:nth-child(1) { left: 41.62%; top: 44.04%; }
+.block-derico-hero .ring-markers li:nth-child(2) { left: 50.44%; top: 31.28%; }
+.block-derico-hero .ring-markers li:nth-child(3) { left: 59.85%; top: 17.66%; }
+.block-derico-hero .ring-markers li:nth-child(4) { left: 67.65%; top: 6.38%; }
+.block-derico-hero .ring-markers .is-now { background: var(--derico-hero-ring-now); }
+
+/* The legend is HTML beneath the SVG precisely so it does not scale with the
+ * graphic — 06 "the type floor": nothing below 15px. */
+.block-derico-hero .ring-legend { margin-block-start: var(--plone-space-s); }
+.block-derico-hero .ring-legend > div {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: var(--plone-space-2xs);
+  padding-block: var(--plone-space-2xs);
+  border-top: 1px solid var(--derico-hero-rule);
+}
+.block-derico-hero .ring-legend dt { font-weight: 700; color: var(--derico-hero-ring); }
+.block-derico-hero .ring-legend dd {
+  grid-column: 2;
+  margin: -0.35rem 0 0;
+  color: var(--derico-hero-ink-soft);
+  font-size: var(--derico-text-label);
+}
+.block-derico-hero .ring-legend b { color: var(--derico-hero-ring); }
+.block-derico-hero .ring-legend .is-now dt,
+.block-derico-hero .ring-legend .is-now b { color: var(--derico-hero-ring-now); }
+
+/* ── the 56rem switch (06 §8): container query, not viewport ──────────────── */
+
+@container (min-width: 56rem) {
+  .block-derico-hero .hero-wash {
+    background: var(--derico-hero-wash-wide-color);
+    /* 06 §9 — fixed pixel stops, measured from the hero's left edge, aligned
+     * with the copy column's inset; both shift together with the toolbar. */
+    mask-image:
+      linear-gradient(90deg,
+        rgb(0 0 0 / 0.85) 0 300px,
+        black 420px),
+      radial-gradient(ellipse 49% 58.5% at left bottom,
+        transparent 0 55%,
+        black 65% 100%);
+    mask-composite: intersect;
+  }
+  .block-derico-hero .home-hero__grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr);
+  }
+}
+
+/* ── animations: public view only (06 §6) ─────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  .aurora-blocks-view .block-derico-hero h1,
+  .aurora-blocks-view .block-derico-hero .kicker,
+  .aurora-blocks-view .block-derico-hero .lede,
+  .aurora-blocks-view .block-derico-hero .action-row {
+    animation: derico-hero-settle 760ms var(--plone-ease-out-quint) backwards;
+  }
+  .aurora-blocks-view .block-derico-hero .lede { animation-delay: 90ms; }
+  .aurora-blocks-view .block-derico-hero .action-row { animation-delay: 160ms; }
+  .aurora-blocks-view .block-derico-hero .rings-disc circle {
+    transform-box: fill-box; transform-origin: center;
+    animation: derico-hero-grow-ring 950ms var(--plone-ease-out-quint) backwards;
+  }
+  .aurora-blocks-view .block-derico-hero .rings-disc circle:nth-child(2) { animation-delay: 45ms; }
+  .aurora-blocks-view .block-derico-hero .rings-disc circle:nth-child(3) { animation-delay: 90ms; }
+  .aurora-blocks-view .block-derico-hero .rings-disc circle:nth-child(4) { animation-delay: 135ms; }
+  .aurora-blocks-view .block-derico-hero .rings-disc circle:nth-child(5) { animation-delay: 180ms; }
+  .aurora-blocks-view .block-derico-hero .rings-disc circle:nth-child(6) { animation-delay: 225ms; }
+  .aurora-blocks-view .block-derico-hero .rings-disc circle:nth-child(7) { animation-delay: 270ms; }
+  /* scope-wrap.ts:32 hoists @keyframes out of the wrap — name-global, hence
+   * the prefix. */
+  @keyframes derico-hero-settle { from { transform: translateY(0.75rem); } }
+  @keyframes derico-hero-grow-ring { from { transform: scale(0.94); } }
+}
