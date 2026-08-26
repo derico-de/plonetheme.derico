@@ -1,7 +1,7 @@
 # Build: the hero's body type
 
 Type: task
-Status: open
+Status: resolved
 Blocked by: 17
 
 ## Question
@@ -65,3 +65,54 @@ order without the contrast e2e breaking is the check of that claim. Do not fold
 this ticket into 21 — merging them destroys the check.
 
 No profile XML changes, so no upgrade step.
+
+## Answer
+
+**Built and green; the ticket's instructions held in full, and the only thing
+that came out of it was a defect somewhere else.**
+
+`.derico-hero` states `font-family: var(--plone-font-body)` and
+`line-height: var(--plone-leading-body)`. Both were confirmed present on
+Clara's `:root` before being named. `derico.css` untouched, `blocks_view.css`
+untouched, no fourth alias.
+
+**The design source needed no edit at all** — checked before editing, as the
+ticket asked. `site.css:120,132` already set `font-family: var(--font-body)`
+and `line-height: 1.65` on `body`, so the mockup was always rendering what the
+block now renders. A gratuitous mirror would have made the two files less
+diffable, which is exactly what the ticket warned about.
+
+Three tests, all three the ones the ticket named:
+
+- **CSS-value**, `test_the_hero_takes_its_body_type_from_the_public_ladder` —
+  the built sheet must *name* both tokens. Plus a second guard the ticket did
+  not ask for, `test_the_hero_never_hardcodes_its_type`: naming the token is
+  not enough if a later rule restates `"Source Sans 3"` literally, which passes
+  every visual check while silently dropping the seam. Mutation-checked: both
+  go red when the family is hardcoded, and the first also goes red when either
+  declaration is dropped on its own.
+- **`hero-view.e2e.js`** — ticket 17's reported-not-asserted note became three
+  assertions: the computed family is `Source Sans 3`, the computed leading is
+  1.65, and the hero agrees with the page. Green at 1440/900/375/320.
+- **The same pair in the canvas**, in `hero-editor.e2e.js`. This is the
+  assertion that justifies the seam rather than merely exercising it.
+
+### What came out of it
+
+**The type change moved a marker numeral across the e2e's speckle threshold.**
+`.ring-markers li "1"` at 375 went from 2% of its glyph area under 4.5 to 3%,
+against a `SPECKLE` of 2% whose stated basis was that "nothing observed lands
+between 2% and 11%". Nothing about the contrast changed — the glyph shape did.
+Verified by reverting only these two declarations in the built sheet and
+re-running: the worst pixel stays 1.02 either way, only the share moves.
+
+That worst pixel is the point: 1.02 is ground on ground, i.e. the glyph's
+antialiased edge overlapping the chip's own 2px ground border. The marker
+numerals are the one text in the hero that is never over the photograph, so the
+pixel probe was the wrong instrument for them. They moved to the value test
+(`test_the_marker_chips_carry_their_own_backdrop`, four pairs, both the 1.4.3
+and the 1.4.11 half of ticket 20 §6). Raising `SPECKLE` would have bought this
+by blunting the guard for every element that *is* over the photograph.
+
+Interlock with 21 held as predicted: this landed with 21 and 23 in the same
+session and the contrast e2e did not break, which was the check.

@@ -61,8 +61,25 @@ const TEXT_PARTS = [
   '.ring-legend dt',
   '.ring-legend dd',
   '.ring-legend b',
-  '.ring-markers li',
 ];
+
+/* `.ring-markers li` is deliberately NOT here, and its removal is a finding
+ * rather than a convenience. This probe exists to catch text sitting on a
+ * PHOTOGRAPH; the marker numerals never do. They are ground-coloured glyphs on
+ * an opaque copper chip with a 2px ground border, so their whole backdrop is
+ * element-painted — and what the probe was actually reporting was the glyph's
+ * antialiased edge overlapping that border, ground on ground, at a worst-pixel
+ * ratio of 1.02. Measured: 2% of the glyph area before the hero took the
+ * theme's body type (ticket 22) and 3% after, either side of a SPECKLE
+ * threshold whose stated basis was that "nothing observed lands between 2% and
+ * 11%". Nothing about the contrast changed; the glyph shape did.
+ *
+ * Raising SPECKLE would have bought this by blunting the guard for every
+ * element that IS over the photograph. The chips belong to the value test
+ * instead, where their real question — is ground legible on copper, and on the
+ * is-now cyan — is answered exactly and at every width at once:
+ * `test_the_marker_chips_carry_their_own_backdrop`. Their geometry is still
+ * pinned here (28x28, nothing under 15px). */
 
 /* The share of a glyph's own pixels allowed to miss AA before the miss counts
  * as a contrast defect rather than as a speckle in a photograph. Measured:
@@ -70,21 +87,18 @@ const TEXT_PARTS = [
  * and nothing observed lands between 2% and 11%. */
 const SPECKLE = 0.02;
 
-/* Ticket 18's cases, and only those — a record of one inherited defect, not a
- * blanket exemption for the legend. Two distinct shapes:
+/* Ticket 18's named exceptions are GONE, and their deletion is ticket 21's
+ * acceptance criterion. They recorded three inherited failures — the is-now
+ * row at every width, and the whole legend at 375 where it crossed the
+ * brightest part of the photograph. All three were the same defect: text with
+ * nothing but the photograph behind it. The legend card and the copy scrim
+ * give every glyph a ground the sheet declares, so there is no longer a case
+ * to except, and this file's job becomes proving that every glyph actually
+ * SITS on the ground the value test proved strong enough.
  *
- * - the **is-now** row, whose own colour is the least contrasty ink in the
- *   palette, fails at every width. The design source fails here too.
- * - at 375 the whole legend crosses the brightest part of the photograph, and
- *   the numerals go with it — on the mockup as much as on this page.
- *
- * Which pixels a glyph lands on shifts with the photograph, so these are kept
- * as narrow as the measurements allow rather than widened for comfort. */
-const CONTRAST_EXCEPTIONS = [
-  { selector: '.ring-legend dt', text: 'mit der Zeit gegangen', widths: [1440, 375] },
-  { selector: '.ring-legend b', text: '4', widths: [1440, 375] },
-  { selector: '.ring-legend b', widths: [375] },
-];
+ * That is why the two tests are not redundant. The value test cannot see a
+ * layout change that moves text off its backdrop; this one cannot see a colour
+ * that was never strong enough. */
 
 const failures = [];
 function check(condition, message) {
@@ -192,16 +206,36 @@ const near = (a, b, tolerance = 1) =>
         `the ring markers stay 28px (${plone.parts.marker.width}x${plone.parts.marker.height})`,
       );
 
-      /* -- reported, not asserted: ticket 17 ---------------------------- */
-      const bodyFont = await page.evaluate(() => ({
-        hero: getComputedStyle(document.querySelector('.derico-hero')).fontFamily.split(',')[0],
-        page: getComputedStyle(document.body).fontFamily.split(',')[0],
-      }));
-      if (bodyFont.hero !== bodyFont.page) {
-        report(
-          `ticket 17: the hero's body font is ${bodyFont.hero}, the page's is ${bodyFont.page}`,
-        );
-      }
+      /* -- the body type, now asserted: ticket 17/22 -------------------- */
+      /* Ticket 10 found this by measuring the legend 291 tall against the
+       * design's 330 and working backwards. Blicca states a Tailwind sans
+       * stack on `.aurora-blocks-view`, so without the hero's own declaration
+       * the published page renders in the browser's generic sans while the
+       * canvas — which gets its stack from Aurora's scoped preflight — does
+       * not. Hence both halves: family AND leading, and the same pair asserted
+       * in the canvas by `hero-editor.e2e.js`, since parity is the whole
+       * justification for putting this in the block sheet. */
+      const bodyType = await page.evaluate(() => {
+        const style = getComputedStyle(document.querySelector('.derico-hero'));
+        const size = parseFloat(style.fontSize);
+        return {
+          family: style.fontFamily.split(',')[0].replace(/["']/g, '').trim(),
+          leading: Math.round((parseFloat(style.lineHeight) / size) * 100) / 100,
+          page: getComputedStyle(document.body).fontFamily.split(',')[0].replace(/["']/g, '').trim(),
+        };
+      });
+      check(
+        bodyType.family === 'Source Sans 3',
+        `the hero's body family is the theme's (${bodyType.family})`,
+      );
+      check(
+        Math.abs(bodyType.leading - 1.65) <= 0.02,
+        `the hero's leading is the design's 1.65 (${bodyType.leading})`,
+      );
+      check(
+        bodyType.family === bodyType.page,
+        `the hero and the page agree on the family (${bodyType.family} vs ${bodyType.page})`,
+      );
 
       /* -- the picture, once -------------------------------------------- */
       if (width === 1440) {
@@ -235,24 +269,84 @@ const near = (a, b, tolerance = 1) =>
         }
       }
 
+      /* -- the ring halo: ticket 20/23 ----------------------------------- */
+      /* The value test proves the halo's colour is strong enough; this proves
+       * the halo is WHERE the stroke is. Pairing, order and surround, read off
+       * computed styles rather than pixels — a photograph cannot tell a halo
+       * from a dark leaf behind it. `vector-effect` is asserted as a
+       * DECLARATION (ticket 15's posture): it is what keeps the 2px a side
+       * constant at 375 as well as 1440, and reading it back is the only way
+       * to see it without measuring a rendered stroke. */
+      const halo = await page.evaluate(() => {
+        const disc = document.querySelector('.derico-hero .rings-disc');
+        const group = (name) => disc.querySelector(`.${name}`);
+        const key = (c) => ['cx', 'cy', 'r', 'class'].map((a) => c.getAttribute(a)).join('|');
+        const list = (g) => Array.from(g.querySelectorAll('circle'));
+        const haloGroup = group('ring-halo');
+        const inkGroup = group('ring-ink');
+        if (!haloGroup || !inkGroup) return null;
+        const ground = getComputedStyle(
+          document.querySelector('.derico-hero'),
+        ).getPropertyValue('--derico-hero-ground').trim();
+        const paint = (c) => {
+          const style = getComputedStyle(c);
+          return {
+            width: parseFloat(style.strokeWidth),
+            stroke: style.stroke,
+            vectorEffect: style.vectorEffect,
+          };
+        };
+        const swatch = document.createElement('span');
+        swatch.style.color = ground;
+        document.body.appendChild(swatch);
+        const groundComputed = getComputedStyle(swatch).color;
+        swatch.remove();
+        return {
+          haloFirst: !!(
+            haloGroup.compareDocumentPosition(inkGroup) & Node.DOCUMENT_POSITION_FOLLOWING
+          ),
+          sameTransform:
+            haloGroup.getAttribute('transform') === inkGroup.getAttribute('transform'),
+          keys: { halo: list(haloGroup).map(key), ink: list(inkGroup).map(key) },
+          pairs: list(haloGroup).map((c, i) => ({
+            halo: paint(c),
+            ink: paint(list(inkGroup)[i]),
+          })),
+          groundComputed,
+        };
+      });
+      check(!!halo, 'the rings disc carries a halo group and an ink group');
+      if (halo) {
+        check(halo.haloFirst, 'the halo paints beneath the ink, not over it');
+        check(halo.sameTransform, 'both groups carry the same transform');
+        check(
+          halo.keys.halo.length === 8 &&
+            JSON.stringify(halo.keys.halo) === JSON.stringify(halo.keys.ink),
+          `every stroke is paired with a halo at the same geometry (${halo.keys.halo.length} vs ${halo.keys.ink.length})`,
+        );
+        const thin = halo.pairs.filter((pair) => pair.halo.width - pair.ink.width < 3);
+        check(
+          thin.length === 0,
+          `every halo surrounds its ink by at least 3px (${thin.length} too thin)`,
+        );
+        check(
+          halo.pairs.every((pair) => pair.halo.stroke === halo.groundComputed),
+          `the halo is painted in the ground (${halo.pairs[0] && halo.pairs[0].halo.stroke} vs ${halo.groundComputed})`,
+        );
+        check(
+          halo.pairs.every((pair) => pair.halo.vectorEffect === 'non-scaling-stroke'),
+          'the halo is a non-scaling stroke, so 2px a side holds at every size',
+        );
+      }
+
       /* -- contrast over the photograph ---------------------------------- */
       if (width === 1440 || width === 375) {
         const contrast = await contrastReport(page, PLONE, TEXT_PARTS);
         for (const entry of contrast) {
-          const excepted = CONTRAST_EXCEPTIONS.some(
-            (exception) =>
-              exception.selector === entry.selector &&
-              (!exception.text || entry.text.startsWith(exception.text)) &&
-              exception.widths.includes(width),
-          );
           const label = `${entry.selector} "${entry.text}" worst ${entry.contrast}, median ${entry.median}, ${Math.round(
             entry.belowShare * 100,
           )}% of the glyph area under ${entry.required}`;
-          if (excepted) {
-            report(`ticket 18: ${label}`);
-          } else {
-            check(entry.belowShare !== null && entry.belowShare <= SPECKLE, label);
-          }
+          check(entry.belowShare !== null && entry.belowShare <= SPECKLE, label);
         }
       }
     }

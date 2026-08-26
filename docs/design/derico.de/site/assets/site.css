@@ -64,6 +64,9 @@
     oklch(0.18 0.04 215 / 0.78) 65%,
     oklch(0.18 0.04 215 / 0.78) 100%);
   --hero-wash-wide-color: oklch(0.18 0.04 215 / 0.72);
+  /* 18/21 — the copy scrim; the wash is composition and no longer carries the
+     legibility guarantee. Identical to the block's own sheet. */
+  --hero-copy-scrim: oklch(0.18 0.04 215 / 0.926);
   --hero-ink: oklch(0.99 0.004 215);
   --hero-ink-soft: oklch(0.93 0.018 215);
   --hero-copper: oklch(0.82 0.13 65);
@@ -406,7 +409,27 @@ a:hover { color: var(--copper-text); }
 .hero-media,
 .hero-wash { position: absolute; z-index: -2; inset: 0; }
 .hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-.hero-wash { z-index: -1; background: var(--hero-wash-mobile); }
+/* 21 §3 — the wash is cut away from the copy so the scrim is the only layer
+   over it; stacking 0.72 under 0.926 composites to 0.98, a solid copy panel.
+   Single column, the copy occupies the top 4.1% to at most 45.5% of the hero. */
+.hero-wash {
+  z-index: -1;
+  background: var(--hero-wash-mobile);
+  mask-image: linear-gradient(180deg, transparent 0 50%, black calc(50% + 5rem));
+}
+
+/* The scrim rides the hero and is shaped by the same 50% stop that cuts the
+   wash away — one boundary used twice, from opposite sides, so the scrim is
+   the only layer over the copy by construction. */
+.home-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: var(--hero-copy-scrim);
+  mask-image: linear-gradient(180deg, black 0 50%, transparent calc(50% + 5rem));
+}
 .home-hero__grid { position: relative; display: grid; gap: var(--space-xl); align-items: center; }
 .home-hero .kicker { color: var(--hero-copper); }
 .home-hero h1 { color: var(--hero-ink); }
@@ -494,6 +517,12 @@ a:hover { color: var(--copper-text); }
 .rings-disc .ring-future { stroke-dasharray: 5 8; }
 .home-hero .rings-disc circle { stroke: var(--hero-ring); }
 .home-hero .rings-disc .ring-now { stroke: var(--brand); }
+/* Ticket 20/23 — the ring halo, identical to the block's own sheet. Opaque
+   ground beneath each stroke, 2px per side; no ink passes 3:1 over an arbitrary
+   photograph and this image already fails for 10.3 percent of the rings band. */
+.home-hero .rings-disc .ring-halo circle { stroke: var(--hero-ground); stroke-width: 6.5; }
+.home-hero .rings-disc .ring-halo .ring-thin { stroke-width: 5.5; }
+.home-hero .rings-disc .ring-halo .ring-now { stroke-width: 8; }
 .ring-markers { position: absolute; inset: 0; padding: 0; list-style: none; pointer-events: none; }
 .ring-markers li { position: absolute; width: 1.75rem; height: 1.75rem; display: grid; place-items: center; border: 2px solid var(--hero-ground); border-radius: 50%; color: var(--hero-ground); background: var(--hero-ring); font-size: var(--text-label); font-weight: 700; line-height: 1; transform: translate(-50%, -50%); }
 .ring-markers li:nth-child(1) { left: 41.62%; top: 44.04%; }
@@ -508,6 +537,14 @@ a:hover { color: var(--copper-text); }
 .ring-legend dd { grid-column: 2; margin: -0.35rem 0 0; color: var(--ink-soft); font-size: var(--text-label); }
 .ring-legend b { color: var(--copper-text); }
 .ring-legend .is-now dt { color: var(--copper-text); }
+/* 18 §2 — the legend card. Opaque and forced: the is-now cyan is unreachable
+   translucently. No colour changes; the rings disc keeps floating and carries
+   its own halo instead (ticket 20). */
+.home-hero .ring-legend {
+  padding: var(--space-m);
+  border-radius: 1rem;
+  background: var(--hero-ground);
+}
 .home-hero .ring-legend > div { border-top-color: var(--hero-rule); }
 .home-hero .ring-legend dt,
 .home-hero .ring-legend b { color: var(--hero-ring); }
@@ -1088,14 +1125,19 @@ a:hover { color: var(--copper-text); }
 @media (min-width: 56rem) {
   .hero-wash {
     background: var(--hero-wash-wide-color);
+    /* 21 §3 — cut away from the copy. Two columns, the copy's right edge sits
+       at 47.94-48.85% of the hero across 896-1600, so 50% clears it. */
     mask-image:
       linear-gradient(90deg,
-        rgb(0 0 0 / 0.85) 0 300px,
-        black 420px),
+        transparent 0 50%,
+        black calc(50% + 5rem)),
       radial-gradient(ellipse 49% 58.5% at left bottom,
         transparent 0 55%,
         black 65% 100%);
     mask-composite: intersect;
+  }
+  .home-hero::before {
+    mask-image: linear-gradient(90deg, black 0 50%, transparent calc(50% + 5rem));
   }
   .home-hero__grid { grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr); }
   .page-hero__grid { grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.75fr); justify-content: space-between; align-items: end; }

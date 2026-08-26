@@ -502,6 +502,39 @@ class TestMarkupParity(HeroTestCase):
         assert disc["role"] == "img"
         assert disc["aria-label"]
 
+    def test_every_ring_stroke_is_paired_with_a_halo_beneath_it(self):
+        """Ticket 20/23, on the server half.
+
+        The halo is only a contrast guarantee if it is where the stroke is. The
+        geometry is stated twice in this template and twice again in
+        `Rings.tsx`, and this is what makes that duplication safe: a halo group
+        that drifted to seven circles, or that moved after the ink group and so
+        paints over it, is a silent failure — the disc still renders, just
+        without the guarantee.
+        """
+        disc = self.soup(self.FULL).find("svg", class_="rings-disc")
+        groups = disc.find_all("g", recursive=False)
+        assert [group.get("class") for group in groups] == [
+            ["ring-halo"],
+            ["ring-ink"],
+        ], "the halo must be the FIRST group; SVG paints in document order"
+
+        def geometry(group):
+            return [
+                (c.get("cx"), c.get("cy"), c.get("r"), tuple(c.get("class") or ()))
+                for c in group.find_all("circle")
+            ]
+
+        halo, ink = groups
+        assert len(geometry(halo)) == 8
+        assert geometry(halo) == geometry(ink), (
+            "the halo and the ink have drifted apart; the per-circle class has "
+            "to match too, or `.ring-now`'s heavier stroke gets the default halo"
+        )
+        assert halo.get("transform") == ink.get("transform"), (
+            "both groups carry the translate, or the halo sits 105 units left"
+        )
+
     def test_the_template_ships_none_of_its_own_commentary(self):
         """Chameleon's hidden comments; the reasoning is not the visitor's."""
         assert "<!--" not in self.render(self.FULL)

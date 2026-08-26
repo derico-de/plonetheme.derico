@@ -2,6 +2,43 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The hero's contrast guarantee is structural, not tuned against one
+  photograph** (hero tickets 18/20/21/23). Every text element and the rings
+  disc now meet their WCAG threshold over *any* upload, because each one's
+  adjacent colour is a value this package declares rather than a pixel the
+  author supplies: an opaque card under the ring legend, a feathered scrim over
+  the copy, and a ground-coloured halo beneath every ring stroke. No colour
+  changed and no brightness cap was imposed — both were costed and rejected.
+  The wash keeps its composition role and stops being load-bearing: it is cut
+  away at the same 50% boundary the scrim is painted from, one number used
+  twice from opposite sides, so the two can never drift into stacking (0.72
+  under 0.926 composites to 0.98, a solid copy panel). The disc had been
+  failing over the *shipped* design photograph, not merely a hypothetical one —
+  3.28% of the rings band for the copper strokes and 10.27% for the is-now
+  cyan. `hero-view.e2e.js` loses its three named contrast exceptions, which is
+  the acceptance criterion for the whole change.
+
+- **The hero states its own body type** (hero tickets 17/22): `font-family` and
+  `line-height` from `--plone-font-body` / `--plone-leading-body`, which
+  already carry the design's exact values. Blicca states its Tailwind stack on
+  `.aurora-blocks-view` only, so a theme-layer rule would have fixed the
+  published view and broken canvas/view parity; the block's scope-wrapped sheet
+  reaches both from one declaration, and the canvas assertion in
+  `hero-editor.e2e.js` is what pins that. Neither `derico.css` nor
+  `blocks_view.css` is touched.
+
+- **The marker numerals moved from the pixel probe to the value test.** They
+  are the one text in the hero whose backdrop is entirely element-painted — a
+  ground glyph on an opaque copper chip — so what the probe was reporting was
+  the glyph's antialiased edge overlapping its own 2px border, not a
+  photograph. Raising the speckle threshold would have blunted the guard for
+  every element that really is over the photograph.
+
+- **`tests/clara_css.py` now descends into `@container`.** Every rule at the
+  hero's wide breakpoint — where ticket 06 §8 deliberately put a container
+  query rather than a media query — had been invisible to the stylesheet tests,
+  which read as covering the sheet while covering half of it.
+
 - **The upgrade profile is no longer offered as an installable add-on.**
   `plonetheme.derico.upgrades:1001` has to be an EXTENSION profile for
   `genericsetup:upgradeDepends` to import it, and the add-ons control panel

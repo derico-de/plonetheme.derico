@@ -85,13 +85,14 @@ function Rings({ entries }) {
 		className: "rings-figure",
 		children: [/* @__PURE__ */ jsxs("div", {
 			className: "rings-stage",
-			children: [/* @__PURE__ */ jsx("svg", {
+			children: [/* @__PURE__ */ jsxs("svg", {
 				className: "rings-disc",
 				viewBox: "0 0 680 470",
 				role: "img",
 				"aria-label": "Wachstumsringe einer Anwendung",
-				children: /* @__PURE__ */ jsxs("g", {
+				children: [/* @__PURE__ */ jsxs("g", {
 					transform: "translate(105 0)",
+					className: "ring-halo",
 					children: [
 						/* @__PURE__ */ jsx("circle", {
 							cx: "150",
@@ -139,7 +140,57 @@ function Rings({ entries }) {
 							className: "ring-future"
 						})
 					]
-				})
+				}), /* @__PURE__ */ jsxs("g", {
+					transform: "translate(105 0)",
+					className: "ring-ink",
+					children: [
+						/* @__PURE__ */ jsx("circle", {
+							cx: "150",
+							cy: "235",
+							r: "40",
+							className: "ring-thin"
+						}),
+						/* @__PURE__ */ jsx("circle", {
+							cx: "153",
+							cy: "232",
+							r: "80"
+						}),
+						/* @__PURE__ */ jsx("circle", {
+							cx: "147",
+							cy: "238",
+							r: "125",
+							className: "ring-thin"
+						}),
+						/* @__PURE__ */ jsx("circle", {
+							cx: "154",
+							cy: "231",
+							r: "170"
+						}),
+						/* @__PURE__ */ jsx("circle", {
+							cx: "148",
+							cy: "237",
+							r: "215",
+							className: "ring-thin"
+						}),
+						/* @__PURE__ */ jsx("circle", {
+							cx: "152",
+							cy: "234",
+							r: "250"
+						}),
+						/* @__PURE__ */ jsx("circle", {
+							cx: "150",
+							cy: "235",
+							r: "290",
+							className: "ring-now"
+						}),
+						/* @__PURE__ */ jsx("circle", {
+							cx: "151",
+							cy: "234",
+							r: "315",
+							className: "ring-future"
+						})
+					]
+				})]
 			}), /* @__PURE__ */ jsx("ol", {
 				className: "ring-markers",
 				"aria-hidden": "true",

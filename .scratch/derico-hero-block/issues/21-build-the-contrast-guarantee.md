@@ -1,7 +1,7 @@
 # Build: the hero's contrast guarantee
 
 Type: task
-Status: open
+Status: resolved
 Blocked by: —
 
 ## Question
@@ -52,3 +52,103 @@ breaking is itself a check that the fix is structural rather than tuned.
 
 No profile XML changes, so no upgrade step. The canvas inherits automatically —
 one scope-wrapped sheet serves both surfaces (ticket 14).
+
+## Answer
+
+**Built and green: the three named contrast exceptions are deleted and every
+glyph in the hero passes at 1440/900/375/320.** Four of the ticket's
+instructions held; three did not survive measurement.
+
+### What was built
+
+1. **The legend card** — `background: var(--derico-hero-ground)`,
+   `padding: var(--plone-space-m)`, `border-radius: var(--plone-radius-l)` on
+   `.ring-legend`. Exactly as specified, and it does exactly what 18 §2 said it
+   would: the is-now row went from a named exception at every width to 5.94:1.
+2. **The copy scrim** — `--derico-hero-copy-scrim` at plateau alpha 0.926.
+3. **The wash cut** at both breakpoints.
+4. **No colour changes and no brightness cap.**
+
+### Three corrections
+
+**§1. `0.926`'s stated derivation does not reproduce, and the number that does
+reproduce belongs to an ink that is no longer on the scrim.** Ticket 18 §3 says
+the plateau is "set by the copper kicker at 4.5:1 against a white photograph
+with no wash". Composited in sRGB as a browser does it, the copper kicker at
+4.5:1 over white needs **α ≥ 0.7379**, and at 0.926 it gets **8.68:1**. The
+number that *does* come out at 4.5:1 is the **is-now cyan**: **0.8965** — and
+the cyan was moved onto the opaque card by the same ticket, so the plateau is
+sized for an ink that no longer sits on it.
+
+White is genuinely the worst photograph here (a dark scrim composites lightest
+there, and every copy ink is lighter than the scrim), so this is not a case of
+having taken the easy backdrop. The margin was **kept, not spent**: lowering
+the plateau lightens the copy area, and that is a look call against pixels, not
+an arithmetic one. What changed is the *test* — it asserts the guarantee, never
+the literal, and a companion test derives the floor and proves the assertion
+can fail. Whoever wants the photograph more visible now has the number: 0.7379.
+
+**§2. The scrim rides the hero, not the copy column — the copy-column anchor
+overflowed the hero.** Built the ticket's way first (a `::before` on the copy
+column, inset past it by the plateau margin plus the feather), it hangs 72px
+outside the hero at 320: **the hero reported 392 against a 320 client width**,
+failing ticket 15's guarantee. `overflow: hidden` clips it visually while still
+reporting the scrollable overflow the guarantee is *stated in terms of*, and
+widening the guarantee to let a decorative box through would blind it to the
+headline overflow it exists for.
+
+So the scrim moved to `.derico-hero::before`, `inset: 0`, where there is
+nothing to hang over. **The plateau is a band rather than a box** — it darkens
+the copy column above and below the text too — which is the ticket's one real
+casualty. It is the same band the wash darkened before, so the composition
+keeps its shape; it goes from 0.61 effective to 0.926.
+
+**§3. One boundary, used twice, instead of two tunings that have to agree.**
+The ticket asked for a feather "measured, not eyeballed" and a wash cut
+extending 06 §9's fixed pixel stops. Both were replaced by something stronger:
+the wash is cut away *below* a 50% stop and the scrim painted *above the same
+stop*, from opposite sides, at both breakpoints. "The scrim is the only layer
+over the copy" then holds by construction rather than by two numbers agreeing,
+and a guard asserts the pair share it.
+
+The stop is **proportional, not fixed pixels**. Measured on the design source
+at 896-1600 and 320-895: two columns, the copy's right edge sits at
+**47.94-48.85%** of the hero; single column, the copy occupies the top **4.1%
+to at most 45.5%**. A fixed pixel stop cannot serve both a logged-in author and
+a visitor, the hero being viewport-minus-toolbar — that is ticket 15's `cqi`
+lesson, and 06 §9's fixed stops were about the *feather*, whose softness should
+not stretch. So the boundary is proportional and the feather stays in `rem`.
+
+### The tests
+
+- **CSS-value** (`tests/test_hero_contrast.py`, new): the card, the halo, the
+  scrim and the marker chips, each read off the **built** sheet.
+  `test_the_scrim_would_go_red_if_it_were_softened` derives the floor rather
+  than restating the declaration, and asserts non-vacuity — ticket 19's lesson
+  that a guard nothing can falsify protects nothing.
+- **`hero-view.e2e.js`**: `CONTRAST_EXCEPTIONS` deleted. Every glyph now passes
+  at 0% of its area under threshold, including the two cases the design source
+  itself failed.
+- **Sheet** (`test_hero_sheet.py`): the card is opaque, the scrim cannot
+  overflow, and the scrim and wash share their boundary.
+
+Mutation-checked red-then-green: scrim softened to 0.60, ground lightened,
+ground made translucent, card removed, wide wash reverted to 06 §9's 0.85
+softening, chip fill darkened. All red.
+
+### What came out of it
+
+**`tests/clara_css.py` never descended into `@container`.** The hero's whole
+responsive half lives in `@container (min-width: 56rem)` — ticket 06 §8 chose a
+container query over a media query deliberately — so every rule at the wide
+breakpoint was invisible to the stylesheet tests. They read as covering the
+sheet while covering half of it, and the wide wash cut could not be asserted at
+all until the parser was taught the at-rule. Found by writing a test that
+should have passed and did not.
+
+**The marker numerals left the pixel probe** — see [ticket
+22](22-build-hero-body-type.md), which found it. They are the one text in the
+hero whose backdrop is entirely element-painted, so the probe was measuring a
+glyph against its own border.
+
+No profile XML changes, so no upgrade step. The canvas inherits the sheet.

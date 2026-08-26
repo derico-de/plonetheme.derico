@@ -95,7 +95,28 @@
              viewBox="0 0 680 470"
              role="img"
              aria-label="Wachstumsringe einer Anwendung">
-          <g transform="translate(105 0)">
+          <!--! Ticket 20/23. Two groups, halo first so the ink paints on top.
+               The halo is the marker chips' own treatment applied to strokes:
+               an opaque ground behind the colour, because no ink passes 3:1
+               over an arbitrary photograph and the shipped forest already
+               fails for 10.3 percent of the rings band. Same cx/cy/r and the
+               same per-circle classes in both groups; the e2e pins the pairing,
+               which is what pays for stating the geometry twice.
+
+               This does NOT disturb the grow animation: `nth-child` counts
+               within a parent, so both runs stay 1 to 8 and each pair shares
+               one delay. -->
+          <g transform="translate(105 0)" class="ring-halo">
+            <circle cx="150" cy="235" r="40" class="ring-thin" />
+            <circle cx="153" cy="232" r="80" />
+            <circle cx="147" cy="238" r="125" class="ring-thin" />
+            <circle cx="154" cy="231" r="170" />
+            <circle cx="148" cy="237" r="215" class="ring-thin" />
+            <circle cx="152" cy="234" r="250" />
+            <circle cx="150" cy="235" r="290" class="ring-now" />
+            <circle cx="151" cy="234" r="315" class="ring-future" />
+          </g>
+          <g transform="translate(105 0)" class="ring-ink">
             <circle cx="150" cy="235" r="40" class="ring-thin" />
             <circle cx="153" cy="232" r="80" />
             <circle cx="147" cy="238" r="125" class="ring-thin" />
