@@ -2,6 +2,19 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Browser tests for the hero, in `e2e/`.** Two playwright-core scripts and
+  the fixture and measurement modules they share: `hero-editor.e2e.js` drives
+  a real `@@aurora-edit` — insert, author every field, save, reload, the
+  insert gate as an ordinary editor sees it, one React, `<html lang>`, no
+  clipping at 320/375 — and `hero-view.e2e.js` measures the published page
+  against `docs/design/derico.de/site`, served from this repository, in the
+  same browser at 1440/900/375/320. Contrast is read from the pixels each
+  glyph actually covers (the hero paints ground, then photograph, then wash,
+  so no ancestor's `background-color` is what the reader sees), reported as
+  worst ratio, median and the share of the glyph area below the threshold.
+  Two known gaps are printed rather than asserted, each named element by
+  element so a new failure still fails the run.
+
 - **The Derico Hero's server half — the block is now installable and rendered.**
   `@@aurora-block-derico-hero` draws the published page from the same markup
   tree and the same degradation table as the editor half, over the contract's
