@@ -471,7 +471,37 @@ spec exists for it.
   disc's own 1.4.11 gap became
   [ticket 20](issues/20-ring-stroke-non-text-contrast.md).
 
+- [Decide: where the hero's body type comes from](issues/17-hero-body-type.md)
+  — neither seam the ticket offered. `--plone-font-body` and
+  `--plone-leading-body` already carry the mockup's exact values
+  (`"Source Sans 3", system-ui, sans-serif` and 1.65) on Clara's `:root`, and
+  06 §3 permits a block sheet to speak them — so the hero states both on
+  `.derico-hero` and **neither `derico.css` nor `blocks_view.css` is touched**;
+  §3 gains no fourth alias. The theme-layer option was ruled out on a fact, not
+  a preference: Blicca states the Tailwind stack on `.aurora-blocks-view` only,
+  the canvas getting it from Aurora's `@scope`'d preflight, so a theme rule
+  fixes the view and **breaks** canvas/view parity — while the block sheet's
+  three scope roots hold parity by construction. The leading moves with the
+  family (1.6 → 1.65 is the legend's whole 291-against-330 height gap).
+  Acceptance is three assertions: a CSS-value test that the tokens are *named*
+  rather than hardcoded, an e2e on the published view, and the same e2e in the
+  canvas — the last pins the parity that justified the seam. Built by
+  [ticket 22](issues/22-build-hero-body-type.md), which is deliberately not
+  folded into 21.
+
 ## Not yet specified
+
+- **Brand body type for every other block on derico.de.** The text, teaser and
+  listing blocks have the hero's defect unfixed and wider: Blicca's
+  `blocks_view.css` states a Tailwind sans stack on `.aurora-blocks-view`, so
+  the published page renders them in the browser's generic sans rather than the
+  theme's Source Sans 3. Ruled off [ticket 17](issues/17-hero-body-type.md) as
+  in scope for the *site* but not on the route to this map's Destination. Not
+  yet sharp because the seam is genuinely undecided: a blocks view arguably
+  should not impose a family on a host theme at all (Blicca's call under the
+  mirror rule, and it would move every Blicca site), while a theme-layer rule
+  can only reach the published view and would break the canvas/view parity
+  Blicca's current stack buys. Its phrasing waits on that Blicca conversation.
 
 - **A print stylesheet for the theme.** The mockup ships a whole-page
   `@media print` block; derico ships none. Ruled off ticket 06 as theme-wide
