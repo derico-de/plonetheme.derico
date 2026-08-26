@@ -2,6 +2,20 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The upgrade profile is no longer offered as an installable add-on.**
+  `plonetheme.derico.upgrades:1001` has to be an EXTENSION profile for
+  `genericsetup:upgradeDepends` to import it, and the add-ons control panel
+  offers every EXTENSION profile it is not told to hide — so it stood next to
+  the theme itself, inviting an administrator to apply a migration out of
+  order. `HiddenProfiles` now names it. The guard is the *enumeration* in
+  `test_every_upgrade_profile_is_hidden`, which reads the registered profiles
+  out of `portal_setup` rather than carrying a hardcoded version list, so the
+  next `plonecli add upgrade_step` cannot reintroduce the gap silently. A
+  `getNonInstallableProducts` blanket would have hidden future profiles too
+  and was deliberately not taken: it states the same answer a second way, and
+  it is the second way that would let the enumeration pass over a
+  `HiddenProfiles` that had stopped naming them.
+
 - **Browser tests for the hero, in `e2e/`.** Two playwright-core scripts and
   the fixture and measurement modules they share: `hero-editor.e2e.js` drives
   a real `@@aurora-edit` — insert, author every field, save, reload, the

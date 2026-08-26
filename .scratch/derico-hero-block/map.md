@@ -489,6 +489,27 @@ spec exists for it.
   [ticket 22](issues/22-build-hero-body-type.md), which is deliberately not
   folded into 21.
 
+- [Build: hide the theme's upgrade profile from the add-ons control panel](issues/19-hide-the-upgrade-profile.md)
+  — **built; one line, and the decision was the one the ticket did not ask
+  about.** Both surfaces are one defect, not two: the control panel and
+  `GET /@addons` walk `listProfileInfo()` and skip a profile when **either**
+  its id **or** its product is hidden — so the ticket's single line had a
+  competing form. Clara declares **both** the product and each profile,
+  Blicca only the profile; the ticket cited both as precedent without noting
+  they differ. The `getNonInstallableProducts` blanket was verified to work
+  and *then* rejected on ticket 11's rule: mutation-checked, it is
+  **unfalsifiable by the suite** (remove it, both tests stay green) and it
+  **blunts the effect test** (keep it, drop the profile line, and only the
+  enumeration goes red) — belt-and-braces bought by making one test unable to
+  see the belt. Acceptance is two tests with different jobs, both red first:
+  the **effect**, read off `marshall_addons()` itself and asserting the theme
+  is still listed so the guard is narrow, and the **mechanism, enumerated**
+  from `portal_setup` rather than a hardcoded version list — with a
+  non-vacuity assertion, because a test that scales on a list is worthless
+  the day the list is empty. No upgrade step (confirmed: no profile XML, no
+  registry value — only a Zope restart to pick it up). 228 pass.
+
+
 ## Not yet specified
 
 - **Brand body type for every other block on derico.de.** The text, teaser and
