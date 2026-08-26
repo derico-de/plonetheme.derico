@@ -54,6 +54,13 @@ const EXECUTABLE = process.env.DERICO_E2E_CHROMIUM || process.env.AURORA_E2E_CHR
  * is the block; a React under this prefix would be a second copy. */
 const BLOCK_RESOURCE = '++plone++plonetheme.derico.blocks/';
 
+/* Deliberately NOT `COPY.kicker`. A fresh insert now arrives carrying the
+ * mockup's copy, so authoring a field with the value it already holds proves
+ * nothing — every check downstream would stay green with the sidebar wired to
+ * nothing at all. One field authored to a value the seed cannot produce is
+ * what keeps this pass honest. */
+const AUTHORED_KICKER = 'Nachhaltige Lösungen, seit 2003';
+
 const failures = [];
 function check(condition, message) {
   if (condition) {
@@ -212,6 +219,23 @@ function heroGeometry(page) {
       'the inserted block renders its own root in the canvas',
     );
 
+    /* -- the insert seed ---------------------------------------------- */
+    /* A fresh insert arrives carrying the mockup's copy, written by the
+     * block's own `edit` component (`defaults.ts`): Aurora inserts a node
+     * with `@type` and nothing else, so an author who had to type all eight
+     * fields from scratch could not see which field was which. Everything
+     * below then EDITS that draft rather than filling an empty form, which is
+     * why the authored kicker is deliberately not the seeded one — otherwise
+     * every assertion in this pass would also pass with the sidebar broken. */
+    const insertedText = await page.evaluate(
+      () => document.querySelector('.derico-hero').innerText,
+    );
+    check(
+      insertedText.includes(COPY.headline) &&
+        insertedText.includes(COPY.legend[3].title),
+      'a fresh insert already carries the mockup copy',
+    );
+
     /* -- the body type, in the CANVAS: ticket 17/22 -------------------- */
     /* This assertion is the whole justification for the seam. The theme-layer
      * alternative would have fixed the published view and BROKEN this, because
@@ -274,7 +298,7 @@ function heroGeometry(page) {
     );
 
     /* -- author every field ------------------------------------------- */
-    await fill(page, 'input[name="kicker"]', COPY.kicker);
+    await fill(page, 'input[name="kicker"]', AUTHORED_KICKER);
     await fill(page, 'input[name="headline"]', COPY.headline);
     await fill(page, 'textarea#lede', COPY.lede);
     await fill(page, 'input[name="cta_label"]', COPY.cta_label);
@@ -292,7 +316,9 @@ function heroGeometry(page) {
       () => document.querySelector('.derico-hero').innerText,
     );
     check(
-      canvasText.includes(COPY.headline) && canvasText.includes(COPY.legend[3].title),
+      canvasText.includes(AUTHORED_KICKER) &&
+        canvasText.includes(COPY.headline) &&
+        canvasText.includes(COPY.legend[3].title),
       'the canvas previews what the sidebar was given',
     );
 
@@ -303,7 +329,7 @@ function heroGeometry(page) {
     const stored = await heroNodeOf(BASE, fixture.emptyPage);
     check(!!stored, 'the saved page holds a derico-hero node');
     if (stored) {
-      check(stored.kicker === COPY.kicker, 'kicker survived the save');
+      check(stored.kicker === AUTHORED_KICKER, 'the edited kicker survived the save');
       check(stored.headline === COPY.headline, 'headline survived the save');
       check(stored.lede === COPY.lede, 'lede survived the save');
       check(stored.cta_label === COPY.cta_label, 'primary call to action survived the save');
@@ -351,7 +377,7 @@ function heroGeometry(page) {
     });
     check(!!reloaded, 'the reloaded editor renders the hero');
     check(
-      reloaded && reloaded.text.includes(COPY.headline) && reloaded.text.includes(COPY.kicker),
+      reloaded && reloaded.text.includes(COPY.headline) && reloaded.text.includes(AUTHORED_KICKER),
       'the reloaded canvas shows the saved copy',
     );
     check(reloaded && reloaded.images > 0, 'the reloaded canvas previews the picked image');

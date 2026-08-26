@@ -1,5 +1,5 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
-import { useCallback, useRef, useState } from "react";
 import config from "@plone/registry";
 function text(value) {
 	return typeof value === "string" ? value.trim() : "";
@@ -343,6 +343,73 @@ function HeroMedia({ data }) {
 	});
 }
 //#endregion
+//#region src/hero/defaults.ts
+/** The keys the hero owns — everything `HeroSchema` lets an author write. */
+var HERO_FIELDS = [
+	"kicker",
+	"headline",
+	"lede",
+	"cta_label",
+	"cta_href",
+	"link_label",
+	"link_href",
+	"image_wide",
+	"image_portrait",
+	"legend"
+];
+var HERO_DEFAULTS = {
+	kicker: "Nachhaltige Lösungen, seit über 20 Jahren",
+	headline: "Anwendungen, die bleiben.",
+	lede: "Wir entwickeln Geschäftsanwendungen auf Basis von Python, modernem JavaScript und Open Source. Wartbarkeit, offene Standards und klare Entscheidungen sichern ihren Wert über viele Jahre.",
+	cta_label: "Erstgespräch vereinbaren",
+	link_label: "Alle Leistungen",
+	legend: [
+		{
+			title: "schneller Prototyp",
+			subtitle: "in Wochen bedienbar"
+		},
+		{
+			title: "erste Anwendung",
+			subtitle: "trägt die tägliche Arbeit"
+		},
+		{
+			title: "erfahrener Begleiter",
+			subtitle: "wächst mit den Anforderungen"
+		},
+		{
+			title: "mit der Zeit gegangen",
+			subtitle: "offen, aktuell, migrierbar"
+		}
+	]
+};
+/**
+* Has this block been through the seeding yet?
+*
+* Asked of the KEYS, never of their values. An author who empties the
+* headline leaves `headline: ''` behind, and a check for "no text anywhere"
+* would read that as a fresh insert and hand the mockup's headline straight
+* back — which is the one behaviour that would make the seed feel like a
+* fallback the author cannot get out from under. A node that has never met
+* this code carries `@type` and the materialised `blockWidth` and no hero key
+* at all.
+*/
+function unseeded(data) {
+	return !HERO_FIELDS.some((field) => field in data);
+}
+/**
+* The block data a fresh insert should carry.
+*
+* A merge, not a replacement: whatever the host already put on the node —
+* `@type`, the materialised `blockWidth` (ticket 11), anything a future
+* plugin adds — survives untouched.
+*/
+function seeded(data) {
+	return {
+		...data,
+		...HERO_DEFAULTS
+	};
+}
+//#endregion
 //#region src/hero/HeroEdit.tsx
 /**
 * The `edit` half: the canvas is a live preview, never an editing surface.
@@ -358,7 +425,12 @@ function HeroMedia({ data }) {
 * canvas breaking the headline where the view kept it whole). Nothing here is
 * contenteditable, so nothing is lost by normalising it.
 *
-* The only thing the canvas adds to the public rendering is the nag: a
+* The canvas is also where a fresh insert gets its words. Aurora writes a
+* node carrying `@type` and nothing else, and `blocksConfig` has no
+* initial-data hook, so this component is the first — and only — place the
+* block sees its own node in time to seed it (`defaults.ts`).
+*
+* The other thing the canvas adds to the public rendering is the nag: a
 * half-authored hero saves and previews happily — nothing in the schema is
 * required — so the editor is where the author is told what is still missing.
 * The hint is `contentEditable={false}` and outside the hero's own root, so
@@ -374,7 +446,17 @@ function missing(data) {
 	if (legend(data.legend).every((entry) => !entry.title && !entry.subtitle)) gaps.push("ring legend");
 	return gaps;
 }
-function HeroEdit({ data }) {
+function HeroEdit({ block, data, onChangeBlock }) {
+	const seedWritten = useRef(false);
+	useEffect(() => {
+		if (seedWritten.current || !onChangeBlock || !unseeded(data)) return;
+		seedWritten.current = true;
+		onChangeBlock(block ?? "", seeded(data));
+	}, [
+		block,
+		data,
+		onChangeBlock
+	]);
 	const gaps = missing(data);
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Hero, {
 		data,
