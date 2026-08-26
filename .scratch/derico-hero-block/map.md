@@ -445,6 +445,32 @@ spec exists for it.
   background you were trying to reveal, and an unscoped `h1` query on the
   published page returns the content header's title, not the block's.
 
+- [Decide: how the ring legend keeps WCAG AA over the photograph](issues/18-legend-contrast-over-the-photograph.md)
+  — **not a legend defect: every text element in the hero except the headline
+  fails over a bright photograph, and the photograph is author-supplied.** The
+  headline is large text and clears 3:1 at 3.05 worst-case; everything else
+  needs 4.5 and gets 1.00–3.05, so ticket 10's medians of 8–18 measured the
+  fixture forest, not the block. Two of this ticket's own four candidate fixes
+  are arithmetically dead — no wash alpha below 0.983 saves the is-now cyan,
+  and no cyan in the palette survives a bright image without a ground. The
+  guarantee is **hero-wide and structural, from two local grounds, with the
+  wash no longer load-bearing at either breakpoint**: an **opaque card** behind
+  the legend `<dl>` (forced — cyan is unreachable translucent; on the ground
+  every existing colour passes, so **no colour changes**), and a **feathered
+  scrim at plateau alpha 0.926** over the copy box, set by the copper kicker
+  against a white photograph with no wash. The copy box is cut out of the wide
+  mask and the wash suppressed across the mobile copy band, so the scrim is the
+  only layer over the copy and the two never stack to 0.98. **No image
+  brightness cap** — costed and rejected: the wide mask *cuts the wash away* at
+  bottom-left where part of the copy sits, making the real cap 0.08, a black
+  image. `#039fba` stays. The design source gets identical CSS. Acceptance is
+  two tests with different jobs: a CSS-value test reading the tokens from the
+  built sheet proves *the backdrop is strong enough where it applies*; the e2e
+  with its named exceptions deleted proves *every glyph sits where it applies*.
+  Built by [ticket 21](issues/21-build-the-contrast-guarantee.md); the rings
+  disc's own 1.4.11 gap became
+  [ticket 20](issues/20-ring-stroke-non-text-contrast.md).
+
 ## Not yet specified
 
 - **A print stylesheet for the theme.** The mockup ships a whole-page
