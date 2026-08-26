@@ -30,7 +30,24 @@ export function Rings({ entries }: { entries: LegendEntries }) {
           role="img"
           aria-label="Wachstumsringe einer Anwendung"
         >
-          <g transform="translate(105 0)">
+          {/* Ticket 20/23. Two groups, halo first so the ink paints on top —
+              the marker chips' own treatment (an opaque ground behind the
+              colour) applied to strokes, because no ink passes 3:1 over an
+              arbitrary photograph. Same cx/cy/r and classes in both; the e2e
+              pins the pairing, which is what pays for stating it twice.
+              `nth-child` counts within a parent, so the grow animation is
+              untouched: both runs stay 1..8 and each pair shares one delay. */}
+          <g transform="translate(105 0)" className="ring-halo">
+            <circle cx="150" cy="235" r="40" className="ring-thin" />
+            <circle cx="153" cy="232" r="80" />
+            <circle cx="147" cy="238" r="125" className="ring-thin" />
+            <circle cx="154" cy="231" r="170" />
+            <circle cx="148" cy="237" r="215" className="ring-thin" />
+            <circle cx="152" cy="234" r="250" />
+            <circle cx="150" cy="235" r="290" className="ring-now" />
+            <circle cx="151" cy="234" r="315" className="ring-future" />
+          </g>
+          <g transform="translate(105 0)" className="ring-ink">
             <circle cx="150" cy="235" r="40" className="ring-thin" />
             <circle cx="153" cy="232" r="80" />
             <circle cx="147" cy="238" r="125" className="ring-thin" />

@@ -90,8 +90,15 @@ def _blocks(css):
             return
         selector = css[index:brace].strip().strip("}").strip()
         selector = selector.rsplit("}", 1)[-1].strip()
-        if selector.startswith(("@layer", "@media", "@supports", "@scope")):
-            # descend into the at-rule body
+        if selector.startswith(
+            ("@layer", "@media", "@supports", "@scope", "@container")
+        ):
+            # descend into the at-rule body. `@container` was missing until
+            # hero ticket 21: the hero's whole responsive half lives in
+            # `@container (min-width: 56rem)` (ticket 06 §8 chose a container
+            # query over a media query deliberately), so every rule at the wide
+            # breakpoint was invisible to these tests — they read as covering
+            # the sheet while covering only half of it.
             index = brace + 1
             continue
         depth, end = 0, None

@@ -33,6 +33,15 @@ The four captions beneath the rings figure, each naming one stage of that
 growth. Rendered as HTML beneath the graphic, never as text inside the SVG.
 _Avoid_: ring labels, ring captions, markers
 
+**Ring halo**:
+The near-black outline carried by every stroke of the rings figure, drawn as a
+second, wider stroke beneath the coloured one so the disc keeps its contrast
+over any photograph without being given a ground to sit on. The same treatment
+the numbered markers have always had — an opaque fill inside a ground-coloured
+border — applied to strokes. It is a contrast guarantee, not a shadow: it is
+crisp and opaque precisely so its value can be read off the stylesheet.
+_Avoid_: outline, glow, stroke shadow, drop shadow
+
 ### Blocks
 
 **Brand block**:
@@ -48,8 +57,19 @@ generic mechanism a brand block is built on, not a synonym)
 The darkening that lets the Derico Hero's words sit on its photograph — a
 gradient over the image, keyed to the side the copy is on, not a flat tint over
 the whole picture. It belongs to the hero's composition, not to the Jahresringe
-palette.
-_Avoid_: overlay, scrim, tint, gradient
+palette. It is a compositional layer, not a contrast guarantee: ticket 18 made
+the **copy scrim** carry the guarantee and left the wash deliberately
+non-load-bearing.
+_Avoid_: overlay, tint, gradient, scrim (that is the copy scrim, a different
+layer with a different job — see below)
+
+**Copy scrim**:
+The opaque-enough backdrop under the Derico Hero's copy column that keeps its
+text legible over any photograph an author uploads. Feathered to transparent
+outside the copy box, and the only layer over the copy at either breakpoint —
+stacking it with the hero wash would composite to a solid panel the design
+avoids. Unlike the wash it exists to hit a number, not to compose.
+_Avoid_: wash, overlay, gradient
 
 **Derico Hero**:
 The brand block for the derico.de homepage opening: image, kicker, headline,

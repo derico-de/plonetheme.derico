@@ -25,7 +25,8 @@ spec exists for it.
 - Skills to consult per ticket type: `/grilling`, `/domain-modeling`,
   `/prototype`, `/research`, `/plonecli` (upgrade steps), `/tdd`.
 - Vocabulary: [`CONTEXT.md`](../../CONTEXT.md) — **brand block**, **rings
-  figure**, **ring legend**, **Derico Hero**.
+  figure**, **ring legend**, **ring halo**, **hero wash**, **copy scrim**,
+  **Derico Hero**.
 - The mechanism this block rides on is already decided **and implemented**:
   [the block add-on contract](../../../plone.blicca.auroraeditor/docs/design/aurora-block-addon-contract.md)
   + ADR 0013, from the
@@ -510,6 +511,104 @@ spec exists for it.
   registry value — only a Zope restart to pick it up). 228 pass.
 
 
+- [Decide: how the rings disc meets WCAG 1.4.11 over the photograph](issues/20-ring-stroke-non-text-contrast.md)
+  — **it binds, and the fix is a halo, not a ground.** Measuring the block's own
+  photograph moved the problem into the present tense: the forest is dark at the
+  median (`Y = 0.0116` in the rings band) but its canopy gaps are not, so the
+  disc fails over the *shipped* design image today — 3.28% of the band for
+  copper, **10.27%** for the is-now cyan — and the existing fixture can
+  therefore demonstrate the fix, against the expectation that a synthetic bright
+  image would be needed. Re-derived arithmetic showed the ticket's worst case
+  was too kind: copper (`Y = 0.5365`) passes only against `Y ≤ 0.1455` — the
+  bright side needs `Y ≥ 1.71`, which does not exist — and cyan's `3.15` was
+  measured against pure white, which no photograph is. **`stroke-width` is
+  arithmetically dead** (a ratio does not care how thick the line is), killing
+  one of the ticket's four options on the same arithmetic that killed the wash
+  on 18. The halo is **opaque `--derico-hero-ground`, forced**: it must be
+  `Y ≤ 0.0612` to serve both inks, a light halo is 1.74 against copper, and a
+  translucent one needs `α ≥ 0.78`. **No new token and no new idea** — the
+  marker chips are already this treatment (copper fill inside a 2px ground
+  border), which also discharges *their* silhouette at 10.43, a claim the ticket
+  had been making about the numerals instead. Drawn as a second `<g>` of
+  ground-stroked circles at **`w = 2px`** (6.5 / 5.5 / 8), chosen over an
+  `feMorphology` filter because a filter leaves **nothing to measure** and
+  paints outside the `overflow: hidden` the clipped composition needs. Corrects
+  a warning raised while grilling: duplicating the circles does **not** break
+  the grow animation — `:nth-child` counts within a parent, so both groups keep
+  1…8 and the pair shares one delay. An opaque halo makes the adjacency
+  **photograph-independent**, so the CSS-value test needs no image at all and
+  the e2e's job becomes geometry; `≥ 3` there is a **floor, not a mirror** of a
+  CSS value, which is the opposite of 18's rule and easy to confuse with it.
+  Built by [ticket 23](issues/23-build-the-ring-halo.md). Measurements:
+  [`assets/20-photograph-luminance.md`](assets/20-photograph-luminance.md).
+
+
+- [Build: the hero's contrast guarantee](issues/21-build-the-contrast-guarantee.md)
+  — **built; the three named contrast exceptions are deleted and every glyph
+  passes at 1440/900/375/320**, including the two the design source itself
+  failed. Three of the ticket's instructions did not survive measurement.
+  **0.926's stated derivation does not reproduce**: composited as a browser
+  does it, the copper kicker needs **α ≥ 0.7379** and gets 8.68:1 at 0.926 —
+  the number that reproduces is the **is-now cyan's 0.8965**, and 18 moved the
+  cyan onto the card, so the plateau is sized for an ink no longer on it. The
+  margin was kept, not spent (a look call, not an arithmetic one), and the test
+  asserts the guarantee rather than the literal. **The scrim moved off the copy
+  column onto the hero root**: anchored to the copy box it hangs 72px outside
+  the hero at 320 — measured, 392 against a 320 client width — and
+  `overflow: hidden` clips it visually while still reporting the overflow
+  ticket 15's guarantee is stated in terms of; widening that guarantee would
+  have blinded it to the headline overflow it exists for. Cost: the plateau is
+  a band, not a box. **And the boundary is now one number used twice** — the
+  wash cut away below a 50% stop, the scrim painted above the same stop, from
+  opposite sides — so "the scrim is the only layer over the copy" holds by
+  construction instead of by two tunings agreeing. Proportional, not 06 §9's
+  fixed pixels: measured, the copy's right edge sits at 47.94–48.85% of the
+  hero across 896–1600 and the copy band ends by 45.5% below that, and a pixel
+  stop cannot serve a logged-in author and a visitor at once (15's `cqi`
+  lesson; 06 §9's fixed stops were about the feather, which stays in rem).
+  Surfaced a hole in the harness: **`clara_css.py` never descended into
+  `@container`**, so every rule at the hero's wide breakpoint had been
+  invisible to the sheet tests.
+
+- [Build: the hero's body type](issues/22-build-hero-body-type.md)
+  — **built and green; the instructions held in full.** `font-family` and
+  `line-height` from `--plone-font-body` / `--plone-leading-body` on
+  `.derico-hero`; `derico.css` and `blocks_view.css` untouched, no fourth
+  alias. **The design source needed no edit** — checked before editing, as the
+  ticket asked: `site.css` already set both on `body`. A second guard was added
+  beyond the ticket's three tests, because naming the token is not enough if a
+  later rule restates `"Source Sans 3"` literally — that passes every visual
+  check while silently dropping the seam. What came out of it: the type change
+  moved `.ring-markers li "1"` at 375 from 2% to 3% of its glyph area under
+  threshold, against a `SPECKLE` of 2% whose basis was that nothing lands
+  between 2% and 11%. Nothing about the contrast changed — the glyph shape did,
+  and the worst pixel is 1.02 either way, which is **ground on ground**: the
+  glyph's antialiased edge over the chip's own 2px border. So the marker
+  numerals left the pixel probe for the value test — they are the one text in
+  the hero never over the photograph — rather than raising `SPECKLE`, which
+  would have blunted the guard for everything that is.
+
+- [Build: the rings disc's halo](issues/23-build-the-ring-halo.md)
+  — **built and green; ticket 20 held in every particular.** Two sibling groups
+  in `.rings-disc`, halo first, in all three files; ground at 6.5 / 5.5 / 8
+  against inks 2.5 / 1.5 / 4. Specificity beat the ink rules unaided, and
+  `vector-effect: non-scaling-stroke` came down from the existing rule, which
+  is what makes 2px a side hold at 375 as well as 1440. Confirmed rather than
+  assumed: **the grow animation is untouched** — `:nth-child` counts within a
+  parent, so all eight delays land on both copies and `hero.css:333-343` did
+  not change. The value test is three lines because an opaque halo took the
+  photograph out of the sum entirely. **The duplication is paid for**: the
+  `cx/cy/r`-plus-class pairing is asserted in four places (server template,
+  React, published view, canvas), so the copies cannot drift silently — the one
+  real objection to 20 §8. Five mutations red-then-green. **One thing left
+  open**: the halo assertions fail against the *currently running* Zope, which
+  has the pre-halo template compiled — every CSS-borne change on the same page
+  asserts green while the template-borne one does not, which is the split
+  between a resource directory read from disk and a compiled template held in
+  memory. The same markup is pinned by the Python view test, which renders
+  fresh. Re-run `hero-view.e2e.js` after a Zope restart to close it.
+
+
 ## Not yet specified
 
 - **Brand body type for every other block on derico.de.** The text, teaser and
@@ -546,6 +645,16 @@ spec exists for it.
   hero blocks remain. Inherited from the contract's open items.
 
 ## Out of scope
+
+- **Giving CI read access to `plone.blicca.auroraeditor`.** Ruled out of scope
+  2026-08-26: CI is not relevant to this effort. The ticket had already said as
+  much about the route — the block installs and works on the sandbox site
+  whether or not CI can build it — and stayed open only on the argument that a
+  red CI with no ticket behind it gets normalised, which is the repository
+  owner's call rather than this map's. Closed as
+  [ticket 16](issues/16-blicca-token-secret.md). Unchanged by the closing:
+  `BLICCA_TOKEN` is still what CI needs, and ticket 04 §9's two lockstep guards
+  still skip there while running locally, which is what this map relied on.
 
 - **Format negotiation for Plone images.** Serving AVIF/WebP/JPEG from one
   `<picture>` needs derived formats generated and stored outside Plone's scale

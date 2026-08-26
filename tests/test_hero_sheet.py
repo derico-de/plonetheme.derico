@@ -219,3 +219,183 @@ def test_the_hero_states_how_it_wraps():
         "the hero must state `white-space`, or the canvas inherits the Plate "
         "editable's `pre-wrap` and wraps differently from the public view"
     )
+
+
+@needs_block_sheets
+def test_the_hero_takes_its_body_type_from_the_public_ladder():
+    """Ticket 17/22 — the seam, and why it is not a hardcoded family.
+
+    `--plone-font-body` and `--plone-leading-body` already carry the mockup's
+    exact values on Clara's `:root`, so the hero names them instead of
+    restating them. A hardcoded `"Source Sans 3"` passes every visual check
+    while silently dropping the theme seam, and the leading is easy to drop on
+    its own — 1.6 against 1.65 is the legend's whole 291-against-330 height gap
+    that ticket 10 measured.
+    """
+    for prop, token in (
+        ("font-family", "var(--plone-font-body)"),
+        ("line-height", "var(--plone-leading-body)"),
+    ):
+        assert token in _values_for(ROOT, prop), (
+            f"the hero must name {token}; it declares "
+            f"{_values_for(ROOT, prop) or 'nothing'}"
+        )
+
+
+@needs_block_sheets
+def test_the_hero_never_hardcodes_its_type():
+    """The other half of the seam: naming the token is not enough if a later
+    rule restates the family in literal form."""
+    offenders = sorted(
+        f"{selector} {{ {name}: {value} }}"
+        for selector, properties in _style_rules()
+        for name, value in properties.items()
+        if name in ("font-family", "font")
+        and ("source sans" in value.lower() or '"' in value.replace("'", '"'))
+    )
+    assert not offenders, (
+        "a block sheet must reach the family through the token ladder, never "
+        "by name: " + ", ".join(offenders)
+    )
+
+
+#: (ink selector, halo selector). Each ring class carries its own width, so a
+#: halo stated only for the default stroke would leave `.ring-now`'s 4 under a
+#: 6.5 halo -- still a halo, but not the one the geometry was chosen for.
+RING_PAIRS = [
+    (f"{ROOT} .rings-disc circle", f"{ROOT} .rings-disc .ring-halo circle"),
+    (f"{ROOT} .rings-disc .ring-thin", f"{ROOT} .rings-disc .ring-halo .ring-thin"),
+    (f"{ROOT} .rings-disc .ring-now", f"{ROOT} .rings-disc .ring-halo .ring-now"),
+]
+
+#: A FLOOR the sheet must clear, not a mirror of what it declares (ticket 20).
+#: 3 = 1.5px a side, under the 2px the halo ships; the sheet may thicken the
+#: halo freely and only thinning past this is a regression. Ticket 18's
+#: "never hardcode the CSS value" is the opposite construction and does not
+#: apply: a test carrying its own copy of 6.5 would stay green when the halo
+#: is softened, which is exactly what this catches.
+MINIMUM_HALO_SURROUND = 3.0
+
+
+@needs_block_sheets
+def test_the_halo_is_wider_than_every_stroke_it_surrounds():
+    """Ticket 20/23. A halo the same width as its ink is invisible."""
+    for ink_selector, halo_selector in RING_PAIRS:
+        ink = _values_for(ink_selector, "stroke-width")
+        halo = _values_for(halo_selector, "stroke-width")
+        assert ink, f"{ink_selector} states no stroke-width"
+        assert halo, f"{halo_selector} states no stroke-width"
+        surround = float(halo[-1]) - float(ink[-1])
+        assert surround >= MINIMUM_HALO_SURROUND, (
+            f"{halo_selector} surrounds its ink by {surround}px, under the "
+            f"{MINIMUM_HALO_SURROUND}px floor — at 1px a side the antialiasing "
+            "on a curved stroke leaves the effective adjacent colour a blend "
+            "of halo and photograph"
+        )
+
+
+@needs_block_sheets
+def test_the_halo_is_painted_in_the_ground_and_nothing_else():
+    """The halo's whole job is to BE the adjacent colour, so it has to be the
+    one opaque value the contrast test reads."""
+    strokes = _values_for(f"{ROOT} .rings-disc .ring-halo circle", "stroke")
+    assert strokes == ["var(--derico-hero-ground)"], (
+        "the halo must be painted in the ground the contrast guarantee is "
+        f"computed against; it declares {strokes or 'nothing'}"
+    )
+
+
+@needs_block_sheets
+def test_the_legend_sits_on_its_own_opaque_ground():
+    """Ticket 18 §2 — forced, not chosen: no translucent treatment reaches the
+    is-now cyan, and the card is what let the palette stay unchanged."""
+    grounds = _values_for(f"{ROOT} .ring-legend", "background")
+    assert grounds == ["var(--derico-hero-ground)"], (
+        "the legend needs an opaque card under the whole <dl>; it declares "
+        f"{grounds or 'nothing'}"
+    )
+
+
+@needs_block_sheets
+def test_the_scrim_cannot_hang_outside_the_hero():
+    """Ticket 21, and a defect found by measurement rather than by reading.
+
+    The scrim was first anchored to the copy column, inset past it by the
+    plateau margin plus the feather. That hangs 72px outside the hero at a 320
+    viewport — measured, the hero reporting 392 against a 320 client width —
+    and `overflow: hidden` clips it visually while still reporting the overflow
+    that ticket 15's guarantee is *stated in terms of*. Widening that guarantee
+    to let a decorative box through would blind it to the headline overflow it
+    exists for, so the scrim moved to the hero root instead, where there is
+    nothing to hang over.
+    """
+    scrims = {
+        selector
+        for selector, properties in _style_rules()
+        if properties.get("background") == "var(--derico-hero-copy-scrim)"
+    }
+    assert scrims, "nothing paints the copy scrim at all"
+    for selector in scrims:
+        assert selector == f"{ROOT}::before", (
+            "the scrim must ride the hero root, where `inset: 0` cannot "
+            f"overflow it: {selector}"
+        )
+    assert _values_for(f"{ROOT}::before", "inset") == ["0"], (
+        "the scrim must be inset: 0 — any negative inset is scrollable "
+        "overflow the hero will report"
+    )
+
+
+@needs_block_sheets
+def test_the_scrim_and_the_wash_cut_share_one_boundary():
+    """Why "the scrim is the only layer over the copy" needs no tuning.
+
+    The wash is cut away below one stop and the scrim is painted above the same
+    stop, from opposite sides, at both breakpoints. Two independently tuned
+    numbers could drift apart and leave a band where both layers land —
+    compositing 0.72 under 0.926 to 0.98, the solid copy panel ticket 18
+    rejected. One number cannot.
+    """
+    scrim_masks = _values_for(f"{ROOT}::before", "mask-image")
+    wash_masks = _values_for(f"{ROOT} .hero-wash", "mask-image")
+    assert len(scrim_masks) == 2, (
+        f"the scrim must turn through 90 degrees at the breakpoint; found "
+        f"{len(scrim_masks)} mask(s)"
+    )
+    for masks, side, expected in (
+        (scrim_masks, "scrim", "black 0 50%"),
+        (wash_masks, "wash", "transparent 0 50%"),
+    ):
+        for mask in masks:
+            assert expected in mask, (
+                f"the {side} does not use the shared 50% boundary: {mask!r}"
+            )
+    for masks, side in ((scrim_masks, "scrim"), (wash_masks, "wash")):
+        assert any("90deg" in mask for mask in masks), f"{side}: no wide axis"
+        assert any("180deg" in mask for mask in masks), f"{side}: no mobile axis"
+
+
+@needs_block_sheets
+def test_the_wash_is_cut_away_from_the_copy_at_both_breakpoints():
+    """Ticket 21 §3 — the scrim must be the ONLY layer over the copy.
+
+    Stacking 0.72 under 0.926 composites to 0.98, which is the solid copy panel
+    this design avoids; the guarantee was computed for the scrim alone. Both
+    cuts are proportional because the copy's box is: measured on the design
+    source, the copy's right edge sits at 47.94-48.85% of the hero across
+    896-1600, and single-column it occupies the top 4.1% to at most 45.5%.
+    A fixed pixel stop would land differently for a logged-in author than for
+    a visitor, the hero being viewport-minus-toolbar (ticket 15's lesson).
+    """
+    masks = _values_for(f"{ROOT} .hero-wash", "mask-image")
+    assert len(masks) >= 2, (
+        "the wash must state a mask at BOTH breakpoints — one is the mobile "
+        f"copy band, one is the wide copy column; found {len(masks)}"
+    )
+    for mask in masks:
+        assert "transparent 0 50%" in mask, (
+            "the wash must be cut to fully transparent across the copy, not "
+            f"merely softened over it: {mask!r}"
+        )
+    assert any("90deg" in mask for mask in masks), "no cut across the copy column"
+    assert any("180deg" in mask for mask in masks), "no cut across the copy band"

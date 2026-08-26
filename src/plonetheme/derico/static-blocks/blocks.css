@@ -39,6 +39,18 @@
     oklch(0.18 0.04 215 / 0.78) 65%,
     oklch(0.18 0.04 215 / 0.78) 100%);
   --derico-hero-wash-wide-color: oklch(0.18 0.04 215 / 0.72);
+  /* 18/21 — the copy scrim. THIS is what makes the copy legible over any
+   * photograph; the wash above is composition and is deliberately no longer
+   * load-bearing (see the mask cuts below). Plateau alpha is ticket 18's
+   * 0.926. Measured here: over a white photograph — the worst case, since a
+   * dark scrim composites lightest there — that gives the copper kicker 8.68
+   * against the 4.5 it needs. The binding minimum is 0.7379, so 18's stated
+   * derivation ("set by the copper kicker at 4.5:1") does not reproduce; the
+   * number it does reproduce is the IS-NOW CYAN at 4.5:1 (0.8965), and the
+   * cyan was moved onto the opaque legend card by the same ticket. The margin
+   * is kept rather than spent: lowering it is a look call against pixels, not
+   * an arithmetic one. The test asserts the guarantee, not the literal. */
+  --derico-hero-copy-scrim: oklch(0.18 0.04 215 / 0.926);
   --derico-hero-ink: oklch(0.99 0.004 215);
   --derico-hero-ink-soft: oklch(0.93 0.018 215);
   --derico-hero-copper: oklch(0.82 0.13 65);
@@ -72,6 +84,17 @@
   padding-block: var(--plone-space-xl) var(--plone-space-l);
   color: var(--derico-hero-ink);
   background: var(--derico-hero-ground);
+  /* Ticket 17/22 — the hero's body type, stated from the PUBLIC token ladder.
+   * Clara's `:root` already carries the mockup's exact values here
+   * ("Source Sans 3", system-ui, sans-serif and 1.65), and 06 §3 permits a
+   * block sheet to speak `--plone-*`. Stating them on the component's own root
+   * fixes BOTH surfaces from one declaration, which is the whole reason this
+   * seam was chosen over a theme-layer rule: Blicca states its Tailwind stack
+   * on `.aurora-blocks-view` only, so a theme rule fixes the view and breaks
+   * canvas/view parity. The leading moves with the family — 1.6 -> 1.65 is the
+   * legend's entire 291-against-330 height gap that ticket 10 measured. */
+  font-family: var(--plone-font-body);
+  line-height: var(--plone-leading-body);
 }.derico-hero .hero-media,
 .derico-hero .hero-wash {
   position: absolute;
@@ -85,6 +108,47 @@
 }.derico-hero .hero-wash {
   z-index: -1;
   background: var(--derico-hero-wash-mobile);
+  /* 21 §3 — the wash is cut away from the copy so the scrim is the ONLY layer
+   * over it. Stacking 0.72 under 0.926 composites to 0.98, which is the solid
+   * copy panel this design avoids. Measured on the design source: single
+   * column, the copy occupies the top 4.1% to at most 45.5% of the hero
+   * (widest at 320); the cut clears it everywhere with 4.5 points to spare.
+   * The stop is proportional because the copy's box is — the feather stays in
+   * rem, per 06 §9, so the softness does not stretch with the viewport. */
+  mask-image: linear-gradient(180deg,
+    transparent 0 50%,
+    black calc(50% + 5rem));
+}/* ── the contrast guarantee (18/21) ──────────────────────────────────────── *//* The scrim rides the HERO, `inset: 0`, and is shaped by the same 50% stop
+ * that cuts the wash away — one boundary, used twice from opposite sides. That
+ * is what makes 21 §3's "the scrim is the only layer over the copy" true by
+ * construction rather than by two tunings that have to agree: soften one and
+ * the guard below sees the pair disagree.
+ *
+ * It is NOT anchored to the copy column, which was the first attempt: a pseudo
+ * inset -5.5rem past the copy box hangs 72px outside the hero at 320 (measured
+ * — the hero reported 392 against a 320 client width), and the hero's
+ * `overflow: hidden` clips it visually while still reporting the overflow that
+ * ticket 15's guarantee is stated in terms of. Widening the guarantee to let a
+ * decorative box through would have blinded it to a real headline overflow,
+ * which is the defect it exists for. Anchored to the hero there is nothing to
+ * hang over.
+ *
+ * The cost, stated: the plateau is a band rather than a box, so it darkens the
+ * copy column above and below the text as well. That is the same band the wash
+ * darkened before, so the composition keeps its shape — it goes from 0.61
+ * effective to 0.926. */.derico-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: var(--derico-hero-copy-scrim);
+  /* Single column: the copy is the top band. Two columns: the left one. The
+   * feather stays in rem so its softness does not stretch (06 §9); only the
+   * boundary is proportional, because only the boundary tracks the box. */
+  mask-image: linear-gradient(180deg,
+    black 0 50%,
+    transparent calc(50% + 5rem));
 }/* 06 §7 — the mockup's `.shell` formula folded in, over `--plone-measure`
  * (76rem, bit-identical to the mockup's `--site-max`). No `.shell` element
  * and no new token. */.derico-hero .home-hero__grid {
@@ -193,7 +257,27 @@
 }.derico-hero .rings-disc .ring-thin { stroke-width: 1.5; }.derico-hero .rings-disc .ring-now {
   stroke: var(--derico-hero-ring-now);
   stroke-width: 4;
-}.derico-hero .rings-disc .ring-future { stroke-dasharray: 5 8; }.derico-hero .ring-markers {
+}.derico-hero .rings-disc .ring-future { stroke-dasharray: 5 8; }/* Ticket 20/23 — the ring halo. No ink passes 3:1 over an arbitrary
+ * photograph: copper (Y 0.5365) needs a backdrop at Y <= 0.1455 and its bright
+ * side would need Y >= 1.71, which does not exist; the is-now cyan (Y 0.2836)
+ * needs Y <= 0.0612 or Y >= 0.9508. And this is not hypothetical — the SHIPPED
+ * forest already fails for 3.3 percent of the rings band in copper and 10.3
+ * percent in cyan. `stroke-width` buys nothing (a ratio does not care how thick
+ * the line is), so the remedy is an opaque halo: ground beats copper 10.43 and
+ * cyan 5.93, and being opaque it makes the adjacency PHOTOGRAPH-INDEPENDENT,
+ * which is why the value test needs no image at all.
+ *
+ * Ground is forced rather than chosen: the halo must be Y <= 0.0612 to serve
+ * both inks, a light halo is 1.74 against copper, and a translucent one needs
+ * alpha >= 0.78. So no new colour token — this names the same ground the legend
+ * card reads.
+ *
+ * `w` is 2px per side (ticket 20 section 9): the marker chips' own `border: 2px`,
+ * and enough that antialiasing on a curved stroke does not leave the effective
+ * adjacent colour a blend of halo and photograph. Specificity already beats the
+ * ink rules (four classes against three), so no `!important` and no reordering;
+ * `fill: none` and `vector-effect: non-scaling-stroke` are inherited from the
+ * rule above, which is what makes the halo hold at 375 as well as 1440. */.derico-hero .rings-disc .ring-halo circle { stroke: var(--derico-hero-ground); stroke-width: 6.5; }.derico-hero .rings-disc .ring-halo .ring-thin { stroke-width: 5.5; }.derico-hero .rings-disc .ring-halo .ring-now { stroke-width: 8; }.derico-hero .ring-markers {
   position: absolute;
   inset: 0;
   padding: 0;
@@ -216,7 +300,17 @@
   transform: translate(-50%, -50%);
 }.derico-hero .ring-markers li:nth-child(1) { left: 41.62%; top: 44.04%; }.derico-hero .ring-markers li:nth-child(2) { left: 50.44%; top: 31.28%; }.derico-hero .ring-markers li:nth-child(3) { left: 59.85%; top: 17.66%; }.derico-hero .ring-markers li:nth-child(4) { left: 67.65%; top: 6.38%; }.derico-hero .ring-markers .is-now { background: var(--derico-hero-ring-now); }/* The legend is HTML BENEATH the SVG precisely so it does not scale with the
  * graphic: ticket 07 measured captions at 15px on both surfaces at both 1440
- * and 375, which is Clara's label floor exactly. */.derico-hero .ring-legend { margin-block-start: var(--plone-space-s); }.derico-hero .ring-legend > div {
+ * and 375, which is Clara's label floor exactly. *//* 18 §2 — the legend card. Opaque, and forced rather than chosen: the is-now
+ * cyan needs a wash alpha of 0.983 to clear 4.5:1 translucently, so nothing
+ * short of a ground reaches it. On the ground every existing colour passes
+ * with room (cyan 5.94, copper 10.47, ink-soft 15.26), which is why this
+ * changes no colours. The card wraps the `<dl>` only — the rings disc keeps
+ * floating on the photograph, and carries its own halo instead (ticket 20). */.derico-hero .ring-legend {
+  margin-block-start: var(--plone-space-s);
+  padding: var(--plone-space-m);
+  border-radius: var(--plone-radius-l);
+  background: var(--derico-hero-ground);
+}.derico-hero .ring-legend > div {
   display: grid;
   grid-template-columns: 1.5rem minmax(0, 1fr);
   gap: var(--plone-space-2xs);
@@ -238,14 +332,31 @@
      * is where the copy column's inset is measured from too; both shift
      * together with the toolbar. Percentages would stretch the gradient's
      * softness with the viewport, which is what the fixed stops prevent. */
+    /* 21 §3 — cut away from the copy, replacing 06 §9's 0.85/300px softening:
+     * a softened wash is still a wash, and it stacked with the scrim. Measured
+     * on the design source across 896-1600: two columns, the copy's right edge
+     * sits at 47.94-48.85% of the hero, so a 50% stop clears it at every width
+     * with at least 1.15 points of margin. Proportional and NOT fixed pixels —
+     * the copy column is a fraction of the hero box, and the hero box is
+     * viewport-minus-toolbar, so a pixel stop would land in a different place
+     * for a logged-in author than for a visitor. That is ticket 15's `cqi`
+     * lesson; 06 §9's fixed stops were about the FEATHER, which stays in rem. */
     mask-image:
       linear-gradient(90deg,
-        rgb(0 0 0 / 0.85) 0 300px,
-        black 420px),
+        transparent 0 50%,
+        black calc(50% + 5rem)),
       radial-gradient(ellipse 49% 58.5% at left bottom,
         transparent 0 55%,
         black 65% 100%);
     mask-composite: intersect;
+  }
+  /* The other half of the shared boundary: at wide the copy is the LEFT
+   * column, so the scrim turns through 90 degrees exactly where the wash's cut
+   * does. The two stops are the same number by construction. */
+  .derico-hero::before {
+    mask-image: linear-gradient(90deg,
+      black 0 50%,
+      transparent calc(50% + 5rem));
   }
   .derico-hero .home-hero__grid {
     grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr);

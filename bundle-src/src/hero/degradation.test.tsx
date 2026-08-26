@@ -210,7 +210,36 @@ describe('an entirely empty hero', () => {
     expect(hero.querySelector('picture')).toBeNull();
     expect(hero.querySelector('.action-row')).toBeNull();
     // The rings are template, not content: they are there from insert.
-    expect(hero.querySelectorAll('.rings-disc circle')).toHaveLength(8);
+    expect(hero.querySelectorAll('.rings-disc circle')).toHaveLength(16);
     expect(hero.querySelectorAll('.ring-legend > div')).toHaveLength(4);
+  });
+
+  /* Ticket 20/23. The halo is only a contrast guarantee if it is actually
+   * PAIRED with the ink — a halo group that drifted to seven circles, or that
+   * moved after the ink group and so paints over it, is a silent failure. The
+   * geometry is stated twice in this file and twice again in `hero.pt`; this
+   * is what makes that duplication safe rather than merely regretted. */
+  test('pairs every ring stroke with a halo beneath it', () => {
+    const hero = draw(full);
+    const disc = hero.querySelector('.rings-disc')!;
+    const halo = disc.querySelector('.ring-halo')!;
+    const ink = disc.querySelector('.ring-ink')!;
+
+    expect(halo).not.toBeNull();
+    expect(ink).not.toBeNull();
+    // Halo FIRST: SVG paints in document order, so the reverse hides the ink.
+    expect(halo.compareDocumentPosition(ink) & Node.DOCUMENT_POSITION_FOLLOWING)
+      .toBeTruthy();
+
+    const circles = (group: Element) =>
+      Array.from(group.querySelectorAll('circle')).map((c) =>
+        ['cx', 'cy', 'r', 'class'].map((a) => c.getAttribute(a)).join('|'),
+      );
+    expect(circles(halo)).toHaveLength(8);
+    // Same cx/cy/r AND the same per-circle class, so `.ring-now`'s heavier
+    // stroke gets the heavier halo rather than the default one.
+    expect(circles(halo)).toEqual(circles(ink));
+    // Both groups carry the translate, or the halo sits 105 units to the left.
+    expect(halo.getAttribute('transform')).toBe(ink.getAttribute('transform'));
   });
 });

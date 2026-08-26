@@ -212,6 +212,52 @@ function heroGeometry(page) {
       'the inserted block renders its own root in the canvas',
     );
 
+    /* -- the body type, in the CANVAS: ticket 17/22 -------------------- */
+    /* This assertion is the whole justification for the seam. The theme-layer
+     * alternative would have fixed the published view and BROKEN this, because
+     * Blicca states its Tailwind stack on `.aurora-blocks-view` only and the
+     * canvas takes its stack from Aurora's scoped preflight instead. One
+     * declaration in the block's own scope-wrapped sheet lands on both
+     * surfaces, so the same numbers must come back here as in
+     * `hero-view.e2e.js`. Pinned rather than assumed. */
+    const canvasType = await page.evaluate(() => {
+      const style = getComputedStyle(document.querySelector('.derico-hero'));
+      const size = parseFloat(style.fontSize);
+      return {
+        family: style.fontFamily.split(',')[0].replace(/["']/g, '').trim(),
+        leading: Math.round((parseFloat(style.lineHeight) / size) * 100) / 100,
+      };
+    });
+    check(
+      canvasType.family === 'Source Sans 3',
+      `the canvas hero's body family is the theme's (${canvasType.family})`,
+    );
+    check(
+      Math.abs(canvasType.leading - 1.65) <= 0.02,
+      `the canvas hero's leading is the design's 1.65 (${canvasType.leading})`,
+    );
+
+    /* -- the ring halo, in the canvas: ticket 20/23 -------------------- */
+    const canvasHalo = await page.evaluate(() => {
+      const disc = document.querySelector('.derico-hero .rings-disc');
+      const halo = disc && disc.querySelector('.ring-halo');
+      const ink = disc && disc.querySelector('.ring-ink');
+      if (!halo || !ink) return null;
+      const widths = (g) =>
+        Array.from(g.querySelectorAll('circle')).map((c) =>
+          parseFloat(getComputedStyle(c).strokeWidth),
+        );
+      return { halo: widths(halo), ink: widths(ink) };
+    });
+    check(!!canvasHalo, 'the canvas hero carries the ring halo');
+    if (canvasHalo) {
+      check(
+        canvasHalo.halo.length === 8 &&
+          canvasHalo.halo.every((w, i) => w - canvasHalo.ink[i] >= 3),
+        `every canvas halo surrounds its ink by at least 3px (${JSON.stringify(canvasHalo.halo)} vs ${JSON.stringify(canvasHalo.ink)})`,
+      );
+    }
+
     /* -- one React ---------------------------------------------------- */
     const resources = await blockResources(page);
     check(

@@ -1,7 +1,7 @@
 # Task: give CI read access to plone.blicca.auroraeditor
 
 Type: task
-Status: open
+Status: closed
 Blocked by: —
 
 ## Question
@@ -34,3 +34,18 @@ sandbox site whether or not CI can build it. Ticketed anyway because a red CI
 with no ticket behind it is a thing that gets normalised.
 
 Resolved when a CI run on `master` is green.
+
+## Closed — out of scope
+
+Ruled out of scope by md@derico.de on 2026-08-26: CI is not relevant to this
+effort. The ticket had already said as much about the route — "the block
+installs and works on the sandbox site whether or not CI can build it" — and
+kept itself open only on the argument that a red CI with no ticket behind it
+gets normalised. That argument is the repository owner's to weigh, not this
+map's, and the Destination does not pass through it.
+
+Closed rather than left open so it is unambiguously off the frontier. Nothing
+here is withdrawn: `BLICCA_TOKEN` is still what CI needs, and the two lockstep
+guards from ticket 04 §9 (the vendored `scope-wrap.ts`, the declared
+`block_api` floor) still skip there. Both run locally, and the local run is
+what this map relied on throughout.
