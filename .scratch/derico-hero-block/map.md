@@ -419,6 +419,32 @@ spec exists for it.
   109 new tests (226 total, **no skips left** — landing the record turned 08's
   predicted skip live), 12 mutations red-then-green.
 
+- [Task: install the block and verify it end to end](issues/10-verify-end-to-end.md)
+  — **the block installs, inserts, authors, saves and renders on the sandbox
+  site, and the published page matches the design source everywhere except its
+  type family.** Measured side by side against `docs/design/derico.de/site` in
+  one browser at 1440/900/375/320: grid tracks identical to the pixel, the
+  container query flipping to one column at the same place, rings stage and
+  disc to the pixel, markers 28x28, nothing under 15px, the headline carrying
+  the design's `-0.02em` and not Clara's. The gate does what 03 designed — an
+  ordinary editor gets the same 19-item menu minus the hero, and a page that
+  already holds one still RENDERS it. One React (the block's resource
+  directory serves exactly `hero.js` and `blocks.css`). 15's two unverified
+  assumptions both hold: `<html lang>` agrees on `de`, and nothing clips at
+  320 or 375 on either surface. The proof is [`e2e/`](../../e2e/) — two
+  re-runnable browser tests, not a transcript. Three defects came out of it:
+  the hero's body type is **Blicca's blocks-view default, not the theme's**
+  ([ticket 17](issues/17-hero-body-type.md), and the whole of the one
+  remaining geometry difference), the ring legend **misses AA over the
+  photograph** in the design source as much as here
+  ([ticket 18](issues/18-legend-contrast-over-the-photograph.md)), and the
+  upgrade profile is offered as an installable add-on
+  ([ticket 19](issues/19-hide-the-upgrade-profile.md)). Method notes worth
+  keeping: a worst-pixel contrast number cannot tell a defect from a speckle
+  (report the share of the glyph area too), `visibility: hidden` removes the
+  background you were trying to reveal, and an unscoped `h1` query on the
+  published page returns the content header's title, not the block's.
+
 ## Not yet specified
 
 - **A print stylesheet for the theme.** The mockup ships a whole-page
@@ -496,3 +522,11 @@ spec exists for it.
   sites, one of them an external-video URL path, is a regression risk in a
   ticket about images. Documented as a limit in §5.2 and pinned by a test;
   fixing it is Blicca's call, not this map's destination.
+
+- **Blicca's diagnostics lists a role twice.** "Who may insert" renders
+  `Manager, Manager, Site Administrator` for the hero's permission:
+  `permission_roles` sorts what `rolesForPermissionOn` returns but does not
+  deduplicate it, and the grant is both declared and acquired. Found on
+  [ticket 10](issues/10-verify-end-to-end.md). Cosmetic, one word to fix, and
+  in another package's diagnostics view — Blicca's call, not this map's
+  destination.
