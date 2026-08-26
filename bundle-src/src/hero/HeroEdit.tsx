@@ -12,20 +12,31 @@
  * canvas breaking the headline where the view kept it whole). Nothing here is
  * contenteditable, so nothing is lost by normalising it.
  *
- * The only thing the canvas adds to the public rendering is the nag: a
+ * The canvas is also where a fresh insert gets its words. Aurora writes a
+ * node carrying `@type` and nothing else, and `blocksConfig` has no
+ * initial-data hook, so this component is the first — and only — place the
+ * block sees its own node in time to seed it (`defaults.ts`).
+ *
+ * The other thing the canvas adds to the public rendering is the nag: a
  * half-authored hero saves and previews happily — nothing in the schema is
  * required — so the editor is where the author is told what is still missing.
  * The hint is `contentEditable={false}` and outside the hero's own root, so
  * it can neither be typed into nor styled by the block's palette.
  */
+import { useEffect, useRef } from 'react';
+
 import Hero from './Hero';
 import HeroMedia from './HeroMedia';
 import { legend, link, reference, text } from './data';
 import type { HeroData } from './data';
+import { seeded, unseeded } from './defaults';
 
 export type HeroEditProps = {
   data: HeroData;
+  /** The adapter's block id; `onChangeBlock`'s first argument, unread here. */
+  block?: string;
   selected?: boolean;
+  onChangeBlock?: (block: string, data: HeroData) => void;
 };
 
 /** What a reader of the finished page would notice was missing. */
@@ -41,7 +52,18 @@ export function missing(data: HeroData): string[] {
   return gaps;
 }
 
-export function HeroEdit({ data }: HeroEditProps) {
+export function HeroEdit({ block, data, onChangeBlock }: HeroEditProps) {
+  // In an effect, not in render: seeding writes to the Plate document, and
+  // `setNodes` during another component's render is a mid-render store
+  // update. Once per mounted block — the ref is what stops a host that
+  // re-renders before the write lands from queueing a second one.
+  const seedWritten = useRef(false);
+  useEffect(() => {
+    if (seedWritten.current || !onChangeBlock || !unseeded(data)) return;
+    seedWritten.current = true;
+    onChangeBlock(block ?? '', seeded(data));
+  }, [block, data, onChangeBlock]);
+
   const gaps = missing(data);
   return (
     <>

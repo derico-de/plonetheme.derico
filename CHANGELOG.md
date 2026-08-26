@@ -2,6 +2,20 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **A freshly inserted Derico Hero already carries the mockup's words.** Kicker,
+  headline, lede, both link labels and all four ring-legend pairs arrive filled
+  in with the German homepage copy from `docs/design/derico.de/site/de/`, so an
+  author edits eight fields instead of inventing them and can see which field
+  is which the moment the block lands. Every word is stored on the block and
+  every word is editable — a starting draft, not a fallback: the seed is
+  written exactly once, keyed on whether the node carries any hero key at all,
+  so clearing a field leaves it cleared. Ticket 02 put this default on the
+  slash-menu entry; nothing writes it there (Aurora inserts a node carrying
+  `@type` and nothing else, and `blocksConfig` has no initial-data hook), so it
+  happens in the block's own `edit` component instead. The site-specific fields
+  — both link targets and both crops — are deliberately left empty, and the
+  canvas nag goes on naming them until they are picked.
+
 - **The hero's contrast guarantee is structural, not tuned against one
   photograph** (hero tickets 18/20/21/23). Every text element and the rings
   disc now meet their WCAG threshold over *any* upload, because each one's
