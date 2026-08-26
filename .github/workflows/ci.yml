@@ -107,17 +107,27 @@ jobs:
           cache: pnpm
           cache-dependency-path: bundle-src/pnpm-lock.yaml
 
+      # `working-directory`, not `--dir`: corepack resolves the pnpm version
+      # from the *current* directory, and the repository root has no
+      # package.json. From root it falls back to its own bundled pnpm, which
+      # then refuses to run against the `packageManager` pin it reads out of
+      # bundle-src/package.json ("pnpm does not switch versions when running
+      # under corepack"). Standing in bundle-src is what lets the pin apply.
       - name: Install
-        run: pnpm --dir bundle-src install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
+        working-directory: bundle-src
 
       - name: Typecheck
-        run: pnpm --dir bundle-src typecheck
+        run: pnpm typecheck
+        working-directory: bundle-src
 
       - name: Test
-        run: pnpm --dir bundle-src test
+        run: pnpm test
+        working-directory: bundle-src
 
       - name: Build
-        run: pnpm --dir bundle-src build
+        run: pnpm build
+        working-directory: bundle-src
 
       # If this fails, someone edited bundle-src/src/ and did not rebuild.
       - name: Committed artifacts match their source
