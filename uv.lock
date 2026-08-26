@@ -2555,6 +2555,35 @@ wheels = [
 ]
 
 [[package]]
+name = "plone-blicca-auroraeditor"
+version = "1.0.0a2"
+source = { editable = "../plone.blicca.auroraeditor" }
+dependencies = [
+    { name = "plone-api" },
+    { name = "plone-browserlayer" },
+    { name = "plone-locking" },
+    { name = "plone-restapi" },
+    { name = "plone-volto" },
+    { name = "products-cmfplone" },
+    { name = "setuptools" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "plone-api" },
+    { name = "plone-app-contenttypes", marker = "extra == 'test'" },
+    { name = "plone-app-testing", marker = "extra == 'test'" },
+    { name = "plone-browserlayer" },
+    { name = "plone-locking" },
+    { name = "plone-restapi", specifier = ">=9.8.0" },
+    { name = "plone-testing", marker = "extra == 'test'" },
+    { name = "plone-volto" },
+    { name = "products-cmfplone" },
+    { name = "setuptools" },
+]
+provides-extras = ["test"]
+
+[[package]]
 name = "plone-browserlayer"
 version = "4.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2922,7 +2951,7 @@ wheels = [
 [[package]]
 name = "plone-pageletlayout"
 version = "1.0.0a1"
-source = { editable = "sources/plonetheme.clara/sources/plone.pageletlayout" }
+source = { editable = "../plone.pageletlayout" }
 dependencies = [
     { name = "paste" },
     { name = "plone" },
@@ -3422,7 +3451,7 @@ wheels = [
 [[package]]
 name = "plonetheme-clara"
 version = "1.0.0a1"
-source = { editable = "sources/plonetheme.clara" }
+source = { editable = "../plonetheme.clara" }
 dependencies = [
     { name = "paste" },
     { name = "plone" },
@@ -3441,7 +3470,7 @@ requires-dist = [
     { name = "plone-app-testing", marker = "extra == 'test'" },
     { name = "plone-app-upgrade" },
     { name = "plone-classicui" },
-    { name = "plone-pageletlayout", editable = "sources/plonetheme.clara/sources/plone.pageletlayout" },
+    { name = "plone-pageletlayout", editable = "../plone.pageletlayout" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'" },
@@ -3465,6 +3494,7 @@ dependencies = [
     { name = "plone" },
     { name = "plone-app-caching" },
     { name = "plone-app-upgrade" },
+    { name = "plone-blicca-auroraeditor" },
     { name = "plone-classicui" },
     { name = "plonetheme-clara" },
     { name = "setuptools" },
@@ -3492,9 +3522,10 @@ requires-dist = [
     { name = "plone-app-caching" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
     { name = "plone-app-upgrade" },
+    { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
     { name = "plone-classicui" },
     { name = "plone-testing", marker = "extra == 'test'" },
-    { name = "plonetheme-clara", editable = "sources/plonetheme.clara" },
+    { name = "plonetheme-clara", editable = "../plonetheme.clara" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'" },
     { name = "pytest-plone", marker = "extra == 'test'", specifier = ">=0.5.0" },

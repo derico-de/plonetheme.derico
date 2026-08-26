@@ -9,6 +9,7 @@
   <i18n:registerTranslations directory="locales" />
 
   <include file="permissions.zcml" />
+  <include package=".browser" />
 
   <!-- The token override sheet and the brand mark, served at
        ++resource++plonetheme.derico/ and linked by the bundle registered in
@@ -63,5 +64,8 @@
       factory=".setuphandlers.HiddenProfiles"
       name="plonetheme.derico-hiddenprofiles"
       />
+
+
+  <include package=".upgrades" />
 
 </configure>

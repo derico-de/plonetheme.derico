@@ -8,4 +8,19 @@
            prefix="plone.bundles/plonetheme-derico"
            remove="true" />
 
+  <!-- Same for the block records: an orphaned IAuroraBlockAddon record would
+       keep @@aurora-edit trying to load a bundle whose ZCML is gone, and the
+       hero would keep appearing in the slash menu of a site that can no
+       longer render it. -->
+  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.hero"
+           remove="true" />
+
+  <!-- DELIBERATELY ASYMMETRIC, and not an oversight to be tidied up: neither
+       the `enormous` scale rung nor the two `hero-*` picture variants is
+       removed here (hero ticket 05 §5, matching how Blicca never removes its
+       own `fullwidth`). Removing a scale that content elsewhere has since
+       come to reference is worse than leaving a harmless extra rung in the
+       ladder; the bundle records above have no such second reader. -->
+
 </registry>

@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1001"
+      title="plonetheme.derico: upgrade to 1001"
+      directory="1001"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1000"
+      destination="1001"
+      profile="plonetheme.derico:default">
+
+    <genericsetup:upgradeStep
+        title="Install the Derico Hero brand block"
+        description="Register the hero&#39;s block record, scale rung, picture variants and insert permission"
+        handler=".v1001.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1001"
+        import_profile="plonetheme.derico.upgrades:1001"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

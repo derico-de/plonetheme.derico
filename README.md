@@ -42,6 +42,78 @@ implementation the theme is built against. Two colours carry it: exact brand
 cyan `#039fba` (OKLCH hue 215.55) and a copper complement; Literata over Source
 Sans 3; flat and hairlined, no shadows.
 
+## The Derico Hero
+
+The first brand block: the homepage opening from the mockup — photograph,
+kicker, headline, lede, two calls to action, and the rings figure with its
+four-entry legend. Installing the theme registers it; nothing else is needed.
+
+It is deliberately **inflexible**. It implements one design template, allows
+the text and images that template needs, and offers the author **no options** —
+no width control, no palette variant, no "hide the rings" toggle. A variant is
+added when the design asks for one, never in anticipation. That is the standing
+principle for every brand block, not a quirk of this one.
+
+### Inserting it
+
+Only **Manager** and **Site Administrator** see it in the slash menu — the
+`plonetheme.derico: Insert Brand Block` permission, granted at the site root in
+`profiles/default/rolemap.xml` and changeable through the *Security* control
+panel. This is **guidance, not security**: the block stays authorable through
+the REST API, and a user without the permission still sees an existing hero
+rendered normally rather than as an unknown-block placeholder.
+
+### Authoring one
+
+| field | notes |
+|---|---|
+| kicker, headline, lede | plain text; edited in the sidebar, previewed live in the canvas |
+| primary / secondary link | each renders only when it has **both** a label and a target |
+| wide image, portrait image | two Image content items, two crops — see below |
+| ring legend | exactly **four** `{title, subtitle}` pairs; the numerals come from position and the last ring is always the "now" one |
+
+Nothing is required. A half-filled hero saves and previews; the editor lists
+what is still missing rather than refusing.
+
+**Upload the two crops as WebP.** Plone switches **resolution** but never
+**format** — `Img2PictureTag` emits no `type=`, and `plone.scale` preserves
+WebP while coercing anything that is not PNG to JPEG. So the format the hero
+serves is the format that was uploaded, and WebP-in/WebP-out recovers most of
+the mockup's byte saving for free.
+
+**Two crops, not two sizes.** Plone's named scales give variants of one crop,
+never art direction, so the wide and the portrait framing stay two uploads. One
+crop alone renders at every breakpoint and `object-fit: cover` centre-crops it;
+that is a legitimate choice, not a defect, and there is no per-image
+`object-position` to tune — the honest fix for a badly framed hero is at the
+upload.
+
+**Budget the headline at about 14 characters per line.** The ramp is
+`clamp(2.4rem, 1.4rem + 5cqi, 5rem)` over a `14.5ch` measure, and the layout
+guarantees the text never clips even at a 320px viewport — but a very long
+compound word will shrink the line it sits on rather than break. This is a
+budget, not a validator: nothing stops you exceeding it.
+
+### What installing it changes
+
+Beyond the block record itself:
+
+- **one new image scale**, `enormous 2600:65536`, **appended** to
+  `plone.allowed_sizes`. Only ever appended: stock templates and other add-ons
+  hardcode `large`, `preview`, `mini` and friends by name.
+- **two picture variants**, `hero-wide` and `hero-portrait`, added by a
+  setuphandler because `plone.picture_variants` is a JSONField and
+  GenericSetup has no syntax for one. Both are hidden from the richtext
+  editor's variant picker, where they would be meaningless.
+- **`plone.blicca.auroraeditor`**, installed as a profile dependency. It is
+  the editor the block mounts in and the source of the promised rendering API
+  the public view imports, so the theme depends on it hard and with a version
+  floor.
+
+Uninstalling removes the block record but **leaves the scale and the variants
+in place** — removing a scale that content elsewhere has come to reference is
+worse than leaving a harmless extra rung in the ladder.
+
 ## What is overridden — and what deliberately is not
 
 Every override is one of two kinds, and nothing else qualifies:
@@ -88,7 +160,7 @@ what lands in the page.
   (`tests/test_color_contrast.py`)
 
 ```bash
-uv run pytest tests -q          # 99 tests
+uv run pytest tests -q          # 226 tests
 ```
 
 Live verification (2026-07-28), a Plone 6.2 instance on port 8088 with the

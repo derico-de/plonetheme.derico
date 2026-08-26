@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <version>1000</version>
+  <version>1001</version>
   <dependencies>
     <dependency>profile-plone.app.registry:default</dependency>
+    <!-- The brand blocks' host. A Python dependency does not install a
+         profile, and without Blicca's profile the IAuroraBlockAddon record
+         below has no reader, the editor has no @@aurora-edit and the hero
+         has nothing to mount in. Above Clara because it is the deeper
+         requirement: Clara is the look, Blicca is the machinery. -->
+    <dependency>profile-plone.blicca.auroraeditor:default</dependency>
     <!-- derico is a values-only theme layered on Clara: installing derico
          installs Clara, which in turn installs plone.pageletlayout: the
          rendering machinery, the markup contract, the primitives, and the

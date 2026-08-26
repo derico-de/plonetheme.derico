@@ -97,6 +97,14 @@ spec exists for it.
   to build in either half.
 - Any GenericSetup profile XML change gets an upgrade step, even at `1.0.0a1` —
   scaffold via `plonecli add upgrade_step`, narrowed to the affected import step.
+- **Blicca is a hard, versioned dependency of the theme** (ticket 09): Python
+  `>=1.0.0a2` *and* a GS profile dependency, which are different promises about
+  different surfaces. `block_api` covers neither — it versions the JS facades
+  alone. Consequence: the theme cannot be installed, tested or built without
+  the private `plone.blicca.auroraeditor` checkout, on CI as much as locally.
+- **The public template's commentary must be `<!--! … -->`.** Chameleon refuses
+  an ASCII `--` inside an HTML comment at all, and an ordinary comment is
+  served to every visitor. Applies to every brand block's template.
 
 ## Decisions so far
 
@@ -354,6 +362,62 @@ spec exists for it.
   unchanged), so the mockup is a trustworthy reference for the next brand
   block. Measurements:
   [`assets/15-wrap-measurements.md`](assets/15-wrap-measurements.md).
+
+- [Build: the Derico Hero's editor half](issues/08-build-editor-half.md)
+  — **built and green**; the ticket's instructions all held, and four things
+  came out of writing it. **The reference trim moved from the edit component
+  into a widget** (corrects 02): the sidebar writes straight onto the Plate node
+  via `onFormDataChange` → `setNodes`, so the edit component is never consulted
+  and has no interception point — hence a third namespaced widget,
+  `derico_reference`, producing exactly the bare `@id` shape 02 fixed. Same
+  reading: **cmsui resolves a widget by field id before `widget`**, so
+  `image_wide`/`image_portrait` are load-bearing names — a field called `image`
+  silently takes the registered image widget. **Vendoring `scope-wrap.ts` was
+  not enough**: in lib mode `vite:css-post` emits the single `cssFileName`
+  asset *after* an unenforced plugin's `generateBundle`, so the sheet shipped
+  unwrapped and every token died against Aurora's scoped preflight — fixed with
+  `enforce: 'post'` at the call site, leaving the vendored copy byte-identical
+  to upstream, which is what the lockstep test pins. The externals are an
+  **allow-list over all eight promised specifiers**, not just what the hero
+  imports: a deny-list would wave through `platejs/react` or a transitive route
+  to React, which is the duplicate-instance bug itself. And
+  **`--derico-text-display` is retired** (amends 14 §3 to three aliases): 15
+  put the ramp on `.derico-hero h1` and forbade overriding the alias, leaving it
+  published and read by nobody — dead weight by 14's own guard. The canvas is a
+  preview of a **void** node — one set of components for both surfaces, the only
+  editor-only element a `contentEditable={false}` nag outside `.derico-hero`.
+  Binding on 09: the degradation table is one table implemented twice (21 vitest
+  cases), the record's `css` names the single `blocks.css`, and landing the
+  record turns the skipped `block_api` floor test live. 27 vitest, 116 passed /
+  1 skipped, artifacts reproducible under `git diff --exit-code`.
+
+- [Build: the Derico Hero's server half](issues/09-build-server-half.md)
+  — **built and green; the block installs, dispatches and renders.** The
+  transformer the ticket asked for **does not exist**: 01 was right that stock
+  restapi enriches a nested `{"@id": …}` and strips it again, so this package
+  registers none — and both halves of that round trip are now *pinned*, because
+  the failure is silent (no ladder, no error, one full-size original to every
+  visitor). The **version floor had to be created**: Blicca was never released —
+  no tags, no CHANGELOG, `1.0.0a1` a dev version — so it was bumped to
+  **`1.0.0a2`** and the theme pins `>=1.0.0a2`. That hard dependency **turns CI
+  red** until `BLICCA_TOKEN` is set, and the job now says so instead of running
+  green over an uninstallable package ([ticket 16](issues/16-blicca-token-secret.md)).
+  Three corrections: **05 §7's diagnostics line is withdrawn** — Blicca's
+  diagnostics is per-*record* and has no per-content dimension, and a wide-only
+  hero is a legitimate choice, which is why 08's nag already omits the portrait;
+  **one crop renders through the *wide* sourceset whichever crop it is**, since
+  the portrait variant's own `media` would strand every viewport above 56rem
+  with no ladder (05 §7 had only considered the mirror case); and the
+  **`<picture>` is one property, not two**, because `image_source` refusing to
+  build one *is* the condition for the plain `<img>`. Two facts about HTML
+  comments: Chameleon **refuses `--` inside one** (the template would not
+  compile), and an ordinary comment is **served to every visitor** — all of the
+  template's commentary is now `<!--! -->`. Nothing needed building for §5.4 or
+  for full-bleed, and 11's accepted limit was seen in the wild: a
+  fixture-authored node renders `default`. Upgrade step **1001** is narrowed to
+  installing the host plus `plone.app.registry`, `rolemap` and the variants.
+  109 new tests (226 total, **no skips left** — landing the record turned 08's
+  predicted skip live), 12 mutations red-then-green.
 
 ## Not yet specified
 

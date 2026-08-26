@@ -1,7 +1,17 @@
 <?xml version="1.0"?>
 <rolemap>
   <permissions>
-  <!-- -*- extra stuff goes here -*- -->
-
+    <!-- The insert gate of hero ticket 03. `acquire="True"` on purpose:
+         @@aurora-edit checks the permission on the object being edited, so
+         the grant made here at the site root has to reach every page below
+         it. Manager AND Site Administrator, because `cmf.ManagePortal` — the
+         obvious candidate — is Manager-only in stock Plone and would lock
+         out the very role this block exists for. -->
+    <permission acquire="True"
+                name="plonetheme.derico: Insert Brand Block"
+    >
+      <role name="Manager" />
+      <role name="Site Administrator" />
+    </permission>
   </permissions>
 </rolemap>

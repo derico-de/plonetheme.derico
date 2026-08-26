@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="plonetheme.derico">
+
+  <!-- The Derico Hero's public renderer (contract §5.1).
+
+       `for="*"` because the block is a node in the somersault tree of
+       whatever content type carries it, not a view of a type of its own;
+       `zope2.View` because rendering a published page is reading it. The
+       INSERT gate is a different question and lives on the record
+       (permissions.zcml) — it is guidance, not security, so this view assumes
+       nothing about who authored the block it is handed.
+
+       On THIS add-on's browser layer, activated by its GS profile: that makes
+       the registration per-site, and makes uninstall degrade cleanly to
+       Blicca's `block-unrendered` placeholder rather than to a traceback.
+
+       Nothing else is needed to wire it up. Blicca's dispatcher resolves
+       `aurora-block-<@type>` by name and falls back to `aurora-block-default`
+       for anything it cannot find, so the view name IS the registration. -->
+  <browser:page
+      name="aurora-block-derico-hero"
+      for="*"
+      class=".hero.DericoHeroView"
+      template="templates/hero.pt"
+      permission="zope2.View"
+      layer="plonetheme.derico.interfaces.IPlonethemeDericoLayer"
+      />
+
+</configure>
