@@ -4,7 +4,24 @@
   i18n_domain="plonetheme.derico">
 
   <configure zcml:condition="installed AccessControl.security">
-  <!-- -*- extra stuff goes here -*- -->
+
+    <!-- Who may INSERT a brand block from the slash menu (hero ticket 03,
+         contract §7). The record's `permission` field names the TITLE below,
+         not this id; @@aurora-edit evaluates it against the object being
+         edited and ships the verdict as `restrictedBlockTypes`.
+
+         Guidance, not security. The block stays authorable through the API,
+         so @@aurora-block-derico-hero must never assume its caller held this
+         — and it does not: it renders whatever data it is handed.
+
+         Not `cmf.ManagePortal`: that title is held by Manager alone in stock
+         Plone, and the destination of this map names the SITE ADMINISTRATOR
+         as the person who inserts the hero. The grant lives in
+         profiles/default/rolemap.xml, where a site can change it TTW. -->
+    <permission
+        id="plonetheme.derico.InsertBrandBlock"
+        title="plonetheme.derico: Insert Brand Block"
+        />
 
   </configure>
 

@@ -28,4 +28,78 @@
     <value key="enabled">True</value>
   </records>
 
+  <!-- ── the brand blocks ──────────────────────────────────────────────────
+
+       One IAuroraBlockAddon record per block (contract §3.2, hero ticket 04
+       §1). Not one record listing every @type: `loadBlockAddons` calls
+       `install(config)` once per RECORD with no dedupe, so a single install()
+       registering every derico block would silently kill the per-block
+       `enabled` kill switch — the first record's install would re-register a
+       block the second record had disabled.
+
+       Nor a `plone.bundles` record. A bundle emits `<script src defer>`, not
+       `type="module"`, so the bundle's bare `react` / `platejs` imports would
+       miss the import map @@aurora-edit emits and a SECOND React would load;
+       the block then fails inside Plate. Same build workflow, different
+       record. -->
+  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.hero">
+    <value key="bundle">++plone++plonetheme.derico.blocks/hero.js</value>
+
+    <!-- The FLOOR the block needs (React + jsx-runtime is 1.0 surface), not
+         the host's current version — declaring the host's would let a later
+         host bump strand this block, and a §2.4 mismatch is a fail-soft skip:
+         the block silently vanishes from the slash menu rather than erroring.
+         `tests/test_block_addon_lockstep.py` guards the ceiling.
+
+         This says nothing about the Python imports in browser/hero.py: §2.2
+         covers the JS facades alone. That surface is versioned by the
+         distribution, hence the `plone.blicca.auroraeditor>=1.0.0a2` floor in
+         pyproject.toml. Both signals ship; neither implies the other. -->
+    <value key="block_api">1.0</value>
+
+    <!-- Lib mode emits ONE stylesheet per build, not per entry, so every
+         future brand block's record names this same file (ticket 04 §5). -->
+    <value key="css">++plone++plonetheme.derico.blocks/blocks.css</value>
+
+    <value key="types">
+      <element>derico-hero</element>
+    </value>
+
+    <!-- The insert gate: a permission TITLE, not the ZCML id. Defined in
+         permissions.zcml, granted in rolemap.xml. Empty would mean
+         unrestricted. The bundle still loads for EVERYONE — an ordinary
+         editor opening a page that already has a hero sees the hero, not an
+         unknown-block placeholder. -->
+    <value key="permission">plonetheme.derico: Insert Brand Block</value>
+
+    <value key="enabled">True</value>
+    <value key="weight">100</value>
+  </records>
+
+  <!-- ── the hero's top scale rung (hero ticket 05 §2/§4) ──────────────────
+
+       APPENDED, never replacing: stock Plone templates and other add-ons
+       hardcode `large`, `preview`, `mini`, `thumb`, `icon` by name, so
+       removing or resizing an existing rung breaks things well outside this
+       theme. `purge="false"` is what makes this a merge into the existing
+       record rather than a replacement of the whole ladder.
+
+       2600 because it covers a 2560 desktop exactly and leaves a retina
+       laptop at 0.90x; 2400 would be 0.94x on that 2560 desktop and 2880
+       costs +44% bytes on the LCP image. Named for size, continuing the
+       stock ladder's adjective pattern — NOT `hero`, which would claim a
+       site-wide name for one block's purpose and put a `hero` key in every
+       image's `image_scales` payload.
+
+       The other half of ticket 05's imaging setup — the two picture variants
+       — cannot come through here: `plone.picture_variants` is a JSONField and
+       GS has no syntax for it. It is applied by `ensure_hero_variants()` in
+       setuphandlers.py instead. -->
+  <record name="plone.allowed_sizes">
+    <value purge="false">
+      <element>enormous 2600:65536</element>
+    </value>
+  </record>
+
 </registry>

@@ -2,6 +2,49 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The Derico Hero's server half — the block is now installable and rendered.**
+  `@@aurora-block-derico-hero` draws the published page from the same markup
+  tree and the same degradation table as the editor half, over the contract's
+  promised `BaseBlockView` / `image_source` / `path_of`. The photograph is one
+  `<picture>` art-directed across two uploads: `Img2PictureTag` is called once
+  per crop and the portrait's `<source>` elements are spliced in front of the
+  wide ones, because Plone's named scales give variants of one crop and two
+  toggled `<picture>` elements would download both. It is the page's LCP image,
+  so it ships `fetchpriority="high"` and explicitly not `loading="lazy"` —
+  instead of a `<head>` preload, which would couple the theme's head to block
+  content. A crop that cannot become a `<picture>` (an SVG, or a reference that
+  never went through the widget) falls through one code path to a plain `<img>`
+  in the same element, so `object-fit` frames it identically.
+
+- **Packaging: a block record, a permission, a scale rung and two variants.**
+  The `IAuroraBlockAddon` record declares the `block_api` **floor** the block
+  needs rather than the host's current version, and names the shared
+  `blocks.css` every future brand block's record will also name. Insert is
+  gated on a new `plonetheme.derico: Insert Brand Block`, held by Manager and
+  Site Administrator — `cmf.ManagePortal` is Manager-only in stock Plone and
+  would have locked out the very role the block is for. Imaging is split by
+  what GenericSetup can carry: `enormous 2600:65536` merges into
+  `plone.allowed_sizes` through `registry.xml` with `purge="false"`, while the
+  two `hero-*` picture variants come from an add-only setuphandler, because
+  `plone.picture_variants` is a JSONField. Uninstall removes the record and
+  deliberately leaves the imaging alone.
+
+- **`plone.blicca.auroraeditor` is a hard, versioned dependency.** Both a
+  Python requirement (`>=1.0.0a2`, the release carrying the promised rendering
+  API) and a GenericSetup profile dependency — a Python dependency installs no
+  profile, and a GS dependency reaches fresh installs only, so upgrade step
+  **1001** installs the host, re-runs the `plone.app.registry` and `rolemap`
+  import steps and adds the picture variants. Narrowed to those, not a blanket
+  profile reload.
+
+- **Contract §5.3 is satisfied by stock restapi, and now asserted rather than
+  assumed.** No serialization transformer ships with this theme: restapi
+  already resolves a nested `{"@id": …}` and injects `image_scales` beside it
+  whatever the field is called, and strips it again on save. That is a claim
+  about somebody else's code, and the day it stops being true the hero silently
+  loses its resolution ladder and serves one full-size original to every
+  visitor — so `tests/test_hero_view.py` pins both halves of the round trip.
+
 - **The Derico Hero's editor half.** `bundle-src/` is a small pnpm/Vite
   workspace whose build emits committed artifacts into `static-blocks/`
   (`hero.js` + a scope-wrapped `blocks.css`), served as

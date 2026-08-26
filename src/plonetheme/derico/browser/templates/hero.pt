@@ -1,0 +1,130 @@
+<section xmlns:tal="http://xml.zope.org/namespaces/tal"
+         class="derico-hero"
+         tal:define="media view/media;
+                     cta view/cta;
+                     quiet view/quiet_link;
+                     entries view/legend">
+  <!--! `.derico-hero`, never Aurora's `.block-derico-hero` wrapper stamp.
+       Measured (ticket 07): the wrapper is the full-bleed box on this page
+       but only the column box in the editing canvas, so painting the hero on
+       it clips the breakout in the editor. Both halves emit this same root,
+       and both then measure 1220 @220 at 1440 to the pixel. The wrapper stamp
+       stays free for derico.css §7's chrome-suppression rule, which wants it.
+
+       The element tree below matches Hero.tsx / HeroMedia.tsx / Rings.tsx
+       element for element: one scope-wrapped blocks.css styles both surfaces,
+       so a class renamed here is a rule that silently stops matching on the
+       published page only.
+
+       Indentation is safe HERE and only here. The Plate editable computes
+       `white-space: pre-wrap`, which turns every newline between two elements
+       into a real line box — it inflated the rings figure by 76% when ticket
+       07 measured it — but the sheet states `white-space: normal` on
+       `.derico-hero`, and nothing in this template lands inside the
+       editable. -->
+  <tal:media tal:condition="media">
+    <tal:picture tal:condition="media/picture"
+                 tal:replace="structure media/picture" />
+    <!--! The no-`<picture>` fallback: an SVG upload, or an image with no
+         scales. Same element and same class as the real thing, so ticket 06's
+         `object-fit: cover` frames it identically. -->
+    <picture class="hero-media"
+             aria-hidden="true"
+             tal:condition="not:media/picture">
+      <img alt=""
+           decoding="async"
+           fetchpriority="high"
+           tal:attributes="src media/src" />
+    </picture>
+  </tal:media>
+
+  <!--! Keyed off the DATA, not off `media`: a hero whose only crop is an SVG
+       renders plainly and still wants its wash, while a hero with no
+       photograph at all must not get one — a gradient over the flat token
+       ground reads as a rendering fault. -->
+  <div class="hero-wash"
+       aria-hidden="true"
+       tal:condition="view/has_media"></div>
+
+  <!--! No `.shell` element: 06 §7 folded the mockup's shell formula into
+       `.home-hero__grid` over Clara's measure token, which is bit-identical
+       to the mockup's own site-max. (An ASCII double hyphen cannot appear in
+       an HTML comment, so custom properties go unnamed in this file.) -->
+  <div class="home-hero__grid">
+    <div>
+      <p class="kicker"
+         tal:condition="view/kicker"
+         tal:content="view/kicker">kicker</p>
+      <!--! No `lang` attribute anywhere in this template, and no `lang` field
+           in the schema (ticket 15): `hyphens: auto` needs the page language,
+           which main_template already sets from `portal_state.language()`,
+           and a stamped `lang` here would override it with the wrong one on a
+           translated page. -->
+      <h1 tal:condition="view/headline"
+          tal:content="view/headline">headline</h1>
+      <p class="lede"
+         tal:condition="view/lede"
+         tal:content="view/lede">lede</p>
+      <!--! Each link renders only with BOTH a label and a target, and the row
+           itself only when at least one link survived that test. -->
+      <div class="action-row"
+           tal:condition="python: cta or quiet">
+        <a class="button"
+           tal:condition="cta"
+           tal:attributes="href cta/href"
+           tal:content="cta/label">call to action</a>
+        <a class="quiet-link"
+           tal:condition="quiet"
+           tal:attributes="href quiet/href"
+           tal:content="quiet/label">secondary link</a>
+      </div>
+    </div>
+
+    <!--! The rings are TEMPLATE, the words are content. The circles, their
+         offsets and the marker positions are the design: there is no field
+         for them, no author-facing control, and the `is-now` highlight is the
+         last ring by construction.
+
+         The legend is HTML beneath the SVG precisely so it does not scale
+         with the graphic — ticket 07 measured its captions at 15px on both
+         surfaces at both 1440 and 375, which is Clara's label floor exactly.
+         Fold the legend into the SVG and that floor goes. -->
+    <figure class="rings-figure">
+      <div class="rings-stage">
+        <svg class="rings-disc"
+             viewBox="0 0 680 470"
+             role="img"
+             aria-label="Wachstumsringe einer Anwendung">
+          <g transform="translate(105 0)">
+            <circle cx="150" cy="235" r="40" class="ring-thin" />
+            <circle cx="153" cy="232" r="80" />
+            <circle cx="147" cy="238" r="125" class="ring-thin" />
+            <circle cx="154" cy="231" r="170" />
+            <circle cx="148" cy="237" r="215" class="ring-thin" />
+            <circle cx="152" cy="234" r="250" />
+            <circle cx="150" cy="235" r="290" class="ring-now" />
+            <circle cx="151" cy="234" r="315" class="ring-future" />
+          </g>
+        </svg>
+        <ol class="ring-markers" aria-hidden="true">
+          <li tal:repeat="entry entries"
+              tal:attributes="class python: 'is-now' if entry['is_now'] else None"
+              tal:content="entry/number">1</li>
+        </ol>
+      </div>
+      <!--! Always exactly four rows, padded or truncated. A half-filled entry
+           keeps its numeral and emits only the half that has text; an
+           entirely empty entry is a numeral and nothing else. -->
+      <dl class="ring-legend">
+        <div tal:repeat="entry entries"
+             tal:attributes="class python: 'is-now' if entry['is_now'] else None">
+          <b tal:content="entry/number">1</b>
+          <dt tal:condition="entry/title"
+              tal:content="entry/title">title</dt>
+          <dd tal:condition="entry/subtitle"
+              tal:content="entry/subtitle">subtitle</dd>
+        </div>
+      </dl>
+    </figure>
+  </div>
+</section>

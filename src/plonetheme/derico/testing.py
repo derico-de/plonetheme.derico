@@ -2,9 +2,9 @@
 import os
 
 import plone.app.theming
+import plone.blicca.auroraeditor
 import plone.pageletlayout
 import plone.restapi
-import plonetheme.clara
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
@@ -12,6 +12,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.testing.zope import WSGI_SERVER_FIXTURE
 
+import plonetheme.clara
 import plonetheme.derico
 
 
@@ -31,6 +32,10 @@ class PlonethemeDericoLayer(PloneSandboxLayer):
         # dependency-profile install asks for it.
         self.loadZCML(package=plone.pageletlayout)
         self.loadZCML(package=plonetheme.clara)
+        # The brand blocks' host, and the same story: derico's profile depends
+        # on `profile-plone.blicca.auroraeditor:default`, which only exists
+        # once its ZCML has been read.
+        self.loadZCML(package=plone.blicca.auroraeditor)
         self.loadZCML(package=plonetheme.derico)
 
     def setUpPloneSite(self, portal):

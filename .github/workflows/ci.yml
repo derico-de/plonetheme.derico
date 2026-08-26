@@ -25,29 +25,43 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[test]"
-
-      # The lockstep guards (hero ticket 04 §9) skip unless
-      # plone.blicca.auroraeditor is resolvable — and a guard that always skips
-      # reads green while protecting nothing, which is worse than no guard.
-      # This is the job where pytest runs, so the checkout goes here.
+      # plone.blicca.auroraeditor is not optional and is not on PyPI. It is
+      # the editor the brand blocks mount in, the source of the promised
+      # rendering API `browser/hero.py` imports, and a GenericSetup profile
+      # dependency — so without it this package does not install, its ZCML
+      # does not load, and its profile cannot be applied. It is also where the
+      # lockstep guards (hero ticket 04 §9) get their upstream from.
       #
-      # That package is PRIVATE, so this needs a token with read access to it.
-      # Until the BLICCA_TOKEN secret is set the step is skipped, the guards
-      # skip with it, and the vendored plugin is unprotected on CI — set the
-      # secret to close that. `actions/checkout` refuses paths outside the
-      # workspace, so the guards are pointed at it explicitly rather than by
-      # sibling convention.
+      # The repository is PRIVATE, so this needs a token with read access.
+      # Missing token = red job, deliberately: before the hero landed, its
+      # absence only made two guards skip, and skipping quietly was the
+      # tolerable half of a bad trade. It is no longer tolerable, because now
+      # nothing at all would be tested. A named failure beats a green run over
+      # an uninstallable package.
+      - name: Require the host checkout token
+        if: env.BLICCA_TOKEN == ''
+        run: |
+          echo "::error::BLICCA_TOKEN is not set. plonetheme.derico depends on"
+          echo "::error::plone.blicca.auroraeditor, which is private and not on"
+          echo "::error::PyPI, so neither the install nor the tests can run."
+          exit 1
+
+      # `actions/checkout` refuses paths outside the workspace, so the guards
+      # are pointed at this one explicitly rather than by sibling convention.
       - name: Check out plone.blicca.auroraeditor
-        if: env.BLICCA_TOKEN != ''
         uses: actions/checkout@v4
         with:
           repository: derico-de/plone.blicca.auroraeditor
           token: ${{ env.BLICCA_TOKEN }}
           path: .siblings/plone.blicca.auroraeditor
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Before the theme, so its `>=` floor resolves against the checkout
+          # instead of sending pip to an index that does not carry it.
+          pip install -e .siblings/plone.blicca.auroraeditor
+          pip install -e ".[test]"
 
       - name: Run tests
         run: pytest -v
