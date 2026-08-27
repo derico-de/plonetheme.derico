@@ -23,11 +23,11 @@ class TestUpgrade1003:
         self.portal = integration["portal"]
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-    def test_the_profile_is_at_the_new_version(self):
+    def test_the_profile_is_at_least_at_this_version(self):
+        """Not `== 1003`: the newest step's test owns the exact version."""
         setup_tool = self.portal.portal_setup
-        assert setup_tool.getLastVersionForProfile("plonetheme.derico:default") == (
-            "1003",
-        )
+        (version,) = setup_tool.getLastVersionForProfile("plonetheme.derico:default")
+        assert int(version) >= 1003
 
     def test_upgrade_handler_importable(self):
         from plonetheme.derico.upgrades.v1003 import upgrade

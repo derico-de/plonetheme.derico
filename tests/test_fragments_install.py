@@ -10,6 +10,8 @@ that silently stops being loadable costs the picker its entries with no
 error anywhere.
 """
 
+from pathlib import Path
+
 import pytest
 from plone import api
 from plone.app.testing import login
@@ -28,12 +30,26 @@ RECORD = "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.fragments"
 ADDON_NAME = "plonetheme.derico.fragments"
 STATIC_BASE = "++plone++plonetheme.derico.blocks"
 
+CSS_BUNDLE = "plone.bundles/plonetheme-derico-snippets"
+STATIC_DIR = (
+    Path(__file__).resolve().parent.parent / "src" / "plonetheme" / "derico" / "static"
+)
+
+#: Retired in profile 1004; the fragment block renders the ornaments now.
+RETIRED_RECORD = "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.snippet"
+
 
 def record(name, default=None):
     return api.portal.get_registry_record(f"{RECORD}.{name}", default=default)
 
 
-class TestTheFragmentsRecord:
+def bundle(name, default=None):
+    return api.portal.get_registry_record(f"{CSS_BUNDLE}.{name}", default=default)
+
+
+class InstallTestCase:
+    """Shared fixture; not a test class of its own."""
+
     layer = INTEGRATION_TESTING
 
     @pytest.fixture(autouse=True)
@@ -54,6 +70,8 @@ class TestTheFragmentsRecord:
         assert found, "the fragments record is not discovered as a block add-on"
         return found[0]
 
+
+class TestTheFragmentsRecord(InstallTestCase):
     def test_the_record_is_loadable(self):
         """Every filter gate passed: enabled, resolvable, compatible."""
         status = self.status()
@@ -101,3 +119,68 @@ class TestTheFragmentsRecord:
             self.portal, self.request, blockaddons.evaluate(self.portal)
         )
         assert [gap for gap in gaps if gap["addon"] == ADDON_NAME] == []
+
+
+class TestTheRetiredSnippetRecord(InstallTestCase):
+    """Profile 1004 removed the Derico Snippet block."""
+
+    def test_the_record_is_gone(self):
+        assert (
+            api.portal.get_registry_record(f"{RETIRED_RECORD}.bundle", default=None)
+            is None
+        )
+
+    def test_it_is_not_discovered_as_a_block_addon(self):
+        names = [status.name for status in blockaddons.evaluate(self.portal)]
+        assert "plonetheme.derico.snippet" not in names
+
+    def test_its_bundle_no_longer_ships(self):
+        blocks_dir = (
+            Path(__file__).resolve().parent.parent
+            / "src"
+            / "plonetheme"
+            / "derico"
+            / "static-blocks"
+        )
+        assert not (blocks_dir / "snippet.js").exists()
+
+
+class TestTheStylesheetBundle(InstallTestCase):
+    """`plonetheme-derico-snippets`: the ornaments' styling, still shipped.
+
+    It outlived the block it was written for — the markup it styles is the
+    same, only the block injecting it changed — so it keeps the two checks
+    that fail silently: the resource actually shipping, and the sheet
+    actually carrying the scope wrap that lets it style the editing canvas.
+    """
+
+    def test_the_bundle_is_registered_and_enabled(self):
+        assert bundle("csscompilation") == "++resource++plonetheme.derico/snippets.css"
+        assert bundle("enabled") is True
+
+    def test_it_depends_on_the_token_layer(self):
+        """Every value it paints with is a `--derico-*` token."""
+        assert bundle("depends") == "plonetheme-derico"
+
+    def test_the_sheet_ships(self):
+        assert (STATIC_DIR / "snippets.css").is_file()
+
+    def test_the_sheet_is_scope_wrapped(self):
+        """Hand-written, so nothing but this test enforces it.
+
+        Unwrapped rules die against Aurora's scoped Tailwind preflight in the
+        editing canvas — the failure the block pipeline's scope-wrap plugin
+        exists to prevent, prevented here by hand. Same three roots, same
+        donut limit (contract §6.1).
+        """
+        sheet = (STATIC_DIR / "snippets.css").read_text()
+        assert (
+            "@scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)"
+            in sheet
+        )
+        assert "to (.aurora-pattern-island)" in sheet
+
+    def test_the_sheet_speaks_only_derico_tokens(self):
+        """The seam rule the block sheets follow, applied to this one."""
+        sheet = (STATIC_DIR / "snippets.css").read_text()
+        assert "--clara-" not in sheet

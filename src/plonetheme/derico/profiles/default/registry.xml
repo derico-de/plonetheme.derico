@@ -79,29 +79,6 @@
     <value key="weight">100</value>
   </records>
 
-  <!-- The Derico Snippet: the generic brand block for the design's static
-       ornaments (Balkenlage, Ständerwerk). Same shape as the hero's record,
-       two deliberate differences:
-
-       - No `css`. The snippets are pure markup; their styling is the theme's
-         own `snippets.css` bundle below, hand-scope-wrapped, no build step.
-         The bundle entry ships only the registration, the schema and the
-         canvas preview.
-       - Same insert gate. One choice field does not make it less of a brand
-         block: it belongs to designed pages, and the SITE ADMINISTRATOR
-         places it. Ordinary editors still see a placed snippet rendered. -->
-  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
-           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.snippet">
-    <value key="bundle">++plone++plonetheme.derico.blocks/snippet.js</value>
-    <value key="block_api">1.0</value>
-    <value key="types">
-      <element>derico-snippet</element>
-    </value>
-    <value key="permission">plonetheme.derico: Insert Brand Block</value>
-    <value key="enabled">True</value>
-    <value key="weight">110</value>
-  </records>
-
   <!-- derico as a FRAGMENT PROVIDER, not a block: this bundle publishes the
        `snippets/` corpus into the shared registry as fragments for
        collective.fragmentsblock's generic fragment block (see

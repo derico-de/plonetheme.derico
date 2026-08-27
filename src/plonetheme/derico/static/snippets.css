@@ -1,8 +1,9 @@
 /* The static snippets' stylesheet.
  *
- * Styles the markup fragments under `../snippets/`, which the Derico Snippet
- * brand block injects verbatim on both surfaces (see browser/snippet.py and
- * bundle-src/src/snippet/). Delivered as its own theme bundle
+ * Styles the markup fragments under `../snippets/`, which the generic
+ * fragment block injects verbatim on both surfaces (derico publishes them as
+ * fragments: see fragments.py and bundle-src/src/fragments/). Delivered as
+ * its own theme bundle
  * (`plonetheme-derico-snippets` in registry.xml), NOT through the block
  * record's `css` field: the snippets are pure markup, so their styling is the
  * theme's — one hand-written sheet, no build step, no scope-wrap plugin run.
@@ -18,7 +19,7 @@
  * Rules of the road, inherited from blocks.css:
  *
  * - Every selector descends from a snippet's OWN root (`.balkenlage`,
- *   `.derico-staenderwerk`), never from Aurora's `.block-derico-snippet`
+ *   `.derico-staenderwerk`), never from the block wrapper `.block-fragment`
  *   wrapper stamp.
  * - Class names are the mockup's, so this sheet and
  *   `docs/design/derico.de/site/assets/site.css` stay diffable.

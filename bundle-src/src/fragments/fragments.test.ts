@@ -1,21 +1,31 @@
 /**
- * The fragment provider's registration contract, and the lockstep that
- * pays for restating the corpus in a second entry.
+ * The fragment provider's registration contract, and its lockstep with the
+ * corpus on disk.
  *
  * Nothing here asserts how a fragment looks — the markup is the design
- * mockup's, pinned on the Snippet block's side by `snippets.test.tsx` and
- * on the server's by `tests/test_fragments.py`. What is pinned here is
- * that both entries publish the SAME corpus under the SAME ids and titles,
- * because the build forbids them sharing a module (see index.tsx).
+ * mockup's, and `static/snippets.css` is what restates the mockup's rules.
+ * What is pinned is that the map this entry publishes is exactly the
+ * directory the server reads: an id with no file renders on the canvas and
+ * vanishes when published, and a file no entry publishes is an ornament
+ * nobody can place. `tests/test_fragments.py` pins the same seam from the
+ * server's side.
  */
+import { readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, test } from 'vitest';
 
 import installDericoFragments, {
   DERICO_FRAGMENTS,
   FRAGMENT_UTILITY_TYPE,
 } from './index';
-import { SNIPPETS } from '../snippet/snippets';
-import { SNIPPET_CHOICES } from '../snippet/schema';
+
+const CORPUS_DIR = path.resolve(
+  import.meta.dirname,
+  '../../../src/plonetheme/derico/snippets',
+);
+
+const corpusFiles = () =>
+  readdirSync(CORPUS_DIR).filter((name) => name.endsWith('.html'));
 
 type Registration = { type: string; name: string; method: unknown };
 
@@ -61,23 +71,32 @@ describe('install()', () => {
   });
 });
 
-describe('the corpus, restated', () => {
-  test('is the Snippet block\'s corpus, id for id and title for title', () => {
-    expect(DERICO_FRAGMENTS.map((f) => [f.id, f.title])).toEqual(
-      SNIPPET_CHOICES,
+describe('the published map', () => {
+  test('publishes every shipped ornament, and only those', () => {
+    expect(DERICO_FRAGMENTS.map((f) => `${f.id}.html`).sort()).toEqual(
+      corpusFiles().sort(),
     );
   });
 
-  test('carries the same markup the Snippet block renders', () => {
+  test('carries each file verbatim', () => {
     for (const fragment of DERICO_FRAGMENTS) {
-      expect(fragment.html, fragment.id).toBe(SNIPPETS[fragment.id]);
+      const onDisk = readFileSync(
+        path.join(CORPUS_DIR, `${fragment.id}.html`),
+        'utf8',
+      );
+      expect(fragment.html, fragment.id).toBe(onDisk);
+    }
+  });
+
+  test('titles every ornament', () => {
+    for (const fragment of DERICO_FRAGMENTS) {
+      expect(fragment.title.trim(), fragment.id).toBeTruthy();
     }
   });
 
   test('uses ids the server can resolve to a file', () => {
     // collective.fragmentsblock resolves `<id>.html` inside the provider's
-    // directory and refuses anything else; an id that fails here would
-    // render on the canvas and vanish on the published page.
+    // directory and refuses anything else.
     for (const fragment of DERICO_FRAGMENTS) {
       expect(fragment.id, fragment.id).toMatch(/^[A-Za-z0-9][A-Za-z0-9_-]*$/);
     }

@@ -2,6 +2,20 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The Derico Snippet block is retired** (profile version 1004). It and the
+  generic fragment block delivered the same thing once 1003 made derico a
+  fragment provider — one ornament, one file, injected verbatim — so the brand
+  block goes and `collective.fragmentsblock`'s `fragment` stays: the block
+  registration, its bundle entry, its server view and its record are gone.
+  Stored nodes are **converted, not dropped**: `@type` becomes `fragment` and
+  the `snippet` key becomes `fragment`, which is the whole difference between
+  the two blocks' data, so a converted page renders exactly as it did. Two
+  details preserve appearance rather than data — an absent or unrecognised
+  choice becomes the Balkenlage the old block fell back to, and the width its
+  `defaultBlockWidth` used to materialise is filled in where a node lacked it.
+  The corpus, its stylesheet and its bundle are untouched; only the machinery
+  that injected them changed.
+
 - **derico is the first fragment provider** (profile version 1003). The same
   `snippets/*.html` corpus is now published for `collective.fragmentsblock`'s
   generic **fragment** block as well: `fragments.py` registers the directory as
