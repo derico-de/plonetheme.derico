@@ -318,10 +318,9 @@ class TestTheUpgradeStep(InstallTestCase):
     """
 
     def test_the_hero_upgrade_is_no_longer_pending(self):
-        """The profile has moved past 1001 (it is at 1002 since the snippet
-        block), so what is worth holding is that the 1000→1001 step is not
-        still waiting to run — not the literal current version, which the
-        newest upgrade's own tests pin."""
+        """The profile has moved well past 1001, so what is worth holding is
+        that the 1000→1001 step is not still waiting to run — not the literal
+        current version, which the newest upgrade's own tests pin."""
         setup_tool = self.portal.portal_setup
         version = setup_tool.getLastVersionForProfile("plonetheme.derico:default")
         assert int(version[0]) >= 1001

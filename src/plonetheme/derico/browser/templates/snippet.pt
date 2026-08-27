@@ -1,6 +1,0 @@
-<div xmlns:tal="http://xml.zope.org/namespaces/tal"
-     class="derico-snippet"
-     tal:content="structure view/markup"><!--! The `.derico-snippet` wrapper exists because the editor half needs a
-     host element to inject the fragment into (`dangerouslySetInnerHTML`
-     cannot render bare), and the two surfaces stay element-for-element.
-     Nothing styles it; the fragment's own root does the work. --></div>

@@ -1,17 +1,19 @@
 """derico as a fragment provider for ``collective.fragmentsblock``.
 
-The corpus under ``snippets/`` now has three readers: the Derico Snippet
-block's server view, its editor bundle, and — since profile 1003 — the
-generic fragment block, through the ``IFragmentsProvider`` utility in
-``fragments.py`` and the ``fragments`` bundle that publishes the same files
-into ``@plone/registry``.
+The corpus under ``snippets/`` has two readers: the ``IFragmentsProvider``
+utility in ``fragments.py``, which serves classic rendering, and the
+``fragments`` bundle, which publishes the same files into ``@plone/registry``
+for the editor. Since profile 1004 they are the only readers — the Derico
+Snippet brand block that used to render them was retired in favour of
+``collective.fragmentsblock``'s generic fragment block.
 
 What is worth testing is exactly the seam: that the utility is registered
 and resolves the shipped corpus, that the ids the editor half publishes are
 the ids the server can resolve (a mismatch renders on the canvas and
 vanishes when published), and that a page carrying a ``fragment`` block
 comes out with the ornament's own markup. How a fragment looks is the
-mockup's business, pinned in ``test_snippet_view.py``.
+mockup's business: it is the design's own markup, restated by
+``static/snippets.css``.
 """
 
 import re
@@ -77,8 +79,8 @@ class TestProviderRegistration:
         provider = getUtility(IFragmentsProvider, name=PROVIDER_NAME)
         assert provider.get("no-such-fragment") is None
 
-    def test_provider_reads_the_snippet_corpus_itself(self):
-        # one corpus, not a copy: the directory IS the Derico Snippet's
+    def test_the_corpus_is_the_shipped_directory(self):
+        # the ornaments keep their historical home; only the block changed
         assert FRAGMENTS_DIR == PACKAGE / "src" / "plonetheme" / "derico" / "snippets"
         assert sorted(p.name for p in FRAGMENTS_DIR.glob("*.html"))
 

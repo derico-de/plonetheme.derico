@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registry>
+  <!-- Retire the Derico Snippet block. A default-profile re-import cannot do
+       this: GenericSetup's registry import adds and updates records, it never
+       removes one that simply stopped being declared, so the record would
+       outlive its bundle and @@aurora-edit would skip it as unresolvable on
+       every edit-page render. Removed explicitly instead. -->
+  <records
+      interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+      prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.snippet"
+      remove="true"
+      />
+</registry>

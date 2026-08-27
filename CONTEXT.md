@@ -77,32 +77,26 @@ lede, two calls to action, and the rings figure with its four-entry legend.
 _Avoid_: hero banner, homepage block, the hero
 
 **Fragment** (`collective.fragmentsblock`):
-The add-on's word for what this theme calls a static snippet: markup an
-add-on ships as a file, registered under an id and a title, dropped into a
-page by the generic fragment block. derico is that add-on's first
-*provider*, over the very `snippets/` corpus the Derico Snippet block uses.
-The two words name one thing from two sides — this package's, and the
-add-on's.
-_Avoid_: fragment as a synonym for "part of a page" in this repo's prose;
-it is a registered thing with an id
+Markup an add-on ships as a file, registered under an id and a title and
+dropped into a page by the generic fragment block. derico is that add-on's
+first provider: the ornaments under `snippets/` are its fragments, served to
+classic rendering by `fragments.py` and published into the editor's registry
+by the `fragments` bundle. Since profile 1004 this is the ONLY way an
+ornament reaches a page — the Derico Snippet brand block that used to
+deliver them was retired, its stored nodes converted.
+_Avoid_: fragment as a synonym for "part of a page" in this repo's prose; it
+is a registered thing with an id. Also avoid "Derico Snippet" for the block
+— there is no longer one
 
-**Static snippet**:
-A finished markup fragment from the design with nothing to author — shipped
-as one HTML file in `snippets/`, injected verbatim by both halves of the
-Derico Snippet block, and styled by the theme's own `snippets.css` bundle
-rather than through the block pipeline. The Balkenlage and the Ständerwerk
-are the two that exist.
+**Static snippet** (the ornaments):
+A finished markup fragment from the design with nothing to author — one HTML
+file in `snippets/`, injected verbatim, styled by the theme's own
+`snippets.css` bundle rather than through the block pipeline. The Balkenlage
+and the Ständerwerk are the two that exist. The directory keeps its name;
+what the add-on calls a fragment is what this theme has always called a
+snippet.
 _Avoid_: ornament block, divider block, static block (Aurora uses that for
-something else)
-
-**Derico Snippet**:
-The one generic brand block that delivers the static snippets. Its single
-sidebar choice picks the fragment; per the brand-block rule this variant
-exists only because the design itself ships several ornaments. Unknown or
-absent choices render the Balkenlage — the schema's default, restated at
-render time on both surfaces.
-_Avoid_: snippet blocks (plural — it is one block with variants, not a block
-per snippet)
+something else); snippet BLOCK, which no longer exists
 
 **Balkenlage**:
 A Hallenhaus floor layer drawn in section, used as a general divider: Dielen

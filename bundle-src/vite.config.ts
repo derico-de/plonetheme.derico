@@ -3,9 +3,10 @@
  * 04).
  *
  * One workspace, N entry points, N bundles, N records. Two members today:
- * `hero`, and `snippet` — whose entry is exactly the one line the map was
- * laid out for. Note the shared-stylesheet caveat below only concerns entries
- * that IMPORT css; `snippet` imports none (its styling is the theme's
+ * `hero`, and `fragments` — which registers no block at all, only the
+ * ornaments derico provides to collective.fragmentsblock. Note the
+ * shared-stylesheet caveat below only concerns entries that IMPORT css;
+ * `fragments` imports none (the ornaments are styled by the theme's
  * `static/snippets.css`), so `blocks.css` remains the hero's alone.
  *
  * Output goes to `src/plonetheme/derico/static-blocks/`, a second static
@@ -56,12 +57,10 @@ export default defineConfig({
     lib: {
       entry: {
         hero: path.resolve(here, 'src/hero/index.tsx'),
-        snippet: path.resolve(here, 'src/snippet/index.tsx'),
-        // Not a block: it registers the snippet corpus as fragments for
-        // collective.fragmentsblock's generic block. Its own entry and its
-        // own record for the same reason `snippet` has one — install() runs
-        // once per record, so sharing a bundle would break the per-record
-        // `enabled` switch.
+        // Not a block: it registers the ornament corpus as fragments for
+        // collective.fragmentsblock's generic block, so its record declares
+        // no `types`. Its own entry, because install() runs once per RECORD
+        // and a shared bundle would break the per-record `enabled` switch.
         fragments: path.resolve(here, 'src/fragments/index.tsx'),
       },
       formats: ['es'],
