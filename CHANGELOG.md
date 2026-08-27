@@ -2,6 +2,37 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **derico is the first fragment provider** (profile version 1003). The same
+  `snippets/*.html` corpus is now published for `collective.fragmentsblock`'s
+  generic **fragment** block as well: `fragments.py` registers the directory as
+  a named `IFragmentsProvider` utility for classic rendering, and a second
+  bundle entry (`bundle-src/src/fragments/`) publishes id, title and markup
+  into `@plone/registry` so the editor renders it client-side. One corpus,
+  three readers, still no copies — the editor entry restates the map only
+  because a module shared between two bundles becomes a chunk no record can
+  declare, and `tests/test_fragments.py` holds the restatement in lockstep with
+  the files on disk. Its record carries no `types`: it registers no block, it
+  fills the fragment block's picker. The Derico Snippet block is untouched;
+  which of the two an ornament should be placed with is a question for the day
+  the fragment block has run in production.
+
+- **The Derico Snippet: one brand block for the design's static ornaments**
+  (profile version 1002). The Balkenlage divider and the Ständerwerk frame are
+  finished markup with nothing to author, so they share a single generic block
+  — a `derico-snippet` node whose one sidebar choice picks the fragment —
+  rather than each cloning the hero's whole registration stack. The fragments
+  live once, as `snippets/*.html` in the Python package: the server view
+  injects the file, the editor bundle imports the very same file `?raw`, and
+  the two surfaces cannot drift because neither owns a copy. Adding the next
+  ornament is one HTML file, one import, one schema choice. The styling is the
+  theme's, not the block's: `static/snippets.css`, shipped as its own bundle
+  and hand-wrapped in the same `@scope` the block pipeline would have emitted,
+  so it survives the editor's scoped preflight without a build step. The
+  mockup's scroll-in animations are deliberately not ported — the design
+  defines the JS-less state as the finished one. Same insert gate as the hero;
+  `defaultBlockWidth: 'layout'` fixes both ornaments at the shell width the
+  mockup places them at, with the schema offering no way to countermand it.
+
 - **A freshly inserted Derico Hero already carries the mockup's words.** Kicker,
   headline, lede, both link labels and all four ring-legend pairs arrive filled
   in with the German homepage copy from `docs/design/derico.de/site/de/`, so an

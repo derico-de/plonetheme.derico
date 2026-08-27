@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <version>1001</version>
+  <version>1003</version>
   <dependencies>
     <dependency>profile-plone.app.registry:default</dependency>
     <!-- The brand blocks' host. A Python dependency does not install a
@@ -14,5 +14,12 @@
          rendering machinery, the markup contract, the primitives, and the
          plone token defaults. derico then re-points the ladder. -->
     <dependency>profile-plonetheme.clara:default</dependency>
+    <!-- The generic fragment block. derico ships its `snippets/` corpus as
+         fragments for it (fragments.py, bundle-src/src/fragments/), and a
+         provider without the block that reads them is dead weight: the
+         picker only exists once the add-on's own record and browser layer
+         are installed. Python dependency plus profile dependency, the same
+         pairing Blicca gets above. -->
+    <dependency>profile-collective.fragmentsblock:default</dependency>
   </dependencies>
 </metadata>

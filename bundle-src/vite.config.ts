@@ -2,9 +2,11 @@
  * The brand blocks' editor bundles (block add-on contract §1.2, hero ticket
  * 04).
  *
- * One workspace, N entry points, N bundles, N records. `hero` is the only
- * member today; the entry map is a map from day one so the second brand block
- * is one line here and one registry record, never a re-layout.
+ * One workspace, N entry points, N bundles, N records. Two members today:
+ * `hero`, and `snippet` — whose entry is exactly the one line the map was
+ * laid out for. Note the shared-stylesheet caveat below only concerns entries
+ * that IMPORT css; `snippet` imports none (its styling is the theme's
+ * `static/snippets.css`), so `blocks.css` remains the hero's alone.
  *
  * Output goes to `src/plonetheme/derico/static-blocks/`, a second static
  * directory registered as `++plone++plonetheme.derico.blocks` and reserved
@@ -54,6 +56,13 @@ export default defineConfig({
     lib: {
       entry: {
         hero: path.resolve(here, 'src/hero/index.tsx'),
+        snippet: path.resolve(here, 'src/snippet/index.tsx'),
+        // Not a block: it registers the snippet corpus as fragments for
+        // collective.fragmentsblock's generic block. Its own entry and its
+        // own record for the same reason `snippet` has one — install() runs
+        // once per record, so sharing a bundle would break the per-record
+        // `enabled` switch.
+        fragments: path.resolve(here, 'src/fragments/index.tsx'),
       },
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,

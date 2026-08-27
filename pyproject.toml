@@ -41,6 +41,12 @@ dependencies = [
     # alone (contract §5.2/§2.2), so both signals ship and neither implies
     # the other.
     "plone.blicca.auroraeditor>=1.0.0a2",
+    # The generic fragment block. derico is a fragment PROVIDER (fragments.py
+    # registers `snippets/` as a named IFragmentsProvider utility), so this is
+    # an import in configure.zcml, not an optional integration: the ZCML fails
+    # to load without it. The profile dependency in metadata.xml is the other
+    # half — a Python dependency installs no profile.
+    "collective.fragmentsblock>=1.0.0a1",
     "setuptools<81",
     "plone.classicui",
     "Paste",

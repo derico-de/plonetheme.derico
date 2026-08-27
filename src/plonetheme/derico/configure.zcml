@@ -35,6 +35,18 @@
       directory="static-blocks"
       />
 
+  <!-- derico as a fragment provider: the `snippets/` corpus, published for
+       collective.fragmentsblock's generic fragment block. Global, not
+       per-site — the corpus is package files, and the fragment block's own
+       per-site registry record is what decides whether anything can read
+       it. See fragments.py; the editor half is the `fragments` bundle
+       registered in profiles/default/registry.xml. -->
+  <utility
+      name="plonetheme.derico"
+      provides="collective.fragmentsblock.interfaces.IFragmentsProvider"
+      component=".fragments.provider"
+      />
+
   <genericsetup:registerProfile
       name="default"
       title="Plonetheme Derico"

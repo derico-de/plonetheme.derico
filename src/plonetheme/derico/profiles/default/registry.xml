@@ -58,8 +58,10 @@
          pyproject.toml. Both signals ship; neither implies the other. -->
     <value key="block_api">1.0</value>
 
-    <!-- Lib mode emits ONE stylesheet per build, not per entry, so every
-         future brand block's record names this same file (ticket 04 §5). -->
+    <!-- Lib mode emits ONE stylesheet per build, not per entry, so any brand
+         block whose sheet goes through bundle-src names this same file
+         (ticket 04 §5). The snippet block below is not one of them: its
+         styling is the theme's own snippets.css bundle. -->
     <value key="css">++plone++plonetheme.derico.blocks/blocks.css</value>
 
     <value key="types">
@@ -75,6 +77,78 @@
 
     <value key="enabled">True</value>
     <value key="weight">100</value>
+  </records>
+
+  <!-- The Derico Snippet: the generic brand block for the design's static
+       ornaments (Balkenlage, Ständerwerk). Same shape as the hero's record,
+       two deliberate differences:
+
+       - No `css`. The snippets are pure markup; their styling is the theme's
+         own `snippets.css` bundle below, hand-scope-wrapped, no build step.
+         The bundle entry ships only the registration, the schema and the
+         canvas preview.
+       - Same insert gate. One choice field does not make it less of a brand
+         block: it belongs to designed pages, and the SITE ADMINISTRATOR
+         places it. Ordinary editors still see a placed snippet rendered. -->
+  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.snippet">
+    <value key="bundle">++plone++plonetheme.derico.blocks/snippet.js</value>
+    <value key="block_api">1.0</value>
+    <value key="types">
+      <element>derico-snippet</element>
+    </value>
+    <value key="permission">plonetheme.derico: Insert Brand Block</value>
+    <value key="enabled">True</value>
+    <value key="weight">110</value>
+  </records>
+
+  <!-- derico as a FRAGMENT PROVIDER, not a block: this bundle publishes the
+       `snippets/` corpus into the shared registry as fragments for
+       collective.fragmentsblock's generic fragment block (see
+       bundle-src/src/fragments/, fragments.py, and the add-on's ADR 0001).
+       The same corpus the Derico Snippet block above renders, reachable
+       through the generic block as well.
+
+       A record all the same, because a record is the ONLY way a bundle gets
+       loaded into the editor: `@@aurora-edit` gates on `enabled`, a
+       resolvable bundle and block-api compatibility, and never on `types`
+       (blockaddons.py evaluate()). Hence:
+
+       - `types` is EMPTY, honestly: the bundle registers no @type, so there
+         is nothing to lockstep against a server renderer, nothing to
+         override and nothing to gate. The one thing an empty list costs
+         (§7's slash-menu filter) is not applicable — the fragment BLOCK is
+         the add-on's record, and its `permission` is where insert-gating
+         for fragments belongs.
+       - No `permission` here for the same reason: withholding this record
+         would not withhold anything insertable, it would only empty the
+         picker for the user who is allowed to insert the block.
+       - No `css`. The fragments are the ornaments, styled by the theme's
+         own `snippets.css` bundle below, on both surfaces. -->
+  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.fragments">
+    <value key="bundle">++plone++plonetheme.derico.blocks/fragments.js</value>
+    <value key="block_api">1.0</value>
+    <value key="types"/>
+    <value key="enabled">True</value>
+    <value key="weight">120</value>
+  </records>
+
+  <!-- The static snippets' stylesheet: a theme bundle, not a block-record
+       `css`. It styles the fragments under `snippets/` on both surfaces, so
+       the sheet itself carries the same hand-written `@scope` wrap the block
+       pipeline would have applied — see the header of static/snippets.css
+       for why. `depends` on the token layer because every value it paints
+       with is a derico token derico.css declares. (An ASCII double hyphen
+       cannot appear in an XML comment, so custom properties go unnamed in
+       this file.) -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-snippets">
+    <value key="csscompilation">++resource++plonetheme.derico/snippets.css</value>
+    <value key="depends">plonetheme-derico</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
   </records>
 
   <!-- ── the hero's top scale rung (hero ticket 05 §2/§4) ──────────────────
