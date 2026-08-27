@@ -236,6 +236,22 @@ function heroGeometry(page) {
       'a fresh insert already carries the mockup copy',
     );
 
+    /* The SIDEBAR shows the seed too. The settings form mounts off the
+     * still-unseeded node in the same commit as the canvas, and the seed
+     * lands one render later — the wrapper has to remount the form on that
+     * external write (plone-block-sidebar.tsx), or the author faces a wall
+     * of empty inputs while the canvas shows the finished draft. */
+    await page.waitForSelector('input[name="kicker"]', { timeout: 15000 });
+    const sidebarSeed = await page.evaluate(() => ({
+      kicker: document.querySelector('input[name="kicker"]')?.value,
+      lastLegendTitle: document.querySelector('input#legend-3-title')?.value,
+    }));
+    check(
+      sidebarSeed.kicker === COPY.kicker &&
+        sidebarSeed.lastLegendTitle === COPY.legend[3].title,
+      `the sidebar form shows the seeded values on first insert (kicker ${JSON.stringify(sidebarSeed.kicker)}, ring 4 ${JSON.stringify(sidebarSeed.lastLegendTitle)})`,
+    );
+
     /* -- the body type, in the CANVAS: ticket 17/22 -------------------- */
     /* This assertion is the whole justification for the seam. The theme-layer
      * alternative would have fixed the published view and BROKEN this, because
