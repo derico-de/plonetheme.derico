@@ -76,6 +76,50 @@ The brand block for the derico.de homepage opening: image, kicker, headline,
 lede, two calls to action, and the rings figure with its four-entry legend.
 _Avoid_: hero banner, homepage block, the hero
 
+**Fragment** (`collective.fragmentsblock`):
+The add-on's word for what this theme calls a static snippet: markup an
+add-on ships as a file, registered under an id and a title, dropped into a
+page by the generic fragment block. derico is that add-on's first
+*provider*, over the very `snippets/` corpus the Derico Snippet block uses.
+The two words name one thing from two sides — this package's, and the
+add-on's.
+_Avoid_: fragment as a synonym for "part of a page" in this repo's prose;
+it is a registered thing with an id
+
+**Static snippet**:
+A finished markup fragment from the design with nothing to author — shipped
+as one HTML file in `snippets/`, injected verbatim by both halves of the
+Derico Snippet block, and styled by the theme's own `snippets.css` bundle
+rather than through the block pipeline. The Balkenlage and the Ständerwerk
+are the two that exist.
+_Avoid_: ornament block, divider block, static block (Aurora uses that for
+something else)
+
+**Derico Snippet**:
+The one generic brand block that delivers the static snippets. Its single
+sidebar choice picks the fragment; per the brand-block rule this variant
+exists only because the design itself ships several ornaments. Unknown or
+absent choices render the Balkenlage — the schema's default, restated at
+render time on both surfaces.
+_Avoid_: snippet blocks (plural — it is one block with variants, not a block
+per snippet)
+
+**Balkenlage**:
+A Hallenhaus floor layer drawn in section, used as a general divider: Dielen
+seen edge-on, a row of Deckenbalken beneath whose cut ends show Jahresringe.
+The Achsmaß stretches, the timber never does — a wider page gains whole
+beams the way a building gains bays. Ships fully laid: the mockup's scroll-in
+animation is site.js's and is not ported.
+_Avoid_: beam divider, timber rule
+
+**Ständerwerk**:
+The Niederdeutsches Ständerwerk frame — a Schwelle carrying two Gebinde,
+pegged with copper Zapfen, open at the top. In the mockup it underpins the
+Support & Wartung card; as a static snippet it stands alone inside the
+`.derico-staenderwerk` sizing box that plays the card's part.
+_Avoid_: service frame (the mockup's class name, not the thing's name),
+fachwerk frame
+
 **Headline budget**:
 The headline length the Derico Hero's design holds at every width — roughly a
 longest word of fourteen characters. Advice about voice, not a rule: the block's

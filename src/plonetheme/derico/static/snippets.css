@@ -1,0 +1,235 @@
+/* The static snippets' stylesheet.
+ *
+ * Styles the markup fragments under `../snippets/`, which the Derico Snippet
+ * brand block injects verbatim on both surfaces (see browser/snippet.py and
+ * bundle-src/src/snippet/). Delivered as its own theme bundle
+ * (`plonetheme-derico-snippets` in registry.xml), NOT through the block
+ * record's `css` field: the snippets are pure markup, so their styling is the
+ * theme's — one hand-written sheet, no build step, no scope-wrap plugin run.
+ *
+ * The `@scope` wrapper below is written by hand but is byte-compatible with
+ * what `scope-wrap.ts` emits for the block sheets (contract §6.1): the same
+ * three roots — the editor's two plus the public blocks-view — and the same
+ * donut limit. Unwrapped rules would die against Aurora's scoped Tailwind
+ * preflight in the editing canvas, exactly as the hero's sheet once did; and
+ * the snippets only ever appear inside these roots, so the wrap costs the
+ * public page nothing.
+ *
+ * Rules of the road, inherited from blocks.css:
+ *
+ * - Every selector descends from a snippet's OWN root (`.balkenlage`,
+ *   `.derico-staenderwerk`), never from Aurora's `.block-derico-snippet`
+ *   wrapper stamp.
+ * - Class names are the mockup's, so this sheet and
+ *   `docs/design/derico.de/site/assets/site.css` stay diffable.
+ * - Clara's private tokens are never named here; the palette arrives as the
+ *   derico-prefixed tokens derico.css publishes.
+ * - The mockup's scroll-in animations (`data-lay` / `data-raise`) are NOT
+ *   ported. They are site.js's, the Plone pages ship no snippet JS, and the
+ *   design already defines the JS-less state as the finished one: the floor
+ *   ships fully laid, the frame fully raised.
+ */
+
+@scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)
+    to (.aurora-pattern-island) {
+
+/* ── Balkenlage ──────────────────────────────────────────────────────────────
+ *
+ * A Hallenhaus floor layer drawn in section, used as a general divider:
+ * Dielen seen edge-on, Deckenbalken hanging beneath, open air below.
+ * Top-heavy on purpose, because that is what makes it read as a storey
+ * rather than as a rule with decoration attached.
+ *
+ * The Achsmaß stretches; the timber never does. A Balkenkopf keeps its drawn
+ * size at every width and the bays open up around it, so a wider shell gains
+ * whole beams the way a building gains bays. */
+
+.balkenlage {
+  /* Overridable so the divider can stand on any ground an editor places it
+     on; the beam bodies have to match the surface behind them or they read
+     as holes punched through the page rather than as sawn timber. */
+  --balkenlage-ground: var(--derico-surface);
+  --balkenlage-timber: var(--derico-brand-text);
+  --balken-width: 3.25rem;
+  --balken-height: 1.75rem;
+  --achsmass: clamp(7rem, 16vw, 12rem);
+  display: grid;
+  /* The mockup's own `--space-xl`, stated locally: the snippet sheet reads
+     no mockup spacing scale, and no other rule wants the value. */
+  margin-block: clamp(3rem, 2.75rem + 1vw, 4rem);
+  /* The grid below places whole bays only and lets the surplus beams fall
+     into zero-height rows; this clips them. A partial beam at either edge
+     would be a cut through a cut. */
+  overflow: hidden;
+  pointer-events: none;
+  /* The Plate editable computes `pre-wrap` and inherits it into the canvas
+     preview, where the fragment's inter-element newlines would become real
+     line boxes (the hero measured a 76% inflation). Nothing in a snippet is
+     text, so nothing is lost by normalising. */
+  white-space: normal;
+}
+
+/* Dielen — boards in section have thickness, so this is a thin band with two
+   cut edges: outlined faces, surface body. */
+.balkenlage__dielen {
+  block-size: 0.5rem;
+  border-block: 1.5px solid var(--balkenlage-timber);
+  background: var(--balkenlage-ground);
+}
+
+.balkenlage__lage {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--achsmass), 1fr));
+  grid-template-rows: var(--balken-height);
+  grid-auto-rows: 0;
+  justify-items: center;
+}
+
+.balkenlage__balken {
+  position: relative;
+  inline-size: var(--balken-width);
+  block-size: var(--balken-height);
+}
+.balkenlage__balken > svg { display: block; inline-size: 100%; block-size: 100%; }
+
+/* Dielenstoß — where two boards butt, the joint lands on a beam, never in
+   mid-span. Only some beams carry one, so the boards read as varied lengths.
+
+   The tick spans the band's full outside height, borders included: sized to
+   the interior alone it lands a hairline out of register whenever the 1.5px
+   borders round up to 2. The petrol faces cover the overlap. */
+.balkenlage__balken[data-stoss]::after {
+  position: absolute;
+  inset-block-end: 100%;
+  inset-inline-start: 50%;
+  block-size: calc(0.5rem + 3px);
+  border-inline-start: 1px solid var(--derico-rule);
+  content: "";
+}
+
+.balkenlage .balken-body {
+  fill: var(--balkenlage-ground);
+  stroke: var(--balkenlage-timber);
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Jahresringe in the cut end: hairlines only, well under the beam outline, so
+   the timber reads as material without turning into a second drawing. */
+.balkenlage .balken-ringe {
+  fill: none;
+  stroke: var(--derico-rule);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.balkenlage .balken-mark { fill: var(--derico-rule); }
+
+/* ── Ständerwerk ─────────────────────────────────────────────────────────────
+ *
+ * Niederdeutsches Ständerwerk: a Schwelle carrying two Gebinde, pegged with
+ * Zapfen, open at the top — a standing frame, not a building. In the mockup
+ * it underpins the Support & Wartung card; as a snippet it stands on its own,
+ * so `.derico-staenderwerk` is the sizing box the card used to be — the
+ * `.service-frame` layer inside is `inset: 0` and sizes to nothing alone.
+ *
+ * Real timber has width, so the members are drawn beams, not lines: outlined
+ * at the brand's stroke weight, with Maserung and an Ast to say wood without
+ * reaching for a brown the palette does not have. */
+
+.derico-staenderwerk {
+  /* Declared on the standalone root, where the mockup declared them on the
+     care node: custom properties only inherit downwards. */
+  --beam-sill: 1.5rem;
+  /* Fluid, or the two Gebinde close to within a hair of each other on a
+     narrow shell and read as one V rather than two corner braces. */
+  --gebinde-height: clamp(5.5rem, 20vw, 9rem);
+  --frame-inset: 0.5rem;
+  --frame-timber: var(--derico-brand-text);
+  position: relative;
+  block-size: calc(var(--gebinde-height) + var(--beam-sill));
+  margin-block: clamp(3rem, 2.75rem + 1vw, 4rem);
+  pointer-events: none;
+  white-space: normal;
+}
+
+.service-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Schwelle — the sill runs the full width and carries everything above it. */
+.service-frame__schwelle {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: var(--beam-sill);
+  border-block: 1.5px solid var(--frame-timber);
+  background: var(--derico-surface);
+}
+
+/* One length of grain down the sill, stopping short of both ends so it reads
+   as figure in the timber rather than a second rule. */
+.service-frame__schwelle::before {
+  position: absolute;
+  inset-block-start: 36%;
+  inset-inline: 7%;
+  block-size: 1px;
+  background: var(--derico-rule);
+  content: "";
+}
+
+/* Gebinde — Ständer plus its Fußband, raised as one assembly. */
+.service-frame__gebinde {
+  position: absolute;
+  inset-block-end: var(--beam-sill);
+  block-size: var(--gebinde-height);
+  inline-size: auto;
+  aspect-ratio: 210 / 190;
+  overflow: visible;
+}
+.service-frame__gebinde--start { inset-inline-start: var(--frame-inset); }
+.service-frame__gebinde--end {
+  inset-inline-end: var(--frame-inset);
+  transform: scaleX(-1);
+}
+
+.service-frame__gebinde .frame-beam {
+  fill: var(--derico-surface);
+  stroke: var(--frame-timber);
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Maserung and the Ast: hairlines only, well under the beam outline, so the
+   timber reads as material without turning into a second drawing. */
+.service-frame__gebinde .frame-grain {
+  fill: none;
+  stroke: var(--derico-rule);
+  stroke-width: 1;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Ast — a knot reads as a ring around a darker core, not as a lone outline. */
+.service-frame__gebinde .frame-ast {
+  fill: none;
+  stroke: var(--derico-rule);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.service-frame__gebinde .frame-ast ellipse:last-of-type { fill: var(--derico-rule); }
+
+/* Zapfen — the pegs driven through the joints that carry load. The one place
+   the frame spends copper. */
+.service-frame__gebinde .frame-zapfen {
+  fill: var(--derico-ground);
+  stroke: var(--derico-copper-text);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+}

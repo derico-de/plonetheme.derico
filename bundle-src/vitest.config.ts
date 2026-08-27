@@ -16,6 +16,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   esbuild: { jsx: 'automatic' },
+  // The snippet corpus lives in the PYTHON package (`src/plonetheme/derico/
+  // snippets/*.html`, imported `?raw`) — one directory up from this
+  // workspace, which Vite's file server denies by default. The build never
+  // asks (Rollup reads files directly); only the test server needs the door.
+  server: { fs: { allow: ['..'] } },
   test: {
     environment: 'jsdom',
     globals: false,

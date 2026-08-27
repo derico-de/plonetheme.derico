@@ -28,4 +28,17 @@
       layer="plonetheme.derico.interfaces.IPlonethemeDericoLayer"
       />
 
+  <!-- The Derico Snippet's public renderer: the same registration story as
+       the hero's above, with nothing to add — the template is one
+       `tal:replace="structure view/markup"` injecting a package-shipped
+       fragment, so the interesting decisions all live in snippet.py. -->
+  <browser:page
+      name="aurora-block-derico-snippet"
+      for="*"
+      class=".snippet.DericoSnippetView"
+      template="templates/snippet.pt"
+      permission="zope2.View"
+      layer="plonetheme.derico.interfaces.IPlonethemeDericoLayer"
+      />
+
 </configure>

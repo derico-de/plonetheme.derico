@@ -1,6 +1,7 @@
 """Testing setup for plonetheme.derico."""
 import os
 
+import collective.fragmentsblock
 import plone.app.theming
 import plone.blicca.auroraeditor
 import plone.pageletlayout
@@ -36,6 +37,10 @@ class PlonethemeDericoLayer(PloneSandboxLayer):
         # on `profile-plone.blicca.auroraeditor:default`, which only exists
         # once its ZCML has been read.
         self.loadZCML(package=plone.blicca.auroraeditor)
+        # The fragment block derico provides fragments for: its ZCML has to
+        # be read before derico's own (which registers the provider utility
+        # against its interface) and before the dependency profile install.
+        self.loadZCML(package=collective.fragmentsblock)
         self.loadZCML(package=plonetheme.derico)
 
     def setUpPloneSite(self, portal):
