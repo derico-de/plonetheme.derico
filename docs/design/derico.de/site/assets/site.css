@@ -992,17 +992,48 @@ a:hover { color: var(--copper-text); }
 .manifesto-item h3 { font-size: var(--text-title); }
 .manifesto-item p { margin-block-start: var(--space-xs); color: var(--ink-soft); }
 
-.section-index { margin-block-start: var(--space-xl); border-top: 1px solid var(--rule); }
-.section-index__row {
+/* Detail pages list their children by the READER'S situation, so this block
+   answers a different question than the tail sub-navigation, which describes
+   what we do. No action row: .subnav owns the onward navigation now, and a
+   second "Mehr erfahren →" under the same three links was the duplication
+   this split removes. */
+.triage { margin-block-start: var(--space-xl); border-top: 1px solid var(--rule); }
+.triage__row {
   display: grid;
   gap: var(--space-s);
   padding-block: var(--space-m);
   border-bottom: 1px solid var(--rule);
 }
-.section-index dt a { color: var(--ink); font-family: var(--font-display); font-size: var(--text-title); font-weight: 650; text-decoration: none; }
-.section-index dt a:hover { color: var(--brand-link); text-decoration: underline; }
-.section-index dd { margin: 0; color: var(--ink-soft); }
-.section-index__action { display: inline-flex; margin-block-start: var(--space-xs); font-weight: 700; }
+.triage dt a { color: var(--ink); font-family: var(--font-display); font-size: var(--text-title); font-weight: 650; text-decoration: none; }
+.triage dt a:hover, .triage dt a:focus-visible { color: var(--brand-link); text-decoration: underline; }
+.triage dd { margin: 0; color: var(--ink-soft); }
+
+/* Overview pages NAME their children; the tail sub-navigation describes them.
+   The middot is this site's own separator (Leistungen · Odoo, Odoo · Python ·
+   OCA), which is what keeps this from reading as a second tile row. */
+.pillar-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2xs) var(--space-s);
+  margin-block-start: var(--space-l);
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  font-weight: 650;
+}
+.pillar-line a { color: var(--ink); text-decoration: none; }
+.pillar-line a:hover, .pillar-line a:focus-visible { color: var(--brand-link); text-decoration: underline; }
+/* On the trailing item, not the leading one: the li IS the flex item, so a
+   separator carried by ::before wraps down with the word after it and starts a
+   line looking like a bullet. Carried by ::after it can only ever end one.
+
+   Declared twice on purpose: the `/ ""` form keeps the separator out of the
+   accessibility tree, and a browser that cannot parse it drops that whole
+   declaration and keeps the plain one — so the middot never just vanishes. */
+.pillar-line li:not(:last-child)::after { content: "\00b7"; margin-inline-start: var(--space-s); color: var(--band-rule); }
+.pillar-line li:not(:last-child)::after { content: "\00b7" / ""; margin-inline-start: var(--space-s); color: var(--band-rule); }
 
 .detail-grid { display: grid; gap: var(--space-xl); }
 .detail-aside { align-self: start; padding-block: var(--space-m); border-block: 1px solid var(--band-rule); }
@@ -1070,6 +1101,54 @@ a:hover { color: var(--copper-text); }
 .form-status { margin-block-start: var(--space-s); padding: var(--space-s); border: 1px solid currentColor; border-radius: var(--radius); color: var(--success); background: var(--ground); }
 
 /* CTA and footer */
+/* Page-tail sub-navigation: the onward routes into a section's children.
+   It lives OUTSIDE <main>, between the page body and the contact band — which
+   also breaks up the quote band and the contact band, two --band fields that
+   until now met at a single hairline and read as one.
+
+   Hairline tiles, not cards: this site is rules and editorial type end to end,
+   and a bordered box would be the first one on it. */
+.subnav { padding-block: var(--space-2xl); border-top: 1px solid var(--rule); }
+.subnav__heading { font-size: var(--text-title); }
+.subnav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  margin-block-start: var(--space-l);
+  padding: 0;
+  list-style: none;
+}
+.subnav__list li { flex: 1 1 min(100%, 18rem); }
+/* Four or more children would leave a wrapped orphan stretching the full row.
+   The mockup IA never exceeds three; a Plone folder can, so cap the tile at a
+   third once a fourth child exists. Browsers without :has() keep the stretch. */
+.subnav__list:has(> :nth-child(4)) li { max-inline-size: calc((100% - 2 * var(--space-m)) / 3); }
+.subnav__list a {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  block-size: 100%;
+  padding-block-start: var(--space-s);
+  border-top: 1px solid var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-top-color 200ms var(--ease-out);
+}
+.subnav__title { font-family: var(--font-display); font-size: var(--text-lede); font-weight: 650; }
+.subnav__title::after {
+  content: "\2192";
+  display: inline-block;
+  margin-inline-start: 0.3em;
+  color: var(--ink-soft);
+  transition: transform 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+.subnav__text { color: var(--ink-soft); }
+.subnav__list a:hover, .subnav__list a:focus-visible { border-top-color: var(--copper); }
+.subnav__list a:hover .subnav__title,
+.subnav__list a:focus-visible .subnav__title { color: var(--brand-link); text-decoration: underline; }
+.subnav__list a:hover .subnav__title::after,
+.subnav__list a:focus-visible .subnav__title::after { color: var(--copper-text); transform: translateX(0.2rem); }
+
 .contact-band { padding-block: var(--space-2xl); border-block: 1px solid var(--band-rule); background: var(--band); text-align: center; }
 .contact-band h2 { max-width: 20ch; margin-inline: auto; font-size: var(--text-heading); }
 .contact-band p { margin: var(--space-s) auto 0; color: var(--ink-soft); font-size: var(--text-lede); }
@@ -1095,7 +1174,7 @@ a:hover { color: var(--copper-text); }
 
 @media (min-width: 42rem) {
   .manifesto-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .section-index__row { grid-template-columns: minmax(12rem, 0.75fr) minmax(0, 1.25fr); }
+  .triage__row { grid-template-columns: minmax(12rem, 0.75fr) minmax(0, 1.25fr); }
   .talk-list li { grid-template-columns: 9rem minmax(0, 1fr); column-gap: var(--space-l); }
   .talk-list time, .talk-meta { grid-row: 1 / span 3; }
   .footer-grid { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
@@ -1223,7 +1302,7 @@ a:hover { color: var(--copper-text); }
 }
 
 @media print {
-  .site-header, .breadcrumbs, .contact-band, .site-footer, .action-row { display: none; }
+  .site-header, .breadcrumbs, .subnav, .contact-band, .site-footer, .action-row { display: none; }
   body { color: var(--ink); background: var(--ground); }
   .section, .page-hero { padding-block: 1.5rem; }
   a { color: inherit; text-decoration: underline; }

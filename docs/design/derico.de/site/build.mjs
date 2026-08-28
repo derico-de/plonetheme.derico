@@ -93,6 +93,7 @@ const navigation = {
     contactLead: "Sie schildern die Aufgabe. Wir klären gemeinsam, welcher nächste Schritt sinnvoll ist.",
     email: "E-Mail schreiben",
     location: "Neuhaus/Elbe · Deutschland",
+    subnavTitle: "Mehr zum Thema:",
     footerLine: "Nachhaltige Lösungen für Anwendungen, die bleiben.",
     imprint: "Impressum",
   },
@@ -137,6 +138,7 @@ const navigation = {
     contactLead: "Tell us about the task. Together, we identify a useful next step.",
     email: "Write an email",
     location: "Neuhaus/Elbe · Germany",
+    subnavTitle: "More on this topic:",
     footerLine: "Sustainable solutions for applications, grown to last.",
     imprint: "Legal notice",
   },
@@ -173,7 +175,7 @@ const pages = {
         "Eigene Erweiterungen folgen den Konventionen der Odoo Community Association. Das erleichtert Tests, Reviews und spätere Versionswechsel. Dokumentierte Entscheidungen halten die Anwendung auch für neue Teammitglieder verständlich.",
       ],
       deliverables: ["Prozess- und Modulkonzept", "OCA-konforme Erweiterungen", "Datenmigration und Schnittstellen", "Einführung, Schulung und Upgrade-Plan"],
-      childrenTitle: "Odoo-Leistungen im Detail",
+      childrenTitle: "Drei Einstiege, je nach Ausgangslage",
       children: ["odooDevelopment", "odooConsulting", "odooOperations"],
       quote: "Eine ERP-Einführung trägt, wenn Teams ihre tägliche Arbeit darin wiederfinden und jede Erweiterung einen nachvollziehbaren Platz hat.",
       proofLinks: [["https://odoo-community.org/", "Odoo Community Association"], ["knowledge", "Schulungen für Ihr Odoo-Team"]],
@@ -183,6 +185,7 @@ const pages = {
       title: "Odoo-Entwicklung für klare Prozesse.",
       context: "Leistungen · Odoo · Entwicklung",
       lede: "Wir entwickeln Odoo-Module und Schnittstellen, die fachliche Abläufe präzise abbilden und sich sauber weiterentwickeln lassen.",
+      trigger: "Ein Standardmodul reicht nicht — der Prozess braucht eigene Logik oder eine Anbindung.",
       fit: "Individuelle Abläufe, Integrationen und Erweiterungen",
       foundation: "Odoo · Python · OCA-Standards",
       horizon: "Konzeption, Umsetzung und Weiterentwicklung",
@@ -200,6 +203,7 @@ const pages = {
       title: "Odoo-Beratung verbindet Prozesse und System.",
       context: "Leistungen · Odoo · Beratung",
       lede: "Wir klären Ziele, Prozesse und Verantwortlichkeiten und entwickeln daraus einen belastbaren Weg für Einführung oder Weiterentwicklung.",
+      trigger: "Die Richtung ist offen: Reihenfolge, Aufwand und Risiko sind noch nicht abgeschätzt.",
       fit: "Einführungen, Erweiterungen und bestehende Odoo-Systeme",
       foundation: "Prozessanalyse · Modulkonzept · Odoo",
       horizon: "Vom Zielbild bis zur umsetzbaren Roadmap",
@@ -217,6 +221,7 @@ const pages = {
       title: "Odoo-Betrieb hält Anwendungen verlässlich verfügbar.",
       context: "Leistungen · Odoo · Betrieb",
       lede: "Wir planen Deployment, Überwachung, Backups und Updates als zusammenhängenden Betriebsweg für Ihre Odoo-Anwendung.",
+      trigger: "Das System ist produktiv und muss verfügbar, gesichert und aktuell bleiben.",
       fit: "Produktive Odoo-Anwendungen mit verlässlichen Betriebsanforderungen",
       foundation: "Odoo · Linux · automatisierte Deployments",
       horizon: "Laufender Betrieb und vorbereitete Versionswechsel",
@@ -243,7 +248,7 @@ const pages = {
         "Bei bestehenden Installationen analysieren wir Erweiterungen, Inhalte und Betriebswege. Migrationen werden in überprüfbaren Schritten geplant, damit Redaktionen weiterarbeiten und Entscheidungen nachvollziehen können.",
       ],
       deliverables: ["Informationsarchitektur und Workflows", "Individuelle Inhaltstypen und Integrationen", "Barrierearme Benutzeroberflächen", "Upgrades und Migrationen"],
-      childrenTitle: "Plone-Leistungen im Detail",
+      childrenTitle: "Drei Einstiege, je nach Ausgangslage",
       children: ["ploneDevelopment", "ploneConsulting", "ploneOperations"],
       quote: "Unsere Plone-Werkzeuge werden upstream genutzt. Diese Nähe zur Community verbessert jede Kundenanwendung.",
       proofLinks: [["https://github.com/plone/plonecli", "plonecli auf GitHub"], ["https://github.com/plone/bobtemplates.plone", "bobtemplates.plone auf GitHub"]],
@@ -253,6 +258,7 @@ const pages = {
       title: "Plone-Entwicklung entlang Ihrer Inhalte.",
       context: "Leistungen · Plone · Entwicklung",
       lede: "Wir entwickeln Inhaltstypen, Workflows und Add-ons, die redaktionelle Arbeit abbilden und den Weg zu künftigen Plone-Versionen offen halten.",
+      trigger: "Redaktionen arbeiten an den Standardwerkzeugen vorbei, weil ihnen etwas Eigenes fehlt.",
       fit: "Eigene Inhaltstypen, Add-ons und Integrationen",
       foundation: "Plone · Python · Volto und klassische Oberfläche",
       horizon: "Konzeption, Umsetzung und Weiterentwicklung",
@@ -270,6 +276,7 @@ const pages = {
       title: "Plone-Beratung ordnet Inhalte und Verantwortung.",
       context: "Leistungen · Plone · Beratung",
       lede: "Wir klären Informationsarchitektur, Rollen und Veröffentlichungswege und entwickeln daraus einen belastbaren Weg für Relaunch, Upgrade oder Neubau.",
+      trigger: "Die Struktur ist über Jahre gewachsen und niemand kann sie mehr vollständig überblicken.",
       fit: "Relaunches, Upgrades und bestehende Plone-Installationen",
       foundation: "Informationsarchitektur · Rollen und Workflows · Plone",
       horizon: "Vom Zielbild bis zur umsetzbaren Roadmap",
@@ -287,6 +294,7 @@ const pages = {
       title: "Plone-Betrieb hält Redaktionen arbeitsfähig.",
       context: "Leistungen · Plone · Betrieb",
       lede: "Wir planen Deployment, Sicherungen, Überwachung und Sicherheitsupdates als zusammenhängenden Betriebsweg für Ihre Plone-Anwendung.",
+      trigger: "Das Portal ist produktiv und darf auch bei Updates nicht stillstehen.",
       fit: "Produktive Portale, Intranets und Wissensplattformen",
       foundation: "Plone · Datenbank, Blobs und Suchindex · automatisierte Deployments",
       horizon: "Laufender Betrieb und vorbereitete Versionswechsel",
@@ -429,7 +437,7 @@ const pages = {
         "Custom extensions follow Odoo Community Association conventions. That improves testing, review and later upgrades. Documented decisions keep the application understandable as the team changes.",
       ],
       deliverables: ["Process and module concept", "OCA-compliant extensions", "Data migration and integrations", "Introduction, training and upgrade plan"],
-      childrenTitle: "Odoo services in detail",
+      childrenTitle: "Three ways in, depending on where you stand",
       children: ["odooDevelopment", "odooConsulting", "odooOperations"],
       quote: "An ERP system carries its value when teams recognise their daily work and each extension has a clear place.",
       proofLinks: [["https://odoo-community.org/", "Odoo Community Association"], ["knowledge", "Training for your Odoo team"]],
@@ -439,6 +447,7 @@ const pages = {
       title: "Odoo development for clear processes.",
       context: "Services · Odoo · Development",
       lede: "We develop Odoo modules and integrations that represent business processes precisely and remain ready for continued development.",
+      trigger: "A standard module isn't enough — the process needs its own logic or a connection.",
       fit: "Individual processes, integrations and extensions",
       foundation: "Odoo · Python · OCA standards",
       horizon: "Concept, implementation and continued development",
@@ -456,6 +465,7 @@ const pages = {
       title: "Odoo consulting connects processes and system.",
       context: "Services · Odoo · Consulting",
       lede: "We clarify goals, processes and responsibilities and turn them into a dependable path for introduction or continued development.",
+      trigger: "The direction is still open: sequence, effort and risk have not been assessed.",
       fit: "Introductions, extensions and existing Odoo systems",
       foundation: "Process analysis · module concept · Odoo",
       horizon: "From target state to an actionable roadmap",
@@ -473,6 +483,7 @@ const pages = {
       title: "Odoo operations keep applications reliably available.",
       context: "Services · Odoo · Operations",
       lede: "We plan deployment, monitoring, backups and updates as one connected operational path for your Odoo application.",
+      trigger: "The system is live and has to stay available, protected and current.",
       fit: "Production Odoo applications with dependable operational requirements",
       foundation: "Odoo · Linux · automated deployments",
       horizon: "Continuous operations and prepared release changes",
@@ -499,7 +510,7 @@ const pages = {
         "For existing installations, we analyse extensions, content and operations. Migrations proceed in verifiable stages so editorial work can continue and decisions remain traceable.",
       ],
       deliverables: ["Information architecture and workflows", "Custom content types and integrations", "Accessible interfaces", "Upgrades and migrations"],
-      childrenTitle: "Plone services in detail",
+      childrenTitle: "Three ways in, depending on where you stand",
       children: ["ploneDevelopment", "ploneConsulting", "ploneOperations"],
       quote: "Our Plone tools are used upstream. That closeness to the community improves every client application.",
       proofLinks: [["https://github.com/plone/plonecli", "plonecli on GitHub"], ["https://github.com/plone/bobtemplates.plone", "bobtemplates.plone on GitHub"]],
@@ -509,6 +520,7 @@ const pages = {
       title: "Plone development along your content.",
       context: "Services · Plone · Development",
       lede: "We develop content types, workflows and add-ons that represent editorial work and keep the path to future Plone releases open.",
+      trigger: "Editors work around the standard tools because something of their own is missing.",
       fit: "Custom content types, add-ons and integrations",
       foundation: "Plone · Python · Volto and Classic UI",
       horizon: "Concept, implementation and continued development",
@@ -526,6 +538,7 @@ const pages = {
       title: "Plone consulting orders content and responsibility.",
       context: "Services · Plone · Consulting",
       lede: "We clarify information architecture, roles and publication paths and turn them into a dependable route for a relaunch, an upgrade or a new build.",
+      trigger: "The structure has grown over years and no one can take it all in any more.",
       fit: "Relaunches, upgrades and existing Plone installations",
       foundation: "Information architecture · roles and workflows · Plone",
       horizon: "From target state to an actionable roadmap",
@@ -543,6 +556,7 @@ const pages = {
       title: "Plone operations keep editorial teams working.",
       context: "Services · Plone · Operations",
       lede: "We plan deployment, backups, monitoring and security updates as one connected operational path for your Plone application.",
+      trigger: "The portal is live and must not stall, not even during updates.",
       fit: "Production portals, intranets and knowledge platforms",
       foundation: "Plone · database, files and search index · automated deployments",
       horizon: "Continuous operations and prepared release changes",
@@ -1005,28 +1019,46 @@ function renderHome(lang, page) {
   ${renderServiceGuide(lang)}`;
 }
 
-function renderIndex(lang, children) {
-  const descriptions = {
-    de: {
-      odoo: "ERP und eigene Module für verbundene Geschäftsprozesse.", odooDevelopment: "Individuelle Module und Schnittstellen nach OCA-Standards.", odooConsulting: "Prozesse, Anforderungen und Einführungsschritte gemeinsam klären.", odooOperations: "Deployment, Monitoring, Backups und Updates verlässlich organisieren.", plone: "Inhaltsplattformen mit Workflows, Berechtigungen und langer Lebensdauer.", ploneDevelopment: "Inhaltstypen, Add-ons und Oberflächen, die Upgrades überstehen.", ploneConsulting: "Informationsarchitektur, Rollen und Upgrade-Wege gemeinsam klären.", ploneOperations: "Sicherungen, Monitoring und Sicherheitsupdates verlässlich organisieren.", python: "Individuelle Anwendungen und APIs mit Django, Pyramid oder FastAPI.", care: "Support, Updates und Migration für Anwendungen im täglichen Betrieb.", support: "Direkte Hilfe mit Kenntnis von Architektur und Betrieb.", maintenance: "Planbare technische Pflege über Release-Zyklen hinweg.", training: "Praxisnahe Formate für Teams und Verantwortliche.", talks: "Vorträge zu Plone, Python, Open Source und nachhaltiger Architektur.",
-    },
-    en: {
-      odoo: "ERP and custom modules for connected business processes.", odooDevelopment: "Custom modules and integrations following OCA standards.", odooConsulting: "Clarify processes, requirements and introduction stages together.", odooOperations: "Organise deployment, monitoring, backups and updates reliably.", plone: "Content platforms with workflows, permissions and a long service life.", ploneDevelopment: "Content types, add-ons and interfaces built to survive upgrades.", ploneConsulting: "Clarify information architecture, roles and upgrade paths together.", ploneOperations: "Organise backups, monitoring and security updates reliably.", python: "Individual applications and APIs with Django, Pyramid or FastAPI.", care: "Support, updates and migration for applications in daily operation.", support: "Direct help with knowledge of architecture and operations.", maintenance: "Predictable technical care across release cycles.", training: "Practical formats for teams and responsible roles.", talks: "Talks about Plone, Python, open source and sustainable architecture.",
-    },
-  };
-  const action = lang === "de" ? "Mehr erfahren" : "Learn more";
-  return `<dl class="section-index">${children.map((key) => `<div class="section-index__row"><dt><a href="${href(lang, key)}">${pages[lang][key].context.split(" · ").at(-1)}</a></dt><dd>${descriptions[lang][key]}<br><a class="section-index__action" href="${href(lang, key)}">${action} →</a></dd></div>`).join("")}</dl>`;
+function childLabel(lang, key) {
+  return pages[lang][key].context.split(" · ").at(-1);
+}
+
+// Overview pages: the children ARE the page body, so here they are only named.
+// Their description is said once, at the tail, by subnav().
+function pillarLine(lang, children) {
+  return `<ul class="pillar-line">${children.map((key) => `<li><a href="${href(lang, key)}">${childLabel(lang, key)}</a></li>`).join("")}</ul>`;
+}
+
+// Detail pages: the children are keyed to the READER'S situation ("das System
+// ist produktiv…"), never to what we do — that sentence belongs to subnav(),
+// and saying it twice on one page was the whole problem this split solves.
+function triage(lang, children) {
+  return `<dl class="triage">${children.map((key) => `<div class="triage__row"><dt><a href="${href(lang, key)}">${childLabel(lang, key)}</a></dt><dd>${pages[lang][key].trigger}</dd></div>`).join("")}</dl>`;
+}
+
+// The page-tail sub-navigation. Chrome, not content: it sits OUTSIDE <main>,
+// between the page body and the contact band, so this file matches the Plone
+// implementation, where it is a chrome pagelet slotted between
+// plone.pageletlayout.body and the footer rows. Renders nothing without
+// children. Each tile carries the child's lede — the one description a page
+// has, and the field that maps to Plone's Description.
+function subnav(lang, page) {
+  if (!page.children?.length) return "";
+  return `<nav class="subnav" aria-labelledby="subnav-heading"><div class="shell">
+    <h2 class="subnav__heading" id="subnav-heading">${navigation[lang].subnavTitle}</h2>
+    <ul class="subnav__list">${page.children.map((key) => `<li><a href="${href(lang, key)}"><span class="subnav__title">${childLabel(lang, key)}</span><span class="subnav__text">${pages[lang][key].lede}</span></a></li>`).join("")}</ul>
+  </div></nav>`;
 }
 
 function renderOverview(lang, page) {
-  return `${pageHero(page)}<section class="section"><div class="shell"><h2 class="section-heading">${page.introTitle}</h2><p class="section-intro">${page.intro}</p>${renderIndex(lang, page.children)}</div></section>`;
+  return `${pageHero(page)}<section class="section"><div class="shell"><h2 class="section-heading">${page.introTitle}</h2><p class="section-intro">${page.intro}</p>${pillarLine(lang, page.children)}</div></section>`;
 }
 
 function renderDetail(lang, page) {
   const labels = lang === "de" ? ["Geeignet für", "Technische Grundlage", "Zeithorizont"] : ["Suitable for", "Technical foundation", "Horizon"];
   const deliverablesTitle = lang === "de" ? "Was wir gemeinsam erarbeiten" : "What we build together";
   const childPages = page.children?.length
-    ? `<section class="section section--soft"><div class="shell"><h2 class="section-heading">${page.childrenTitle}</h2>${renderIndex(lang, page.children)}</div></section>`
+    ? `<section class="section section--soft"><div class="shell"><h2 class="section-heading">${page.childrenTitle}</h2>${triage(lang, page.children)}</div></section>`
     : "";
   return `${pageHero(page)}<section class="section"><div class="shell detail-grid"><div class="prose"><h2>${page.bodyTitle}</h2>${page.body.map((text) => `<p>${text}</p>`).join("")}<h2>${deliverablesTitle}</h2><ul>${page.deliverables.map((item) => `<li>${item}</li>`).join("")}</ul></div><dl class="detail-aside"><dt>${labels[0]}</dt><dd>${page.fit}</dd><dt>${labels[1]}</dt><dd>${page.foundation}</dd><dt>${labels[2]}</dt><dd>${page.horizon}</dd></dl></div></section>${childPages}<section class="section section--band"><div class="shell proof-band"><blockquote>“${page.quote}”<cite>— ${lang === "de" ? "Arbeitsprinzip, derico" : "Working principle, derico"}</cite></blockquote><div class="proof-links">${page.proofLinks.map(([target, label]) => `<a href="${resolvedHref(lang, target)}"${target.startsWith("http") ? ' rel="external"' : ""}>${label}</a>`).join("")}</div></div></section>`;
 }
@@ -1132,6 +1164,7 @@ function document(lang, key, page) {
   ${header(lang, key)}
   ${breadcrumbs(lang, key, page.context.split(" · ").at(-1))}
   <main id="main">${renderBody(lang, page)}</main>
+  ${subnav(lang, page)}
   ${includeContact ? contactBand(lang) : ""}
   ${footer(lang)}
 </body>
