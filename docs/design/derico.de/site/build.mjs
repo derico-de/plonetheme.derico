@@ -13,6 +13,9 @@ const slugs = {
     odooConsulting: "odoo-beratung.html",
     odooOperations: "odoo-betrieb.html",
     plone: "plone.html",
+    ploneDevelopment: "plone-entwicklung.html",
+    ploneConsulting: "plone-beratung.html",
+    ploneOperations: "plone-betrieb.html",
     python: "python.html",
     sustainability: "nachhaltigkeit.html",
     care: "support-wartung.html",
@@ -32,6 +35,9 @@ const slugs = {
     odooConsulting: "odoo-consulting.html",
     odooOperations: "odoo-operations.html",
     plone: "plone.html",
+    ploneDevelopment: "plone-development.html",
+    ploneConsulting: "plone-consulting.html",
+    ploneOperations: "plone-operations.html",
     python: "python.html",
     sustainability: "sustainability.html",
     care: "support-maintenance.html",
@@ -57,7 +63,7 @@ const navigation = {
       proof: "Zwanzig Jahre Python-Erfahrung fließen in Architektur, Betrieb und Weiterentwicklung ein.",
       links: [
         ["odoo", "Odoo", "Geschäftsprozesse verbinden und dauerhaft weiterentwickeln", [["odooDevelopment", "Entwicklung"], ["odooConsulting", "Beratung"], ["odooOperations", "Betrieb"]]],
-        ["plone", "Plone", "Inhalte, Workflows und Berechtigungen verlässlich organisieren"],
+        ["plone", "Plone", "Inhalte, Workflows und Berechtigungen verlässlich organisieren", [["ploneDevelopment", "Entwicklung"], ["ploneConsulting", "Beratung"], ["ploneOperations", "Betrieb"]]],
         ["python", "Django, Pyramid & FastAPI", "Passende Python-Architekturen für individuelle Anwendungen"],
       ],
     },
@@ -101,7 +107,7 @@ const navigation = {
       proof: "Twenty years of Python experience inform architecture, operations and continued development.",
       links: [
         ["odoo", "Odoo", "Connect business processes and develop them sustainably", [["odooDevelopment", "Development"], ["odooConsulting", "Consulting"], ["odooOperations", "Operations"]]],
-        ["plone", "Plone", "Organise content, workflows and permissions reliably"],
+        ["plone", "Plone", "Organise content, workflows and permissions reliably", [["ploneDevelopment", "Development"], ["ploneConsulting", "Consulting"], ["ploneOperations", "Operations"]]],
         ["python", "Django, Pyramid & FastAPI", "Purpose-fit Python architectures for individual applications"],
       ],
     },
@@ -237,8 +243,61 @@ const pages = {
         "Bei bestehenden Installationen analysieren wir Erweiterungen, Inhalte und Betriebswege. Migrationen werden in überprüfbaren Schritten geplant, damit Redaktionen weiterarbeiten und Entscheidungen nachvollziehen können.",
       ],
       deliverables: ["Informationsarchitektur und Workflows", "Individuelle Inhaltstypen und Integrationen", "Barrierearme Benutzeroberflächen", "Upgrades und Migrationen"],
+      childrenTitle: "Plone-Leistungen im Detail",
+      children: ["ploneDevelopment", "ploneConsulting", "ploneOperations"],
       quote: "Unsere Plone-Werkzeuge werden upstream genutzt. Diese Nähe zur Community verbessert jede Kundenanwendung.",
       proofLinks: [["https://github.com/plone/plonecli", "plonecli auf GitHub"], ["https://github.com/plone/bobtemplates.plone", "bobtemplates.plone auf GitHub"]],
+    },
+    ploneDevelopment: {
+      type: "detail",
+      title: "Plone-Entwicklung entlang Ihrer Inhalte.",
+      context: "Leistungen · Plone · Entwicklung",
+      lede: "Wir entwickeln Inhaltstypen, Workflows und Add-ons, die redaktionelle Arbeit abbilden und den Weg zu künftigen Plone-Versionen offen halten.",
+      fit: "Eigene Inhaltstypen, Add-ons und Integrationen",
+      foundation: "Plone · Python · Volto und klassische Oberfläche",
+      horizon: "Konzeption, Umsetzung und Weiterentwicklung",
+      bodyTitle: "Erweiterungen, die den Upgrade-Pfad offen halten",
+      body: [
+        "Am Anfang stehen die Inhalte selbst: welche Typen es gibt, wer sie pflegt und wie sie geprüft und veröffentlicht werden. Daraus entstehen Inhaltstypen, Verhalten und Arbeitsabläufe, die Redaktionen ohne Umwege bedienen können.",
+        "Add-ons folgen den Konventionen der Plone-Community: versionierte Profile mit Upgrade-Schritten, automatisierte Tests und dokumentierte Schnittstellen. Die Oberfläche entsteht mit Volto oder der klassischen Oberfläche — je nachdem, was Redaktion und Betrieb dauerhaft tragen.",
+      ],
+      deliverables: ["Individuelle Inhaltstypen und Verhalten", "Add-ons mit Profilen und Upgrade-Schritten", "Blöcke, Views und barrierearme Oberflächen", "Automatisierte Tests und technische Dokumentation"],
+      quote: "Eine Plone-Erweiterung ist dann gut gebaut, wenn das nächste Upgrade sie mitnehmen kann.",
+      proofLinks: [["https://github.com/plone/plonecli", "plonecli auf GitHub"], ["plone", "Plone im Überblick"]],
+    },
+    ploneConsulting: {
+      type: "detail",
+      title: "Plone-Beratung ordnet Inhalte und Verantwortung.",
+      context: "Leistungen · Plone · Beratung",
+      lede: "Wir klären Informationsarchitektur, Rollen und Veröffentlichungswege und entwickeln daraus einen belastbaren Weg für Relaunch, Upgrade oder Neubau.",
+      fit: "Relaunches, Upgrades und bestehende Plone-Installationen",
+      foundation: "Informationsarchitektur · Rollen und Workflows · Plone",
+      horizon: "Vom Zielbild bis zur umsetzbaren Roadmap",
+      bodyTitle: "Entscheidungen, die Redaktionen mittragen",
+      body: [
+        "In Workshops erfassen wir Inhalte, Zuständigkeiten, Freigabewege und Schnittstellen gemeinsam mit Redaktion und IT. Daraus entsteht eine Informationsarchitektur mit Rollen und Arbeitsabläufen, die zur Organisation passt statt sie umzubauen.",
+        "Bestehende Installationen prüfen wir anhand ihrer Add-ons, Anpassungen, Inhaltsmengen und Betriebswege. Das Ergebnis benennt den tragfähigen Weg zur aktuellen Plone-Version und die Stellen, die dabei besondere Aufmerksamkeit brauchen.",
+      ],
+      deliverables: ["Workshops zu Inhalten, Rollen und Abläufen", "Informationsarchitektur und Berechtigungskonzept", "Analyse bestehender Installationen und Add-ons", "Priorisierte Upgrade- oder Relaunch-Roadmap"],
+      quote: "Eine Plone-Entscheidung trägt, wenn Redaktion, IT und Leitung dieselbe Landkarte vor sich haben.",
+      proofLinks: [["ploneDevelopment", "Plone-Entwicklung"], ["contact", "Beratungsbedarf einordnen"]],
+    },
+    ploneOperations: {
+      type: "detail",
+      title: "Plone-Betrieb hält Redaktionen arbeitsfähig.",
+      context: "Leistungen · Plone · Betrieb",
+      lede: "Wir planen Deployment, Sicherungen, Überwachung und Sicherheitsupdates als zusammenhängenden Betriebsweg für Ihre Plone-Anwendung.",
+      fit: "Produktive Portale, Intranets und Wissensplattformen",
+      foundation: "Plone · Datenbank, Blobs und Suchindex · automatisierte Deployments",
+      horizon: "Laufender Betrieb und vorbereitete Versionswechsel",
+      bodyTitle: "Betrieb, der den Zustand sichtbar macht",
+      body: [
+        "Gemeinsam legen wir Umgebungen, Zugriffswege, Sicherungen und Wiederherstellung fest. Datenbank, Dateien und Suchindex gehören dabei zusammen: Eine Sicherung ist erst dann eine Sicherung, wenn die Wiederherstellung geprüft wurde.",
+        "Sicherheitsupdates der Plone-Community werden zeitnah eingespielt, größere Versionswechsel früh vorbereitet und auf einer Kopie der echten Inhalte geprobt. Status, Risiken und notwendige Entscheidungen bleiben für verantwortliche Personen transparent.",
+      ],
+      deliverables: ["Betriebs- und Deploymentkonzept", "Sicherungen, Wiederherstellung und Monitoring", "Staging-Umgebung mit echten Inhalten", "Sicherheitsupdates und Upgrade-Planung"],
+      quote: "Guter Betrieb fällt niemandem auf — außer an dem Tag, an dem eine Wiederherstellung gebraucht wird.",
+      proofLinks: [["maintenance", "Wartung über Release-Zyklen"], ["contact", "Betrieb besprechen"]],
     },
     python: {
       type: "detail",
@@ -440,8 +499,61 @@ const pages = {
         "For existing installations, we analyse extensions, content and operations. Migrations proceed in verifiable stages so editorial work can continue and decisions remain traceable.",
       ],
       deliverables: ["Information architecture and workflows", "Custom content types and integrations", "Accessible interfaces", "Upgrades and migrations"],
+      childrenTitle: "Plone services in detail",
+      children: ["ploneDevelopment", "ploneConsulting", "ploneOperations"],
       quote: "Our Plone tools are used upstream. That closeness to the community improves every client application.",
       proofLinks: [["https://github.com/plone/plonecli", "plonecli on GitHub"], ["https://github.com/plone/bobtemplates.plone", "bobtemplates.plone on GitHub"]],
+    },
+    ploneDevelopment: {
+      type: "detail",
+      title: "Plone development along your content.",
+      context: "Services · Plone · Development",
+      lede: "We develop content types, workflows and add-ons that represent editorial work and keep the path to future Plone releases open.",
+      fit: "Custom content types, add-ons and integrations",
+      foundation: "Plone · Python · Volto and Classic UI",
+      horizon: "Concept, implementation and continued development",
+      bodyTitle: "Extensions that keep the upgrade path open",
+      body: [
+        "The work begins with the content itself: which types exist, who maintains them, and how they are reviewed and published. From that grow content types, behaviours and workflows editors can operate without detours.",
+        "Add-ons follow Plone community conventions: versioned profiles with upgrade steps, automated tests and documented interfaces. The interface is built with Volto or the Classic UI — whichever the editorial team and operations can carry over the long term.",
+      ],
+      deliverables: ["Custom content types and behaviours", "Add-ons with profiles and upgrade steps", "Blocks, views and accessible interfaces", "Automated tests and technical documentation"],
+      quote: "A Plone extension is well built when the next upgrade can bring it along.",
+      proofLinks: [["https://github.com/plone/plonecli", "plonecli on GitHub"], ["plone", "Plone overview"]],
+    },
+    ploneConsulting: {
+      type: "detail",
+      title: "Plone consulting orders content and responsibility.",
+      context: "Services · Plone · Consulting",
+      lede: "We clarify information architecture, roles and publication paths and turn them into a dependable route for a relaunch, an upgrade or a new build.",
+      fit: "Relaunches, upgrades and existing Plone installations",
+      foundation: "Information architecture · roles and workflows · Plone",
+      horizon: "From target state to an actionable roadmap",
+      bodyTitle: "Decisions the editorial team can carry",
+      body: [
+        "In workshops, we capture content, responsibilities, approval paths and integrations together with editors and IT. The result is an information architecture with roles and workflows that fit the organisation instead of rebuilding it.",
+        "We assess existing installations through their add-ons, customisations, content volume and operational paths. The findings name the viable route to the current Plone release and the places that will need particular attention.",
+      ],
+      deliverables: ["Workshops on content, roles and processes", "Information architecture and permission concept", "Assessment of existing installations and add-ons", "Prioritised upgrade or relaunch roadmap"],
+      quote: "A Plone decision carries when editors, IT and management are looking at the same map.",
+      proofLinks: [["ploneDevelopment", "Plone development"], ["contact", "Discuss your consulting needs"]],
+    },
+    ploneOperations: {
+      type: "detail",
+      title: "Plone operations keep editorial teams working.",
+      context: "Services · Plone · Operations",
+      lede: "We plan deployment, backups, monitoring and security updates as one connected operational path for your Plone application.",
+      fit: "Production portals, intranets and knowledge platforms",
+      foundation: "Plone · database, files and search index · automated deployments",
+      horizon: "Continuous operations and prepared release changes",
+      bodyTitle: "Operations that make the state visible",
+      body: [
+        "Together we define environments, access paths, backups and recovery. Database, files and search index belong together: a backup only becomes a backup once the restore has been verified.",
+        "Security updates from the Plone community are applied promptly, larger release changes are prepared early and rehearsed against a copy of the real content. Status, risks and required decisions remain transparent for responsible roles.",
+      ],
+      deliverables: ["Operations and deployment concept", "Backups, recovery and monitoring", "Staging environment with real content", "Security updates and upgrade planning"],
+      quote: "Good operations go unnoticed — except on the day a restore is needed.",
+      proofLinks: [["maintenance", "Maintenance across release cycles"], ["contact", "Discuss operations"]],
     },
     python: {
       type: "detail",
@@ -546,7 +658,7 @@ const pages = {
 };
 
 const groupFor = (key) => {
-  if (["services", "odoo", "odooDevelopment", "odooConsulting", "odooOperations", "plone", "python"].includes(key)) return "services";
+  if (["services", "odoo", "odooDevelopment", "odooConsulting", "odooOperations", "plone", "ploneDevelopment", "ploneConsulting", "ploneOperations", "python"].includes(key)) return "services";
   if (["care", "support", "maintenance"].includes(key)) return "care";
   if (["knowledge", "training", "talks"].includes(key)) return "knowledge";
   return null;
@@ -620,8 +732,12 @@ function breadcrumbs(lang, key, label) {
   const group = groupFor(key);
   const groupLabel = group ? navigation[lang][group].label : null;
   const groupCrumb = group && group !== key ? `<li><a href="${href(lang, group)}">${groupLabel}</a></li>` : "";
-  const odooChildren = ["odooDevelopment", "odooConsulting", "odooOperations"];
-  const parentCrumb = odooChildren.includes(key) ? `<li><a href="${href(lang, "odoo")}">Odoo</a></li>` : "";
+  const parents = {
+    odooDevelopment: ["odoo", "Odoo"], odooConsulting: ["odoo", "Odoo"], odooOperations: ["odoo", "Odoo"],
+    ploneDevelopment: ["plone", "Plone"], ploneConsulting: ["plone", "Plone"], ploneOperations: ["plone", "Plone"],
+  };
+  const parent = parents[key];
+  const parentCrumb = parent ? `<li><a href="${href(lang, parent[0])}">${parent[1]}</a></li>` : "";
   return `<nav class="breadcrumbs" aria-label="${lang === "de" ? "Brotkrümelnavigation" : "Breadcrumb"}"><div class="shell"><ol><li><a href="${href(lang, "home")}">${home}</a></li>${groupCrumb}${parentCrumb}<li aria-current="page">${label}</li></ol></div></nav>`;
 }
 
@@ -892,10 +1008,10 @@ function renderHome(lang, page) {
 function renderIndex(lang, children) {
   const descriptions = {
     de: {
-      odoo: "ERP und eigene Module für verbundene Geschäftsprozesse.", odooDevelopment: "Individuelle Module und Schnittstellen nach OCA-Standards.", odooConsulting: "Prozesse, Anforderungen und Einführungsschritte gemeinsam klären.", odooOperations: "Deployment, Monitoring, Backups und Updates verlässlich organisieren.", plone: "Inhaltsplattformen mit Workflows, Berechtigungen und langer Lebensdauer.", python: "Individuelle Anwendungen und APIs mit Django, Pyramid oder FastAPI.", care: "Support, Updates und Migration für Anwendungen im täglichen Betrieb.", support: "Direkte Hilfe mit Kenntnis von Architektur und Betrieb.", maintenance: "Planbare technische Pflege über Release-Zyklen hinweg.", training: "Praxisnahe Formate für Teams und Verantwortliche.", talks: "Vorträge zu Plone, Python, Open Source und nachhaltiger Architektur.",
+      odoo: "ERP und eigene Module für verbundene Geschäftsprozesse.", odooDevelopment: "Individuelle Module und Schnittstellen nach OCA-Standards.", odooConsulting: "Prozesse, Anforderungen und Einführungsschritte gemeinsam klären.", odooOperations: "Deployment, Monitoring, Backups und Updates verlässlich organisieren.", plone: "Inhaltsplattformen mit Workflows, Berechtigungen und langer Lebensdauer.", ploneDevelopment: "Inhaltstypen, Add-ons und Oberflächen, die Upgrades überstehen.", ploneConsulting: "Informationsarchitektur, Rollen und Upgrade-Wege gemeinsam klären.", ploneOperations: "Sicherungen, Monitoring und Sicherheitsupdates verlässlich organisieren.", python: "Individuelle Anwendungen und APIs mit Django, Pyramid oder FastAPI.", care: "Support, Updates und Migration für Anwendungen im täglichen Betrieb.", support: "Direkte Hilfe mit Kenntnis von Architektur und Betrieb.", maintenance: "Planbare technische Pflege über Release-Zyklen hinweg.", training: "Praxisnahe Formate für Teams und Verantwortliche.", talks: "Vorträge zu Plone, Python, Open Source und nachhaltiger Architektur.",
     },
     en: {
-      odoo: "ERP and custom modules for connected business processes.", odooDevelopment: "Custom modules and integrations following OCA standards.", odooConsulting: "Clarify processes, requirements and introduction stages together.", odooOperations: "Organise deployment, monitoring, backups and updates reliably.", plone: "Content platforms with workflows, permissions and a long service life.", python: "Individual applications and APIs with Django, Pyramid or FastAPI.", care: "Support, updates and migration for applications in daily operation.", support: "Direct help with knowledge of architecture and operations.", maintenance: "Predictable technical care across release cycles.", training: "Practical formats for teams and responsible roles.", talks: "Talks about Plone, Python, open source and sustainable architecture.",
+      odoo: "ERP and custom modules for connected business processes.", odooDevelopment: "Custom modules and integrations following OCA standards.", odooConsulting: "Clarify processes, requirements and introduction stages together.", odooOperations: "Organise deployment, monitoring, backups and updates reliably.", plone: "Content platforms with workflows, permissions and a long service life.", ploneDevelopment: "Content types, add-ons and interfaces built to survive upgrades.", ploneConsulting: "Clarify information architecture, roles and upgrade paths together.", ploneOperations: "Organise backups, monitoring and security updates reliably.", python: "Individual applications and APIs with Django, Pyramid or FastAPI.", care: "Support, updates and migration for applications in daily operation.", support: "Direct help with knowledge of architecture and operations.", maintenance: "Predictable technical care across release cycles.", training: "Practical formats for teams and responsible roles.", talks: "Talks about Plone, Python, open source and sustainable architecture.",
     },
   };
   const action = lang === "de" ? "Mehr erfahren" : "Learn more";
