@@ -2,6 +2,19 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Aurora block backgrounds are brand colours** (`derico.css` §8). Blicca's
+  `backgroundColor` style field lets an author put a block on a named palette
+  slot and reads one `--aurora-block-*` custom property per slot; unset, all
+  three painted Blicca's generic slate. The token layer now fills them from
+  the Jahresringe ladder — Grey on `--derico-surface`, Accent on
+  `--derico-band-soft`, Dark on `--derico-brand-deep` with the page ground as
+  its foreground. Accent is deliberately the soft cyan rather than the
+  committed `--derico-band`: that band takes ink text and quiet ink links by
+  design and an ordinary link on it measures 4.27:1, which a designed section
+  can honour but a picker slot cannot. No profile change — a value-only edit
+  to the token sheet. `tests/test_aurora_block_backgrounds.py` holds the slot
+  names against Blicca's own table and every pairing against AA.
+
 - **The Derico Snippet block is retired** (profile version 1004). It and the
   generic fragment block delivered the same thing once 1003 made derico a
   fragment provider — one ornament, one file, injected verbatim — so the brand

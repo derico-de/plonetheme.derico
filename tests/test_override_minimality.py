@@ -201,12 +201,20 @@ def test_sheet_ships_no_second_stylesheet_machinery():
 
 @needs_clara
 def test_every_override_targets_a_token_clara_defines():
-    """A typo or a token Clara dropped would silently do nothing."""
+    """A typo or a token Clara dropped would silently do nothing.
+
+    Clara is no longer the only upstream this sheet writes to: Blicca
+    publishes the `--aurora-block-*` palette hooks (derico.css §8), and those
+    names are of course absent from Clara's bundle. They are exempted here and
+    checked against Blicca's own published slot list by
+    `test_aurora_block_backgrounds.py` — the exemption widens which upstream
+    may own a name, not whether one has to.
+    """
     clara = _clara_light()
     unknown = [
         name
         for name in (_derico_light() | _derico_dark())
-        if not name.startswith("--derico-") and name not in clara
+        if not name.startswith(("--derico-", "--aurora-")) and name not in clara
     ]
     assert not unknown, (
         f"derico.css overrides tokens Clara does not define: {sorted(unknown)}"

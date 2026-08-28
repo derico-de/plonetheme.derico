@@ -240,3 +240,41 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-by
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-byline {
   display: none;
 }
+
+/* ══ 8. Aurora block backgrounds ═════════════════════════════════════════
+ * A second publisher's token contract, which is why it sits apart from the
+ * Clara ladder above rather than inside it. Blicca's `backgroundColor` style
+ * field lets an author put a block on a NAMED palette slot — never on a
+ * colour — and each slot reads an `--aurora-block-*` custom property with a
+ * generic slate fallback baked in (BLICCA_BLOCK_BACKGROUNDS in
+ * wrapper/src/editor/block-background.tsx, mirrored by BLOCK_BACKGROUND_VARS
+ * in browser/rendering/plate.py). Unset, the slots paint that slate on both
+ * surfaces; the theme owning the values is the whole point of the design.
+ *
+ * The two light slots are the Jahresringe cyan tints, quiet step and softer
+ * step: "Grey" is the design's own `.section--soft` ground (--surface) and
+ * "Accent" the mega-panel's (--band-soft). Deliberately NOT --band, the
+ * committed cyan the design bands a section with: that one takes ink text
+ * and quiet ink links by design, and a link on it measures 4.27:1 — below
+ * AA. A slot in a picker has to hold whatever an author drops on it, links
+ * included, so it gets the step the theme already clears links against
+ * (test_color_contrast.py tests --plone-color-link on --clara-band-soft).
+ * The strong band stays where the design puts it: on sections whose content
+ * is the designer's, not the author's.
+ *
+ * `Dark` takes the ladder's deep petrol — the same step the toolbar sits on,
+ * already measured at 10.33:1 for ground on it. `--aurora-block-fg-dark` is
+ * the paired foreground the slot hands its whole subtree; Blicca sets
+ * `color: inherit` at zero specificity under the dark slot, so a theme rule
+ * that deliberately colours something still wins.
+ *
+ * Only these three slots exist to fill. A fourth would have to be added to
+ * Blicca's palette first — a value this file invented would name a slot no
+ * picker offers. `tests/test_aurora_block_backgrounds.py` holds the names
+ * here against the ones Blicca publishes. */
+:root {
+  --aurora-block-bg-grey:   var(--derico-surface);
+  --aurora-block-bg-accent: var(--derico-band-soft);
+  --aurora-block-bg-dark:   var(--derico-brand-deep);
+  --aurora-block-fg-dark:   var(--derico-ground);
+}
