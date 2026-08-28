@@ -7,9 +7,9 @@ publishes the ``snippets/`` corpus as fragments for
 
 The new profile dependency on ``collective.fragmentsblock:default`` is not
 run from here: GenericSetup applies dependency profiles on install, not on
-upgrade, so a site that already has derico installs the add-on through the
-add-ons control panel (or its own profile) the way it installs any other.
-The record is harmless meanwhile — a bundle nothing reads.
+upgrade. The record is harmless meanwhile — a bundle nothing reads. Version
+1005 installs the add-on for those sites, once 1004 made the missing block
+a defect rather than an inconvenience.
 """
 
 import logging
