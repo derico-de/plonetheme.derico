@@ -141,6 +141,28 @@ and the three long space steps. Each one carries its reason in `derico.css`.
 Clara's amber is light enough to take an ink label, copper is not — ink on
 copper measures 3.63:1, so the near-white label is required, not preferred.
 
+### Aurora block backgrounds
+
+Clara is not the only upstream the token layer writes to. Blicca's
+`backgroundColor` style field lets an author put any Aurora block on a
+**named** palette slot — never on a colour — and reads one
+`--aurora-block-*` custom property per slot, with a generic slate baked in
+as the fallback. `derico.css` §8 fills all three:
+
+| slot | value | measured |
+|---|---|---|
+| Grey | `--derico-surface` `#ebf6f8` | ink 15.62:1, link 5.44:1 |
+| Accent | `--derico-band-soft` `#d2f2fa` | ink 14.60:1, link 5.09:1 |
+| Dark | `--derico-brand-deep` `#004553`, foreground `--derico-ground` | 10.33:1 |
+
+Accent is the *soft* cyan, not `--derico-band` — the committed band the
+design paints `.section--band` with. That band takes ink text and quiet ink
+links by design, and an ordinary link on it measures 4.27:1. A section whose
+content the designer chose can honour that convention; a slot in a picker
+takes whatever an author drops on it, so it gets the step links already
+clear. `tests/test_aurora_block_backgrounds.py` states that as a
+measurement, and fails the day the link step darkens enough to revisit it.
+
 ## Verifying the claim
 
 `tests/test_override_minimality.py` is the guard, and it parses Clara's
