@@ -2,6 +2,26 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The contact band is retired** (profile version 1009). The design's
+  „Erstgespräch vereinbaren" closing section is now authored as a block in the
+  editable footer (`collective.blicca.footerblocks`), so the chrome pagelet
+  that used to render it — the pagelet and its template, `contact.css` and its
+  bundle, the `plonetheme.derico.contact_page` record, the layout placement,
+  and the `plone.pageletlayout` meta include that its two registrations
+  needed — is gone. The upgrade step is 1006 in reverse, and declarative for the same
+  reason 1006 was: what an existing site carries from the band is per-site
+  state that dropping the ZCML does not touch. The bundle record is the one
+  with teeth — left behind, every page would go on requesting a stylesheet
+  this version no longer ships.
+
+  Two things went with it. `--derico-text-heading` was published for the
+  band's h2 alone and had no second reader, so it left the §3 alias block: an
+  alias nobody reads is dead weight, on the same rule that keeps
+  `--derico-text-display` out. And **the melt** — the body region's closing
+  padding dropped so an accent-tinted last block and the band read as one
+  surface — was a rule in `contact.css`, so it is gone as well; a footer that
+  wants the same join has to state it where the footer blocks are styled.
+
 - **The Promo block wears derico, in tokens only** (`derico.css` §9). The block
   publishes nineteen `--promo-*` properties and declares none of them, so the
   theme opts in by setting one on `:root` and the value inherits into both the

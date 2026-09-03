@@ -11,31 +11,6 @@
   <include file="permissions.zcml" />
   <include package=".browser" />
 
-  <!-- The contact band: a NEW element in Clara's whole-body layout, so it
-       needs both halves — the chrome pagelet (the element itself) and the
-       PageletViewlet wrapper that puts it in the manager. Clara's subnav is
-       registered exactly this way; profiles/default/viewlets.xml then places
-       this one directly before the footer rows.
-
-       It belongs to the BRAND, not to Clara: Clara's page tail is generic
-       wayfinding, while "Erstgespräch vereinbaren" is derico's own closing
-       call to action, on derico's own accent ground. -->
-  <include package="plone.pageletlayout" file="meta.zcml" />
-  <plone:chromepagelet
-      name="plonetheme.derico.contactband"
-      class=".pagelets.ContactBandChromePagelet"
-      template="templates/contact.pt"
-      layer=".interfaces.IPlonethemeDericoLayer"
-      />
-  <browser:viewlet
-      name="plonetheme.derico.contactband"
-      pagelet="plonetheme.derico.contactband"
-      class="plone.pageletlayout.pagelets.layout.PageletViewlet"
-      manager="plone.pageletlayout.pagelets.layout.ILayoutManager"
-      layer=".interfaces.IPlonethemeDericoLayer"
-      permission="zope2.View"
-      />
-
   <!-- The token override sheet and the brand mark, served at
        ++resource++plonetheme.derico/ and linked by the bundle registered in
        profiles/default/registry.xml. This is the whole theme payload —

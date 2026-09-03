@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registry>
+
+  <!-- The band's stylesheet bundle, undone. Leaving it registered would keep
+       every page requesting `++resource++plonetheme.derico/contact.css`, a
+       resource this version no longer ships — a 404 on every page load. -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-contact"
+           remove="true" />
+
+  <!-- And the setting behind the band's call to action. Its only reader went
+       with the pagelet, so the record would sit in the registry unread. -->
+  <record name="plonetheme.derico.contact_page" remove="true" />
+
+</registry>
