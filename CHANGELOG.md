@@ -2,6 +2,22 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The Promo block wears derico, in tokens only** (`derico.css` §9). The block
+  publishes nineteen `--promo-*` properties and declares none of them, so the
+  theme opts in by setting one on `:root` and the value inherits into both the
+  published page and the editing canvas. Six are set — the copper call to
+  action and its pill, the copper kicker at the 15px label floor, and the
+  design's component-heading step for the title; the other thirteen keep the
+  block's literal defaults. No rule was added, and none is needed: the seam
+  wants no specificity, only inheritance. Two properties the plan listed are
+  deliberately declined — the description stays body text, because the design's
+  card copy is, and `--promo-link-color` stays unset, because it also paints
+  the anchor that wraps the whole block and a brand step there would tint an
+  entire card-linked promo. `tests/test_promo_seam.py` reads the names out of
+  the block's own built stylesheet and fails any sheet in this package that
+  declares a `--promo-*`, which is the half of the block's lockstep test that
+  could not see this repository.
+
 - **The Promo block is a declared dependency** (profile version 1008).
   Installing derico now installs `derico.blicca.promoblock`, and the upgrade
   step installs it on sites that predate the declaration. The list the steps
