@@ -281,3 +281,62 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-block-bg-dark:   var(--derico-brand-deep);
   --aurora-block-fg-dark:   var(--derico-ground);
 }
+
+/* ══ 9. The Promo block's theme seam ═════════════════════════════════════
+ * A third publisher's token contract, and the same shape as §8, which is why
+ * it sits apart from the Clara ladder rather than inside it. The block
+ * (`derico.blicca.promoblock`) reads nineteen `--promo-*` properties and
+ * DECLARES NONE of them anywhere: every default lives at its point of use as
+ * `var(--promo-x, <literal>)` (its ADR 0002), so a theme opts in by SETTING
+ * one and the value simply inherits in. That is also why these belong on
+ * `:root` and never on `.promo` — a property set on the element would shadow
+ * the inherited one and force exactly the specificity escalation the seam
+ * exists to prevent.
+ *
+ * Six of the nineteen. The other thirteen keep the block's literal defaults,
+ * on the rule this whole file runs on: a value is restated only where the
+ * Jahresringe design names a different, visibly different one. The design
+ * source of record decided each — docs/design/derico.de/site/assets/site.css,
+ * read rather than eyeballed — and the promo is dressed the way that file
+ * dresses a CARD (`.mega-intro h2`, `.manifesto-item h3`) and not the way it
+ * dresses a section band (`.section-heading`, `.contact-band h2`). Two
+ * properties were considered and declined; they are named, with the design
+ * line that declined them, in tests/test_promo_seam.py.
+ *
+ * What the seam cannot reach, and what therefore does NOT become a rule here:
+ * the block publishes no property for a font family, a weight or a leading
+ * ("Not themeable, on purpose"), so the kicker is copper at the label step
+ * but not the design's display italic, and the call to action is a copper
+ * pill in the block's own metrics rather than `.clara-button`'s.
+ *
+ * tests/test_promo_seam.py reads the property names out of the block's own
+ * built stylesheet, so a renamed or dropped property fails there instead of
+ * silently painting nothing, and it fails any OTHER sheet in this package
+ * that declares a `--promo-*` — the one thing review was carrying alone.
+ */
+:root {
+  /* The eyebrow. The design's `.kicker` is copper-text, and the 15px label
+     floor is the theme's own (see the header). Its `--text-lede` SIZE is
+     deliberately not taken with it: the design's kicker stands over a hero or
+     a section heading, and at lede it would be the larger half of a card. */
+  --promo-kicker-size:  var(--derico-text-label);
+  --promo-kicker-color: var(--derico-copper-text);
+
+  /* Clara's title step, named directly rather than re-published as a
+     `--derico-text-*` alias first: §3's aliases exist for the sheets that may
+     NOT name a Clara token, and this file is the one that may. The design
+     puts every component heading on this step and reserves `--text-heading`
+     for page and section headings. The block's 1.75rem literal is this step's
+     MAXIMUM, so what the declaration buys is the ramp below 1440px. */
+  --promo-title-size: var(--clara-text-title);
+
+  /* The copper call to action: the same three steps every other derico CTA
+     wears, so the promo's button cannot drift from `.clara-button`'s colour.
+     The pill is the design's (`.button { border-radius: var(--radius-pill) }`)
+     against the block's 0.375rem literal, and it reads `--plone-radius-pill`
+     because the radius scale is Clara's, inherited untouched. */
+  --promo-cta-bg:       var(--derico-copper);
+  --promo-cta-fg:       var(--derico-on-copper);
+  --promo-cta-hover-bg: var(--derico-copper-hover);
+  --promo-cta-radius:   var(--plone-radius-pill);
+}
