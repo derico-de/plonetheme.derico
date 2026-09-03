@@ -47,6 +47,10 @@ dependencies = [
     # to load without it. The profile dependency in metadata.xml is the other
     # half — a Python dependency installs no profile.
     "collective.fragmentsblock>=1.0.0a1",
+    # The Promo block. Not an import, unlike the fragment block above:
+    # derico declares it so installing the theme installs the block its
+    # pages are authored with, and metadata.xml carries the profile half.
+    "derico.blicca.promoblock>=1.0.0a1",
     "setuptools<81",
     "plone.classicui",
     "Paste",
