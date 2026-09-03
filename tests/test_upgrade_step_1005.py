@@ -18,12 +18,6 @@ class TestUpgrade1005:
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.installer = api.addon.get_installer(self.portal)
 
-    def test_the_profile_is_at_this_version(self):
-        """The newest step's test owns the exact version."""
-        setup_tool = self.portal.portal_setup
-        (version,) = setup_tool.getLastVersionForProfile("plonetheme.derico:default")
-        assert int(version) == 1005
-
     def test_installing_derico_installs_the_fragment_block(self):
         """The fresh-install half: the profile dependency in metadata.xml.
 

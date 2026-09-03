@@ -1,19 +1,16 @@
-#--- PLEASE EDIT THE LINES BELOW CORRECTLY ---
-#SOME DESCRIPTIVE TITLE.
-#FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: plonetheme.derico\n"
 "POT-Creation-Date: 2026-08-30 17:40+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2026-08-30\n"
+"Last-Translator: Maik Derstappen <md@derico.de>\n"
+"Language-Team: Plone <dev@plone.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"Language-Code: en\n"
-"Language-Name: English\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: de\n"
+"Language-Name: Deutsch\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plonetheme.derico\n"
 
@@ -36,22 +33,22 @@ msgstr ""
 #. Default: "Contact"
 #: ../templates/contact.pt:11
 msgid "contact_band_cta"
-msgstr ""
+msgstr "Kontakt"
 
 #. Default: "Arrange an initial conversation"
 #: ../templates/contact.pt:4
 msgid "contact_band_heading"
-msgstr ""
+msgstr "Erstgespräch vereinbaren"
 
 #. Default: "Tell us about the task. Together we work out which next step makes sense."
 #: ../templates/contact.pt:7
 msgid "contact_band_lede"
-msgstr ""
+msgstr "Sie schildern die Aufgabe. Wir klären gemeinsam, welcher nächste Schritt sinnvoll ist."
 
 #. Default: "Write an email"
 #: ../templates/contact.pt:15
 msgid "contact_band_mail"
-msgstr ""
+msgstr "E-Mail schreiben"
 
 #: ../upgrades/1001.zcml:11
 msgid "plonetheme.derico: upgrade to 1001"

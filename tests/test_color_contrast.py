@@ -45,6 +45,9 @@ LIGHT_PAIRS = [
     ("--clara-ink-soft", "--clara-ground", 4.5),
     ("--clara-ink-soft", "--clara-surface", 4.5),
     ("--clara-ink-soft", "--clara-band", 4.5),
+    # the contact band's lede, which is ink-soft on the accent slot — the one
+    # ground pairing that had no reader until the band arrived
+    ("--clara-ink-soft", "--clara-band-soft", 4.5),
     # links. NOT tested against --clara-band: the strong cyan band takes ink
     # text and quiet ink links by design (DESIGN.md §5, "Quiet link"), and
     # Clara paints no link on it once --clara-footer-ground moves to ground.
@@ -56,6 +59,8 @@ LIGHT_PAIRS = [
     # the copper CTA: fill against its ground, label against the fill
     ("--clara-amber", "--clara-ground", 3.0),
     ("--clara-amber", "--clara-band", 3.0),
+    # the contact band's call to action stands on the accent slot
+    ("--clara-amber", "--clara-band-soft", 3.0),
     ("--clara-on-amber", "--clara-amber", 4.5),
     ("--clara-on-amber", "--clara-amber-hover", 4.5),
     # cyan controls

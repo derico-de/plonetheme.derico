@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- The layout order is stored per site (IViewletSettingsStorage), and an
+       existing site's copy predates the band — so the placement has to be
+       imported here as well as in the default profile. Byte-identical to
+       profiles/default/viewlets.xml on purpose: `insert-before` is additive
+       and idempotent, so importing it twice on a fresh site is a no-op. -->
+  <order manager="plone.pageletlayout.layout" skinname="Plone Default">
+    <viewlet name="plonetheme.derico.contactband"
+             insert-before="plone.pageletlayout.copyright" />
+  </order>
+</object>

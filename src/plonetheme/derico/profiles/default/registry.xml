@@ -128,6 +128,40 @@
     <value key="enabled">True</value>
   </records>
 
+  <!-- ── the contact band ──────────────────────────────────────────────────
+
+       The band's stylesheet, on the same footing as the snippets' one: a
+       theme bundle rather than a section of the token layer, because that
+       file is guarded to stay a token layer. `depends` on it all the same,
+       since every value the band paints with is a derico token declared
+       there. No `expression`: the band closes every page, so its sheet has to
+       reach every page too. -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-contact">
+    <value key="csscompilation">++resource++plonetheme.derico/contact.css</value>
+    <value key="depends">plonetheme-derico</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
+  </records>
+
+  <!-- Where the band's call to action points, as a path RELATIVE TO THE
+       NAVIGATION ROOT. A language folder is a navigation root, so one record
+       serves a German and an English tree without either being named here.
+       `contact` is the id the Plone distribution's own starter contact page
+       ships with; a site that keeps its contact page elsewhere re-points this
+       one string, and one that has none empties it and keeps the band's mail
+       link. The address behind that link is Plone's own
+       plone.email_from_address, so it is not restated here either. -->
+  <record name="plonetheme.derico.contact_page">
+    <field type="plone.registry.field.TextLine">
+      <title>Contact page</title>
+      <description>Path of the contact page the contact band links to, relative to the navigation root. Leave empty to omit the button.</description>
+      <required>False</required>
+    </field>
+    <value>contact</value>
+  </record>
+
   <!-- ── the hero's top scale rung (hero ticket 05 §2/§4) ──────────────────
 
        APPENDED, never replacing: stock Plone templates and other add-ons
