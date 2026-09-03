@@ -39,13 +39,6 @@ class TestUpgrade1006:
                 f"profile-{PROFILE}", step, run_dependencies=False
             )
 
-    def test_the_profile_is_at_this_version(self):
-        """The newest step's test owns the exact version."""
-        (version,) = self.setup_tool.getLastVersionForProfile(
-            "plonetheme.derico:default"
-        )
-        assert int(version) == 1006
-
     def test_the_upgrade_places_the_band_in_the_layout(self):
         """The 1005 site: the element exists, the stored order predates it."""
         order = [

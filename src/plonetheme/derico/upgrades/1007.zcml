@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1007"
+      title="plonetheme.derico: upgrade to 1007"
+      directory="1007"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1006"
+      destination="1007"
+      profile="plonetheme.derico:default">
+
+    <genericsetup:upgradeStep
+        title="Install the add-ons derico depends on"
+        description="Install every add-on the profile declares as a dependency, on sites that predate it"
+        handler=".v1007.upgrade"
+        />
+
+    <!-- No upgradeDepends, unlike 1005/1006: 1007 changes nothing
+         declarative, so its profile directory holds no XML. Importing an
+         empty profile is not free: GenericSetup runs every registered
+         import step against it, and a step whose file is merely absent
+         still runs its handler. -->
+
+  </genericsetup:upgradeSteps>
+
+</configure>

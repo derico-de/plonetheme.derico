@@ -2,6 +2,16 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Every declared dependency is installed on upgrade** (profile version
+  1007). `metadata.xml` names three add-on profiles as dependencies, and
+  GenericSetup applies dependency profiles on install only, so a site carried
+  whichever ones were declared the day derico was installed there and silently
+  missed the rest: the editor the brand blocks mount in, the base theme, the
+  fragment block. 1005 closed that for `collective.fragmentsblock` alone; this
+  step generalises it, so whether a site is missing an add-on derico needs no
+  longer depends on which version it was installed at. Guarded per product, so
+  re-running it is a no-op rather than a log full of install errors.
+
 - **The contact band closes every page** (profile version 1006). The design's
   „Erstgespräch vereinbaren" section — heading, one sentence, a call to action
   and a mail link — is now a chrome pagelet in Clara's whole-body layout,
