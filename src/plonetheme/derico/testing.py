@@ -2,6 +2,7 @@
 import os
 
 import collective.fragmentsblock
+import derico.blicca.promoblock
 import plone.app.theming
 import plone.blicca.auroraeditor
 import plone.pageletlayout
@@ -41,6 +42,9 @@ class PlonethemeDericoLayer(PloneSandboxLayer):
         # be read before derico's own (which registers the provider utility
         # against its interface) and before the dependency profile install.
         self.loadZCML(package=collective.fragmentsblock)
+        # The Promo block, for the same reason: derico's profile depends
+        # on `profile-derico.blicca.promoblock:default`.
+        self.loadZCML(package=derico.blicca.promoblock)
         self.loadZCML(package=plonetheme.derico)
 
     def setUpPloneSite(self, portal):

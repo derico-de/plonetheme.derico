@@ -2,6 +2,14 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The Promo block is a declared dependency** (profile version 1008).
+  Installing derico now installs `derico.blicca.promoblock`, and the upgrade
+  step installs it on sites that predate the declaration. The list the steps
+  install from moved to `upgrades/base.py` alongside the guard, and
+  `test_setup` holds it to `metadata.xml`'s `<dependencies>`, so a dependency
+  added to one and not the other stops being a site that installs clean and
+  upgrades incomplete.
+
 - **Every declared dependency is installed on upgrade** (profile version
   1007). `metadata.xml` names three add-on profiles as dependencies, and
   GenericSetup applies dependency profiles on install only, so a site carried

@@ -1,4 +1,6 @@
 """Test plonetheme.derico installation."""
+from pathlib import Path
+
 import pytest
 from plone import api
 from plone.app.testing import setRoles
@@ -170,6 +172,41 @@ class TestUpgradeProfilesHidden:
         ]
         for profile_id in registered:
             assert profile_id in hidden
+
+
+class TestAddonDependencies:
+    """The upgrade list and the profile say the same thing."""
+
+    def test_the_list_matches_the_profile(self):
+        """`ADDON_DEPENDENCIES` is the profile's, minus the core profile.
+
+        The upgrade steps install from the tuple, the fresh install installs
+        from metadata.xml. A dependency added to one and not the other is a
+        site that installs clean and upgrades incomplete, or the reverse --
+        so the two are compared rather than trusted.
+        """
+        from xml.etree import ElementTree
+
+        import plonetheme.derico
+        from plonetheme.derico.upgrades.base import ADDON_DEPENDENCIES
+
+        metadata = (
+            Path(plonetheme.derico.__file__).parent
+            / "profiles"
+            / "default"
+            / "metadata.xml"
+        )
+        declared = [
+            element.text.removeprefix("profile-").removesuffix(":default")
+            for element in ElementTree.parse(metadata).findall(
+                "dependencies/dependency"
+            )
+        ]
+        # plone.app.registry is core: present in every site before derico
+        # arrives, and not an add-on the installer manages.
+        assert [name for name in declared if name != "plone.app.registry"] == list(
+            ADDON_DEPENDENCIES
+        )
 
 
 class TestUninstall:

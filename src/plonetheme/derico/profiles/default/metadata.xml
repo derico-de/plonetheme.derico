@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <version>1007</version>
+  <version>1008</version>
   <dependencies>
     <dependency>profile-plone.app.registry:default</dependency>
     <!-- The brand blocks' host. A Python dependency does not install a
@@ -21,5 +21,10 @@
          are installed. Python dependency plus profile dependency, the same
          pairing Blicca gets above. -->
     <dependency>profile-collective.fragmentsblock:default</dependency>
+    <!-- The Promo block, the same pairing once more. Its node is
+         authored on derico's pages, and the add-on's own profile is
+         what puts the record, the browser layer and the renderer
+         behind it; a Python dependency installs none of them. -->
+    <dependency>profile-derico.blicca.promoblock:default</dependency>
   </dependencies>
 </metadata>
