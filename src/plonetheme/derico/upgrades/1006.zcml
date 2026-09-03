@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1006"
+      title="plonetheme.derico: upgrade to 1006"
+      directory="1006"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1005"
+      destination="1006"
+      profile="plonetheme.derico:default">
+
+    <!-- No Python handler, unlike 1003/1005: everything the contact band adds
+         to an existing site is declarative, and the upgrade profile carries
+         exactly the two files that changed. A `reload_gs_profile` would
+         re-import every step of the DEFAULT profile instead, including the
+         ones that write a site logo and a picture-variant ladder an
+         administrator may have edited since.
+
+         `import_steps` narrows it once more: without them GenericSetup runs
+         every registered import step against this profile, and a step whose
+         file is merely absent still runs its handler. Two files, two steps,
+         named. -->
+    <genericsetup:upgradeDepends
+        title="Add the contact band"
+        description="Place the band in the layout, register its stylesheet bundle and its contact page record"
+        import_profile="plonetheme.derico.upgrades:1006"
+        import_steps="viewlets plone.app.registry"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

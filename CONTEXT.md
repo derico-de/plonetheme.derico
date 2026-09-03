@@ -42,6 +42,26 @@ border — applied to strokes. It is a contrast guarantee, not a shadow: it is
 crisp and opaque precisely so its value can be read off the stylesheet.
 _Avoid_: outline, glow, stroke shadow, drop shadow
 
+### Page chrome
+
+**Contact band**:
+The design's closing call to action — „Erstgespräch vereinbaren", one
+sentence, a button and a mail link — standing on the accent slot below the
+content of every page. Chrome, not content: a chrome pagelet in Clara's
+whole-body layout, with nothing for an author to place or fill in. It is the
+page's last word, so it opens with no rule and no space and can be flowed into
+from an accent-tinted block above it.
+_Avoid_: contact block (it is not an Aurora block), CTA band, footer band (the
+footer is the three rows beneath it)
+
+**The melt**:
+The contact band and an accent-tinted last block reading as one surface. It
+takes three things agreeing, which is why it has a name: the same palette
+slot on both, no rule or margin where they meet, and the body region's closing
+padding dropped so no strip of page ground shows through. Named after what the
+design asks for, not after any one of the three.
+_Avoid_: seamless join, flush band
+
 ### Blocks
 
 **Brand block**:

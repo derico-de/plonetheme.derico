@@ -2,6 +2,40 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The contact band closes every page** (profile version 1006). The design's
+  „Erstgespräch vereinbaren" section — heading, one sentence, a call to action
+  and a mail link — is now a chrome pagelet in Clara's whole-body layout,
+  placed after the content and Clara's sub-navigation and before the footer
+  rows, exactly where all 22 mockup pages put it. A pagelet and not a brand
+  block because there is nothing to author: an author who had to place it on
+  every page would eventually forget one.
+
+  Its ground is the Aurora palette's **accent slot**, not the design's
+  committed `--derico-band`, and it opens with no margin and no rule. That is
+  the whole point: a page whose last block sits on the accent slot flows into
+  the band with no seam, so a designed page can close on one continuous
+  surface. The second half of that is a `:has()` rule dropping
+  `.element-body`'s closing padding under such a block — the strip of page
+  ground between two identical accents would read as a rendering fault. Only
+  under `accent`; `grey` and `dark` keep the separation the strip gives them.
+
+  Nothing about the two links is written into the markup. The call to action
+  resolves `plonetheme.derico.contact_page`, a path relative to the navigation
+  root (default `contact`, the id Plone's own starter contact page ships
+  with), and it is dropped on the page it points at. The mail address is
+  Plone's `plone.email_from_address`, because a theme that shipped its
+  author's address would mail derico from every site that installed it. Copy
+  is translatable, with the design's German in `locales/de`.
+
+  Styling is a third theme bundle (`static/contact.css`), on the same footing
+  as the snippets' sheet: derico.css is guarded to stay a token layer. It
+  carries one rule that is a repair rather than a design — Clara's
+  `a:not(.btn)` outranks its own `.clara-button`, which put the call to
+  action's label at 1.4:1 on its copper fill; remove it when Clara stops
+  overriding itself. `--derico-text-heading` joins the published aliases, and
+  the token-usage guards now read the theme's own sheets as well as the
+  blocks'.
+
 - **Aurora block backgrounds are brand colours** (`derico.css` §8). Blicca's
   `backgroundColor` style field lets an author put a block on a named palette
   slot and reads one `--aurora-block-*` custom property per slot; unset, all

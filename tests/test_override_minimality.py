@@ -32,6 +32,7 @@ needs_clara = pytest.mark.skipif(
 CLARA = CLARA_PATH.read_text() if CLARA_PATH else ""
 
 BLOCK_SHEETS = css_tools.block_stylesheets()
+THEME_SHEETS = css_tools.theme_stylesheets()
 
 needs_block_sheets = css_tools.needs_block_sheets
 
@@ -63,6 +64,18 @@ PUBLISHED_TO_BLOCK_SHEETS = {
     "--derico-font-display",
 }
 
+#: The same publishing, for the theme's OWN sheets — snippets.css, contact.css
+#: — which are in the corpus below, so `test_every_derico_token_is_used`
+#: already catches one nobody reads and no exemption is wanted. Listed anyway
+#: because being an alias of a Clara token, rather than a second copy of its
+#: value, is a separate claim and the two alias tests are where it is made.
+PUBLISHED_TO_THEME_SHEETS = {
+    "--derico-text-heading",
+}
+
+#: Every re-published Clara token, whichever kind of sheet reads it.
+PUBLISHED_ALIASES = PUBLISHED_TO_BLOCK_SHEETS | PUBLISHED_TO_THEME_SHEETS
+
 
 _normalise = css_tools.normalise_selector
 
@@ -85,9 +98,18 @@ def _block_sheet_text():
     )
 
 
+def _theme_sheet_text():
+    return "\n".join(
+        css_tools.strip_comments(path.read_text()) for path in THEME_SHEETS
+    )
+
+
 def _stylesheet_corpus():
-    """Every stylesheet this package ships: the token layer plus the blocks."""
-    return "\n".join([css_tools.strip_comments(DERICO), _block_sheet_text()])
+    """Every stylesheet this package ships: the token layer, the theme's own
+    sheets for its own markup, and the brand blocks' built sheets."""
+    return "\n".join(
+        [css_tools.strip_comments(DERICO), _theme_sheet_text(), _block_sheet_text()]
+    )
 
 
 def _derico_light():
@@ -224,11 +246,12 @@ def test_every_override_targets_a_token_clara_defines():
 def test_every_derico_token_is_used():
     """The --derico-* ladder is vocabulary, not decoration.
 
-    The corpus is every stylesheet the theme ships — the token layer plus the
-    brand blocks' sheets — because since the blocks arrived, a token declared
-    here may legitimately be read only over there. The four tokens published
-    FOR those sheets are exempt and have their own test: they would read as
-    dead until the first block is built.
+    The corpus is every stylesheet the theme ships — the token layer, the
+    theme's own sheets for its own markup, and the brand blocks' sheets —
+    because since the blocks arrived, a token declared here may legitimately
+    be read only over there. The three tokens published FOR the block sheets
+    are exempt and have their own test: they would read as dead until the
+    first block is built, which the block sheets' absence makes possible.
     """
     corpus = _stylesheet_corpus()
     declared = {
@@ -247,7 +270,7 @@ def test_published_aliases_are_aliases_of_claras_own_tokens():
     alias means a Clara rename breaks this file and nothing else.
     """
     light = _derico_light()
-    for name in sorted(PUBLISHED_TO_BLOCK_SHEETS):
+    for name in sorted(PUBLISHED_ALIASES):
         assert name in light, (
             f"{name} is published for the block sheets but derico.css does "
             "not declare it"
@@ -264,7 +287,7 @@ def test_published_aliases_still_point_at_something_clara_defines():
     clara = _clara_light()
     light = _derico_light()
     missing = []
-    for name in sorted(PUBLISHED_TO_BLOCK_SHEETS):
+    for name in sorted(PUBLISHED_ALIASES):
         target = re.findall(r"--clara-[\w-]+", light.get(name, ""))
         if not target or target[0] not in clara:
             missing.append(f"{name} -> {target[0] if target else '?'}")
@@ -286,24 +309,25 @@ def test_published_aliases_reach_a_block_sheet():
         )
 
 
-@needs_block_sheets
-def test_block_sheets_never_name_a_clara_token():
+def test_no_other_sheet_names_a_clara_token():
     """The reason the aliases exist (hero ticket 06 §3).
 
-    A block sheet speaks `--derico-*` and `--plone-*` only. If it reached for
-    `--clara-*` directly, a Clara rename would break every block sheet instead
-    of this one file, and the seam would be a seam in name only.
+    Every sheet but derico.css speaks `--derico-*` and `--plone-*` only. If one
+    reached for `--clara-*` directly, a Clara rename would break every sheet
+    instead of the one file that is meant to be the seam, and the seam would be
+    a seam in name only. Block sheets and the theme's own sheets alike: the
+    argument never mentioned how a sheet is built.
     """
     leaked = {}
-    for path in BLOCK_SHEETS:
+    for path in THEME_SHEETS + BLOCK_SHEETS:
         names = sorted(
             set(re.findall(r"--clara-[\w-]+", css_tools.strip_comments(path.read_text())))
         )
         if names:
             leaked[path.name] = names
     assert not leaked, (
-        "block stylesheets must not name Clara's tokens directly; re-publish "
-        f"them through derico.css instead: {leaked}"
+        "only derico.css may name Clara's tokens directly; re-publish "
+        f"them through it instead: {leaked}"
     )
 
 

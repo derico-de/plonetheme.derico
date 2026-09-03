@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registry>
+
+  <!-- The band's stylesheet bundle and the one setting behind its call to
+       action. Only the new records: a registry import adds and updates, so
+       restating the rest of the default profile would gain nothing and would
+       overwrite values a site has since changed. -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-contact">
+    <value key="csscompilation">++resource++plonetheme.derico/contact.css</value>
+    <value key="depends">plonetheme-derico</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
+  </records>
+
+  <record name="plonetheme.derico.contact_page">
+    <field type="plone.registry.field.TextLine">
+      <title>Contact page</title>
+      <description>Path of the contact page the contact band links to, relative to the navigation root. Leave empty to omit the button.</description>
+      <required>False</required>
+    </field>
+    <value>contact</value>
+  </record>
+
+</registry>

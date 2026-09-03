@@ -1,0 +1,20 @@
+<section class="element-contact-band"
+         aria-labelledby="contact-band-heading"
+         i18n:domain="plonetheme.derico">
+  <h2 class="contact-band-heading"
+      id="contact-band-heading"
+      i18n:translate="contact_band_heading">Arrange an initial conversation</h2>
+  <p class="contact-band-lede"
+     i18n:translate="contact_band_lede">Tell us about the task. Together we work out which next step makes sense.</p>
+  <div class="contact-band-actions"
+       tal:condition="python:view.contact_url or view.email">
+    <a class="clara-button"
+       tal:condition="view/contact_url"
+       tal:attributes="href view/contact_url"
+       i18n:translate="contact_band_cta">Contact</a>
+    <a class="clara-text-link"
+       tal:condition="view/email"
+       tal:attributes="href string:mailto:${view/email}"
+       i18n:translate="contact_band_mail">Write an email</a>
+  </div>
+</section>
