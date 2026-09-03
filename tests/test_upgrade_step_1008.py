@@ -21,12 +21,6 @@ class TestUpgrade1008:
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.installer = api.addon.get_installer(self.portal)
 
-    def test_the_profile_is_at_this_version(self):
-        """The newest step's test owns the exact version."""
-        setup_tool = self.portal.portal_setup
-        (version,) = setup_tool.getLastVersionForProfile("plonetheme.derico:default")
-        assert int(version) == 1008
-
     def test_the_promo_block_is_a_declared_dependency(self):
         """What this version adds, read off the list the steps install from."""
         assert PRODUCT in ADDON_DEPENDENCIES

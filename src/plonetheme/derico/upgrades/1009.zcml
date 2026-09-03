@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1009"
+      title="plonetheme.derico: upgrade to 1009"
+      directory="1009"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1008"
+      destination="1009"
+      profile="plonetheme.derico:default">
+
+    <!-- 1006 in reverse, and declarative for the same reason it was: what an
+         existing site carries from the band is per-site state — a name in the
+         stored layout order, a bundle record and a setting — and each of the
+         two files undoes exactly one half of what 1006's two files did.
+
+         No `reload_gs_profile`: that re-imports every step of the DEFAULT
+         profile, including the ones that write a site logo and a
+         picture-variant ladder an administrator may have edited since. And
+         it would not do this job anyway — the default profile no longer says
+         anything about the band, and GenericSetup removes nothing by being
+         silent.
+
+         `import_steps` narrows it once more, as in 1006: without them
+         GenericSetup runs every registered import step against this profile,
+         and a step whose file is merely absent still runs its handler. -->
+    <genericsetup:upgradeDepends
+        title="Remove the contact band"
+        description="Take the band out of the layout order and drop its stylesheet bundle and its contact page record"
+        import_profile="plonetheme.derico.upgrades:1009"
+        import_steps="viewlets plone.app.registry"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

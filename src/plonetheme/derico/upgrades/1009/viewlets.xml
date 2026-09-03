@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- Take the band out of the stored layout order. `remove` is the only way:
+       the order is per-site state (IViewletSettingsStorage) written by 1006's
+       insert-before, and dropping the ZCML registration does not touch it —
+       the name would simply sit there forever, naming a viewlet no lookup can
+       resolve.
+
+       `_computeValues` removes the name first and only re-appends it when the
+       node carries neither `remove` nor a resolvable anchor, so this is the
+       removal AND it is idempotent: a second run finds nothing to remove and
+       adds nothing back. -->
+  <order manager="plone.pageletlayout.layout" skinname="Plone Default">
+    <viewlet name="plonetheme.derico.contactband" remove="True" />
+  </order>
+</object>

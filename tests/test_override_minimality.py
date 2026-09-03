@@ -64,17 +64,15 @@ PUBLISHED_TO_BLOCK_SHEETS = {
     "--derico-font-display",
 }
 
-#: The same publishing, for the theme's OWN sheets — snippets.css, contact.css
-#: — which are in the corpus below, so `test_every_derico_token_is_used`
-#: already catches one nobody reads and no exemption is wanted. Listed anyway
-#: because being an alias of a Clara token, rather than a second copy of its
-#: value, is a separate claim and the two alias tests are where it is made.
-PUBLISHED_TO_THEME_SHEETS = {
-    "--derico-text-heading",
-}
-
-#: Every re-published Clara token, whichever kind of sheet reads it.
-PUBLISHED_ALIASES = PUBLISHED_TO_BLOCK_SHEETS | PUBLISHED_TO_THEME_SHEETS
+#: Every re-published Clara token. The theme's OWN sheets used to hold one of
+#: their own — `--derico-text-heading`, published for the contact band's h2 —
+#: and it went when the band did: a sheet of this package's own is in the
+#: corpus below, so `test_every_derico_token_is_used` catches an alias nobody
+#: reads and no exemption is wanted for that kind. Should one be published
+#: again, add it here as well: being an ALIAS of a Clara token, rather than a
+#: second copy of its value, is a separate claim and the two tests below are
+#: where it is made.
+PUBLISHED_ALIASES = set(PUBLISHED_TO_BLOCK_SHEETS)
 
 
 _normalise = css_tools.normalise_selector

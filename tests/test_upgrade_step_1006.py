@@ -5,6 +5,12 @@ holds exactly the two files 1005 did not have. So what is worth testing is the
 gap it closes: a site upgraded from 1005 has a stored layout order with no
 band in it, and a registry with neither the band's stylesheet bundle nor the
 setting behind its call to action.
+
+The band itself is gone — 1009 retires it, and its content is authored as a
+footer block instead. This step stays, and stays tested: a site sitting at
+1005 still walks the whole chain, and a step that errors on the way past is a
+site that cannot be upgraded at all. The record name is spelled out here now
+that no module declares it.
 """
 
 import pytest
@@ -14,8 +20,8 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.viewletmanager.interfaces import IViewletSettingsStorage
 from zope.component import getUtility
 
-from plonetheme.derico.pagelets import CONTACT_PAGE_RECORD
 
+CONTACT_PAGE_RECORD = "plonetheme.derico.contact_page"
 
 PROFILE = "plonetheme.derico.upgrades:1006"
 VIEWLET = "plonetheme.derico.contactband"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: plonetheme.derico\n"
-"POT-Creation-Date: 2026-08-30 17:40+0000\n"
+"POT-Creation-Date: 2026-09-03 21:57+0000\n"
 "PO-Revision-Date: 2026-08-30\n"
 "Last-Translator: Maik Derstappen <md@derico.de>\n"
 "Language-Team: Plone <dev@plone.org>\n"
@@ -14,41 +14,21 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plonetheme.derico\n"
 
-#: ../configure.zcml:82
+#: ../configure.zcml:57
 msgid "Jahresringe — the derico.de brand, as a token layer on Clara"
 msgstr ""
 
-#: ../configure.zcml:82
+#: ../configure.zcml:57
 msgid "Plonetheme Derico"
 msgstr ""
 
-#: ../configure.zcml:90
+#: ../configure.zcml:65
 msgid "Plonetheme Derico (uninstall)"
 msgstr ""
 
-#: ../configure.zcml:90
+#: ../configure.zcml:65
 msgid "Uninstalls plonetheme.derico"
 msgstr ""
-
-#. Default: "Contact"
-#: ../templates/contact.pt:11
-msgid "contact_band_cta"
-msgstr "Kontakt"
-
-#. Default: "Arrange an initial conversation"
-#: ../templates/contact.pt:4
-msgid "contact_band_heading"
-msgstr "Erstgespräch vereinbaren"
-
-#. Default: "Tell us about the task. Together we work out which next step makes sense."
-#: ../templates/contact.pt:7
-msgid "contact_band_lede"
-msgstr "Sie schildern die Aufgabe. Wir klären gemeinsam, welcher nächste Schritt sinnvoll ist."
-
-#. Default: "Write an email"
-#: ../templates/contact.pt:15
-msgid "contact_band_mail"
-msgstr "E-Mail schreiben"
 
 #: ../upgrades/1001.zcml:11
 msgid "plonetheme.derico: upgrade to 1001"
@@ -72,4 +52,16 @@ msgstr ""
 
 #: ../upgrades/1006.zcml:11
 msgid "plonetheme.derico: upgrade to 1006"
+msgstr ""
+
+#: ../upgrades/1007.zcml:11
+msgid "plonetheme.derico: upgrade to 1007"
+msgstr ""
+
+#: ../upgrades/1008.zcml:11
+msgid "plonetheme.derico: upgrade to 1008"
+msgstr ""
+
+#: ../upgrades/1009.zcml:11
+msgid "plonetheme.derico: upgrade to 1009"
 msgstr ""

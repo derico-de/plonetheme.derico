@@ -35,11 +35,11 @@ BLOCK_STATIC = PACKAGE / "src" / "plonetheme" / "derico" / "static-blocks"
 def theme_stylesheets():
     """The theme's hand-written sheets other than the token layer.
 
-    `snippets.css` and `contact.css` today: derico's own markup, delivered as
-    their own bundles precisely because derico.css is guarded to stay a token
-    sheet. Globbed rather than listed, so the next one joins the corpus by
-    existing — a sheet outside it could name a `--clara-*` token or read a
-    token nothing else reads, and both guards would go on passing.
+    `snippets.css` today: derico's own markup, delivered as its own bundle
+    precisely because derico.css is guarded to stay a token sheet. Globbed
+    rather than listed, so the next one joins the corpus by existing — a sheet
+    outside it could name a `--clara-*` token or read a token nothing else
+    reads, and both guards would go on passing.
     """
     return sorted(path for path in STATIC.glob("*.css") if path != DERICO_CSS)
 
