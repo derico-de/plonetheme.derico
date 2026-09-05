@@ -210,6 +210,29 @@ move for its globalnav): that makes the override unambiguously more specific
 than the base registration, with no change to the stored layout order and
 nothing for an upgrade step to migrate.
 
+## The footer
+
+All three stock footer rows are hidden (profile version 1011), because the
+design closes a page with its own band — the wordmark line, the postal
+address, phone, email and the Impressum link — authored as footer blocks.
+
+| row | why it goes |
+|---|---|
+| `siteactions` | Sitemap / Accessibility / Contact, straight from `portal_actions`. Authored content here: the Actions block puts a category of portal actions on a page as designed links, so the stock row renders them twice |
+| `copyright` | Plone's own copyright and GPL notice, not derico's signature |
+| `colophon` | the „Powered by Plone" badge |
+
+Nothing about Plone's licence obliges either attribution row to be on the
+page; the attribution that matters is in the source and the package metadata,
+which this does not touch.
+
+**Hidden, not removed from the order** — hiding is what the layout manager
+offers for an element it should keep knowing about, so
+`@@manage-layout-viewlets` shows each row as hidden and can put it back, and
+the base package's parity test still finds the names in the stored sequence.
+`profiles/uninstall/viewlets.xml` un-hides all three, so a site that drops the
+theme gets its stock footer back.
+
 ## Verifying the claim
 
 `tests/test_override_minimality.py` is the guard, and it parses Clara's

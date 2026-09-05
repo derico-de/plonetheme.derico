@@ -2,6 +2,38 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The stock footer rows leave the page** (profile version 1011).
+  `plone.pageletlayout` closes a page with three elements, and a derico site
+  has its own answer for each. `siteactions` renders the `site_actions`
+  category — Sitemap, Accessibility, Contact — which are authored content
+  here: the footer is editable (`collective.blicca.footerblocks`) and the
+  Actions block (`derico.blicca.actionsblock`) puts a category of portal
+  actions on a page as designed links, so the stock row rendered the same
+  actions a second time, in a row the design does not draw. `copyright` is
+  Plone's own copyright and GPL notice and `colophon` the „Powered by Plone"
+  badge; the design closes every page with its own band instead — the wordmark
+  line, the postal address, phone, email and the Impressum link — and that
+  band is authored as footer blocks, so beneath it the two attribution rows
+  read as chrome that escaped the design. Nothing about Plone's licence
+  obliges either on the page; the attribution that matters is in the source
+  and the package metadata, which this does not touch.
+
+  **Hidden, not removed from the order.** Hiding is the layout manager's own
+  verb for an element it should keep knowing about — the same
+  `IViewletSettingsStorage` the order lives in — so
+  `@@manage-layout-viewlets` still lists each row and can put it back, and the
+  base package's parity test still finds the names in the stored sequence.
+
+  The upgrade step is declarative, for the reason 1006's was — the hidden list
+  is per-site state, and the default profile reaches no site that is already
+  installed. `profiles/uninstall/viewlets.xml` is the mirror, so a site that
+  drops the theme gets its footer rows back rather than losing them to an
+  add-on that is no longer there. `tests/test_upgrade_step_1011.py` reads it
+  from both sides and, because every storage assertion would go on passing if
+  the manager stopped honouring the hidden list, renders the whole layout
+  twice per row — once hidden, once not — and asserts the row's presence in
+  one and its absence in the other.
+
 - **The header is the design's** (profile version 1010). The first part of the
   theme that is neither a token nor a block: `static/header.css` and
   `static/header.js`, one bundle, plus a searchbox template on derico's own

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- The mirror of profiles/default/viewlets.xml: hiding a stock element is
+       recreatable configuration this add-on owns, so uninstalling gives it
+       back rather than leaving a site with three footer rows permanently
+       missing and nothing naming the theme that hid them.
+
+       `remove="True"` on a `hidden` node is the un-hide (the importer drops
+       the name from the hidden list and, without the attribute, would append
+       it), and it is idempotent: a name that is not hidden is simply not
+       there to remove. -->
+  <hidden manager="plone.pageletlayout.layout" skinname="Plone Default">
+    <viewlet name="plone.pageletlayout.copyright" remove="True" />
+    <viewlet name="plone.pageletlayout.colophon" remove="True" />
+    <viewlet name="plone.pageletlayout.siteactions" remove="True" />
+  </hidden>
+</object>
