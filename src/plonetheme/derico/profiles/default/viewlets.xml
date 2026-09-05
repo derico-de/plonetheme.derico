@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- The three stock footer rows leave the page.
+
+       plone.pageletlayout's footer is three elements, and a derico site has
+       an answer for each that the design actually draws:
+
+       · `siteactions` renders the `site_actions` category from
+         portal_actions — Sitemap, Accessibility, Contact — as a bare row of
+         links. Those are authored content here: the footer is editable
+         (`collective.blicca.footerblocks`) and the Actions block
+         (`derico.blicca.actionsblock`) puts a category of portal actions on a
+         page as designed links, so the stock row renders the same actions a
+         second time.
+       · `copyright` is Plone's own copyright and GPL notice, and `colophon`
+         is the „Powered by Plone" badge. Neither is derico's signature. The
+         design closes every page with its own footer band — the wordmark
+         line, the postal address, phone, email and the Impressum link (see
+         `docs/design/derico.de/site`, `.site-footer`) — and that band is
+         authored as footer blocks. Below it, Plone's attribution rows read as
+         chrome that escaped the design rather than as part of it.
+
+       HIDDEN, not removed from the order: hiding is what the layout manager
+       offers for an element it should keep knowing about
+       (`plone.app.viewletmanager`'s storage, the same storage the order lives
+       in), so `@@manage-layout-viewlets` shows each row as hidden and can put
+       it back. Removing the names would take them out of the stored sequence,
+       where the base package's own parity test expects to find them.
+
+       Nothing about Plone's licence obliges the badge or the copyright row to
+       be on the page; the attribution that matters is in the source and the
+       package metadata, which this does not touch.
+
+       The uninstall profile un-hides all three, so a site that drops the
+       theme gets its stock footer back. -->
+  <hidden manager="plone.pageletlayout.layout" skinname="Plone Default">
+    <viewlet name="plone.pageletlayout.copyright" />
+    <viewlet name="plone.pageletlayout.colophon" />
+    <viewlet name="plone.pageletlayout.siteactions" />
+  </hidden>
+</object>

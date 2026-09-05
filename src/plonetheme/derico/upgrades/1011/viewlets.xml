@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- Byte-identical to profiles/default/viewlets.xml on purpose, and for
+       the reason 1006's copy was: the hidden list is per-site state written
+       by an import, so an existing site needs the same node imported here.
+       The importer removes each name before appending it, so this is
+       idempotent — a second run finds the rows hidden and leaves them so. -->
+  <hidden manager="plone.pageletlayout.layout" skinname="Plone Default">
+    <viewlet name="plone.pageletlayout.copyright" />
+    <viewlet name="plone.pageletlayout.colophon" />
+    <viewlet name="plone.pageletlayout.siteactions" />
+  </hidden>
+</object>

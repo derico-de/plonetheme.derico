@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1011"
+      title="plonetheme.derico: upgrade to 1011"
+      directory="1011"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1010"
+      destination="1011"
+      profile="plonetheme.derico:default">
+
+    <!-- Declarative, as 1006, 1009 and 1010 were, and for the reason 1006
+         gives: what this adds to an existing site is per-site state — three
+         names in the stored hidden list (IViewletSettingsStorage) — and
+         dropping them into the default profile does not reach a site that is
+         already installed. One file, carrying exactly the node that changed.
+
+         No `reload_gs_profile`: that re-imports every step of the DEFAULT
+         profile, including the ones that write a site logo and a
+         picture-variant ladder an administrator may have edited since.
+
+         `import_steps` narrows it once more: without them GenericSetup runs
+         every registered import step against this profile, and a step whose
+         file is merely absent still runs its handler. -->
+    <genericsetup:upgradeDepends
+        title="Hide the stock footer rows"
+        description="Hide the copyright, colophon and site actions elements in the layout on sites that predate it"
+        import_profile="plonetheme.derico.upgrades:1011"
+        import_steps="viewlets"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>
