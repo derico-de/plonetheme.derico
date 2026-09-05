@@ -220,3 +220,39 @@ def test_the_shared_band_step_is_at_least_three_rem():
     assert value is not None
     floor = re.match(r"clamp\(\s*([\d.]+)rem", value)
     assert floor and float(floor.group(1)) >= 3, value
+
+
+def test_an_unbanded_promo_gets_the_same_step_from_the_frame_token():
+    """The other half of the claim: no background reads like one ground.
+
+    Two promos on the white page stand on the same surface as two promos in
+    one slot, so they get the same step. It has to come from
+    `--aurora-space-frame` rather than from `--aurora-space-block`: Blicca
+    reads the latter only for the block types it knows, and an add-on block
+    is in none of those lists.
+    """
+    bare = [tokens for selector, tokens in _frame_rules() if selector == ".block-promo"]
+    assert bare, "no §11 rule keys on a bare `.block-promo`"
+    assert bare == [{"--aurora-space-frame": "var(--plone-space-xl)"}], (
+        "the bare .block-promo rule must carry the frame and nothing else"
+    )
+
+
+@needs_blicca
+def test_the_frame_token_is_read_under_every_background_rule():
+    """Why the frame rule needs no `:not([background])`: it cannot double.
+
+    Blicca reads `--aurora-space-frame` on the bare `.block`, which every
+    background and full-width rule outranks — so a banded promo keeps its
+    band's frame and an unbanded one is the only reader.
+    """
+    sheet = _blicca_sheet()
+    readers = [
+        css_tools.normalise_selector(selector)
+        for selector, body in css_tools._blocks(sheet)
+        if "--aurora-space-frame" in body and "padding" in body
+    ]
+    assert readers == [":is(.aurora-blocks-view, [data-slate-editor]) .block"], (
+        f"blocks_view.css reads the frame token from {readers}; the theme's "
+        "rule assumes the weakest possible one"
+    )

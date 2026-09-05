@@ -50,32 +50,32 @@
    * hex in a rule — --derico-brand is the only place the brand colour is
    * written" (DESIGN.md §6). */
   --derico-brand:            oklch(0.64705 0.1142 215.55); /* #039fba — exact brand cyan: logo, rings, UI geometry */
-  --derico-brand-text:       oklch(0.49 0.09 215.55);      /* #006d81 — links; 5.82:1 on ground, 5.09:1 on band-soft */
+  --derico-brand-text:       oklch(0.49 0.09 215.55);      /* #006d81 — links; 5.99:1 on ground, 5.09:1 on band-soft */
   --derico-brand-hover:      oklch(0.42 0.085 215.55);     /* #00586a — deep cyan step */
   --derico-brand-fill-hover: oklch(0.74 0.10 215.55);      /* #55bbd3 — hover fill for cyan controls */
-  --derico-brand-deep:       oklch(0.36 0.065 215.55);     /* #004553 — toolbar ground; ground on it 10.33:1 */
+  --derico-brand-deep:       oklch(0.36 0.065 215.55);     /* #004553 — toolbar ground; ground on it 10.63:1 */
   --derico-on-brand:         oklch(0.18 0.035 215);        /* #00151b — 5.94:1 on exact brand cyan */
 
-  --derico-ground:    oklch(0.99 0.003 215);      /* #fafcfd — page */
+  --derico-ground:    oklch(1 0 0);               /* #ffffff — page */
   --derico-surface:   oklch(0.965 0.012 215);     /* #ebf6f8 — quiet surface */
   --derico-band:      oklch(0.88 0.085 215.55);   /* #94e6fb — the committed cyan band */
   --derico-band-soft: oklch(0.94 0.035 215.55);   /* #d2f2fa — mega-panel ground */
-  --derico-ink:       oklch(0.22 0.02 225);       /* #101d22 — 16.72:1 on ground */
-  --derico-ink-soft:  oklch(0.38 0.03 225);       /* #31464e — 9.64:1 on ground */
+  --derico-ink:       oklch(0.22 0.02 225);       /* #101d22 — 17.20:1 on ground */
+  --derico-ink-soft:  oklch(0.38 0.03 225);       /* #31464e — 9.92:1 on ground */
   --derico-rule:      oklch(0.84 0.025 215);      /* #b9cfd5 — hairlines */
-  --derico-band-rule: oklch(0.58 0.055 215.55);   /* #53838f — structural rules; 4.07:1 on ground */
+  --derico-band-rule: oklch(0.58 0.055 215.55);   /* #53838f — structural rules; 4.19:1 on ground */
 
   /* Copper is the present tense: the one CTA fill, the live edge. Fill and
      text are separate steps so both clear their own bar (DESIGN.md §2,
      "Orange Needs Separate Fill And Text Steps"). */
-  --derico-copper:         oklch(0.57 0.18 50);   /* #c64c00 — CTA fill; 4.60:1 on ground, 3.38:1 on band */
+  --derico-copper:         oklch(0.57 0.18 50);   /* #c64c00 — CTA fill; 4.74:1 on ground, 3.38:1 on band */
   --derico-copper-hover:   oklch(0.52 0.18 50);   /* #b43b00 */
-  --derico-copper-text:    oklch(0.49 0.18 55);   /* #a83500 — 6.43:1 on ground, 4.72:1 on band */
+  --derico-copper-text:    oklch(0.49 0.18 55);   /* #a83500 — 6.62:1 on ground, 4.72:1 on band */
   --derico-on-copper:      oklch(0.99 0.004 50);  /* #fefbf9 — 4.60:1 on the copper fill */
   --derico-copper-surface: oklch(0.95 0.04 55);   /* #ffe8d6 — warning/notice tint on the copper hue */
 
   --derico-info-surface: oklch(0.96 0.028 215.55); /* #def7fe — brand-text on it 5.38:1 */
-  --derico-success:      oklch(0.39 0.10 155);     /* #00542c — 8.86:1 on ground */
+  --derico-success:      oklch(0.39 0.10 155);     /* #00542c — 9.11:1 on ground */
   --derico-success-text: oklch(0.33 0.085 155);    /* #004221 — hover/active step */
 
   /* ══ 2. Clara's ladder, re-pointed ═════════════════════════════════════
@@ -267,7 +267,7 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
  * is the designer's, not the author's.
  *
  * `Dark` takes the ladder's deep petrol — the same step the toolbar sits on,
- * already measured at 10.33:1 for ground on it. `--aurora-block-fg-dark` is
+ * already measured at 10.63:1 for ground on it. `--aurora-block-fg-dark` is
  * the paired foreground the slot hands its whole subtree; Blicca sets
  * `color: inherit` at zero specificity under the dark slot, so a theme rule
  * that deliberately colours something still wins.
@@ -424,6 +424,14 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
  * which is why the continuation gap Blicca zeroes is given back to it. A
  * promo on a band of its own next to a differently-coloured neighbour keeps
  * the §10 `l` frame: the colour change already separates the two.
+ *
+ * A promo on NO band is the same reading with the ground left white: two of
+ * them stand on one surface exactly as two same-slot promos do, so they get
+ * the same `xl` step. Blicca dresses the block types it knows and an add-on
+ * is in none of those lists, so an unbanded promo has no frame at all until
+ * `--aurora-space-frame` names one. The token is read on the bare `.block`,
+ * under every background rule: a banded promo keeps its band's frame and
+ * nothing doubles, which is why this rule needs no `:not()`.
  */
 .block-derico-hero {
   --aurora-space-bleed: 0px;
@@ -438,4 +446,8 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-space-block: var(--plone-space-xl);
   --aurora-space-bleed: var(--plone-space-xl);
   --aurora-space-continuation: var(--plone-space-xl);
+}
+
+.block-promo {
+  --aurora-space-frame: var(--plone-space-xl);
 }

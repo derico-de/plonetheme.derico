@@ -2,6 +2,33 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The page ground is white.** `--derico-ground` was `oklch(0.99 0.003 215)`
+  — a cyan-tinted near-white, #fafcfd — and the design's ground is plain
+  white. Clara paints every ground it owns through the re-pointed ladder, so
+  the token is the whole change: page, header, footer and the `dark` block
+  slot's foreground follow it. Every measured ratio in §1 that was taken
+  against the ground moved with it (ink 16.72 → 17.20:1, ink-soft 9.64 →
+  9.92:1, links 5.82 → 5.99:1, copper fill 4.60 → 4.74:1) and is restated
+  beside its value; each one improved, and `tests/test_color_contrast.py`
+  measures the resolved sRGB rather than trusting the comments.
+
+- **Two promos on the white page breathe like two promos on one band**
+  (§11). A promo sharing a band with a neighbour already got the `xl` step on
+  both sides; an unbanded one got nothing at all, because Blicca frames the
+  block types it knows and an add-on is in none of those lists — so two of
+  them stood edge to edge. `plone.blicca.auroraeditor` grew
+  `--aurora-space-frame` for exactly this, read on the bare `.block` under
+  every background rule, and `.block-promo` now names the `xl` step there.
+  No `:not()`: a banded promo keeps its band's frame, so the two cannot
+  double, and a promo on a band of its own next to a differently-coloured
+  neighbour still keeps the tighter §10 `l` frame — the colour change already
+  separates the two.
+
+- **The Ständerwerk snippet tucks up under its neighbour.** `snippets.css`
+  gave `.derico-staenderwerk` the same fluid margin at both ends; the frame
+  now starts 5rem higher (`margin-block-start: -5rem`, the end margin
+  unchanged), so it stands under the block above it rather than after it.
+
 - **The stock footer rows leave the page** (profile version 1011).
   `plone.pageletlayout` closes a page with three elements, and a derico site
   has its own answer for each. `siteactions` renders the `site_actions`

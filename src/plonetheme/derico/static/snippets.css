@@ -149,7 +149,9 @@
   --frame-timber: var(--derico-brand-text);
   position: relative;
   block-size: calc(var(--gebinde-height) + var(--beam-sill));
-  margin-block: clamp(3rem, 2.75rem + 1vw, 4rem);
+  /* Pulled up so the frame tucks under whatever stands above it. */
+  margin-block-start: -5rem;
+  margin-block-end: clamp(3rem, 2.75rem + 1vw, 4rem);
   pointer-events: none;
   white-space: normal;
 }
