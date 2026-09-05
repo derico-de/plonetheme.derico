@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1010"
+      title="plonetheme.derico: upgrade to 1010"
+      directory="1010"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1009"
+      destination="1010"
+      profile="plonetheme.derico:default">
+
+    <!-- Declarative, as 1006 and 1009 were: the header adds ONE thing to an
+         existing site — a bundle record — and the upgrade profile carries
+         exactly the one file that declares it. The searchbox override needs
+         nothing here: it is a ZCML registration on the theme's layer, live
+         the moment the code is, with no stored layout order to touch.
+
+         No `reload_gs_profile`: that re-imports every step of the DEFAULT
+         profile, including the ones that write a site logo and a
+         picture-variant ladder an administrator may have edited since.
+
+         `import_steps` narrows it once more, as in 1006: without them
+         GenericSetup runs every registered import step against this profile,
+         and a step whose file is merely absent still runs its handler. -->
+    <genericsetup:upgradeDepends
+        title="Add the header bundle"
+        description="Register the header stylesheet and script bundle on sites that predate it"
+        import_profile="plonetheme.derico.upgrades:1010"
+        import_steps="plone.app.registry"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

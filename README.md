@@ -163,6 +163,53 @@ takes whatever an author drops on it, so it gets the step links already
 clear. `tests/test_aurora_block_backgrounds.py` states that as a
 measurement, and fails the day the link step darkens enough to revisit it.
 
+## The header
+
+The one part of the theme that is neither a token nor a block. Clara's header
+elements carry the design's bar through `static/header.css` and
+`static/header.js` — one bundle, `plonetheme-derico-header` — plus a searchbox
+template registered on derico's own layer.
+
+It is a separate sheet for the reason `derico.css` is guarded to stay a token
+sheet: the design's bar is a **composition**, not a set of values. Clara stacks
+a logo row over a full-bleed navigation bar and parks an always-open search
+form in the bar's end lane; the design puts logo, navigation and utilities on
+one 6rem row, centres the navigation in the viewport, and folds the search into
+a single magnifier. The values are still tokens — every colour, step and face
+in the sheet is a `--derico-*` or `--plone-*` name — but the rules are
+component rules.
+
+| width | header |
+|---|---|
+| ≤ 48rem | the design's mobile bar: logo, menu pill, magnifier; search opens as a row beneath, the menu as Clara's accordion under that |
+| 48–70rem | a two-row header the design never drew — logo and utilities, then the centred navigation bar. What Clara's markup does between the two, made deliberate |
+| ≥ 70rem | the design's desktop header: one row, logo at the start, navigation centred in the viewport, search and login at the end |
+
+Clara's mega panel is already the design's three-zone panel and is untouched,
+as are the navigation's face, size and weight.
+
+### The search
+
+**Not in the mockup.** A static reference site needs no search; a Plone site
+has one, and the design had nowhere to put it. One magnifier at the bar's end,
+and the field grows out of it — an overlay sliding out to the left on the wide
+layouts, a full row under the bar on the narrow one. The mockup gained the same
+control in the same place, so the design source and the theme still describe
+one header.
+
+The disclosure is the same pure-CSS `.opener` checkbox Clara's mega menu uses,
+so **search works with no JavaScript at all**. `header.js` adds only what a
+stylesheet cannot: focus into the field, Escape and outside-click to close, and
+one open thing at a time in the bar. The form keeps the base template's ids,
+names and classes — `pat-livesearch` and `@@search` read them — so only how it
+opens changed.
+
+`browser/templates/searchbox.pt` is registered under the base provider name on
+`IPlonethemeDericoLayer`, which extends `IPlonePageletlayoutLayer` (Clara's own
+move for its globalnav): that makes the override unambiguously more specific
+than the base registration, with no change to the stored layout order and
+nothing for an upgrade step to migrate.
+
 ## Verifying the claim
 
 `tests/test_override_minimality.py` is the guard, and it parses Clara's

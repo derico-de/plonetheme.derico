@@ -75,11 +75,28 @@
           <li><a class="nav-link" href="kontakt.html">Kontakt</a></li>
         </ul>
       </nav>
-      <ul class="utility-nav" aria-label="Sprachauswahl">
-        <li><a href="../de/schulungen-vortraege.html" aria-current="page" lang="de">DE</a></li>
-        <li aria-hidden="true">/</li>
-        <li><a href="../en/training-talks.html" lang="en">EN</a></li>
-      </ul>
+      <div class="header-utility">
+        <ul class="utility-nav" aria-label="Sprachauswahl">
+          <li><a href="../de/schulungen-vortraege.html" aria-current="page" lang="de">DE</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="../en/training-talks.html" lang="en">EN</a></li>
+        </ul>
+        <div class="site-search" data-site-search data-search-open="false">
+          <button class="search-toggle" type="button" data-search-toggle aria-controls="site-search-form" aria-expanded="false" data-label-open="Suche öffnen" data-label-close="Suche schließen">
+            <svg class="search-toggle__glyph search-toggle__glyph--open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+            <svg class="search-toggle__glyph search-toggle__glyph--close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            <span class="visually-hidden" data-search-label>Suche öffnen</span>
+          </button>
+          <form class="site-search__form" id="site-search-form" role="search" action="#" hidden>
+            <label class="visually-hidden" for="site-search-field">Suchbegriff</label>
+            <input class="site-search__field" id="site-search-field" type="search" name="q" placeholder="Suchbegriff" autocomplete="off" spellcheck="false">
+            <button class="site-search__submit" type="submit">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+              <span class="visually-hidden">Suchen</span>
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
     <button class="mega-backdrop" type="button" data-mega-backdrop hidden aria-label="Menü schließen"></button>
   </header>

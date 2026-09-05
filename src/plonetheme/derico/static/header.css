@@ -1,0 +1,520 @@
+/* The header — logo, navigation, search, the login link — as the Jahresringe
+ * design draws it (docs/design/derico.de/site/assets/site.css, "Header and
+ * navigation"), on Clara's header elements.
+ *
+ * The theme's rule is that derico.css stays a token sheet, and this is the
+ * header's reason to be a sheet of its own (delivered as the
+ * `plonetheme-derico-header` bundle, with header.js): the design's bar is a
+ * COMPOSITION Clara's tokens cannot express. Clara stacks the logo row over a
+ * full-bleed navigation bar and parks an always-open search form in the bar's
+ * end lane; the design puts logo, navigation and utilities on ONE 6rem row,
+ * centres the navigation in the viewport, and folds the search into a single
+ * magnifier. Values are still tokens — every colour, step and face here is a
+ * `--derico-*` or `--plone-*` name — but the rules are component rules, so
+ * they live here and not in the token layer.
+ *
+ * What is restated and what is inherited: Clara's mega panel is already the
+ * design's three-zone panel and is untouched, as are the nav's face, size
+ * (`--clara-text-nav` IS the design's `--text-nav`) and weight. What moves is
+ * the geometry: rows, lanes, the bar's hairline, the nav link's metrics and
+ * the search. The mockup's classes are not available here, so the selectors
+ * are Clara's contract hooks (`#portal-logo`, `.element-globalnav`,
+ * `#portal-globalnav`, `.element-searchbox`, `.element-anontools`), which is
+ * what a theme on Clara is meant to address.
+ *
+ * Unlayered on purpose, like derico.css: Clara's component rules sit in
+ * `@layer components`, and an unlayered declaration beats a layered one
+ * whatever its specificity, so nothing here has to out-specify Clara — every
+ * selector is the plainest one that names its element.
+ *
+ * Two widths, at the design's own breakpoint:
+ *
+ *   · < 70rem, "narrow" — the design's compact header: logo, then the menu
+ *     pill and the magnifier at the bar's end. The search opens as a full
+ *     row under the bar; the menu as Clara's accordion under that, with the
+ *     login link as its last row. Clara's defaults collapse at 48rem, so this
+ *     sheet carries the same mechanics through the remaining tablet band;
+ *     otherwise 48–70rem would become an unapproved two-row desktop header.
+ *   · ≥ 70rem, "wide" — the design's desktop header: one 6rem row, logo at
+ *     the start, navigation centred in the VIEWPORT (not in the content
+ *     column: the bar spans `min(100% - 1rem, 90rem)` like the mockup's
+ *     shell, so the German labels fit on one line down to 70rem), search
+ *     and login at the end.
+ */
+
+/* ── the sheet's own knobs ────────────────────────────────────────────────── */
+.plone-layout {
+  /* the bar's height, carried by the logo so the first row keeps it whether
+     a row opens beneath it or not */
+  --derico-header-bar: 5.25rem;
+  /* the bar's inset from the viewport on the wide layout: the mockup's
+     `.header-shell { width: min(calc(100% - 1rem), 90rem) }` */
+  --derico-header-edge: max(0.5rem, calc((100% - 90rem) / 2));
+  /* the lanes the navigation keeps clear on the wide layout: logo + gap at
+     the start, magnifier + login link at the end */
+  --derico-header-lane-start: 9.5rem;
+  --derico-header-lane-end: 9.5rem;
+  /* the search toggle's square, read by the login link's offset too */
+  --derico-header-toggle: 2.75rem;
+  /* the bar opens the page at the viewport's top edge, as the design's
+     `.site-header` does; Clara pads the layout by a step first */
+  padding-block-start: 0;
+}
+
+/* ── the bar's hairline ───────────────────────────────────────────────────
+ * The design's `.site-header { border-bottom }`. There is no header element
+ * to carry it — the elements sit directly on the layout grid — so a pseudo
+ * grid item draws it along the first row's bottom edge, full-bleed. Scoped
+ * to a layout that actually has a header: the body-only layouts do not. */
+.plone-layout:has(> .element-logo)::before {
+  content: "";
+  grid-row: 1;
+  grid-column: full-start / full-end;
+  align-self: end;
+  block-size: 0;
+  border-block-end: var(--plone-border);
+  pointer-events: none;
+}
+
+/* ── logo ─────────────────────────────────────────────────────────────────
+ * The mark carries the wordmark, so the site title next to it is redundant
+ * in the design; it stays in the markup as the link's accessible name. */
+#portal-logo {
+  grid-row: 1;
+  align-self: center;
+  justify-self: start;
+  min-block-size: var(--derico-header-bar);
+  margin-block: 0;
+  gap: 0;
+}
+#portal-logo img {
+  inline-size: 8rem;
+  block-size: auto;
+}
+#portal-logo .plone-site-title {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  padding: 0;
+  border: 0;
+}
+
+/* ── login link (anonymous visitors) ─────────────────────────────────────
+ * The design's utility voice — the language switch's — at the label step. */
+.element-anontools {
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  /* the magnifier sits at the end; the link keeps to its left */
+  margin-inline-end: calc(var(--derico-header-toggle) + var(--plone-space-xs));
+  font-size: var(--derico-text-label);
+}
+.element-anontools a {
+  color: var(--derico-ink-soft);
+  text-decoration: none;
+}
+.element-anontools a:hover,
+.element-anontools a:focus-visible {
+  color: var(--derico-brand-text);
+  text-decoration: underline;
+}
+
+/* ── navigation bar ─────────────────────────────────────────────────────── */
+.element-globalnav {
+  /* the bar's hairline is the pseudo item's; the mega panel keeps its own */
+  border-block: 0;
+}
+#portal-globalnav > .nav-item > .nav-link {
+  /* the design's current/open marker is the link step, not the brand cyan */
+  border-block-end-color: transparent;
+}
+#portal-globalnav > .nav-item:has(> .opener:checked) > .nav-link,
+#portal-globalnav > .nav-item > .nav-link[aria-current="page"],
+#portal-globalnav > .nav-item.selected > .nav-link {
+  border-block-end-color: var(--derico-brand-text);
+}
+
+/* ── search ────────────────────────────────────────────────────────────────
+ * One magnifier; the field grows out of it. The disclosure is the same
+ * pure-CSS `.opener` checkbox the navigation uses (searchbox.pt), so the
+ * search works with no script at all — header.js only adds focus and the
+ * close gestures. */
+.element-searchbox {
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  /* the opened form is positioned against this box on the two wider
+     layouts; no z-index of its own — it follows the navigation element in
+     the markup and so already paints above its lane */
+  position: relative;
+  z-index: auto;
+}
+.element-searchbox > .opener {
+  /* focusable while invisible, so keyboard and AT can drive the label */
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.searchbox-toggle {
+  inline-size: var(--derico-header-toggle);
+  block-size: var(--derico-header-toggle);
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--derico-ink);
+  cursor: pointer;
+}
+.searchbox-toggle:hover { color: var(--derico-brand-text); }
+.element-searchbox > .opener:focus-visible ~ .searchbox-toggle {
+  outline: 3px solid var(--plone-color-focus-ring);
+  outline-offset: 3px;
+}
+.element-searchbox > .opener:checked ~ .searchbox-toggle { color: var(--derico-brand-text); }
+.searchbox-toggle__glyph { grid-area: 1 / 1; }
+.searchbox-toggle__glyph--close { opacity: 0; transform: rotate(-45deg) scale(0.8); }
+.element-searchbox > .opener:checked ~ .searchbox-toggle .searchbox-toggle__glyph--open {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.8);
+}
+.element-searchbox > .opener:checked ~ .searchbox-toggle .searchbox-toggle__glyph--close {
+  opacity: 1;
+  transform: none;
+}
+
+.element-searchbox > .opener:not(:checked) ~ form { display: none; }
+.element-searchbox form {
+  position: relative;
+  display: block;
+  min-inline-size: 0;
+}
+.element-searchbox .searchField {
+  inline-size: 100%;
+  max-inline-size: none;
+  min-block-size: var(--derico-header-toggle);
+  padding: 0.4rem 2.9rem 0.4rem 1.1rem;
+  border: 1px solid var(--derico-brand-deep);
+  border-radius: var(--plone-radius-pill);
+  color: var(--derico-ink);
+  background: var(--derico-ground);
+  box-shadow: none;
+}
+.element-searchbox .searchField::placeholder {
+  color: var(--derico-ink-soft);
+  opacity: 1;
+}
+.element-searchbox .searchField:focus {
+  border-color: var(--derico-brand-deep);
+  box-shadow: none;
+}
+.element-searchbox .searchButton {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: 0;
+  inline-size: var(--derico-header-toggle);
+  block-size: var(--derico-header-toggle);
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--derico-brand-text);
+  background: transparent;
+  cursor: pointer;
+}
+.element-searchbox .searchButton:hover,
+.element-searchbox .searchButton:focus-visible {
+  color: var(--derico-copper-text);
+  background: transparent;
+}
+/* pat-livesearch's result list, in the design's voice: a hairlined sheet on
+   the page ground under the field, not the pattern's blue-glow card */
+.element-searchbox .livesearch-results {
+  inset-inline: 0;
+  inset-block-start: calc(100% + 0.25rem);
+  min-inline-size: 0;
+  border: 1px solid var(--derico-band-rule);
+  border-radius: var(--plone-radius-m);
+  background: var(--derico-ground);
+  box-shadow: none;
+  color: var(--derico-ink);
+}
+.element-searchbox .livesearch-results li { padding: var(--plone-space-2xs) var(--plone-space-s); }
+.element-searchbox .livesearch-results li:hover,
+.element-searchbox .livesearch-results li.selected { background: var(--derico-surface); }
+
+/* ── narrow: the mobile header ────────────────────────────────────────────
+ * `display: contents` on the two elements whose children have to land on
+ * different rows: the menu pill and the magnifier in the bar, the search
+ * row, the navigation list and the login link stacked beneath it. Auto
+ * placement goes by DOM order, which `order` re-sorts: negative steps keep
+ * the header's rows ahead of everything the page puts after them. */
+@media (max-width: 69.9375rem) {
+  .element-globalnav,
+  .element-searchbox { display: contents; }
+
+  /* Clara supplies these accordion mechanics through 48rem. Carry them to
+     the design's 70rem breakpoint instead of inventing a tablet-only header. */
+  .element-globalnav > .opener {
+    display: block;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .element-globalnav > .opener:not(:checked) ~ #portal-globalnav { display: none; }
+
+  /* the menu pill, the design's `.menu-toggle`: the bar's end, before the
+     magnifier */
+  .globalnav-toggle {
+    grid-row: 1;
+    grid-column: content-start / content-end;
+    align-self: center;
+    justify-self: end;
+    position: relative;
+    min-inline-size: var(--derico-header-toggle);
+    min-block-size: var(--derico-header-toggle);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-inline-end: calc(var(--derico-header-toggle) + var(--plone-space-xs));
+    padding: 0.55rem 0.9rem 0.55rem 2.55rem;
+    border: 1px solid var(--derico-brand-text);
+    border-radius: var(--plone-radius-pill);
+    color: var(--derico-brand-deep);
+    font-size: var(--plone-text-base);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  /* the hamburger: two bars that each carry a third as a shadow, folding
+     into a cross when the menu is open */
+  .globalnav-toggle::before,
+  .globalnav-toggle::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.9rem;
+    inset-block-start: calc(50% - 1px);
+    inline-size: 1.1rem;
+    block-size: 2px;
+    background: currentColor;
+    transform: none;
+  }
+  .globalnav-toggle::before { box-shadow: 0 -0.35rem 0 currentColor; }
+  .globalnav-toggle::after { box-shadow: 0 0.35rem 0 currentColor; }
+  .element-globalnav > .opener:checked ~ .globalnav-toggle::before {
+    box-shadow: 0 0 0 transparent;
+    transform: rotate(45deg);
+  }
+  .element-globalnav > .opener:checked ~ .globalnav-toggle::after {
+    box-shadow: 0 0 0 transparent;
+    transform: rotate(-45deg);
+  }
+  .element-globalnav > .opener:focus-visible ~ .globalnav-toggle {
+    outline: 3px solid var(--plone-color-focus-ring);
+    outline-offset: 3px;
+  }
+
+  .searchbox-toggle {
+    grid-row: 1;
+    grid-column: content-start / content-end;
+    align-self: center;
+    justify-self: end;
+  }
+  /* the search row: full width under the bar */
+  .element-searchbox form {
+    order: -3;
+    grid-row: auto;
+    grid-column: content-start / content-end;
+    padding-block: 0 var(--plone-space-s);
+  }
+  /* the accordion, the design's `.primary-nav` rows */
+  #portal-globalnav {
+    order: -2;
+    grid-row: auto;
+    grid-column: full-start / full-end;
+    flex-direction: column;
+    align-items: stretch;
+    padding-block: 0 var(--plone-space-s);
+    padding-inline: var(--plone-layout-gutter, var(--plone-space-s));
+  }
+  #portal-globalnav > .nav-item { border-block-start: var(--plone-border); }
+  #portal-globalnav > .nav-item > .nav-link {
+    min-block-size: 3rem;
+    padding-block: 0.65rem;
+    border-block-end: 0;
+    font-size: var(--plone-text-base);
+  }
+  #portal-globalnav > .nav-item > .has_subtree.dropdown {
+    position: static;
+    inline-size: auto;
+    min-block-size: auto;
+    transform: none;
+    grid-template-columns: 1fr;
+    row-gap: var(--plone-space-s);
+    padding-block: var(--plone-space-s) var(--plone-space-m);
+    padding-inline: var(--plone-space-s);
+    box-shadow: none;
+  }
+  #portal-globalnav .megamenu-links { grid-template-columns: 1fr; }
+  #portal-globalnav .megamenu-proof { align-self: start; }
+  /* Clara puts the links in column 2 and the proof in column 1 between 48
+     and 64rem — its mid-width shape for a panel that is a wide absolute band
+     at those widths. Here that band is part of the mobile accordion all the
+     way to 70rem, so the PLACEMENT has to come along with the rest of the
+     accordion mechanics above. Left behind, it drops both zones into a
+     column the stacked panel never declared, and the panel grows an implicit
+     second track: two columns inside the phone menu, and the design's single
+     stacked column only below 48rem. */
+  #portal-globalnav .megamenu-links,
+  #portal-globalnav .megamenu-proof {
+    grid-row: auto;
+    grid-column: auto;
+  }
+  #portal-globalnav > .nav-item > .megamenu-backdrop { display: none; }
+  /* the login link closes the opened menu; hidden with it */
+  .element-anontools {
+    order: -1;
+    grid-row: auto;
+    justify-self: stretch;
+    margin-inline-end: 0;
+    padding-block: var(--plone-space-2xs) var(--plone-space-s);
+    border-block-start: var(--plone-border);
+  }
+  .element-anontools a {
+    display: inline-flex;
+    min-block-size: 2.75rem;
+    align-items: center;
+  }
+  .plone-layout:has(.element-globalnav > .opener:not(:checked)) .element-anontools { display: none; }
+}
+
+/* The reference gives up the menu word before the 8rem logo and the search
+   control have to squeeze. Its text remains the checkbox's accessible label;
+   only the painted word moves beyond the pill. */
+@media (max-width: 29.99rem) {
+  .globalnav-toggle {
+    inline-size: var(--derico-header-toggle);
+    padding: 0;
+    overflow: hidden;
+    text-indent: 100vw;
+    white-space: nowrap;
+  }
+}
+
+/* ── wide: the design's single row ───────────────────────────────────────── */
+@media (min-width: 70rem) {
+  .plone-layout { --derico-header-bar: 6rem; }
+
+  #portal-logo,
+  .element-anontools,
+  .element-searchbox {
+    grid-column: full-start / full-end;
+    /* above the navigation element, whose lanes they sit in */
+    position: relative;
+    z-index: 1;
+  }
+  /* …except the search: a stacking context of its own would trap its
+     livesearch results beneath the mega panel's scrim */
+  .element-searchbox { z-index: auto; }
+  #portal-logo { margin-inline-start: var(--derico-header-edge); }
+  #portal-logo img { inline-size: 8.5rem; }
+  .element-anontools {
+    margin-inline-end: calc(var(--derico-header-edge) + var(--derico-header-toggle) + var(--plone-space-xs));
+    translate: 0 0.375rem;
+  }
+  .element-searchbox { margin-inline-end: var(--derico-header-edge); }
+
+  .element-globalnav {
+    grid-row: 1;
+    align-self: stretch;
+    min-block-size: var(--derico-header-bar);
+    padding-block: 0;
+    padding-inline:
+      calc(var(--derico-header-edge) + var(--derico-header-lane-start))
+      calc(var(--derico-header-edge) + var(--derico-header-lane-end));
+    z-index: auto;
+  }
+  #portal-globalnav {
+    min-block-size: var(--derico-header-bar);
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  /* the design's `.nav-link` metrics: a 3.5rem hit area, the underline
+     marker 3px, nudged 0.375rem down so the text sits on the bar's optical
+     centre with the marker beneath it */
+  #portal-globalnav > .nav-item > .nav-link {
+    min-block-size: 3.5rem;
+    padding: 0.75rem clamp(0.35rem, 0.7vw, 0.7rem) 0.35rem;
+    line-height: 1.1;
+    white-space: nowrap;
+    translate: 0 0.375rem;
+  }
+  #portal-globalnav > .nav-item.has_subtree > .nav-link {
+    padding-inline-end: calc(clamp(0.35rem, 0.7vw, 0.7rem) + 0.9em);
+  }
+  #portal-globalnav > .nav-item > label { translate: 0 0.375rem; }
+  #portal-globalnav > .nav-item > label::before {
+    width: 0.42rem;
+    height: 0.42rem;
+  }
+
+  /* the field slides out to the start, over the login link and, on a tight
+     viewport, the end of the navigation — a transient overlay on the page
+     ground */
+  .element-searchbox form {
+    position: absolute;
+    z-index: 1;
+    inset-inline-end: 100%;
+    inset-block-start: 50%;
+    inline-size: min(22rem, 36vw);
+    padding: 0 var(--plone-space-2xs) 0 var(--plone-space-xs);
+    translate: 0 -50%;
+    background: var(--derico-ground);
+  }
+  .element-searchbox .searchButton { inset-inline-end: var(--plone-space-2xs); }
+}
+
+/* ── motion ──────────────────────────────────────────────────────────────
+ * Entrances only; exits are instant, as the mega panel's are. The field
+ * wipes out of the magnifier on the wide layouts and settles down under the
+ * bar on the narrow one; the glyphs and the hamburger fold. */
+@media (prefers-reduced-motion: no-preference) {
+  .searchbox-toggle,
+  .element-anontools a,
+  .globalnav-toggle {
+    transition: color var(--plone-duration-fast) linear;
+  }
+  .searchbox-toggle__glyph {
+    transition:
+      opacity var(--plone-duration-fast) linear,
+      transform var(--plone-duration-standard) var(--plone-ease-out-quint);
+  }
+  .globalnav-toggle::before,
+  .globalnav-toggle::after {
+    transition:
+      transform var(--plone-duration-standard) var(--plone-ease-out-quint),
+      box-shadow var(--plone-duration-fast) linear;
+  }
+  .element-searchbox > .opener:checked ~ form {
+    animation: derico-search-in var(--plone-duration-standard) var(--plone-ease-out-quint);
+  }
+  @media (max-width: 48rem) {
+    .element-searchbox > .opener:checked ~ form {
+      animation: derico-search-in-narrow var(--plone-duration-standard) var(--plone-ease-out-quint);
+    }
+  }
+}
+@keyframes derico-search-in {
+  from { opacity: 0; clip-path: inset(0 0 0 100%); }
+  to { opacity: 1; clip-path: inset(0); }
+}
+@keyframes derico-search-in-narrow {
+  from { opacity: 0; transform: translateY(-0.4rem); }
+}
+
+@media print {
+  .plone-layout:has(> .element-logo)::before { display: none; }
+}

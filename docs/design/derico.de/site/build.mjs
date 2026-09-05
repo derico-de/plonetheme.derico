@@ -89,6 +89,10 @@ const navigation = {
       ],
     },
     contact: "Kontakt",
+    searchOpen: "Suche öffnen",
+    searchClose: "Suche schließen",
+    searchField: "Suchbegriff",
+    searchSubmit: "Suchen",
     firstTalk: "Erstgespräch vereinbaren",
     contactLead: "Sie schildern die Aufgabe. Wir klären gemeinsam, welcher nächste Schritt sinnvoll ist.",
     email: "E-Mail schreiben",
@@ -134,6 +138,10 @@ const navigation = {
       ],
     },
     contact: "Contact",
+    searchOpen: "Open search",
+    searchClose: "Close search",
+    searchField: "Search term",
+    searchSubmit: "Search",
     firstTalk: "Arrange an initial conversation",
     contactLead: "Tell us about the task. Together, we identify a useful next step.",
     email: "Write an email",
@@ -730,11 +738,28 @@ function header(lang, current) {
           <li><a class="nav-link" href="${href(lang, "contact")}"${currentAttr("contact")}>${nav.contact}</a></li>
         </ul>
       </nav>
-      <ul class="utility-nav" aria-label="${lang === "de" ? "Sprachauswahl" : "Language selection"}">
-        <li><a href="../de/${slugs.de[current]}"${lang === "de" ? ' aria-current="page"' : ""} lang="de">DE</a></li>
-        <li aria-hidden="true">/</li>
-        <li><a href="../en/${slugs.en[current]}"${lang === "en" ? ' aria-current="page"' : ""} lang="en">EN</a></li>
-      </ul>
+      <div class="header-utility">
+        <ul class="utility-nav" aria-label="${lang === "de" ? "Sprachauswahl" : "Language selection"}">
+          <li><a href="../de/${slugs.de[current]}"${lang === "de" ? ' aria-current="page"' : ""} lang="de">DE</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="../en/${slugs.en[current]}"${lang === "en" ? ' aria-current="page"' : ""} lang="en">EN</a></li>
+        </ul>
+        <div class="site-search" data-site-search data-search-open="false">
+          <button class="search-toggle" type="button" data-search-toggle aria-controls="site-search-form" aria-expanded="false" data-label-open="${nav.searchOpen}" data-label-close="${nav.searchClose}">
+            <svg class="search-toggle__glyph search-toggle__glyph--open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+            <svg class="search-toggle__glyph search-toggle__glyph--close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            <span class="visually-hidden" data-search-label>${nav.searchOpen}</span>
+          </button>
+          <form class="site-search__form" id="site-search-form" role="search" action="#" hidden>
+            <label class="visually-hidden" for="site-search-field">${nav.searchField}</label>
+            <input class="site-search__field" id="site-search-field" type="search" name="q" placeholder="${nav.searchField}" autocomplete="off" spellcheck="false">
+            <button class="site-search__submit" type="submit">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+              <span class="visually-hidden">${nav.searchSubmit}</span>
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
     <button class="mega-backdrop" type="button" data-mega-backdrop hidden aria-label="${lang === "de" ? "Menü schließen" : "Close menu"}"></button>
   </header>`;

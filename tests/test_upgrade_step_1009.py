@@ -101,13 +101,6 @@ class TestUpgrade1009:
             api.portal.get_registry_record(f"{BUNDLE}.enabled", default=None) is None
         )
 
-    def test_the_profile_is_at_this_version(self):
-        """The newest step's test owns the exact version."""
-        (version,) = self.setup_tool.getLastVersionForProfile(
-            "plonetheme.derico:default"
-        )
-        assert int(version) == 1009
-
     def test_a_fresh_install_never_had_any_of_it(self):
         """1009 is for existing sites; the default profile says nothing."""
         assert VIEWLET not in self.storage.getOrder(MANAGER, "Plone Default")

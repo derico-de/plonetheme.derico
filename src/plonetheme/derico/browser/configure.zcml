@@ -1,7 +1,27 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="plonetheme.derico">
+
+  <!-- The search box, as the design's header wants it (see
+       templates/searchbox.pt). The SAME provider name as the base
+       registration, on this theme's layer — the move Clara makes for its
+       mega-menu globalnav: IPlonethemeDericoLayer extends
+       IPlonePageletlayoutLayer, so this registration is unambiguously more
+       specific than plone.pageletlayout's own and simply wins the lookup,
+       with no change to the stored layout order and nothing for an upgrade
+       step to migrate. The class stays the base's: it computes the
+       livesearch setting and the action URL, and this template reads exactly
+       those. `plone:chromepagelet` registers the template for the class on
+       this layer, so the base template keeps serving every other layer. -->
+  <include package="plone.pageletlayout" file="meta.zcml" />
+  <plone:chromepagelet
+      name="plone.pageletlayout.searchbox"
+      class="plone.pageletlayout.pagelets.header.SearchboxChromePagelet"
+      template="templates/searchbox.pt"
+      layer="plonetheme.derico.interfaces.IPlonethemeDericoLayer"
+      />
 
   <!-- The Derico Hero's public renderer (contract §5.1).
 

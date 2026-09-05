@@ -21,10 +21,37 @@
       lastTrigger = null;
     };
 
+    // The site search: one toggle, one form. Opening it closes any mega
+    // panel and puts the caret in the field; closing keeps whatever was
+    // typed. Nothing here changes layout — the CSS decides whether the form
+    // is a row under the bar or an overlay beside the toggle.
+    const search = header.querySelector("[data-site-search]");
+    const searchToggle = search?.querySelector("[data-search-toggle]");
+    const searchForm = search?.querySelector("form");
+    const searchField = searchForm?.querySelector("input");
+    const searchLabel = searchToggle?.querySelector("[data-search-label]");
+
+    const searchOpen = () => search?.getAttribute("data-search-open") === "true";
+
+    const setSearch = (open, { restoreFocus = false } = {}) => {
+      if (!search || open === searchOpen()) return;
+      search.setAttribute("data-search-open", String(open));
+      searchToggle.setAttribute("aria-expanded", String(open));
+      searchForm.hidden = !open;
+      if (searchLabel) {
+        searchLabel.textContent = open
+          ? searchToggle.dataset.labelClose
+          : searchToggle.dataset.labelOpen;
+      }
+      if (open) searchField?.focus();
+      else if (restoreFocus) searchToggle.focus();
+    };
+
     const openPanel = (trigger) => {
       const panel = document.getElementById(trigger.getAttribute("aria-controls"));
       if (!panel) return;
       closePanels();
+      setSearch(false);
       trigger.setAttribute("aria-expanded", "true");
       panel.hidden = false;
       panel.setAttribute("data-open", "true");
@@ -41,9 +68,16 @@
       });
     });
 
+    searchToggle?.addEventListener("click", () => {
+      const open = !searchOpen();
+      if (open) closePanels();
+      setSearch(open, { restoreFocus: !open });
+    });
+
     menuToggle?.addEventListener("click", () => {
       const isOpen = header.getAttribute("data-nav-open") === "true";
       closePanels();
+      setSearch(false);
       header.setAttribute("data-nav-open", String(!isOpen));
       menuToggle.setAttribute("aria-expanded", String(!isOpen));
     });
@@ -52,10 +86,16 @@
 
     document.addEventListener("click", (event) => {
       if (!header.contains(event.target)) closePanels();
+      if (search && !search.contains(event.target)) setSearch(false);
     });
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
+        if (searchOpen()) {
+          event.preventDefault();
+          setSearch(false, { restoreFocus: true });
+          return;
+        }
         const panelOpen = triggers.some(
           (trigger) => trigger.getAttribute("aria-expanded") === "true",
         );
@@ -82,6 +122,7 @@
 
     desktop.addEventListener("change", () => {
       closePanels();
+      setSearch(false);
       header.setAttribute("data-nav-open", "false");
       menuToggle?.setAttribute("aria-expanded", "false");
     });
