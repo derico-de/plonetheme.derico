@@ -2,6 +2,25 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Block rhythm and type follow the design** (derico.css §10, §11). The
+  token layer now fills Blicca's reading-scale contract as it fills the
+  palette's and the promo's: the blocks' body face is Source Sans 3 at 1.65
+  on both surfaces (it was Tailwind's system stack on the page, while the
+  chrome around it was the brand face), h2 blocks sit on Clara's 2xl step and
+  h3 blocks on the design's component-heading step, both at the display
+  leading, and a banded block breathes on the theme's `l` / `xl` section steps
+  instead of Blicca's 20px / 40px reading-column frames. Three frames are set
+  per block, on the wrapper Blicca stamps and as tokens only: the Derico Hero
+  carries no bleed frame, so the band beneath it starts flush against the
+  photograph as in the mockup; an h2 that opens a band is the design's section
+  heading; and a Promo sharing a band with a neighbour gets the `xl` step on
+  both sides (at least 3rem, and the continuation gap Blicca zeroes is given
+  back to it), while a promo next to a differently-coloured band keeps the
+  `l` step. Needs `plone.blicca.auroraeditor` with `--aurora-space-continuation`
+  and the `is-background-continued` run marker. `tests/test_aurora_rhythm.py`
+  holds every name against Blicca's sheet and renderer, and
+  `test_override_minimality.py` admits exactly the wrapper-scoped token shape.
+
 - **The contact band is retired** (profile version 1009). The design's
   „Erstgespräch vereinbaren" closing section is now authored as a block in the
   editable footer (`collective.blicca.footerblocks`), so the chrome pagelet

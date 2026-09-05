@@ -52,6 +52,22 @@ CHROME_TARGETS = {
     "#section-byline",
 }
 
+#: The second admitted shape (derico.css §11): a rule keyed on the wrapper
+#: Blicca stamps around a block — its type, its background slot, its place in
+#: a background run — that declares NOTHING but `--aurora-*` tokens. The
+#: wrapper belongs to the host and is read by the host's own padding rules,
+#: so a per-block frame can only be stated there, and only as a token. One
+#: compound selector per part; nothing descends, nothing combines, so the
+#: rule can never reach INTO a block or out to the page.
+FRAME_SELECTOR = re.compile(
+    r"^\.block-[\w-]+"
+    r"(?:"
+    r'\[class\*="has--backgroundColor--"\]'
+    r"|\.is-background-(?:continuation|continued)"
+    r"|:not\(\.is-background-(?:continuation|continued)\)"
+    r")*$"
+)
+
 #: Tokens `derico.css` publishes FOR the brand-block sheets rather than using
 #: itself: Clara's private type tokens, re-exported under a `--derico-*` name
 #: so a block sheet speaks one vocabulary and a Clara rename breaks one file
@@ -133,13 +149,19 @@ def _effective_light():
 # 1. Shape: a token sheet, and nothing else
 # --------------------------------------------------------------------------
 
+def _is_frame_rule(selector):
+    """True for a §11 rule: every comma-part a bare wrapper-stamp compound."""
+    parts = [part.strip() for part in selector.split(",")]
+    return all(FRAME_SELECTOR.match(part) for part in parts)
+
+
 def test_sheet_declares_only_root_level_selectors():
     """No component rules, no element selectors — the customization contract.
 
-    One exception, and it is not a loophole: the §7 chrome-suppression rule
-    styles the page AROUND a brand block, which the block's own scope-wrapped
-    sheet is structurally unable to reach. Every other rule is still a gap in
-    Clara's token contract.
+    Two exceptions, and neither is a loophole: the §7 chrome-suppression rule
+    and the §11 frame rules both style the page AROUND a block, which the
+    block's own scope-wrapped sheet is structurally unable to reach. Every
+    other rule is still a gap in Clara's token contract.
     """
     selectors = {
         _normalise(selector) for selector, _ in css_tools._blocks(DERICO)
@@ -148,7 +170,9 @@ def test_sheet_declares_only_root_level_selectors():
     offenders = sorted(
         selector
         for selector in selectors
-        if selector not in allowed and not _is_chrome_suppression(selector)
+        if selector not in allowed
+        and not _is_chrome_suppression(selector)
+        and not _is_frame_rule(selector)
     )
     assert not offenders, (
         f"derico.css must stay a token sheet; found {offenders}. "
@@ -172,6 +196,13 @@ def test_sheet_declares_nothing_but_custom_properties():
                 f"declares {declarations}. Anything else is a component rule "
                 "wearing its selector."
             )
+            continue
+        if _is_frame_rule(_normalise(selector)):
+            for declaration in declarations:
+                assert declaration.startswith("--aurora-"), (
+                    "a §11 frame rule may only set a Blicca token on the "
+                    f"wrapper; {selector!r} declares {declaration!r}"
+                )
             continue
         for declaration in declarations:
             assert declaration.startswith("--"), (
