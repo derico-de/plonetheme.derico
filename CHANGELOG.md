@@ -2,6 +2,45 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The header is the design's** (profile version 1010). The first part of the
+  theme that is neither a token nor a block: `static/header.css` and
+  `static/header.js`, one bundle, plus a searchbox template on derico's own
+  layer.
+
+  The reason it is a sheet of its own is the reason derico.css is guarded to
+  stay a token sheet — the design's bar is a *composition* Clara's tokens
+  cannot express. Clara stacks a logo row over a full-bleed navigation bar and
+  parks an always-open search form in the bar's end lane; the design puts
+  logo, navigation and utilities on one 6rem row, centres the navigation in
+  the viewport, and folds the search into a single magnifier. Values stay
+  tokens — every colour, step and face in the sheet is a `--derico-*` or
+  `--plone-*` name — but the rules are component rules, so they live beside
+  `snippets.css` rather than in the token layer. Clara's mega panel is already
+  the design's three-zone panel and is untouched, as are the nav's face, size
+  and weight; what moves is geometry, at three widths: the design's mobile
+  header, the design's single desktop row, and the two-row band between them
+  that the design never drew because Clara's markup is what produces it.
+
+  **The search is new — the mockup has none.** A static reference site needs
+  no search; a Plone site has one, and the design had nowhere to put it. It is
+  one magnifier at the bar's end, and the field grows out of it: an overlay
+  sliding out to the left on the wide layouts, a full row under the bar on the
+  narrow one. The disclosure is the same pure-CSS `.opener` checkbox Clara's
+  mega menu and narrow menu already use, so the search opens and closes with
+  no script at all; `header.js` adds only what a stylesheet cannot — the caret
+  lands in the field, Escape and an outside click close it, and the bar keeps
+  to one open thing at a time. The mockup gained the same control in the same
+  place, so the design source and the theme still describe one header.
+
+  `browser/templates/searchbox.pt` is registered under the base provider name
+  on `IPlonethemeDericoLayer`, which now extends `IPlonePageletlayoutLayer` —
+  Clara's move for its own globalnav, and what makes the override
+  unambiguously more specific than the base registration rather than a
+  coin toss between two unrelated layers. The class stays the base's, and the
+  form keeps its ids, names and classes, because `pat-livesearch` and
+  `@@search` read them; only how it opens changed. `plone.pageletlayout` is
+  now a declared dependency, since the theme imports it.
+
 - **Block rhythm and type follow the design** (derico.css §10, §11). The
   token layer now fills Blicca's reading-scale contract as it fills the
   palette's and the promo's: the blocks' body face is Source Sans 3 at 1.65

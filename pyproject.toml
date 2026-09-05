@@ -29,6 +29,11 @@ dependencies = [
     # and markup contract) and ships the one compiled stylesheet; derico only
     # re-points its tokens.
     "plonetheme.clara",
+    # Named directly, and not left to arrive through Clara, because derico
+    # imports it: the theme's browser layer extends IPlonePageletlayoutLayer
+    # (interfaces.py) and browser/configure.zcml registers a chrome pagelet
+    # through its `plone:` directives.
+    "plone.pageletlayout",
     # The brand blocks' host: the editor they mount in, and the promised
     # rendering surface `@@aurora-block-derico-hero` imports (contract §5.2).
     # Hard, not conditional — there is no user who wants derico's brand

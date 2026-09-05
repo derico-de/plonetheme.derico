@@ -220,7 +220,10 @@ a:hover { color: var(--copper-text); }
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  min-height: 2.75rem;
+  /* The bar's own height, carried by the mark: with the search form or the
+     menu open the shell has two rows, and a min-height on the shell alone
+     would let the bar row shrink around the logo the moment a row joins it. */
+  min-height: 5.25rem;
 }
 
 .brand-mark img { width: 8rem; height: auto; }
@@ -335,6 +338,75 @@ a:hover { color: var(--copper-text); }
 }
 
 .utility-nav a[aria-current="page"] { color: var(--ink); text-decoration: underline; }
+
+/* Site search: a magnifier at the header's end that opens the field.
+   Not in the original mockup; added 2026-09-05 for the Plone site, which
+   has a search the static reference never needed. One icon in the bar, and
+   the field grows out of it on demand — nothing else in the chrome moves.
+   Narrow: the field takes a full row under the bar, above the opened menu.
+   Wide: it slides out to the left over the language switch and, if the
+   viewport is tight, the end of the primary nav — a transient overlay, on
+   the page ground, so nothing beneath it bleeds through. Escape, the cross,
+   or a click elsewhere close it (site.js); the field keeps its text. */
+.header-utility,
+.site-search { display: contents; }
+
+.search-toggle {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition: color 120ms linear, background-color 120ms linear;
+}
+.search-toggle:hover { color: var(--brand-link); }
+.search-toggle__glyph { grid-area: 1 / 1; transition: opacity 120ms linear, transform 180ms var(--ease-out); }
+.search-toggle__glyph--close { opacity: 0; transform: rotate(-45deg) scale(0.8); }
+.site-search[data-search-open="true"] .search-toggle__glyph--open { opacity: 0; transform: rotate(45deg) scale(0.8); }
+.site-search[data-search-open="true"] .search-toggle__glyph--close { opacity: 1; transform: none; }
+.site-search[data-search-open="true"] .search-toggle { color: var(--brand-link); }
+
+.site-search__form {
+  order: 3;
+  flex: 1 0 100%;
+  position: relative;
+  padding-block: 0 var(--space-s);
+  animation: mobilePanelIn 220ms var(--ease-out);
+}
+.site-search__field {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.4rem 2.9rem 0.4rem 1.1rem;
+  border: 1px solid var(--brand-deep);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  background: var(--ground);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.site-search__field::placeholder { color: var(--ink-soft); opacity: 1; }
+.site-search__field::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.site-search__submit {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--brand-link);
+  background: transparent;
+  cursor: pointer;
+}
+.site-search__submit:hover { color: var(--copper-text); }
 
 .mega-panel {
   padding-block: var(--space-s) var(--space-m);
@@ -1230,7 +1302,10 @@ a:hover { color: var(--copper-text); }
   .service-platform--plone { margin-inline-start: calc(-1 * var(--space-l)); }
 }
 
-@media (max-width: 22.99rem) {
+/* Below 30rem the bar holds the logo, the menu pill, the language switch and
+   the search toggle; the pill gives up its word first (was 23rem before the
+   search joined the bar). */
+@media (max-width: 29.99rem) {
   .menu-toggle { width: 2.75rem; padding-inline: 0; }
   .menu-toggle > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
@@ -1241,6 +1316,20 @@ a:hover { color: var(--copper-text); }
   .primary-nav,
   .utility-nav { align-self: center; }
   .utility-nav { translate: 0 0.375rem; }
+  .header-utility { display: flex; align-items: center; gap: var(--space-xs); justify-self: end; }
+  .site-search { display: block; position: relative; }
+  .site-search__form {
+    position: absolute;
+    z-index: 1;
+    inset-inline-end: 100%;
+    inset-block-start: 50%;
+    width: min(22rem, 36vw);
+    padding: 0 var(--space-2xs) 0 var(--space-xs);
+    translate: 0 -50%;
+    background: var(--ground);
+    animation: searchIn 240ms var(--ease-out);
+  }
+  .site-search__submit { inset-inline-end: var(--space-2xs); }
   .brand-mark img { width: 8.5rem; }
   .menu-toggle { display: none; }
   .site-nav,
@@ -1268,6 +1357,11 @@ a:hover { color: var(--copper-text); }
 }
 
 @keyframes backdropIn { from { opacity: 0; } }
+
+@keyframes searchIn {
+  from { opacity: 0; clip-path: inset(0 0 0 100%); }
+  to { opacity: 1; clip-path: inset(0); }
+}
 
 @media (min-width: 75rem) {
   .page-hero::before,

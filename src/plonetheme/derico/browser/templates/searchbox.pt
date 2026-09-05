@@ -1,0 +1,80 @@
+<div class="element-searchbox"
+     id="portal-searchbox"
+     tal:define="navigation_root_url view/navigation_root_url"
+     i18n:domain="plone">
+
+  <!-- The search as the design's header wants it: one magnifier in the bar,
+       and the field grows out of it on demand. The base template
+       (plone.pageletlayout's searchbox.pt) renders the form always-open;
+       this one, registered on the theme's own layer, wraps the same form in
+       the same pure-CSS `.opener` disclosure the mega menu and the narrow
+       menu already use, so search opens and closes without a line of JS.
+       header.js adds what CSS cannot — the caret lands in the field, Escape
+       and a click elsewhere close it, and nothing else in the bar stays open
+       beside it. The form itself is the base's, id for id and class for
+       class, because `pat-livesearch` and `@@search` read it. Only the
+       submit button changed: an icon, its label kept for assistive tech.
+
+       No aria-expanded: the control IS a checkbox and announces its state
+       as one, the trade Clara made for the whole navigation. The two glyphs
+       share one label; the checked state alone tells them apart. -->
+  <input class="opener"
+         type="checkbox"
+         id="portal-searchbox-opener" />
+  <label class="searchbox-toggle"
+         for="portal-searchbox-opener">
+    <svg class="searchbox-toggle__glyph searchbox-toggle__glyph--open"
+         viewBox="0 0 24 24" width="22" height="22"
+         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+    <svg class="searchbox-toggle__glyph searchbox-toggle__glyph--close"
+         viewBox="0 0 24 24" width="22" height="22"
+         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    <span class="visually-hidden"
+          i18n:translate="title_search_site">Search Site</span>
+  </label>
+
+  <form class="plone-cluster ${python: view.livesearch and 'pat-livesearch' or ''} ${python: view.show_images and 'show_images' or ''}"
+        id="searchGadget_form"
+        action="@@search"
+        role="search"
+        tal:attributes="action string:${navigation_root_url}/@@search;
+                        data-pat-livesearch string:ajaxUrl:${navigation_root_url}/@@ajax-search">
+
+    <label class="visually-hidden"
+           for="searchGadget"
+           i18n:translate="text_search">Search Site</label>
+
+    <input class="searchField form-control"
+           id="searchGadget"
+           name="SearchableText"
+           placeholder="Search Site"
+           size="18"
+           title="Search Site"
+           type="text"
+           value=""
+           autocomplete="off"
+           tal:attributes="value request/form/SearchableText|nothing"
+           i18n:attributes="title title_search_site;
+                            placeholder title_search_site" />
+
+    <button class="searchButton"
+            type="submit">
+      <svg viewBox="0 0 24 24" width="20" height="20"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+      <span class="visually-hidden"
+            i18n:translate="label_search">Search</span>
+    </button>
+
+    <div class="visually-hidden"
+         id="portal-advanced-search">
+      <a href="#"
+         tal:attributes="href string:${navigation_root_url}/@@search"
+         i18n:translate="label_advanced_search">Advanced Search&hellip;</a>
+    </div>
+
+  </form>
+
+</div>

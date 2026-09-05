@@ -128,6 +128,27 @@
     <value key="enabled">True</value>
   </records>
 
+  <!-- The header's stylesheet AND script: the one bundle in this theme that
+       carries behaviour. header.css dresses Clara's header elements — logo,
+       navigation, search, the login link — into the design's bar, and holds
+       the component rules derico.css is guarded never to contain; header.js
+       is the search box's close gestures and focus handling, the same
+       sprinkle clara.js is for the mega menu. One record for both because
+       neither is useful alone: the script drives a control only the sheet
+       draws. `depends` on the token layer because every value the sheet
+       paints with is a derico token derico.css declares. (An ASCII double
+       hyphen cannot appear in an XML comment, so custom properties go
+       unnamed in this file.) -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-header">
+    <value key="csscompilation">++resource++plonetheme.derico/header.css</value>
+    <value key="jscompilation">++resource++plonetheme.derico/header.js</value>
+    <value key="depends">plonetheme-derico</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
+  </records>
+
   <!-- ── the hero's top scale rung (hero ticket 05 §2/§4) ──────────────────
 
        APPENDED, never replacing: stock Plone templates and other add-ons

@@ -13,6 +13,9 @@
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico-snippets"
            remove="true" />
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-header"
+           remove="true" />
 
   <!-- Same for the block records: an orphaned IAuroraBlockAddon record would
        keep @@aurora-edit trying to load a bundle whose ZCML is gone, and the
