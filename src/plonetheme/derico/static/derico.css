@@ -419,11 +419,13 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
  * started is a heading inside a section, and keeps the prose step.
  *
  * The Promo sharing a band with a neighbour is the design's contact band
- * standing next to another section on the same ground: it wants section
- * air on BOTH sides — the `xl` step, the band-to-band breathing room of §5 —
- * which is why the continuation gap Blicca zeroes is given back to it. A
- * promo on a band of its own next to a differently-coloured neighbour keeps
- * the §10 `l` frame: the colour change already separates the two.
+ * standing next to another section on the same ground: the two want more
+ * between them than a paragraph wants from a paragraph — the `xl` step, §5's
+ * band-to-band breathing room — on both of the promo's inner edges. The
+ * continuation gap Blicca zeroes is given back to it, and its counterpart at
+ * the other end is raised off the run's `l`. The frame at the run's OUTER
+ * edges is the band's, above: a promo does not need its own claim on it, and
+ * a promo alone on a band is a one-block run that already gets it.
  *
  * A promo on NO band is the same reading with the ground left white: two of
  * them stand on one surface exactly as two same-slot promos do, so they get
@@ -433,6 +435,21 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
  * under every background rule: a banded promo keeps its band's frame and
  * nothing doubles, which is why this rule needs no `:not()`.
  */
+/* A background IS a section on this design, so a run of banded blocks opens
+ * and closes on the section step rather than on the reading frame §10 gives
+ * a table or a teaser. Blicca pads a band from `--aurora-space-block` (or
+ * `--aurora-space-bleed` at full width) at BOTH ends of every block in the
+ * run, which makes the band's outer frame and the gaps between its blocks
+ * one number; the run's inner gaps are `--aurora-space-continued`, so they
+ * stay on the §10 reading step while the frame moves to §5's `2xl` — the
+ * exact step the mockup's `.section`, `.section--band` and `.contact-band`
+ * are padded with. */
+.block[class*="has--backgroundColor--"] {
+  --aurora-space-block: var(--plone-space-2xl);
+  --aurora-space-bleed: var(--plone-space-2xl);
+  --aurora-space-continued: var(--plone-space-l);
+}
+
 .block-derico-hero {
   --aurora-space-bleed: 0px;
 }
@@ -443,9 +460,8 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
 
 .block-promo.is-background-continuation,
 .block-promo.is-background-continued {
-  --aurora-space-block: var(--plone-space-xl);
-  --aurora-space-bleed: var(--plone-space-xl);
   --aurora-space-continuation: var(--plone-space-xl);
+  --aurora-space-continued:    var(--plone-space-xl);
 }
 
 .block-promo {

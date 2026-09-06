@@ -43,12 +43,23 @@ def _blicca_sheet():
 
 
 def _blicca_tokens():
-    """Every `--aurora-*` token blocks_view.css declares on the root."""
-    return set(
+    """Every `--aurora-*` token blocks_view.css declares on the root...
+
+    ...plus the ones it only READS, as `var(--aurora-x, <fallback>)` at the
+    point of use. A token whose default is "whatever this element's frame is"
+    cannot be declared on the root — declared there it would resolve against
+    the ROOT's frame and inherit that number down, past every block that
+    scopes its own — so `--aurora-space-continued` exists only in the rule
+    that reads it. Read is as good as declared for this test's purpose: the
+    question is whether derico's value reaches anything.
+    """
+    declared = set(
         css_tools.declarations(
             _blicca_sheet(), (":where(:root)", ":root", "body")
         )
     )
+    read = set(re.findall(r"var\(\s*(--aurora-[\w-]+)", _blicca_sheet()))
+    return declared | read
 
 
 def _derico_root():
@@ -56,11 +67,16 @@ def _derico_root():
 
 
 def _frame_rules():
-    """The §11 rules: (selector, {token: value}) for every wrapper-scoped rule."""
+    """The §11 rules: (selector, {token: value}) for every wrapper-scoped rule.
+
+    Keyed on `.block`, not on `.block-`: a rule may name the background slot
+    alone (`.block[class*="has--backgroundColor--"]`), which is the frame that
+    belongs to a band rather than to any one block type.
+    """
     rules = []
     for selector, body in css_tools._blocks(DERICO):
         selector = css_tools.normalise_selector(selector)
-        if not selector.startswith(".block-"):
+        if not selector.startswith(".block"):
             continue
         found = dict(re.findall(r"(--[\w-]+)\s*:\s*([^;}]+)", body))
         rules.append((selector, {k: v.strip() for k, v in found.items()}))
@@ -196,13 +212,59 @@ def test_a_heading_that_opens_a_band_is_the_section_step():
     assert ":not(.is-background-continuation)" in selector
 
 
+def test_a_background_run_opens_and_closes_on_the_section_step():
+    """A band is a section, so it is framed like one.
+
+    Blicca pads every block in a run from the same frame at both ends, which
+    makes the band's outer air and the gaps between its blocks one number.
+    The frame moves to §5's section step and the run's inner gaps are pinned
+    back to the §10 reading step, so the band opens and closes on 2xl and
+    still breathes on l inside.
+    """
+    tokens = _frame('.block[class*="has--backgroundColor--"]')
+    assert tokens == {
+        "--aurora-space-block": "var(--plone-space-2xl)",
+        "--aurora-space-bleed": "var(--plone-space-2xl)",
+        "--aurora-space-continued": "var(--plone-space-l)",
+    }
+
+
+@needs_blicca
+def test_blicca_reads_the_inner_gap_at_its_point_of_use():
+    """The reason `--aurora-space-continued` is not on Blicca's root.
+
+    Declared on `:where(:root)` with a `var(--aurora-space-block)` default it
+    would resolve against the ROOT's frame and inherit that number down, so
+    the rule above would raise the band's frame and leave its inner gaps at
+    the old value — the whole point of the token, silently lost. It only
+    works read at the point of use, with the frame as the fallback.
+    """
+    sheet = re.sub(r"\s+", "", _blicca_sheet())
+    assert "--aurora-space-continued:" not in sheet, (
+        "blocks_view.css now DECLARES --aurora-space-continued; a root "
+        "declaration cannot fall back to a frame the block scopes itself"
+    )
+    assert (
+        "padding-block-end:var(--aurora-space-continued,"
+        "var(--aurora-space-block))"
+    ) in sheet, "the run's inner gap no longer falls back to the block frame"
+    assert (
+        "padding-block-end:var(--aurora-space-continued,"
+        "var(--aurora-space-bleed))"
+    ) in sheet, "a full-bleed run's inner gap no longer falls back to bleed"
+
+
 def test_a_promo_sharing_a_band_breathes_on_the_xl_step_both_sides():
-    """The user-facing claim: same background -> big space, both sides."""
+    """The user-facing claim: same background -> big space, both sides.
+
+    Both of the promo's INNER edges — the gap to the block above it in the
+    run (`continuation`) and the gap to the one below (`continued`). The
+    run's outer frame is the band's, and is asserted separately.
+    """
     tokens = _frame(".block-promo.is-background-continuation")
     assert tokens == {
-        "--aurora-space-block": "var(--plone-space-xl)",
-        "--aurora-space-bleed": "var(--plone-space-xl)",
         "--aurora-space-continuation": "var(--plone-space-xl)",
+        "--aurora-space-continued": "var(--plone-space-xl)",
     }
     selector = next(s for s, _ in _frame_rules() if ".block-promo" in s)
     assert ".block-promo.is-background-continued" in selector, (

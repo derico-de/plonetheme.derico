@@ -2,6 +2,38 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **A banded block is a section, and is now framed like one.** Blicca's
+  reading frame — `--aurora-space-block`, which §10 aliases to the `l` step —
+  pads a table, a teaser and a background band alike, so an Aurora band opened
+  and closed on 36.75px at 1440 where every `.section`, `.section--band` and
+  `.contact-band` in the mockup is padded 102.4px. The band was reading as a
+  tinted paragraph rather than as a section, most visibly on the first block
+  after the hero.
+
+  §11 gains one rule keyed on the background slot alone — the first frame rule
+  that names no block type, because the frame belongs to the BAND and not to
+  whichever block happens to open it. `--aurora-space-block` and
+  `--aurora-space-bleed` go to §5's `2xl`, the design's own section step, and
+  the run's inner gaps are pinned back to `l` through Blicca's new
+  `--aurora-space-continued` (news 73): 102.4 / 36.75 / 36.75 / 102.4 down a
+  four-block band at 1440, against 36.75 all the way before.
+
+  The footer's Promo is the same finding from the other end. It sits alone on
+  the accent slot, so the background rule beat `--aurora-space-frame` and the
+  contact band came out at 36.75 — LESS air than the `xl` an unbanded promo
+  gets, an inversion in which giving a promo a background made it tighter. It
+  is a one-block run, so the band rule now frames it at 102.4, which is the
+  `.contact-band` measurement exactly.
+
+  The promo's own §11 rule keeps only what is its: the `xl` gap on each of its
+  INNER edges when it shares a band with a neighbour. It no longer restates
+  the frame, which is now the band's on both sides.
+
+  `tests/test_override_minimality.py` admits the new selector shape — a
+  wrapper stamp with no block type, still `--aurora-*` tokens only, still
+  nothing that descends or combines. A bare `.block` with no stamp stays out:
+  a rule for every block is a value, and a value belongs on `:root`.
+
 - **The wordmark now IS the brand cyan, and the Accent slot follows it
   down.** `--derico-brand` has always been `#039fba` — the comment beside it
   says "logo, rings, UI geometry" — but the shipped SVG was `#00c2e3`, a

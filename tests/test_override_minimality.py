@@ -59,13 +59,21 @@ CHROME_TARGETS = {
 #: so a per-block frame can only be stated there, and only as a token. One
 #: compound selector per part; nothing descends, nothing combines, so the
 #: rule can never reach INTO a block or out to the page.
-FRAME_SELECTOR = re.compile(
-    r"^\.block-[\w-]+"
+#:
+#: The type may be left off when a rule is keyed on the SLOT alone: a
+#: background is a class of blocks this design treats alike — it is what a
+#: section is made of — and the frame belongs to the band, not to whichever
+#: block happens to open it. A bare `.block` with no stamp at all stays out:
+#: a rule for every block is a value, and a value belongs on `:root`.
+_WRAPPER_STAMP = (
     r"(?:"
     r'\[class\*="has--backgroundColor--"\]'
     r"|\.is-background-(?:continuation|continued)"
     r"|:not\(\.is-background-(?:continuation|continued)\)"
-    r")*$"
+    r")"
+)
+FRAME_SELECTOR = re.compile(
+    rf"^(?:\.block-[\w-]+{_WRAPPER_STAMP}*|\.block{_WRAPPER_STAMP}+)$"
 )
 
 #: Tokens `derico.css` publishes FOR the brand-block sheets rather than using
