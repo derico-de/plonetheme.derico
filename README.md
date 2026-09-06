@@ -152,7 +152,7 @@ as the fallback. `derico.css` §8 fills all three:
 | slot | value | measured |
 |---|---|---|
 | Grey | `--derico-surface` `#ebf6f8` | ink 15.62:1, link 5.44:1 |
-| Accent | `--derico-band-soft` `#d2f2fa` | ink 14.60:1, link 5.09:1 |
+| Accent | `--derico-band-soft` `#bdeaf6` | ink 13.32:1, link 4.64:1 |
 | Dark | `--derico-brand-deep` `#004553`, foreground `--derico-ground` | 10.33:1 |
 
 Accent is the *soft* cyan, not `--derico-band` — the committed band the

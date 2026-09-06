@@ -50,7 +50,7 @@
    * hex in a rule — --derico-brand is the only place the brand colour is
    * written" (DESIGN.md §6). */
   --derico-brand:            oklch(0.64705 0.1142 215.55); /* #039fba — exact brand cyan: logo, rings, UI geometry */
-  --derico-brand-text:       oklch(0.49 0.09 215.55);      /* #006d81 — links; 5.99:1 on ground, 5.09:1 on band-soft */
+  --derico-brand-text:       oklch(0.49 0.09 215.55);      /* #006d81 — links; 5.99:1 on ground, 4.64:1 on band-soft */
   --derico-brand-hover:      oklch(0.42 0.085 215.55);     /* #00586a — deep cyan step */
   --derico-brand-fill-hover: oklch(0.74 0.10 215.55);      /* #55bbd3 — hover fill for cyan controls */
   --derico-brand-deep:       oklch(0.36 0.065 215.55);     /* #004553 — toolbar ground; ground on it 10.63:1 */
@@ -59,7 +59,7 @@
   --derico-ground:    oklch(1 0 0);               /* #ffffff — page */
   --derico-surface:   oklch(0.965 0.012 215);     /* #ebf6f8 — quiet surface */
   --derico-band:      oklch(0.88 0.085 215.55);   /* #94e6fb — the committed cyan band */
-  --derico-band-soft: oklch(0.94 0.035 215.55);   /* #d2f2fa — mega-panel ground */
+  --derico-band-soft: oklch(0.91 0.05 215.55);    /* #bdeaf6 — mega-panel ground */
   --derico-ink:       oklch(0.22 0.02 225);       /* #101d22 — 17.20:1 on ground */
   --derico-ink-soft:  oklch(0.38 0.03 225);       /* #31464e — 9.92:1 on ground */
   --derico-rule:      oklch(0.84 0.025 215);      /* #b9cfd5 — hairlines */

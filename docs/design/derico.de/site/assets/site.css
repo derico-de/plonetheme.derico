@@ -46,7 +46,7 @@
   --ground: oklch(0.99 0.003 215);
   --surface: oklch(0.965 0.012 215);
   --band: oklch(0.88 0.085 215.55);
-  --band-soft: oklch(0.94 0.035 215.55);
+  --band-soft: oklch(0.91 0.05 215.55);
   --ink: oklch(0.22 0.02 225);
   --ink-soft: oklch(0.38 0.03 225);
   --rule: oklch(0.84 0.025 215);

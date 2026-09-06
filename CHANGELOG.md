@@ -2,6 +2,33 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The wordmark now IS the brand cyan, and the Accent slot follows it
+  down.** `--derico-brand` has always been `#039fba` — the comment beside it
+  says "logo, rings, UI geometry" — but the shipped SVG was `#00c2e3`, a
+  lighter, half-a-degree-off cyan the ladder never referenced. In the design
+  mockup's hero that was visible: the growth rings stroke `var(--brand)` and
+  the wordmark sat right above them in a different colour. All three copies
+  of the asset (`static/derico-logo.svg`, which `setuphandlers.py` installs
+  as the site logo, plus the design source and the mockup's) are now the
+  darker file the running site already had. Same geometry, same filename;
+  only the fill and Inkscape's grouping differ.
+
+  `--derico-band-soft` moves with it, `oklch(0.94 0.035 215.55)` →
+  `oklch(0.91 0.05 215.55)` (`#d2f2fa` → `#bdeaf6`), because a wash derived
+  from the lighter cyan reads as a wash next to the deeper mark. That step is
+  the mega-panel ground, the contact form's fill AND the Aurora "Accent"
+  slot (§8), so all three deepen together — the equivalence the file already
+  documents, kept. It also opens the gap to "Grey" (`--derico-surface`,
+  L 0.965), which the two light slots were nearly sharing in the picker.
+
+  The floor is the link, not taste: `--derico-brand-text` on the slot goes
+  5.09:1 → 4.64:1, and L 0.90 is where it would touch AA. Copper fill 3.67:1,
+  copper text 5.13:1, ink 13.32:1, ink-soft 7.70:1 — every pair in
+  `test_color_contrast.py`, `test_aurora_block_backgrounds.py` and
+  `test_promo_seam.py` still clears, and none of them pinned a literal.
+  `--derico-band` stays deeper, so the committed band and the soft step have
+  not collapsed into each other.
+
 - **The hero's full bleed is now checked in the canvas, not only on the
   page.** `hero-editor.e2e.js` proved `blockWidth: "full"` reached the
   saved node; the width an author is looking at while they decide came

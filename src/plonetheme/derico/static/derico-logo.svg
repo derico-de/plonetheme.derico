@@ -8,7 +8,7 @@
    version="1.1"
    id="svg4547"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
-   sodipodi:docname="derico_logo.svg"
+   sodipodi:docname="derico_logo_darker.svg"
    inkscape:export-filename="/home/maik/Dokumente/derico/vorlagen/2016/derico_logo_sponsor.png"
    inkscape:export-xdpi="17.449411"
    inkscape:export-ydpi="17.449411"
@@ -70,7 +70,7 @@
      inkscape:cx="-190"
      inkscape:cy="631.42857"
      inkscape:document-units="mm"
-     inkscape:current-layer="g5248"
+     inkscape:current-layer="g1"
      showgrid="false"
      units="px"
      inkscape:window-width="2556"
@@ -112,42 +112,49 @@
          id="g1"
          transform="translate(-2.4990107)">
         <g
-           transform="matrix(0.33377695,0,0,-0.33377695,-166.12573,45.832617)"
-           id="g36-0"
-           style="fill:#00c2e3;fill-opacity:1">
+           id="g2"
+           style="fill:#039fba;fill-opacity:1">
+          <g
+             transform="matrix(0.33377695,0,0,-0.33377695,-166.12573,45.832617)"
+             id="g36-0"
+             style="fill:#039fba;fill-opacity:1">
+            <path
+               inkscape:connector-curvature="0"
+               id="path38-9"
+               style="fill:#039fba;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               d="m 0,0 c 0,73.138 -59.284,132.425 -132.418,132.425 -73.136,0 -132.425,-59.287 -132.425,-132.425 0,-73.134 59.289,-132.421 132.425,-132.421 C -59.284,-132.421 0,-73.134 0,0"
+               sodipodi:nodetypes="csssc" />
+          </g>
+          <g
+             transform="matrix(0.33377695,0,0,-0.33377695,-89.24885,40.010233)"
+             id="g40-1"
+             style="fill:#039fba;fill-opacity:1">
+            <path
+               inkscape:connector-curvature="0"
+               id="path42-2"
+               style="fill:#039fba;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               d="m 0,0 c 0,82.773 -67.097,149.869 -149.867,149.869 -82.759,0 -149.854,-67.096 -149.854,-149.869 0,-82.77 67.095,-149.865 149.854,-149.865 C -67.097,-149.865 0,-82.77 0,0" />
+          </g>
+          <g
+             transform="matrix(0.33377695,0,0,-0.33377695,-126.05112,12.577881)"
+             id="g44-4"
+             style="fill:#039fba;fill-opacity:1">
+            <path
+               inkscape:connector-curvature="0"
+               id="path46-9"
+               style="fill:#039fba;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               d="M 0,0 C 0,81.116 -65.756,146.871 -146.859,146.871 -227.972,146.871 -293.73,81.116 -293.73,0 c 0,-81.112 65.758,-146.875 146.871,-146.875 C -65.756,-146.875 0,-81.112 0,0"
+               sodipodi:nodetypes="csssc" />
+          </g>
           <path
              inkscape:connector-curvature="0"
-             id="path38-9"
-             style="fill:#00c2e3;fill-opacity:1;fill-rule:nonzero;stroke:none"
-             d="m 0,0 c 0,73.138 -59.284,132.425 -132.418,132.425 -73.136,0 -132.425,-59.287 -132.425,-132.425 0,-73.134 59.289,-132.421 132.425,-132.421 C -59.284,-132.421 0,-73.134 0,0" />
+             id="path48-0"
+             style="fill:#039fba;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.946139"
+             d="m 673.09331,409.99692 h -201.7756 v 102.22379 h 201.7756 z"
+             transform="matrix(0.35277777,0,0,-0.35277777,-376.59539,234.61332)" />
         </g>
         <g
-           transform="matrix(0.33377695,0,0,-0.33377695,-89.24885,40.010233)"
-           id="g40-1">
-          <path
-             inkscape:connector-curvature="0"
-             id="path42-2"
-             style="fill:#00c2e3;fill-opacity:1;fill-rule:nonzero;stroke:none"
-             d="m 0,0 c 0,82.773 -67.097,149.869 -149.867,149.869 -82.759,0 -149.854,-67.096 -149.854,-149.869 0,-82.77 67.095,-149.865 149.854,-149.865 C -67.097,-149.865 0,-82.77 0,0" />
-        </g>
-        <g
-           transform="matrix(0.33377695,0,0,-0.33377695,-126.05112,12.577881)"
-           id="g44-4"
-           style="fill:#00c2e3;fill-opacity:1">
-          <path
-             inkscape:connector-curvature="0"
-             id="path46-9"
-             style="fill:#00c2e3;fill-opacity:1;fill-rule:nonzero;stroke:none"
-             d="M 0,0 C 0,81.116 -65.756,146.871 -146.859,146.871 -227.972,146.871 -293.73,81.116 -293.73,0 c 0,-81.112 65.758,-146.875 146.871,-146.875 C -65.756,-146.875 0,-81.112 0,0" />
-        </g>
-        <path
-           inkscape:connector-curvature="0"
-           id="path48-0"
-           style="fill:#00c2e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.946139"
-           d="m 673.09331,409.99692 h -201.7756 v 102.22379 h 201.7756 z"
-           transform="matrix(0.35277777,0,0,-0.35277777,-376.59539,234.61332)" />
-        <g
-           transform="matrix(0.33377695,0,0,-0.33377695,-137.74543,-2.4196416)"
+           transform="matrix(0.33377695,0,0,-0.33377695,-138.39452,-2.0352616)"
            id="g50-1">
           <path
              inkscape:connector-curvature="0"
@@ -157,14 +164,15 @@
         </g>
         <g
            id="g54-4"
-           transform="matrix(0.33377691,0,0,-0.33377691,-368.01784,223.82208)">
+           transform="matrix(0.33377691,0,0,-0.33377691,-368.01784,223.82208)"
+           style="fill:#039fba;fill-opacity:1">
           <g
              clip-path="url(#clipPath60-5)"
              id="g56-3"
-             style="fill:#00c2e3;fill-opacity:1">
+             style="fill:#039fba;fill-opacity:1">
             <text
                id="text64-2"
-               style="font-variant:normal;font-weight:300;font-stretch:normal;font-size:319.575px;font-family:Rubik;-inkscape-font-specification:Rubik-Light;writing-mode:lr-tb;fill:#00c2e3;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="font-variant:normal;font-weight:300;font-stretch:normal;font-size:319.575px;font-family:Rubik;-inkscape-font-specification:Rubik-Light;writing-mode:lr-tb;fill:#039fba;fill-opacity:1;fill-rule:nonzero;stroke:none"
                transform="matrix(1,0,0,-1,829.0586,431.3203)"
                y="0"><tspan
                  id="tspan62-5"
