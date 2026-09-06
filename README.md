@@ -182,7 +182,8 @@ component rules.
 | width | header |
 |---|---|
 | ≤ 48rem | the design's mobile bar: logo, menu pill, magnifier; search opens as a row beneath, the menu as Clara's accordion under that |
-| 48–70rem | a two-row header the design never drew — logo and utilities, then the centred navigation bar. What Clara's markup does between the two, made deliberate |
+| 48–64rem | the same compact bar. Clara's accordion mechanics stop at 48rem, so the sheet carries them through this band; otherwise it would become a two-row desktop header the design never drew |
+| 64–70rem | the desktop header, on a tight viewport: the same row, with the logo at 7.5rem and narrower lanes so the German top-level labels still fit on one line. The mockup switches at 70rem; 64rem is Clara's own desktop boundary and the width a 1024px laptop reports |
 | ≥ 70rem | the design's desktop header: one row, logo at the start, navigation centred in the viewport, search and login at the end |
 
 Clara's mega panel is already the design's three-zone panel and is untouched,

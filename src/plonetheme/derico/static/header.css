@@ -27,19 +27,23 @@
  * whatever its specificity, so nothing here has to out-specify Clara — every
  * selector is the plainest one that names its element.
  *
- * Two widths, at the design's own breakpoint:
+ * Two widths. The mockup switches at 70rem; this sheet switches at 64rem,
+ * which is Clara's own desktop boundary (its mega panel takes the wide
+ * three-track shape above 64rem) and the width a 1024px laptop actually
+ * reports. The 64–70rem band pays for it in the lanes, not in the shape —
+ * see the band's own note below.
  *
- *   · < 70rem, "narrow" — the design's compact header: logo, then the menu
+ *   · < 64rem, "narrow" — the design's compact header: logo, then the menu
  *     pill and the magnifier at the bar's end. The search opens as a full
  *     row under the bar; the menu as Clara's accordion under that, with the
  *     login link as its last row. Clara's defaults collapse at 48rem, so this
  *     sheet carries the same mechanics through the remaining tablet band;
- *     otherwise 48–70rem would become an unapproved two-row desktop header.
- *   · ≥ 70rem, "wide" — the design's desktop header: one 6rem row, logo at
+ *     otherwise 48–64rem would become an unapproved two-row desktop header.
+ *   · ≥ 64rem, "wide" — the design's desktop header: one 6rem row, logo at
  *     the start, navigation centred in the VIEWPORT (not in the content
  *     column: the bar spans `min(100% - 1rem, 90rem)` like the mockup's
- *     shell, so the German labels fit on one line down to 70rem), search
- *     and login at the end.
+ *     shell, so the German labels fit on one line), search and login at the
+ *     end.
  */
 
 /* ── the sheet's own knobs ────────────────────────────────────────────────── */
@@ -300,12 +304,12 @@
  * row, the navigation list and the login link stacked beneath it. Auto
  * placement goes by DOM order, which `order` re-sorts: negative steps keep
  * the header's rows ahead of everything the page puts after them. */
-@media (max-width: 69.9375rem) {
+@media (max-width: 63.9375rem) {
   .element-globalnav,
   .element-searchbox { display: contents; }
 
   /* Clara supplies these accordion mechanics through 48rem. Carry them to
-     the design's 70rem breakpoint instead of inventing a tablet-only header. */
+     this sheet's 64rem breakpoint instead of inventing a tablet-only header. */
   .element-globalnav > .opener {
     display: block;
     position: absolute;
@@ -423,7 +427,7 @@
   /* Clara puts the links in column 2 and the proof in column 1 between 48
      and 64rem — its mid-width shape for a panel that is a wide absolute band
      at those widths. Here that band is part of the mobile accordion all the
-     way to 70rem, so the PLACEMENT has to come along with the rest of the
+     way to 64rem, so the PLACEMENT has to come along with the rest of the
      accordion mechanics above. Left behind, it drops both zones into a
      column the stacked panel never declared, and the panel grows an implicit
      second track: two columns inside the phone menu, and the design's single
@@ -465,7 +469,7 @@
 }
 
 /* ── wide: the design's single row ───────────────────────────────────────── */
-@media (min-width: 70rem) {
+@media (min-width: 64rem) {
   .plone-layout { --derico-header-bar: 6rem; }
 
   #portal-logo,
@@ -547,6 +551,33 @@
     inline-size: min(22rem, 36vw);
     inset-block-start: calc(50% + var(--derico-header-toggle) / 2 + 0.25rem);
   }
+}
+
+/* ── 64–70rem: the same wide bar, on a tight viewport ─────────────────────
+ * The bar's shape does not change here; the lanes it keeps clear do. The
+ * navigation is centred between them, so it gets
+ * `viewport - 2 * edge - lane-start - lane-end`: 800px at 70rem, but only
+ * 704px at 64rem — under the ~735px the design's five German top-level
+ * labels need on one line, which is why the mockup stops at 70rem.
+ *
+ * The lanes are wider than what they actually have to clear, though. The
+ * start lane holds the 8.5rem logo; the end lane the 2.75rem magnifier and
+ * the login link, ~7rem together. Stepping the logo down to 7.5rem and both
+ * lanes to what is left buys the ~40px the row is short, and the design's
+ * labels fit on one line from 64rem up. Above 70rem nothing here applies and
+ * the mockup's own metrics are back.
+ *
+ * The mega panel is Clara's either way: at exactly 64rem its mid-width shape
+ * still applies (that rule's upper bound is inclusive), so the panel is two
+ * tracks for that one pixel and three from 64.0625rem up. Both shapes are
+ * Clara's own and both fit; nothing here overrides them.
+ */
+@media (min-width: 64rem) and (max-width: 69.9375rem) {
+  .plone-layout {
+    --derico-header-lane-start: 8rem;
+    --derico-header-lane-end: 8.5rem;
+  }
+  #portal-logo img { inline-size: 7.5rem; }
 }
 
 /* ── motion ──────────────────────────────────────────────────────────────
