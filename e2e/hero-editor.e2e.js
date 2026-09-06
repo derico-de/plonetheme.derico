@@ -152,6 +152,78 @@ function blockResources(page) {
   );
 }
 
+const near = (a, b, slack = 2) =>
+  typeof a === 'number' && typeof b === 'number' && Math.abs(a - b) <= slack;
+
+/**
+ * Where the hero's full-bleed box starts and ends on screen, and what it is
+ * breaking out OF.
+ *
+ * Rendered pixels on purpose — see the caller. `column` is the width the
+ * blocks that are not full-bleed keep, read from the surface itself
+ * (`--layout-container-width`, the rung blocks_view.css derives from the
+ * theme's own content column) rather than restated as a number here.
+ */
+function heroBleed(page) {
+  return page.evaluate(() => {
+    const hero = document.querySelector('.derico-hero');
+    if (!hero) return null;
+    const surface =
+      document.querySelector('[data-slate-editor]') ||
+      document.querySelector('.aurora-blocks-view');
+    const rect = hero.getBoundingClientRect();
+    /* Both lengths are read by LAYING THEM OUT, not by parsing the custom
+     * property: the rail is declared in rem and `--layout-container-width`
+     * in percent, and getComputedStyle hands back either token unresolved.
+     * The column probe goes in flow (a positioned one would resolve its
+     * percentage against the initial containing block, not the column). */
+    const measure = (parent, css) => {
+      const probe = document.createElement('div');
+      probe.style.cssText = `position:relative;visibility:hidden;height:0;${css}`;
+      parent.appendChild(probe);
+      const width = Math.round(probe.getBoundingClientRect().width);
+      probe.remove();
+      return width;
+    };
+    /* Where the hero is actually PAINTED, which its own rect cannot say: the
+     * canvas editable clips to its content column, and the rule that lifts
+     * that clip for a breakout is one unlayered declaration a host theme's
+     * Bootstrap can outrank with an `!important` utility of the same
+     * Tailwind name. When it loses, the hero keeps a full-bleed rect and is
+     * simply not on screen past the column — invisible to every width
+     * measurement, and the only thing an author would actually notice. */
+    let clip = null;
+    for (
+      let n = hero.parentElement;
+      n && n !== document.documentElement;
+      n = n.parentElement
+    ) {
+      const cs = getComputedStyle(n);
+      if (cs.overflowX === 'visible' && cs.overflowY === 'visible') continue;
+      const r = n.getBoundingClientRect();
+      if (!clip || r.width < clip.right - clip.left) {
+        clip = { left: Math.round(r.left), right: Math.round(r.right) };
+      }
+    }
+    return {
+      left: Math.round(rect.left),
+      right: Math.round(rect.right),
+      paintedLeft: clip
+        ? Math.max(Math.round(rect.left), clip.left)
+        : Math.round(rect.left),
+      paintedRight: clip
+        ? Math.min(Math.round(rect.right), clip.right)
+        : Math.round(rect.right),
+      column: measure(surface, 'width:var(--layout-container-width)'),
+      viewport: window.innerWidth,
+      rail: measure(
+        document.body,
+        'width:var(--aurora-full-bleed-offset, 0px)',
+      ),
+    };
+  });
+}
+
 /** The hero's own box, and whether anything inside it overflows. */
 function heroGeometry(page) {
   return page.evaluate(() => {
@@ -397,6 +469,68 @@ function heroGeometry(page) {
       'the reloaded canvas shows the saved copy',
     );
     check(reloaded && reloaded.images > 0, 'the reloaded canvas previews the picked image');
+
+    /* -- and it is FULL-BLEED there, not just on the page -------------- *
+     *
+     * `defaultBlockWidth: 'full'` only reaches the canvas as pixels through
+     * BliccaFullWidthClassPlugin, which stamps `has--block-width--full` on
+     * the block, and the breakout rule keyed off it (auroraeditor's
+     * wrapper/src/styles/index.css). Storing `blockWidth: "full"` — checked
+     * above — proves the data, not the width the author is looking at while
+     * they decide; a hero that stopped at the content column in the canvas
+     * would pass every other check in this file.
+     *
+     * Measured against the SAME page published, in the same window and
+     * logged in, so the toolbar rail both surfaces subtract is in the
+     * picture on both. Rendered pixels, not offsetWidth: the canvas is
+     * `zoom`ed to fit (canvas-fit.ts) and the bleed is divided by that scale
+     * precisely so it comes out at the window either way. */
+    const canvasHero = await heroBleed(page);
+    const publishedPage = await admin.newPage();
+    await publishedPage.goto(`${BASE}${fixture.emptyPage}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await publishedPage.waitForSelector('.derico-hero');
+    const publishedHero = await heroBleed(publishedPage);
+    await publishedPage.close();
+
+    check(
+      canvasHero && publishedHero,
+      'the hero is measurable on both surfaces',
+    );
+    if (canvasHero && publishedHero) {
+      check(
+        near(canvasHero.left, publishedHero.left) &&
+          near(canvasHero.right, publishedHero.right),
+        'the canvas hero spans the same box as the published one ' +
+          `(${canvasHero.left}-${canvasHero.right} vs ` +
+          `${publishedHero.left}-${publishedHero.right})`,
+      );
+      check(
+        near(canvasHero.right, canvasHero.viewport) &&
+          canvasHero.left <= canvasHero.rail + 1,
+        'the canvas hero bleeds from the toolbar rail to the window edge ' +
+          `(${canvasHero.left}-${canvasHero.right} in a ` +
+          `${canvasHero.viewport}px window with a ${canvasHero.rail}px rail)`,
+      );
+      /* The claim the breakout exists for: it is WIDER than the content
+       * column the rest of the page keeps, by more than a rounding. */
+      check(
+        canvasHero.right - canvasHero.left > canvasHero.column + 8,
+        'the canvas hero is wider than the content column ' +
+          `(${canvasHero.right - canvasHero.left}px vs ${canvasHero.column}px)`,
+      );
+      /* And is PAINTED that wide. Everything above is satisfied by a hero
+       * that is laid out full-bleed and then clipped to the column by the
+       * canvas editable — the state this file's checks used to pass in. */
+      check(
+        near(canvasHero.paintedLeft, canvasHero.left) &&
+          near(canvasHero.paintedRight, canvasHero.right),
+        'nothing clips the canvas hero back to the column ' +
+          `(painted ${canvasHero.paintedLeft}-${canvasHero.paintedRight} of ` +
+          `${canvasHero.left}-${canvasHero.right})`,
+      );
+    }
 
     /* ------------------------------------------------------------------ *
      * 4. Nothing clips at 320 or 375 in the canvas (ticket 15)

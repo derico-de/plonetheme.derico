@@ -2,6 +2,30 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The hero's full bleed is now checked in the canvas, not only on the
+  page.** `hero-editor.e2e.js` proved `blockWidth: "full"` reached the
+  saved node; the width an author is looking at while they decide came
+  from `BliccaFullWidthClassPlugin` and was measured nowhere. The test now
+  reads the hero's rendered box on both surfaces in the same window and
+  logged in — so the toolbar rail both subtract is in the picture on both —
+  and asserts they span the same pixels, that the canvas hero reaches from
+  the rail to the window edge, and that it is wider than the content column
+  the rest of the page keeps. Rendered pixels, not `offsetWidth`: the canvas
+  is `zoom`ed to fit and the bleed is divided by that scale precisely so it
+  comes out at the window either way.
+
+  It found one: the canvas hero was laid out full-bleed and PAINTED clipped
+  to the content column, because Clara compiles Bootstrap's `!important`
+  `.overflow-x-hidden` into a layer and the editor's unlayered escape hatch
+  loses to it. Fixed in `plone.blicca.auroraeditor`'s `blocks_view.css`; the
+  test now also asserts that nothing clips the breakout, which is the only
+  part of it an author could actually see going wrong.
+
+  The file's two long-standing mobile failures (`@375`/`@320 the canvas page
+  has no horizontal scroll`, both reporting 806px of canvas) are fixed by the
+  same investigation: `canvas-fit.ts` scaled the theme's 1216px column into a
+  phone and hit its zoom floor. See `plone.blicca.auroraeditor` news 71.
+
 - **The German search panel counts in German.** pat-livesearch builds its
   summary line as `_t("found") + " " + total + " " + _t("results")`, and
   plone.app.locales translates both halves as „gefunden" — so the panel read
