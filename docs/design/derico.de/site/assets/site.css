@@ -61,12 +61,25 @@
   --hero-wash-mobile: radial-gradient(ellipse 35% 81.9% at -9% 100%,
     oklch(0.18 0.04 215 / 0) 0%,
     oklch(0.18 0.04 215 / 0) 55%,
-    oklch(0.18 0.04 215 / 0.78) 65%,
-    oklch(0.18 0.04 215 / 0.78) 100%);
-  --hero-wash-wide-color: oklch(0.18 0.04 215 / 0.72);
+    oklch(0.18 0.04 215 / 0.75) 65%,
+    oklch(0.18 0.04 215 / 0.75) 100%);
+  /* The shell's gutter, and the inset it leaves before the copy's first pixel.
+     The scrim's left edge is stated in the inset below, so the darkening lands
+     where the text lands at every width. */
+  --shell-gutter: clamp(2rem, 6vw, 6rem);
+  --shell-inset: calc((100% - min(100% - var(--shell-gutter), var(--site-max))) / 2);
   /* 18/21 — the copy scrim; the wash is composition and no longer carries the
      legibility guarantee. Identical to the block's own sheet. */
-  --hero-copy-scrim: oklch(0.18 0.04 215 / 0.926);
+  /* The hero's one darkening value, set where its job ends rather than well
+     past it. 0.7379 is the binding minimum over a white photograph (the worst
+     case for a dark scrim), set by the copper kicker at 4.5:1; 0.75 clears it
+     by 0.012. At wide it covers everything from the copy's inset to the right
+     edge and the wash is off, so there is one backdrop and no seam. */
+  --hero-copy-scrim: oklch(0.18 0.04 215 / 0.75);
+  /* The legend's ground. Translucent, so its contrast depends on the upload:
+     0.6 is derived from this photograph — the brightest backdrop behind the
+     is-now cyan is #444d47, where the cyan clears 4.5:1 from alpha 0.5702. */
+  --hero-legend-ground: oklch(0.18 0.035 215 / 0.6);
   --hero-ink: oklch(0.99 0.004 215);
   --hero-ink-soft: oklch(0.93 0.018 215);
   --hero-copper: oklch(0.82 0.13 65);
@@ -192,7 +205,7 @@ a:hover { color: var(--copper-text); }
 .skip-link:focus { translate: 0; }
 
 .shell {
-  width: min(100% - clamp(2rem, 6vw, 6rem), var(--site-max));
+  width: min(100% - var(--shell-gutter), var(--site-max));
   margin-inline: auto;
 }
 
@@ -614,8 +627,20 @@ a:hover { color: var(--copper-text); }
    its own halo instead (ticket 20). */
 .home-hero .ring-legend {
   padding: var(--space-m);
-  border-radius: 1rem;
-  background: var(--hero-ground);
+  /* Square: with the ground line under it and the ground fading out to the
+     right, this is a band the picture runs into, not a card. */
+  border-radius: 0;
+  /* The ground holds under the labels, then leaves. 18rem is absolute because
+     the labels are: same strings, fixed size, so the ink always ends 257px
+     from the card's left edge — 43% of the card at 1440 but 66% at 900, which
+     is why a percentage stop would cut into the copy where it is tightest. */
+  /* Narrower than the disc above it: the longest label ends 256px in, so the
+     right of the figure's 34rem was empty card. 30rem leaves 192px to fade
+     across. */
+  width: min(100%, 30rem);
+  background: linear-gradient(90deg,
+    var(--hero-legend-ground) 0 18rem,
+    transparent 100%);
 }
 .home-hero .ring-legend > div { border-top-color: var(--hero-rule); }
 .home-hero .ring-legend dt,
@@ -1274,21 +1299,29 @@ a:hover { color: var(--copper-text); }
 }
 
 @media (min-width: 56rem) {
-  .hero-wash {
-    background: var(--hero-wash-wide-color);
-    /* 21 §3 — cut away from the copy. Two columns, the copy's right edge sits
-       at 47.94-48.85% of the hero across 896-1600, so 50% clears it. */
+  /* Off: two columns the hero carries one darkening layer at one value, so the
+     backdrop behind the copy is the backdrop behind the rings and the legend.
+     A second wash at a different alpha met the scrim mid-hero and left a
+     vertical seam through the photograph that no feather could hide. */
+  .hero-wash { display: none; }
+  /* The scrim starts at the copy's own inset, not at the hero's edge: that
+     gutter strip is the reveal, photograph at full strength top to bottom. The
+     feather is a fraction of the inset because the inset is (27px at 900,
+     192px at 1600). Horizontally the plateau runs to the right edge; the
+     second layer is the ground line, the only place it ends. Below it the
+     forest floor carries no overlay at all. 188deg drops the line from 83% of
+     the hero under the copy to 98% at the far edge, and the 78% plateau is a
+     floor the action row sets: its bottom is at 78.4% across 896-1920 and its
+     white `quiet-link` has no backing of its own. */
+  .home-hero::before {
     mask-image:
       linear-gradient(90deg,
-        transparent 0 50%,
-        black calc(50% + 5rem)),
-      radial-gradient(ellipse 49% 58.5% at left bottom,
-        transparent 0 55%,
-        black 65% 100%);
+        transparent 0 calc(var(--shell-inset) * 0.45),
+        black var(--shell-inset)),
+      linear-gradient(188deg,
+        black 0 78%,
+        transparent 86%);
     mask-composite: intersect;
-  }
-  .home-hero::before {
-    mask-image: linear-gradient(90deg, black 0 50%, transparent calc(50% + 5rem));
   }
   .home-hero__grid { grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr); }
   .page-hero__grid { grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.75fr); justify-content: space-between; align-items: end; }

@@ -305,14 +305,81 @@ def test_the_halo_is_painted_in_the_ground_and_nothing_else():
     )
 
 
+#: How far the legend's longest label reaches from the card's left edge. The
+#: labels are fixed-size strings (`--derico-text-label` is not fluid), so this
+#: is a LENGTH and not a share: measured 257px for "wächst mit den
+#: Anforderungen" at 900, 1024, 1440 and 1920 alike, while the same ink is 66%
+#: of the card at 900 and 43% at 1440. That gap is the whole argument for an
+#: absolute stop, and it is why this is stated in rem.
+LEGEND_INK_REACH_REM = 16.0
+
+
 @needs_block_sheets
-def test_the_legend_sits_on_its_own_opaque_ground():
-    """Ticket 18 §2 — forced, not chosen: no translucent treatment reaches the
-    is-now cyan, and the card is what let the palette stay unchanged."""
+def test_the_legend_holds_its_ground_under_every_label():
+    """The ground leaves at the right, which is a composition change; what the
+    contrast guarantee needs is that it is still THERE, at full strength,
+    everywhere the labels are. So this asserts the plateau rather than a flat
+    fill — the first stop is the legend's ground token, held past the longest
+    label's reach, and the card ends at nothing rather than at an edge.
+    """
     grounds = _values_for(f"{ROOT} .ring-legend", "background")
-    assert grounds == ["var(--derico-hero-ground)"], (
-        "the legend needs an opaque card under the whole <dl>; it declares "
-        f"{grounds or 'nothing'}"
+    assert len(grounds) == 1, f"the legend states {len(grounds)} backgrounds"
+    ground = re.sub(r"\s+", " ", grounds[0])
+    assert ground.startswith("linear-gradient(90deg,"), (
+        f"the legend's ground must fade across the card, not down it: {ground!r}"
+    )
+    plateau = re.search(
+        r"var\(--derico-hero-legend-ground\)\s+0\s+([\d.]+)rem", ground
+    )
+    assert plateau, (
+        "the first stop must be the legend ground itself — the value the "
+        f"contrast guarantee is computed for — held for a stated length: {ground!r}"
+    )
+    assert float(plateau.group(1)) >= LEGEND_INK_REACH_REM, (
+        f"the ground leaves at {plateau.group(1)}rem, inside the "
+        f"{LEGEND_INK_REACH_REM}rem the labels reach — the is-now cyan would "
+        "be back on the bare photograph, which is the one place it cannot go"
+    )
+    assert ground.rstrip(")").endswith("transparent 100%"), (
+        f"the ground must reach nothing at the card's right edge: {ground!r}"
+    )
+
+
+@needs_block_sheets
+def test_the_legend_is_narrower_than_its_plateau_can_fade_across():
+    """A cap, and the one relation that makes the fade visible at all.
+
+    The legend inherited the rings figure's 34rem and spent the right half of
+    it on empty card. Capping it is free — but cap it AT the plateau and the
+    gradient has nowhere to run, so the card ends on a hard edge again and the
+    radius removed above comes back as a straight one. The width must exceed
+    the plateau, and this pins that relation rather than either number.
+    """
+    widths = _values_for(f"{ROOT} .ring-legend", "width")
+    assert len(widths) == 1, f"the legend states {len(widths)} widths"
+    cap = re.search(r"min\(\s*100%\s*,\s*([\d.]+)rem\s*\)", widths[0])
+    assert cap, (
+        "the legend's width must be a cap over 100%, so the narrow two-column "
+        f"range where the column is already smaller is untouched: {widths[0]!r}"
+    )
+    ground = re.sub(r"\s+", " ", _values_for(f"{ROOT} .ring-legend", "background")[0])
+    plateau = float(
+        re.search(r"var\(--derico-hero-legend-ground\)\s+0\s+([\d.]+)rem", ground).group(1)
+    )
+    assert float(cap.group(1)) > plateau, (
+        f"the card is capped at {cap.group(1)}rem but its ground is opaque to "
+        f"{plateau}rem — there is nothing left to fade across"
+    )
+
+
+@needs_block_sheets
+def test_the_legend_has_no_rounded_corner():
+    """A band the photograph runs into, not a card floating on it. The radius
+    and the fade are the same decision seen from two ends; keeping one without
+    the other leaves a rounded corner on a shape with no other edge."""
+    radii = _values_for(f"{ROOT} .ring-legend", "border-radius")
+    assert radii == ["0"], (
+        f"the legend must be square; it declares {radii or 'nothing'}"
     )
 
 
@@ -347,55 +414,158 @@ def test_the_scrim_cannot_hang_outside_the_hero():
 
 
 @needs_block_sheets
-def test_the_scrim_and_the_wash_cut_share_one_boundary():
-    """Why "the scrim is the only layer over the copy" needs no tuning.
+def test_the_wide_hero_darkens_with_one_layer_that_reaches_its_right_edge():
+    """One backdrop, edge to edge, and why the seam was structural.
 
-    The wash is cut away below one stop and the scrim is painted above the same
-    stop, from opposite sides, at both breakpoints. Two independently tuned
-    numbers could drift apart and leave a band where both layers land —
-    compositing 0.72 under 0.926 to 0.98, the solid copy panel ticket 18
-    rejected. One number cannot.
+    Two translucent layers at different alphas butted together at 50% cannot be
+    feathered into each other: the feather crossfades between two values that
+    were never equal, so the join stays visible as a vertical edge through the
+    photograph. The fix is not a softer boundary, it is one layer — so this
+    asserts the wash is switched OFF at wide, and that nothing ends the scrim's
+    plateau at the old column boundary. Vertically it does end, at the ground
+    line below; that is the next test.
     """
-    scrim_masks = _values_for(f"{ROOT}::before", "mask-image")
-    wash_masks = _values_for(f"{ROOT} .hero-wash", "mask-image")
-    assert len(scrim_masks) == 2, (
-        f"the scrim must turn through 90 degrees at the breakpoint; found "
-        f"{len(scrim_masks)} mask(s)"
+    assert _values_for(f"{ROOT} .hero-wash", "display") == ["none"], (
+        "the wash must be off at wide; two darkening layers is what puts a "
+        "seam down the middle of the photograph"
     )
-    for masks, side, expected in (
-        (scrim_masks, "scrim", "black 0 50%"),
-        (wash_masks, "wash", "transparent 0 50%"),
-    ):
-        for mask in masks:
-            assert expected in mask, (
-                f"the {side} does not use the shared 50% boundary: {mask!r}"
-            )
-    for masks, side in ((scrim_masks, "scrim"), (wash_masks, "wash")):
-        assert any("90deg" in mask for mask in masks), f"{side}: no wide axis"
-        assert any("180deg" in mask for mask in masks), f"{side}: no mobile axis"
+    wide = [
+        mask
+        for mask in _values_for(f"{ROOT}::before", "mask-image")
+        if "90deg" in mask
+    ]
+    assert len(wide) == 1, f"expected one wide scrim mask, found {len(wide)}"
+    assert "50%" not in wide[0], (
+        "the wide plateau must run to the hero's right edge, not stop at the "
+        f"old column boundary: {wide[0]!r}"
+    )
+
+
+#: The action row's bottom, as a share of the hero's height. Measured on the
+#: design source across 896-1920, where it moves by a tenth of a point. The
+#: plateau has to reach at least this far down: the row's `quiet-link` is white
+#: text with no backing of its own, and it is one of the inks the copy scrim's
+#: guarantee is computed for. A floor, not a mirror of what the sheet declares.
+ACTION_ROW_BOTTOM = 78.4
 
 
 @needs_block_sheets
-def test_the_wash_is_cut_away_from_the_copy_at_both_breakpoints():
-    """Ticket 21 §3 — the scrim must be the ONLY layer over the copy.
+def test_the_ground_line_ends_the_plateau_below_the_action_row():
+    """The hero stands ON the forest floor: below the ground line the
+    photograph carries no overlay at all.
 
-    Stacking 0.72 under 0.926 composites to 0.98, which is the solid copy panel
-    this design avoids; the guarantee was computed for the scrim alone. Both
-    cuts are proportional because the copy's box is: measured on the design
-    source, the copy's right edge sits at 47.94-48.85% of the hero across
-    896-1600, and single-column it occupies the top 4.1% to at most 45.5%.
-    A fixed pixel stop would land differently for a logged-in author than for
-    a visitor, the hero being viewport-minus-toolbar (ticket 15's lesson).
+    Two things have to hold at once and they pull in opposite directions. The
+    cut has to be a SECOND mask layer composited with `intersect`, or it stops
+    being a cut and becomes a replacement that hands the whole copy column back
+    to the photograph. And its plateau has to clear the action row, or the last
+    line of the copy loses the backing the contrast guarantee assumes.
+    """
+    wide = [
+        mask
+        for mask in _values_for(f"{ROOT}::before", "mask-image")
+        if "90deg" in mask
+    ]
+    assert len(wide) == 1, f"expected one wide scrim mask, found {len(wide)}"
+    assert _values_for(f"{ROOT}::before", "mask-composite") == ["intersect"], (
+        "the ground line must be intersected with the column mask; any other "
+        "composite makes it a replacement, not a cut"
+    )
+
+    angles = re.findall(r"linear-gradient\(\s*(\d+)deg", wide[0])
+    assert len(angles) == 2, (
+        f"the wide scrim is the column mask and the ground line: {wide[0]!r}"
+    )
+    ground = wide[0][wide[0].index("linear-gradient(" + angles[1] + "deg") :]
+    assert 180 < int(angles[1]) < 200, (
+        f"the ground line runs across the hero, dropping to the right; "
+        f"{angles[1]}deg does not"
+    )
+
+    plateau = re.search(r"black\s+0\s+([\d.]+)%", ground)
+    assert plateau, f"the ground line states no plateau: {ground!r}"
+    assert float(plateau.group(1)) >= ACTION_ROW_BOTTOM - 0.5, (
+        f"the plateau ends at {plateau.group(1)}% of the hero, above the "
+        f"action row's {ACTION_ROW_BOTTOM}% — the quiet-link beside the button "
+        "would lose the only backing it has"
+    )
+
+
+@needs_block_sheets
+def test_the_wash_is_cut_away_from_the_copy_where_it_is_still_painted():
+    """Ticket 21 §3, now single column only — the scrim is the ONLY layer.
+
+    Stacking two translucent layers composites darker than either, which is the
+    solid copy panel this design avoids and is not the alpha the guarantee was
+    computed for. Two columns there is no second layer to stack (see above);
+    single column the wash is the composition below the copy band, and it is
+    cut to fully transparent across the band rather than merely softened over
+    it. The stop is proportional because the copy's box is: measured on the
+    design source it occupies the top 4.1% to at most 45.5% of the hero.
     """
     masks = _values_for(f"{ROOT} .hero-wash", "mask-image")
-    assert len(masks) >= 2, (
-        "the wash must state a mask at BOTH breakpoints — one is the mobile "
-        f"copy band, one is the wide copy column; found {len(masks)}"
+    assert len(masks) == 1, (
+        "the wash is painted at one breakpoint and so states one mask; found "
+        f"{len(masks)}"
     )
-    for mask in masks:
-        assert "transparent 0 50%" in mask, (
-            "the wash must be cut to fully transparent across the copy, not "
-            f"merely softened over it: {mask!r}"
-        )
-    assert any("90deg" in mask for mask in masks), "no cut across the copy column"
-    assert any("180deg" in mask for mask in masks), "no cut across the copy band"
+    assert "180deg" in masks[0], f"the cut is across the copy BAND: {masks[0]!r}"
+    assert "transparent 0 50%" in masks[0], (
+        "the wash must be cut to fully transparent across the copy, not "
+        f"merely softened over it: {masks[0]!r}"
+    )
+    assert "black calc(50% + 5rem)" in masks[0], (
+        f"the wash does not feather back on off the same stop: {masks[0]!r}"
+    )
+
+
+@needs_block_sheets
+def test_the_scrim_is_the_heros_only_translucent_backdrop():
+    """The value is one value, and nothing else in the block paints over the
+    photograph at a second alpha. What made the seam was not the boundary, it
+    was that there were two numbers; a test that only guards the boundary would
+    stay green the moment a third layer is added somewhere else.
+    """
+    painted = {
+        (selector, properties.get("background"))
+        for selector, properties in _style_rules()
+        if "hero-copy-scrim" in (properties.get("background") or "")
+        or "hero-wash" in (properties.get("background") or "")
+    }
+    selectors = sorted(selector for selector, _value in painted)
+    assert selectors == [f"{ROOT} .hero-wash", f"{ROOT}::before"], (
+        "exactly two rules may paint a translucent backdrop — the scrim, and "
+        f"the single-column wash it replaces at wide; found {selectors}"
+    )
+
+
+@needs_block_sheets
+def test_the_scrim_starts_where_the_copy_starts_and_not_at_the_heros_edge():
+    """The reveal, and the one number it must not be written as.
+
+    21 painted the plateau from the hero's left edge, so it covered the shell's
+    gutter as well and the photograph was invisible on the left whatever the
+    author uploaded. The strip left of the copy is the reveal now — but only
+    while the scrim's first opaque stop is the SAME inset the grid is laid out
+    with. Write that stop as a percentage tuned at one width and it agrees with
+    the text at that width only: the inset is 27px at a 900 hero and 192px at
+    1600, which is 3% against 12%.
+
+    So both readings of `--derico-hero-inset` are asserted here: that the mask
+    states it, and that the grid's own width is the formula it is derived from.
+    """
+    wide = [
+        mask
+        for mask in _values_for(f"{ROOT}::before", "mask-image")
+        if "90deg" in mask
+    ]
+    assert len(wide) == 1, f"expected one wide scrim mask, found {len(wide)}"
+    assert "black var(--derico-hero-inset)" in wide[0], (
+        "the scrim's plateau must begin at the copy's own inset, not at a "
+        f"percentage: {wide[0]!r}"
+    )
+    widths = _values_for(f"{ROOT} .home-hero__grid", "width")
+    assert widths == ["min(100% - var(--derico-hero-gutter), var(--plone-measure))"], (
+        "the shell's width must read the same gutter token the inset is "
+        f"derived from, or the two can drift; it declares {widths or 'nothing'}"
+    )
+
+

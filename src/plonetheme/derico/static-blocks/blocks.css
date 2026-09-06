@@ -36,21 +36,51 @@
   --derico-hero-wash-mobile: radial-gradient(ellipse 35% 81.9% at -9% 100%,
     oklch(0.18 0.04 215 / 0) 0%,
     oklch(0.18 0.04 215 / 0) 55%,
-    oklch(0.18 0.04 215 / 0.78) 65%,
-    oklch(0.18 0.04 215 / 0.78) 100%);
-  --derico-hero-wash-wide-color: oklch(0.18 0.04 215 / 0.72);
-  /* 18/21 — the copy scrim. THIS is what makes the copy legible over any
-   * photograph; the wash above is composition and is deliberately no longer
-   * load-bearing (see the mask cuts below). Plateau alpha is ticket 18's
-   * 0.926. Measured here: over a white photograph — the worst case, since a
-   * dark scrim composites lightest there — that gives the copper kicker 8.68
-   * against the 4.5 it needs. The binding minimum is 0.7379, so 18's stated
-   * derivation ("set by the copper kicker at 4.5:1") does not reproduce; the
-   * number it does reproduce is the IS-NOW CYAN at 4.5:1 (0.8965), and the
-   * cyan was moved onto the opaque legend card by the same ticket. The margin
-   * is kept rather than spent: lowering it is a look call against pixels, not
-   * an arithmetic one. The test asserts the guarantee, not the literal. */
-  --derico-hero-copy-scrim: oklch(0.18 0.04 215 / 0.926);
+    oklch(0.18 0.04 215 / 0.75) 65%,
+    oklch(0.18 0.04 215 / 0.75) 100%);
+  /* The shell's gutter and the inset it leaves, as tokens rather than as a
+   * formula written twice. `--derico-hero-inset` is the distance from the
+   * hero's edge to the copy's first pixel, and the scrim's left edge is stated
+   * IN it below: the darkening then lands exactly where the text lands, at
+   * every width, instead of at a percentage that only agrees with the text at
+   * the width it was tuned on. The `100%` inside resolves against the hero
+   * both times — the grid's containing block and the mask box are the same
+   * box, the hero having no inline padding. */
+  --derico-hero-gutter: clamp(2rem, 6vw, 6rem);
+  --derico-hero-inset: calc((100% - min(100% - var(--derico-hero-gutter),
+    var(--plone-measure))) / 2);
+  /* The scrim, and the hero's ONE darkening value. It is what makes the copy
+   * legible over any photograph, and it is now set where that job ends rather
+   * than well past it.
+   *
+   * 0.7379 is the binding minimum, over a white photograph — the worst case,
+   * since a dark scrim composites lightest there — and it is set by the copper
+   * kicker at 4.5:1. (18 claimed that derivation for 0.926; it does not
+   * reproduce. 0.8965 is what the is-now CYAN needs, and the same ticket moved
+   * the cyan onto the opaque legend card, so nothing in the copy asks for it.)
+   * 0.75 clears the minimum by 0.012 — enough that rounding and a re-measured
+   * ink do not silently cross it, little enough that the photograph is still
+   * a photograph behind the words. The test derives the floor and asserts the
+   * guarantee, never this literal, so raising it stays free.
+   *
+   * One value, not two: at wide this covers everything from the copy's inset
+   * to the hero's right edge, and the second layer is switched off there. Two
+   * translucent layers meeting mid-hero is what produced the vertical seam
+   * through the trees at 50%. */
+  --derico-hero-copy-scrim: oklch(0.18 0.04 215 / 0.75);
+  /* The legend's ground, and the one place this design trades a guarantee for
+   * a look. Ticket 18 made the card OPAQUE because the is-now cyan cannot be
+   * rescued translucently over an arbitrary photograph — it needs 0.983 over a
+   * white one. Translucent, the card's contrast therefore depends on the
+   * upload, and 0.6 is derived from THIS one: measured under the legend, the
+   * brightest backdrop behind the cyan title is #444d47, and the cyan clears
+   * 4.5:1 there from alpha 0.5702 up. 0.6 takes that with 0.03 in hand.
+   *
+   * Stated plainly because it is a real cost: a new hero photograph has to be
+   * re-measured. The structural alternative, if that ever bites, is the one
+   * the ring markers already use — an opaque chip under the is-now title. It
+   * is the ONLY binding ink here; copper and the subtitles pass at alpha 0. */
+  --derico-hero-legend-ground: oklch(0.18 0.035 215 / 0.6);
   --derico-hero-ink: oklch(0.99 0.004 215);
   --derico-hero-ink-soft: oklch(0.93 0.018 215);
   --derico-hero-copper: oklch(0.82 0.13 65);
@@ -105,24 +135,28 @@
   height: 100%;
   object-fit: cover;
   object-position: 50% 50%;
-}.derico-hero .hero-wash {
+}/* Single column only. Two columns the scrim covers the hero edge to edge and
+ * this layer is switched off entirely (see the 56rem block); here it is the
+ * composition below the copy band, carrying the same 0.75 the scrim does so
+ * the hero reads as ONE darkness with a hole in it rather than as two washes.
+ *
+ * 21 §3 still holds: it is cut away from the copy so the scrim is the only
+ * layer over the text. Two translucent layers stacked composite darker than
+ * either, which is the solid copy panel this design avoids. Measured on the
+ * design source: single column the copy occupies the top 4.1% to at most 45.5%
+ * of the hero (widest at 320), so the cut clears it with 4.5 points to spare.
+ * The stop is proportional because the copy's box is; the feather stays in rem
+ * (06 §9) so the softness does not stretch with the viewport. */.derico-hero .hero-wash {
   z-index: -1;
   background: var(--derico-hero-wash-mobile);
-  /* 21 §3 — the wash is cut away from the copy so the scrim is the ONLY layer
-   * over it. Stacking 0.72 under 0.926 composites to 0.98, which is the solid
-   * copy panel this design avoids. Measured on the design source: single
-   * column, the copy occupies the top 4.1% to at most 45.5% of the hero
-   * (widest at 320); the cut clears it everywhere with 4.5 points to spare.
-   * The stop is proportional because the copy's box is — the feather stays in
-   * rem, per 06 §9, so the softness does not stretch with the viewport. */
   mask-image: linear-gradient(180deg,
     transparent 0 50%,
     black calc(50% + 5rem));
-}/* ── the contrast guarantee (18/21) ──────────────────────────────────────── *//* The scrim rides the HERO, `inset: 0`, and is shaped by the same 50% stop
- * that cuts the wash away — one boundary, used twice from opposite sides. That
- * is what makes 21 §3's "the scrim is the only layer over the copy" true by
- * construction rather than by two tunings that have to agree: soften one and
- * the guard below sees the pair disagree.
+}/* ── the contrast guarantee (18/21) ──────────────────────────────────────── *//* The scrim rides the HERO, `inset: 0`. At wide it is the hero's only
+ * darkening layer, so "the scrim is the only layer over the copy" is true
+ * because there is nothing else to stack with; single column the wash below is
+ * cut away from the copy band at the same 50% stop this mask paints to, one
+ * boundary used twice from opposite sides.
  *
  * It is NOT anchored to the copy column, which was the first attempt: a pseudo
  * inset -5.5rem past the copy box hangs 72px outside the hero at 320 (measured
@@ -133,10 +167,9 @@
  * which is the defect it exists for. Anchored to the hero there is nothing to
  * hang over.
  *
- * The cost, stated: the plateau is a band rather than a box, so it darkens the
- * copy column above and below the text as well. That is the same band the wash
- * darkened before, so the composition keeps its shape — it goes from 0.61
- * effective to 0.926. */.derico-hero::before {
+ * The cost, stated: the plateau is a band rather than a box, so it darkens
+ * above and below the text as well. At wide that is the whole hero minus the
+ * gutter, which is the point — one backdrop, edge to edge. */.derico-hero::before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -153,7 +186,7 @@
  * (76rem, bit-identical to the mockup's `--site-max`). No `.shell` element
  * and no new token. */.derico-hero .home-hero__grid {
   position: relative;
-  width: min(100% - clamp(2rem, 6vw, 6rem), var(--plone-measure));
+  width: min(100% - var(--derico-hero-gutter), var(--plone-measure));
   margin-inline: auto;
   display: grid;
   gap: var(--plone-space-xl);
@@ -308,8 +341,33 @@
  * floating on the photograph, and carries its own halo instead (ticket 20). */.derico-hero .ring-legend {
   margin-block-start: var(--plone-space-s);
   padding: var(--plone-space-m);
-  border-radius: var(--plone-radius-l);
-  background: var(--derico-hero-ground);
+  /* Square. The rounded corner was what made this read as a CARD floating on
+   * the photograph; with the ground line under it and the ground fading out to
+   * the right, it is a band the picture runs into, and a radius on one end of
+   * a thing that dissolves at the other is a contradiction. */
+  border-radius: 0;
+  /* Narrower than the disc above it. The legend inherited the figure's 34rem
+   * and spent the right of it on nothing: the longest label ends 256px in.
+   * 30rem holds the labels with 192px left to fade across, and the ragged
+   * right edge is now the fade rather than a box edge. `min()` so the narrow
+   * two-column range, where the column is already under 30rem, is untouched. */
+  width: min(100%, 30rem);
+  /* The ground holds under the labels, then leaves. The plateau is 18rem and
+   * that is an ABSOLUTE length on purpose: the labels are the same strings at
+   * a fixed size at every width (`--derico-text-label` is not fluid), so the
+   * ink always ends the same distance from the card's left edge — measured,
+   * 256px for the longest German line, which is a share of the card that runs
+   * from 47% at 1440 to 66% at 900. A percentage stop would therefore cut
+   * INTO the copy at exactly the width where the card is tightest, while
+   * 18rem clears the longest line by 32px everywhere.
+   *
+   * The row rules run on past the fade, over the bare photograph. That is
+   * sound rather than lucky: measured on the shipped image they hold 5.33
+   * against the 3:1 a hairline needs, and they are the one legend element
+   * whose ink was never the binding case. */
+  background: linear-gradient(90deg,
+    var(--derico-hero-legend-ground) 0 18rem,
+    transparent 100%);
 }.derico-hero .ring-legend > div {
   display: grid;
   grid-template-columns: 1.5rem minmax(0, 1fr);
@@ -326,37 +384,56 @@
   font-size: var(--derico-text-label);
 }.derico-hero .ring-legend b { color: var(--derico-hero-ring); }.derico-hero .ring-legend .is-now dt,
 .derico-hero .ring-legend .is-now b { color: var(--derico-hero-ring-now); }/* ── the 56rem switch (06 §8) ────────────────────────────────────────────── */@container (min-width: 56rem) {
-  .derico-hero .hero-wash {
-    background: var(--derico-hero-wash-wide-color);
-    /* 06 §9 — fixed pixel stops, measured from the hero's left edge, which
-     * is where the copy column's inset is measured from too; both shift
-     * together with the toolbar. Percentages would stretch the gradient's
-     * softness with the viewport, which is what the fixed stops prevent. */
-    /* 21 §3 — cut away from the copy, replacing 06 §9's 0.85/300px softening:
-     * a softened wash is still a wash, and it stacked with the scrim. Measured
-     * on the design source across 896-1600: two columns, the copy's right edge
-     * sits at 47.94-48.85% of the hero, so a 50% stop clears it at every width
-     * with at least 1.15 points of margin. Proportional and NOT fixed pixels —
-     * the copy column is a fraction of the hero box, and the hero box is
-     * viewport-minus-toolbar, so a pixel stop would land in a different place
-     * for a logged-in author than for a visitor. That is ticket 15's `cqi`
-     * lesson; 06 §9's fixed stops were about the FEATHER, which stays in rem. */
+  /* Off. Two columns the hero carries one darkening layer and one value, so
+   * the backdrop behind the copy is the backdrop behind the rings and the
+   * legend — the same colour all the way to the right edge. What this used to
+   * paint was a SECOND wash at a different alpha, meeting the scrim mid-hero:
+   * two translucent values butted together produce a vertical seam through the
+   * photograph, and no feather hides it because the two sides never match. */
+  .derico-hero .hero-wash { display: none; }
+  /* The hero's one darkening layer, and its one reveal.
+   *
+   * 21 painted this plateau from the hero's left EDGE, which is why the
+   * photograph was invisible on the left however bright the upload: the copy
+   * column is inset from that edge by the shell's gutter, and the scrim was
+   * covering the gutter too. Starting it at `--derico-hero-inset` instead
+   * hands that strip back to the photograph at full strength, top to bottom —
+   * no shape, no ellipse, just the plateau beginning where the text begins.
+   *
+   * The feather is a fraction of the inset rather than a length, because the
+   * inset is: it is 27px at 900 and 192px at 1600, so a 3rem feather that
+   * reads as "just before the text" at the design width would start off the
+   * left edge of the hero at 900 and leave no clear strip at all. At 0.45 the
+   * transition always occupies the outer 55% of whatever gutter there is.
+   *
+   * Horizontally there is no second stop: the plateau runs from the inset to
+   * the hero's right edge, so the rings and the legend sit on the same backdrop
+   * the copy does. That is what removed the seam at 50%.
+   *
+   * The second layer is the GROUND LINE, and it is the only place the plateau
+   * ends vertically. Below it the photograph carries no overlay at all — the
+   * forest floor is the brightest thing in the frame and the composition wants
+   * it whole, so the hero stands ON the ground rather than fading into it.
+   *
+   * 188deg, not 180: the line drops to the right, from 83% of the hero's height
+   * under the copy to 98% at the far edge. That is a geometric angle, so its
+   * slope shifts a little with the hero's aspect; measured at 896-1920 it stays
+   * between 4 and 8 degrees, which reads as the same line.
+   *
+   * The plateau's 78% is a FLOOR the action row sets, not a look: the row's
+   * bottom sits at 78.4% of the hero across that whole range, and its
+   * `quiet-link` is an ink the copy guarantee is stated for — white text with
+   * no backing of its own, legible only while the scrim is under it. Raising
+   * the stop is free; lowering it past the row is what the test catches. */
+  .derico-hero::before {
     mask-image:
       linear-gradient(90deg,
-        transparent 0 50%,
-        black calc(50% + 5rem)),
-      radial-gradient(ellipse 49% 58.5% at left bottom,
-        transparent 0 55%,
-        black 65% 100%);
+        transparent 0 calc(var(--derico-hero-inset) * 0.45),
+        black var(--derico-hero-inset)),
+      linear-gradient(188deg,
+        black 0 78%,
+        transparent 86%);
     mask-composite: intersect;
-  }
-  /* The other half of the shared boundary: at wide the copy is the LEFT
-   * column, so the scrim turns through 90 degrees exactly where the wash's cut
-   * does. The two stops are the same number by construction. */
-  .derico-hero::before {
-    mask-image: linear-gradient(90deg,
-      black 0 50%,
-      transparent calc(50% + 5rem));
   }
   .derico-hero .home-hero__grid {
     grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr);

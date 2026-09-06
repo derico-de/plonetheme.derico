@@ -108,33 +108,104 @@ def _check(pairs, backdrop, label):
 # The legend card (ticket 18 §2)
 # --------------------------------------------------------------------------
 
-#: (token, WCAG minimum, what wears it). 4.5 = normal text, 3.0 = a hairline
-#: read as a graphical object.
+#: (token, WCAG minimum, what wears it, the worst backdrop under it). 4.5 =
+#: normal text, 3.0 = a hairline read as a graphical object.
+#:
+#: The backdrops are MEASURED, and that is the whole difference from the other
+#: three guarantees on this page. Ticket 18 made the legend's card opaque
+#: precisely so its contrast would not depend on the upload; the design has
+#: since traded that for a card the photograph shows through, which means the
+#: sum needs a photograph in it again. These are the brightest pixels found
+#: under each ink on the shipped hero image with the legend's own ground
+#: removed — the photo as the hero's scrim and ground line leave it, sampled
+#: over each run of text rather than over its block box.
+#:
+#: The rule is measured bare (alpha 0) on purpose: the rows run on past the
+#: fade, so part of every hairline is over nothing but the photograph.
 LEGEND_INK = [
-    ("--derico-hero-ring-now", 4.5, "the is-now row's title and numeral"),
-    ("--derico-hero-ring", 4.5, "every other title and numeral"),
-    ("--derico-hero-ink-soft", 4.5, "the subtitles"),
-    ("--derico-hero-rule", 3.0, "the rule between rows"),
+    ("--derico-hero-ring-now", 4.5, "the is-now row's title and numeral", "#4d4f2d", True),
+    ("--derico-hero-ring", 4.5, "every other title and numeral", "#273030", True),
+    ("--derico-hero-ink-soft", 4.5, "the subtitles", "#8c908a", True),
+    ("--derico-hero-rule", 3.0, "the rule between rows", "#2a3633", False),
 ]
 
 
 @needs_block_sheets
-def test_the_legend_card_carries_every_colour_the_legend_wears():
-    """Why the card is opaque, in one assertion.
+def test_the_legend_ground_carries_every_colour_the_legend_wears():
+    """What the translucent card still guarantees, and on what evidence.
 
-    The is-now cyan needs a wash alpha of 0.983 to clear 4.5:1 translucently —
-    so nothing short of a ground reaches it, and once there IS a ground every
-    other colour passes with room. That is the whole reason ticket 18 changed
-    no colours: the card bought the contrast the palette could not.
+    Each ink is checked against its own worst backdrop with the legend's ground
+    composited over it at the alpha the sheet declares. The is-now cyan is the
+    binding case and always was: 18 measured that it needs 0.983 over a WHITE
+    photograph, which is why the card used to be opaque. Over this photograph
+    it needs far less, and that gap is exactly the guarantee that was spent.
     """
     props = _properties()
-    ground, alpha = _backdrop("--derico-hero-ground", props)
-    assert alpha == 1.0, (
-        "the legend card must be OPAQUE — a translucent card puts the "
-        "photograph back under the is-now cyan, which is the one ink no "
-        "translucent treatment can rescue"
+    ground = css_tools.resolve("--derico-hero-legend-ground", props)
+    base, alpha = _split_alpha(ground)
+    hex_base = css_tools.to_hex(base)
+    assert hex_base, f"the legend ground is not a colour: {ground!r}"
+    assert alpha < 1.0, (
+        "an opaque legend ground makes this test vacuous — it would be the "
+        "photograph-independent card of ticket 18, and the measured backdrops "
+        "below would no longer be reachable"
     )
-    _check(LEGEND_INK, ground, "the legend card")
+
+    failures = []
+    for ink_name, minimum, role, backdrop, on_ground in LEGEND_INK:
+        ink = _colour(ink_name, props)
+        under = _over(hex_base, alpha, backdrop) if on_ground else backdrop
+        ratio = css_tools.contrast(ink, under)
+        if ratio < minimum:
+            failures.append(
+                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {under}, "
+                f"needs {minimum}:1"
+            )
+    assert not failures, "the legend ground does not carry its ink:\n  " + "\n  ".join(
+        failures
+    )
+
+
+@needs_block_sheets
+def test_the_legend_ground_would_go_red_if_it_were_made_more_transparent():
+    """Non-vacuity, and the number the design is actually free to move.
+
+    Derives the floor from the measured backdrops rather than restating what
+    the sheet declares, so the ground may be made denser at will and only
+    thinning it past the floor is a regression. One step under must fail, or
+    the assertion above is guarding nothing.
+    """
+    props = _properties()
+    ground = css_tools.resolve("--derico-hero-legend-ground", props)
+    base, alpha = _split_alpha(ground)
+    hex_base = css_tools.to_hex(base)
+
+    floor = 0.0
+    for ink_name, minimum, _role, backdrop, on_ground in LEGEND_INK:
+        if not on_ground:
+            continue
+        ink = _colour(ink_name, props)
+        low, high = 0.0, 1.0
+        for _ in range(60):
+            middle = (low + high) / 2
+            if css_tools.contrast(ink, _over(hex_base, middle, backdrop)) >= minimum:
+                high = middle
+            else:
+                low = middle
+        floor = max(floor, high)
+
+    assert 0.0 < floor < 1.0, "the floor is degenerate, so the guarantee is vacuous"
+    assert alpha >= floor, (
+        f"the legend ground is {alpha}, below the {floor:.4f} its own inks need "
+        "over the photograph behind them"
+    )
+    thinned = floor - 0.01
+    assert any(
+        css_tools.contrast(_colour(ink, props), _over(hex_base, thinned, backdrop))
+        < minimum
+        for ink, minimum, _role, backdrop, on_ground in LEGEND_INK
+        if on_ground
+    ), "thinning past the floor changes nothing, so this test guards nothing"
 
 
 # --------------------------------------------------------------------------
