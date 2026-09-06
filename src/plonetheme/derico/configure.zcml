@@ -8,6 +8,16 @@
 
   <i18n:registerTranslations directory="locales" />
 
+  <!-- …and read them. The directive APPENDS to a domain, and every reader
+       takes the first catalog that has the message, so `locales/de/…/
+       widgets.po` — the correction to pat-livesearch's German summary line —
+       sits behind plone.app.locales' own and is never read until this puts
+       it in front. See i18n.py. -->
+  <subscriber
+      for="zope.processlifetime.IDatabaseOpenedWithRoot"
+      handler=".i18n.prefer_this_packages_catalogs"
+      />
+
   <include file="permissions.zcml" />
   <include package=".browser" />
 

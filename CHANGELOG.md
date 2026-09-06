@@ -2,6 +2,27 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The German search panel counts in German.** pat-livesearch builds its
+  summary line as `_t("found") + " " + total + " " + _t("results")`, and
+  plone.app.locales translates both halves as „gefunden" — so the panel read
+  „gefunden 7 gefunden". `locales/de/LC_MESSAGES/widgets.po` corrects the two
+  msgids to „Gefunden:" and „Treffer": „Gefunden: 7 Treffer", and „Gefunden:
+  1 Treffer", because the pattern has no plural form and „Treffer" is the
+  same word in the singular. The pair is safe to shape as a sentence — those
+  two msgids are livesearch's alone in the whole of mockup.
+
+  Shipping the catalog is only half of it. `<i18n:registerTranslations>`
+  APPENDS to a domain, and both readers — zope.i18n's `translate()` and
+  plone.app.content's `@@plonejsi18n`, which serves the catalog the Mockup
+  patterns translate against — take the FIRST catalog that has the message.
+  Plone's ZCML is read before any add-on's, so a correction to a Plone domain
+  is registered second and read never. `i18n.prefer_this_packages_catalogs`,
+  subscribed to `IDatabaseOpenedWithRoot`, moves this package's catalogs to
+  the front of every domain they join; it runs after every package's ZCML and
+  before the first request warms `@@plonejsi18n`'s cache. A visitor's browser
+  keeps its own copy of the catalog in `localStorage` for 24 hours, so an
+  open tab can still show the old line for a day.
+
 - **Live search drops out of the field again.** `pat-livesearch` is written
   around its own `livesearch.scss` — the `position: absolute` that makes the
   result list a dropdown — and that sheet reaches a page only through
