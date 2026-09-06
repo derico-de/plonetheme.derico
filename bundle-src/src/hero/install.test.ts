@@ -27,6 +27,10 @@ const makeConfig = (): TestConfig => ({ blocks: { blocksConfig: {} } });
 const install = (config: TestConfig) =>
   installDericoHero(config as any) as unknown as TestConfig;
 
+/** Every field the sidebar would render, in the order the fieldsets give. */
+const fieldsetFields = (schema: any): string[] =>
+  schema.fieldsets.flatMap((fieldset: any) => fieldset.fields);
+
 describe('install()', () => {
   test('hands back the very object it was given', () => {
     const config = makeConfig();
@@ -59,7 +63,23 @@ describe('install()', () => {
     // in the schema wins, so these two assertions are one contract.
     expect(entry.defaultBlockWidth).toBe('full');
     expect(entry.blockSchema.properties).not.toHaveProperty('blockWidth');
-    expect(entry.blockSchema.fieldsets[0].fields).not.toContain('blockWidth');
+    expect(fieldsetFields(entry.blockSchema)).not.toContain('blockWidth');
+  });
+
+  test('lays every field out across the three fieldsets, once each', () => {
+    const schema = install(makeConfig()).blocks.blocksConfig[HERO_BLOCK_TYPE].blockSchema;
+    // cmsui renders a field only if a fieldset lists it, and expands only the
+    // fieldset whose id is `default` — a field dropped from the layout, or
+    // named twice, is invisible or duplicated in the sidebar rather than an
+    // error anywhere.
+    expect(schema.fieldsets.map((fieldset: any) => fieldset.id)).toEqual([
+      'default',
+      'targets',
+      'legend',
+    ]);
+    const laidOut = fieldsetFields(schema);
+    expect([...laidOut].sort()).toEqual(Object.keys(schema.properties).sort());
+    expect(new Set(laidOut).size).toBe(laidOut.length);
   });
 
   test('namespaces its widgets rather than redefining shared vocabulary', () => {

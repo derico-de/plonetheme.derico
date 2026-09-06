@@ -576,22 +576,43 @@ var contentPick = (title) => ({
 });
 var HeroSchema = {
 	title: "Derico Hero",
-	fieldsets: [{
-		id: "default",
-		title: "Default",
-		fields: [
-			"kicker",
-			"headline",
-			"lede",
-			"cta_label",
-			"cta_href",
-			"link_label",
-			"link_href",
-			"image_wide",
-			"image_portrait",
-			"legend"
-		]
-	}],
+	/**
+	* Three groups, because one flat list of ten fields buried the ring legend
+	* — eight nested inputs — under everything else in a narrow sidebar.
+	*
+	* cmsui renders one accordion per fieldset and expands only the one whose
+	* id is literally `default` (`BlockSettingsFormRenderer.tsx`), so the words
+	* the author reaches for first stay open and the two heavier groups start
+	* folded. The id is load-bearing: rename it and the form opens closed.
+	*/
+	fieldsets: [
+		{
+			id: "default",
+			title: "Default",
+			fields: [
+				"kicker",
+				"headline",
+				"lede",
+				"cta_label",
+				"link_label"
+			]
+		},
+		{
+			id: "targets",
+			title: "Targets and images",
+			fields: [
+				"cta_href",
+				"link_href",
+				"image_wide",
+				"image_portrait"
+			]
+		},
+		{
+			id: "legend",
+			title: "Ring legend",
+			fields: ["legend"]
+		}
+	],
 	required: [],
 	properties: {
 		kicker: { title: "Kicker" },

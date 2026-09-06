@@ -99,6 +99,24 @@ async function slashMenuItems(page) {
   return page.locator('[role="option"], [cmdk-item], [role="menuitem"]').allTextContents();
 }
 
+/**
+ * Open one of the sidebar's fieldsets by its accordion title.
+ *
+ * cmsui gives every fieldset its own accordion and expands only the one whose
+ * id is `default` (schema.ts), and react-aria keeps a collapsed panel's inputs
+ * in the DOM under `hidden` — so a `fill()` on a folded fieldset fails on
+ * actionability rather than on anything the block did. Idempotent: a fieldset
+ * already open is left alone.
+ */
+async function openFieldset(page, title) {
+  const trigger = page.locator(`button:has-text("${title}")`).first();
+  await trigger.waitFor({ timeout: 15000 });
+  if ((await trigger.getAttribute('aria-expanded')) !== 'true') {
+    await trigger.click();
+    await page.waitForTimeout(300);
+  }
+}
+
 /** Type into a sidebar field, by its `name` or its `id`. */
 async function fill(page, selector, value) {
   const field = page.locator(selector).first();
@@ -314,6 +332,8 @@ function heroGeometry(page) {
      * external write (plone-block-sidebar.tsx), or the author faces a wall
      * of empty inputs while the canvas shows the finished draft. */
     await page.waitForSelector('input[name="kicker"]', { timeout: 15000 });
+    /* The legend inputs live in a folded fieldset; they are in the DOM and
+     * carry their value either way, so the seed is read without opening it. */
     const sidebarSeed = await page.evaluate(() => ({
       kicker: document.querySelector('input[name="kicker"]')?.value,
       lastLegendTitle: document.querySelector('input#legend-3-title')?.value,
@@ -391,10 +411,12 @@ function heroGeometry(page) {
     await fill(page, 'textarea#lede', COPY.lede);
     await fill(page, 'input[name="cta_label"]', COPY.cta_label);
     await fill(page, 'input[name="link_label"]', COPY.link_label);
+    await openFieldset(page, 'Ring legend');
     for (const [index, entry] of COPY.legend.entries()) {
       await fill(page, `input#legend-${index}-title`, entry.title);
       await fill(page, `input#legend-${index}-subtitle`, entry.subtitle);
     }
+    await openFieldset(page, 'Targets and images');
     await pick(page, 'Primary target', 'Kontakt');
     await pick(page, 'Secondary target', 'Leistungen');
     await pick(page, 'Wide image', 'Hero, wide crop');
