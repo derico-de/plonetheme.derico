@@ -230,20 +230,69 @@
   background: transparent;
 }
 /* pat-livesearch's result list, in the design's voice: a hairlined sheet on
-   the page ground under the field, not the pattern's blue-glow card */
+   the page ground under the field, not the pattern's blue-glow card.
+   `.list-group` supplies the reset (no bullets, no padding) and the rows.
+
+   The PANEL is this sheet's job in full, not a re-dress. mockup's
+   livesearch.scss — the `position: absolute` the pattern is written around —
+   is compiled into Barceloneta's bundle and its own `import(...)` in
+   livesearch.js is commented out, so under Clara the pattern arrives with no
+   styles at all. Unpositioned, the list the pattern inserts AFTER the form
+   takes its natural place in the flow and pushes the page down by the height
+   of the results. #portal-searchbox is already `position: relative` for the
+   opened field, so the panel hangs from the same box. */
 .element-searchbox .livesearch-results {
+  position: absolute;
+  /* Clara's dropdown step, the layer this is: above the page, below the
+     toolbar and the modals. */
+  z-index: var(--plone-z-dropdown);
   inset-inline: 0;
   inset-block-start: calc(100% + 0.25rem);
   min-inline-size: 0;
+  /* a long result list scrolls in its own sheet rather than running off the
+     bottom of the viewport */
+  max-block-size: min(70vh, 32rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--derico-band-rule);
   border-radius: var(--plone-radius-m);
   background: var(--derico-ground);
   box-shadow: none;
   color: var(--derico-ink);
 }
+/* Closing the search takes the results with it. The list is the form's
+   SIBLING, not its child — the pattern inserts it next to the form — so the
+   rule that hides the form leaves the panel standing over the page. */
+.element-searchbox > .opener:not(:checked) ~ .livesearch-results { display: none; }
 .element-searchbox .livesearch-results li { padding: var(--plone-space-2xs) var(--plone-space-s); }
+/* The row under the pointer and the row under the caret land on the same
+   step. The pattern marks the keyboard row with Bootstrap's `.active`,
+   which is a FILLED state — it carries a light `color` of its own that
+   would be unreadable once the ground is the design's quiet surface, so the
+   ink is restated here. (`.selected`, which this rule named before, is not
+   a class pat-livesearch has ever put on a row.) */
 .element-searchbox .livesearch-results li:hover,
-.element-searchbox .livesearch-results li.selected { background: var(--derico-surface); }
+.element-searchbox .livesearch-results li.active {
+  color: var(--derico-ink);
+  background: var(--derico-surface);
+}
+/* The result thumbnail. The pattern's item template hands over a scaled
+   `<img>` with the scale's own width and height ATTRIBUTES on it — 200 by
+   300 for the site's default — and a `max-width: 100%` that narrows such an
+   image without touching its height, which stretches the row to the height
+   of a portrait photograph. A square thumbnail on the row's own step
+   instead, cropped rather than distorted. */
+.element-searchbox .livesearch-results .row { align-items: center; }
+/* `inline-size` as well as the flex shorthand: Bootstrap's `.row > *` sets
+   `width: 100%`, which a `flex-basis: auto` column then takes literally and
+   wraps onto its own line under the copy. */
+.element-searchbox .livesearch-results .col.img { flex: 0 0 auto; inline-size: auto; }
+.element-searchbox .livesearch-results .col.img img {
+  inline-size: 3rem;
+  block-size: 3rem;
+  object-fit: cover;
+  border-radius: var(--plone-radius-s);
+}
 
 /* ── narrow: the mobile header ────────────────────────────────────────────
  * `display: contents` on the two elements whose children have to land on
@@ -328,6 +377,18 @@
     grid-row: auto;
     grid-column: content-start / content-end;
     padding-block: 0 var(--plone-space-s);
+  }
+  /* `display: contents` on the box leaves the panel with no positioned
+     ancestor to hang from — an absolute list here would resolve against the
+     page. On this layout it is a row of its own instead: the same order as
+     the form, so DOM order puts it directly beneath the field and above the
+     accordion, and the rows below move down for it. */
+  .element-searchbox .livesearch-results {
+    position: static;
+    order: -3;
+    grid-row: auto;
+    grid-column: content-start / content-end;
+    margin-block-end: var(--plone-space-s);
   }
   /* the accordion, the design's `.primary-nav` rows */
   #portal-globalnav {
@@ -475,6 +536,17 @@
     background: var(--derico-ground);
   }
   .element-searchbox .searchButton { inset-inline-end: var(--plone-space-2xs); }
+  /* The panel goes with it. On this layout #portal-searchbox is the
+     magnifier and nothing more — the form slid out of it — so a panel with
+     the box's own edges would be 44px wide beside the field. It takes the
+     field's geometry instead: the same end edge, the same width, and a top
+     half the bar's control below the box's middle, which is where the
+     absolutely-centred form ends. */
+  .element-searchbox .livesearch-results {
+    inset-inline: auto 100%;
+    inline-size: min(22rem, 36vw);
+    inset-block-start: calc(50% + var(--derico-header-toggle) / 2 + 0.25rem);
+  }
 }
 
 /* ── motion ──────────────────────────────────────────────────────────────

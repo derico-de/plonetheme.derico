@@ -2,6 +2,33 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Live search drops out of the field again.** `pat-livesearch` is written
+  around its own `livesearch.scss` — the `position: absolute` that makes the
+  result list a dropdown — and that sheet reaches a page only through
+  Barceloneta's bundle: the pattern's own `import("./livesearch.scss")` is
+  commented out in mockup. Under Clara it never loaded, so the list the
+  pattern inserts next to the form took its natural place in the flow and
+  pushed the whole page down by the height of the results, once for every
+  keystroke past the fourth. The panel is `header.css`'s in full now: hung
+  from `#portal-searchbox` under the field on the wide layouts, where the
+  field itself is absolute and the box is only the magnifier, it takes the
+  field's own edges and width; on the narrow header, where the box is
+  `display: contents` and there is nothing to hang from, it is a row of its
+  own directly beneath the field. It scrolls at `min(70vh, 32rem)` rather
+  than running off the viewport, and it goes when the search closes — the
+  list is the form's SIBLING, so the rule that hides the form left it
+  standing over the page.
+
+  Two things inside the panel came with it. The result thumbnail is a scaled
+  image with the scale's width and height ATTRIBUTES on it, which `max-width:
+  100%` narrows without touching the height — a 200×300 portrait stretched
+  the row to 300px; it is a 3rem square now, cropped rather than distorted,
+  and it stays on the row (Bootstrap's `.row > *` sets `width: 100%`, which a
+  `flex-basis: auto` column takes literally). And the row under the caret is
+  the design's quiet surface instead of Bootstrap's filled cyan: the sheet
+  was dressing `li.selected`, which pat-livesearch has never stamped — it
+  marks the keyboard row `.active`.
+
 - **The page ground is white.** `--derico-ground` was `oklch(0.99 0.003 215)`
   — a cyan-tinted near-white, #fafcfd — and the design's ground is plain
   white. Clara paints every ground it owns through the re-pointed ladder, so

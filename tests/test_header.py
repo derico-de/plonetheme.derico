@@ -235,3 +235,58 @@ class TestHeaderSheet:
         )
         assert "transition" not in outside
         assert "animation:" not in outside
+
+
+class TestLivesearchPanel:
+    """The results panel is this sheet's in full, not a re-dress.
+
+    `pat-livesearch` is written around its own `livesearch.scss` — the
+    `position: absolute` that makes the list a dropdown — and that sheet
+    reaches a page only through Barceloneta's bundle: the pattern's own
+    `import("./livesearch.scss")` is commented out in mockup. On Clara it
+    never loads, so an unpositioned list takes its place in the flow and
+    pushes the whole page down by the height of the results. These hold the
+    three declarations that stop it, each of which would fail in silence.
+    """
+
+    def _bodies(self, selector):
+        return [
+            body
+            for sel, body in css_tools.rules(HEADER_CSS.read_text())
+            if css_tools.normalise_selector(sel) == selector
+        ]
+
+    @pytest.mark.skipif(
+        css_tools.clara_bundle_path() is None,
+        reason="plonetheme.clara's compiled bundle is not available",
+    )
+    def test_the_base_theme_still_ships_no_livesearch_styles(self):
+        """The premise. If Clara ever dresses the pattern, revisit below."""
+        assert "livesearch" not in css_tools.clara_bundle_path().read_text()
+
+    def test_the_panel_hangs_from_the_searchbox(self):
+        bodies = self._bodies(".element-searchbox .livesearch-results")
+        assert bodies, "the sheet no longer dresses the results list"
+        assert "position: absolute" in bodies[0], (
+            "the panel must be positioned here; unpositioned it lands in the "
+            "flow and pushes the page down"
+        )
+        assert "z-index" in bodies[0], "a dropdown that the page paints over"
+
+    def test_the_narrow_layout_puts_it_back_in_the_flow(self):
+        """`display: contents` on the box leaves nothing to hang from."""
+        assert any("position: static" in body for body in self._bodies(
+            ".element-searchbox .livesearch-results"
+        )), "the narrow header must place the panel as a row of its own"
+
+    def test_closing_the_search_takes_the_panel_with_it(self):
+        """The pattern inserts the list beside the form, not inside it."""
+        hidden = [
+            body
+            for sel, body in css_tools.rules(HEADER_CSS.read_text())
+            if ".opener:not(:checked)" in css_tools.normalise_selector(sel)
+            and "livesearch-results" in css_tools.normalise_selector(sel)
+        ]
+        assert hidden and all("display: none" in body for body in hidden), (
+            "a closed search must not leave its results standing over the page"
+        )
