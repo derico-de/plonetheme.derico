@@ -179,12 +179,18 @@ a single magnifier. The values are still tokens — every colour, step and face
 in the sheet is a `--derico-*` or `--plone-*` name — but the rules are
 component rules.
 
+The widths below are the LAYOUT's, not the viewport's: `.plone-layout` is a
+query container (`container-name: derico-page`) and every switch in the sheet
+is an `@container` query. While the toolbar rail is expanded the body pads the
+layout by 220px, so a logged-in editor at a 1120px viewport has a 900px header
+and gets the compact bar — the same reason the hero block queries its own box.
+
 | width | header |
 |---|---|
 | ≤ 48rem | the design's mobile bar: logo, menu pill, magnifier; search opens as a row beneath, the menu as Clara's accordion under that |
 | 48–64rem | the same compact bar. Clara's accordion mechanics stop at 48rem, so the sheet carries them through this band; otherwise it would become a two-row desktop header the design never drew |
-| 64–70rem | the desktop header, on a tight viewport: the same row, with the logo at 7.5rem and narrower lanes so the German top-level labels still fit on one line. The mockup switches at 70rem; 64rem is Clara's own desktop boundary and the width a 1024px laptop reports |
-| ≥ 70rem | the design's desktop header: one row, logo at the start, navigation centred in the viewport, search and login at the end |
+| 64–70rem | the desktop header, on a tight layout: the same row, with the logo at 7.5rem and narrower lanes so the German top-level labels still fit on one line. The mockup switches at 70rem; 64rem is Clara's own desktop boundary and what a 1024px laptop gives a header with no toolbar beside it |
+| ≥ 70rem | the design's desktop header: one row, logo at the start, navigation centred in the layout, search and login at the end |
 
 Clara's mega panel is already the design's three-zone panel and is untouched,
 as are the navigation's face, size and weight.

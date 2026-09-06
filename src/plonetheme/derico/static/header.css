@@ -27,11 +27,14 @@
  * whatever its specificity, so nothing here has to out-specify Clara — every
  * selector is the plainest one that names its element.
  *
- * Two widths. The mockup switches at 70rem; this sheet switches at 64rem,
- * which is Clara's own desktop boundary (its mega panel takes the wide
- * three-track shape above 64rem) and the width a 1024px laptop actually
- * reports. The 64–70rem band pays for it in the lanes, not in the shape —
- * see the band's own note below.
+ * Two widths — of the LAYOUT, which is a query container (see the knobs
+ * below); the toolbar rail makes that narrower than the viewport, and the
+ * header wants the width it actually gets. The mockup switches at 70rem;
+ * this sheet switches at 64rem, which is Clara's own desktop boundary (its
+ * mega panel takes the wide three-track shape above 64rem) and the width a
+ * 1024px laptop gives a header with no toolbar beside it. The 64–70rem band
+ * pays for the narrower row in the lanes, not in the shape — see the band's
+ * own note below.
  *
  *   · < 64rem, "narrow" — the design's compact header: logo, then the menu
  *     pill and the magnifier at the bar's end. The search opens as a full
@@ -40,7 +43,7 @@
  *     sheet carries the same mechanics through the remaining tablet band;
  *     otherwise 48–64rem would become an unapproved two-row desktop header.
  *   · ≥ 64rem, "wide" — the design's desktop header: one 6rem row, logo at
- *     the start, navigation centred in the VIEWPORT (not in the content
+ *     the start, navigation centred in the LAYOUT (not in the content
  *     column: the bar spans `min(100% - 1rem, 90rem)` like the mockup's
  *     shell, so the German labels fit on one line), search and login at the
  *     end.
@@ -48,6 +51,19 @@
 
 /* ── the sheet's own knobs ────────────────────────────────────────────────── */
 .plone-layout {
+  /* A query container, so every switch below asks the width the header
+     ACTUALLY gets. The same reason the hero block gives in
+     static-blocks/blocks.css: `body` carries `padding-inline-start: 220px`
+     while the toolbar rail is expanded, so a logged-in editor's layout is
+     220px narrower than the viewport a media query reads. At a 1120px
+     viewport the bar has 900px — 56.25rem, a phone-sized header — and a
+     viewport query would hand it the desktop row anyway, wrapping the
+     navigation for exactly the person who is editing the page.
+     `container-type: inline-size` is safe on this element: its inline size
+     comes from the body's content box, never from its own contents, and the
+     mega panel already hangs from `.element-globalnav`, not from here. */
+  container-name: derico-page;
+  container-type: inline-size;
   /* the bar's height, carried by the logo so the first row keeps it whether
      a row opens beneath it or not */
   --derico-header-bar: 5.25rem;
@@ -304,7 +320,7 @@
  * row, the navigation list and the login link stacked beneath it. Auto
  * placement goes by DOM order, which `order` re-sorts: negative steps keep
  * the header's rows ahead of everything the page puts after them. */
-@media (max-width: 63.9375rem) {
+@container derico-page (max-width: 63.9375rem) {
   .element-globalnav,
   .element-searchbox { display: contents; }
 
@@ -458,7 +474,7 @@
 /* The reference gives up the menu word before the 8rem logo and the search
    control have to squeeze. Its text remains the checkbox's accessible label;
    only the painted word moves beyond the pill. */
-@media (max-width: 29.99rem) {
+@container derico-page (max-width: 29.99rem) {
   .globalnav-toggle {
     inline-size: var(--derico-header-toggle);
     padding: 0;
@@ -469,8 +485,11 @@
 }
 
 /* ── wide: the design's single row ───────────────────────────────────────── */
-@media (min-width: 64rem) {
-  .plone-layout { --derico-header-bar: 6rem; }
+@container derico-page (min-width: 64rem) {
+  /* the knobs a query sets go on the elements that read them: a container
+     query styles the container's DESCENDANTS, never the container */
+  #portal-logo,
+  .element-globalnav { --derico-header-bar: 6rem; }
 
   #portal-logo,
   .element-anontools,
@@ -509,16 +528,19 @@
   }
   /* the design's `.nav-link` metrics: a 3.5rem hit area, the underline
      marker 3px, nudged 0.375rem down so the text sits on the bar's optical
-     centre with the marker beneath it */
+     centre with the marker beneath it. The fluid step is `cqi`, not `vw`:
+     the row's space is the layout's, so the padding that spends it has to
+     be too, or the toolbar buys the links 8px each out of a lane that never
+     grew. */
   #portal-globalnav > .nav-item > .nav-link {
     min-block-size: 3.5rem;
-    padding: 0.75rem clamp(0.35rem, 0.7vw, 0.7rem) 0.35rem;
+    padding: 0.75rem clamp(0.35rem, 0.7cqi, 0.7rem) 0.35rem;
     line-height: 1.1;
     white-space: nowrap;
     translate: 0 0.375rem;
   }
   #portal-globalnav > .nav-item.has_subtree > .nav-link {
-    padding-inline-end: calc(clamp(0.35rem, 0.7vw, 0.7rem) + 0.9em);
+    padding-inline-end: calc(clamp(0.35rem, 0.7cqi, 0.7rem) + 0.9em);
   }
   #portal-globalnav > .nav-item > label { translate: 0 0.375rem; }
   #portal-globalnav > .nav-item > label::before {
@@ -534,7 +556,7 @@
     z-index: 1;
     inset-inline-end: 100%;
     inset-block-start: 50%;
-    inline-size: min(22rem, 36vw);
+    inline-size: min(22rem, 36cqi);
     padding: 0 var(--plone-space-2xs) 0 var(--plone-space-xs);
     translate: 0 -50%;
     background: var(--derico-ground);
@@ -548,15 +570,15 @@
      absolutely-centred form ends. */
   .element-searchbox .livesearch-results {
     inset-inline: auto 100%;
-    inline-size: min(22rem, 36vw);
+    inline-size: min(22rem, 36cqi);
     inset-block-start: calc(50% + var(--derico-header-toggle) / 2 + 0.25rem);
   }
 }
 
-/* ── 64–70rem: the same wide bar, on a tight viewport ─────────────────────
+/* ── 64–70rem: the same wide bar, on a tight layout ───────────────────────
  * The bar's shape does not change here; the lanes it keeps clear do. The
  * navigation is centred between them, so it gets
- * `viewport - 2 * edge - lane-start - lane-end`: 800px at 70rem, but only
+ * `layout - 2 * edge - lane-start - lane-end`: 800px at 70rem, but only
  * 704px at 64rem — under the ~735px the design's five German top-level
  * labels need on one line, which is why the mockup stops at 70rem.
  *
@@ -572,8 +594,8 @@
  * tracks for that one pixel and three from 64.0625rem up. Both shapes are
  * Clara's own and both fit; nothing here overrides them.
  */
-@media (min-width: 64rem) and (max-width: 69.9375rem) {
-  .plone-layout {
+@container derico-page (min-width: 64rem) and (max-width: 69.9375rem) {
+  .element-globalnav {
     --derico-header-lane-start: 8rem;
     --derico-header-lane-end: 8.5rem;
   }
@@ -604,7 +626,7 @@
   .element-searchbox > .opener:checked ~ form {
     animation: derico-search-in var(--plone-duration-standard) var(--plone-ease-out-quint);
   }
-  @media (max-width: 48rem) {
+  @container derico-page (max-width: 48rem) {
     .element-searchbox > .opener:checked ~ form {
       animation: derico-search-in-narrow var(--plone-duration-standard) var(--plone-ease-out-quint);
     }
