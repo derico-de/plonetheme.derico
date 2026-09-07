@@ -19,8 +19,9 @@
  * the geometry: rows, lanes, the bar's hairline, the nav link's metrics and
  * the search. The mockup's classes are not available here, so the selectors
  * are Clara's contract hooks (`#portal-logo`, `.element-globalnav`,
- * `#portal-globalnav`, `.element-searchbox`, `.element-anontools`), which is
- * what a theme on Clara is meant to address.
+ * `#portal-globalnav`, `.element-searchbox`, `.element-anontools`,
+ * `.element-language`), which is what a theme on Clara is meant to
+ * address.
  *
  * Unlayered on purpose, like derico.css: Clara's component rules sit in
  * `@layer components`, and an unlayered declaration beats a layered one
@@ -37,16 +38,18 @@
  * own note below.
  *
  *   · < 64rem, "narrow" — the design's compact header: logo, then the menu
- *     pill and the magnifier at the bar's end. The search opens as a full
- *     row under the bar; the menu as Clara's accordion under that, with the
- *     login link as its last row. Clara's defaults collapse at 48rem, so this
- *     sheet carries the same mechanics through the remaining tablet band;
- *     otherwise 48–64rem would become an unapproved two-row desktop header.
+ *     pill, the language switch and the magnifier at the bar's end. The
+ *     search opens as a full row under the bar; the menu as Clara's
+ *     accordion under that, with the login link as its last row. Clara's
+ *     defaults collapse at 48rem, so this sheet carries the same mechanics
+ *     through the remaining tablet band; otherwise 48–64rem would become an
+ *     unapproved two-row desktop header.
  *   · ≥ 64rem, "wide" — the design's desktop header: one 6rem row, logo at
  *     the start, navigation centred in the LAYOUT (not in the content
  *     column: the bar spans `min(100% - 1rem, 90rem)` like the mockup's
- *     shell, so the German labels fit on one line), search and login at the
- *     end.
+ *     shell), login link, language switch and search at the end. What it
+ *     costs the navigation to keep all three in one row, and where that is
+ *     paid, is the 64–75rem note at the foot of this sheet.
  */
 
 /* ── the sheet's own knobs ────────────────────────────────────────────────── */
@@ -71,14 +74,41 @@
      `.header-shell { width: min(calc(100% - 1rem), 90rem) }` */
   --derico-header-edge: max(0.5rem, calc((100% - 90rem) / 2));
   /* the lanes the navigation keeps clear on the wide layout: logo + gap at
-     the start, magnifier + login link at the end */
+     the start, and at the end everything the utility zone holds — magnifier,
+     language switch, login link — counted rather than guessed at, so the one
+     number cannot drift from the three margins below that place them. */
   --derico-header-lane-start: 9.5rem;
-  --derico-header-lane-end: 9.5rem;
+  --derico-header-lane-end:
+    calc(
+      var(--derico-header-toggle) + var(--plone-space-xs)
+      + var(--derico-header-lang)
+      + var(--derico-header-login)
+    );
   /* the search toggle's square, read by the login link's offset too */
   --derico-header-toggle: 2.75rem;
+  /* The login link's width. "Anmelden" measures 66px in the label step's
+     face; 4.5rem is that with room for the wrap-free English "Log in" and a
+     rounding step. A reservation, like the lanes above — the link is a grid
+     item of its own and nothing can measure it in CSS. */
+  --derico-header-login: 4.5rem;
+  /* What the language switch costs everything to its left: its own width
+     plus the gap before the magnifier. Zero by default — a site with one
+     language renders no switch at all (the pagelet's render() returns ""),
+     and a lane reserved for an absent element would move the login link for
+     nothing. The `:has()` below asks whether the element is there. */
+  --derico-header-lang: 0rem;
   /* the bar opens the page at the viewport's top edge, as the design's
      `.site-header` does; Clara pads the layout by a step first */
   padding-block-start: 0;
+}
+/* 4.5rem is what "DE / EN" measures in the label step's face with the
+   theme's `--plone-space-xs` on either side of the slash — 72px at 1440px,
+   against the mockup's 65px, the difference being that the design's own
+   `--space-xs` is a flat 12px where the theme's is fluid. A third language
+   pushes past it — at which point this number, and the tight band's budget
+   below, are what have to be re-measured. */
+.plone-layout:has(> .element-language) {
+  --derico-header-lang: calc(4.5rem + var(--plone-space-xs));
 }
 
 /* ── the bar's hairline ───────────────────────────────────────────────────
@@ -139,6 +169,59 @@
 .element-anontools a:hover,
 .element-anontools a:focus-visible {
   color: var(--derico-brand-text);
+  text-decoration: underline;
+}
+
+/* ── language switch ──────────────────────────────────────────────────────
+ * The design's `.utility-nav`: two codes and a slash, at the label step, in
+ * the bar's end lane immediately before the magnifier — at EVERY width. The
+ * mockup keeps it on the bar row when the navigation folds into the menu
+ * pill (site.css, `.utility-nav { margin-inline-start: auto }` on a
+ * `display: contents` `.header-utility`), so this sheet does too: the switch
+ * never joins the accordion the way the login link does.
+ *
+ * The slash is a rule of this sheet and not a list item, unlike the mockup's
+ * `<li aria-hidden="true">/</li>`: the markup is Clara's, the separator is
+ * decoration, and a generated one cannot be selected, read aloud or
+ * translated. It only ever appears BETWEEN codes, so a third language gets
+ * two slashes and a single one gets none, with nothing to say about it here.
+ *
+ * Clara already gives this element its row, its lane and its two states
+ * (theme/scss/_clara-language.scss); what is restated is the design's voice —
+ * the label step, the ink pair, the slash, and the geometry of the bar. */
+.element-language {
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  font-size: var(--derico-text-label);
+}
+.element-language > ul {
+  --plone-cluster-space: var(--plone-space-xs);
+  flex-wrap: nowrap;
+}
+.element-language li + li::before {
+  content: "/";
+  margin-inline-end: var(--plone-space-xs);
+  color: var(--derico-ink-soft);
+  /* the mockup's separator is prose-sized next to label-sized codes */
+  font-size: var(--plone-text-base);
+}
+.element-language a {
+  color: var(--derico-ink-soft);
+  font-weight: 650;
+  text-decoration: none;
+}
+.element-language a:hover,
+.element-language a:focus-visible {
+  color: var(--derico-brand-text);
+  text-decoration: underline;
+}
+/* The language you are in: full ink and an underline. Two signals, so the
+   marker survives a greyscale print and does not rest on colour alone —
+   which is also why the current language keeps its link and stays in the
+   row rather than dropping out of it. */
+.element-language .currentLanguage a {
+  color: var(--derico-ink);
   text-decoration: underline;
 }
 
@@ -348,7 +431,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    margin-inline-end: calc(var(--derico-header-toggle) + var(--plone-space-xs));
+    margin-inline-end:
+      calc(var(--derico-header-toggle) + var(--plone-space-xs) + var(--derico-header-lang));
     padding: 0.55rem 0.9rem 0.55rem 2.55rem;
     border: 1px solid var(--derico-brand-text);
     border-radius: var(--plone-radius-pill);
@@ -390,6 +474,12 @@
     grid-column: content-start / content-end;
     align-self: center;
     justify-self: end;
+  }
+  /* the switch stays on the bar between the pill and the magnifier, as the
+     mockup keeps it; only the login link folds into the opened menu */
+  .element-language {
+    grid-column: content-start / content-end;
+    margin-inline-end: calc(var(--derico-header-toggle) + var(--plone-space-xs));
   }
   /* the search row: full width under the bar */
   .element-searchbox form {
@@ -493,6 +583,7 @@
 
   #portal-logo,
   .element-anontools,
+  .element-language,
   .element-searchbox {
     grid-column: full-start / full-end;
     /* above the navigation element, whose lanes they sit in */
@@ -504,11 +595,25 @@
   .element-searchbox { z-index: auto; }
   #portal-logo { margin-inline-start: var(--derico-header-edge); }
   #portal-logo img { inline-size: 8.5rem; }
-  .element-anontools {
-    margin-inline-end: calc(var(--derico-header-edge) + var(--derico-header-toggle) + var(--plone-space-xs));
+  /* The end lane, read right to left: the magnifier on the edge, the switch
+     one gap in from it, the login link one switch further. Each offset is
+     the sum of what stands to its right, so adding or removing the switch
+     moves exactly what it should — and `--derico-header-lang` is 0 when
+     there is no switch, which collapses the chain back to what it was. */
+  .element-searchbox { margin-inline-end: var(--derico-header-edge); }
+  .element-language {
+    margin-inline-end:
+      calc(var(--derico-header-edge) + var(--derico-header-toggle) + var(--plone-space-xs));
     translate: 0 0.375rem;
   }
-  .element-searchbox { margin-inline-end: var(--derico-header-edge); }
+  .element-anontools {
+    margin-inline-end:
+      calc(
+        var(--derico-header-edge) + var(--derico-header-toggle)
+        + var(--plone-space-xs) + var(--derico-header-lang)
+      );
+    translate: 0 0.375rem;
+  }
 
   .element-globalnav {
     grid-row: 1;
@@ -575,31 +680,53 @@
   }
 }
 
-/* ── 64–70rem: the same wide bar, on a tight layout ───────────────────────
- * The bar's shape does not change here; the lanes it keeps clear do. The
- * navigation is centred between them, so it gets
- * `layout - 2 * edge - lane-start - lane-end`: 800px at 70rem, but only
- * 704px at 64rem — under the ~735px the design's five German top-level
- * labels need on one line, which is why the mockup stops at 70rem.
+/* ── 64–75rem: the same wide bar, on a layout that cannot afford it ────
+ * The bar's shape does not change here; what the navigation spends does.
  *
- * The lanes are wider than what they actually have to clear, though. The
- * start lane holds the 8.5rem logo; the end lane the 2.75rem magnifier and
- * the login link, ~7rem together. Stepping the logo down to 7.5rem and both
- * lanes to what is left buys the ~40px the row is short, and the design's
- * labels fit on one line from 64rem up. Above 70rem nothing here applies and
- * the mockup's own metrics are back.
+ * The budget, measured rather than estimated — the design's five German
+ * top-level labels, in Clara's nav face, on a 1024px layout: 768px. The row
+ * has `layout - 2 * edge - lane-start - lane-end` for them, and the end lane
+ * now holds three things instead of two (magnifier, language switch, login
+ * link — 13.25rem together), which leaves 676px. The labels wrapped before
+ * the switch was ever added, though: at the old flat 9.5rem lanes the row
+ * had 744px, and "Kontakt" dropped to a second line the moment the site's
+ * real navigation replaced the one-item test one. The lanes were never the
+ * thing that was short.
+ *
+ * So the space comes out of the navigation itself, in two steps:
+ *
+ *   · 64–75rem — the link's fluid side padding and the row's gap go to a
+ *     flat 0.25rem. Worth 32px at 1024px, and it is spending that was
+ *     invisible anyway: the clamp's own floor is 0.35rem, so this is one
+ *     sixth of a space step off each side of five links.
+ *   · 64–70rem — the labels themselves step down to 17px, and the logo to
+ *     7rem. Worth another 70px, and it brings the row to 653px against the
+ *     680px it has. 17px is above the project's 15px type floor and is the
+ *     only place in the theme where the nav's size is not Clara's
+ *     `--clara-text-nav`; the header at these widths is derico's own
+ *     invention (the mockup shows the COMPACT header below 70rem), so there
+ *     is no design value being contradicted — only one being extended into
+ *     a band the design never drew.
+ *
+ * Above 75rem nothing here applies and the mockup's own metrics are back.
  *
  * The mega panel is Clara's either way: at exactly 64rem its mid-width shape
  * still applies (that rule's upper bound is inclusive), so the panel is two
  * tracks for that one pixel and three from 64.0625rem up. Both shapes are
  * Clara's own and both fit; nothing here overrides them.
  */
-@container derico-page (min-width: 64rem) and (max-width: 69.9375rem) {
-  .element-globalnav {
-    --derico-header-lane-start: 8rem;
-    --derico-header-lane-end: 8.5rem;
+@container derico-page (min-width: 64rem) and (max-width: 74.9375rem) {
+  #portal-globalnav { gap: 0.25rem; }
+  #portal-globalnav > .nav-item > .nav-link { padding-inline: 0.25rem; }
+  #portal-globalnav > .nav-item.has_subtree > .nav-link {
+    padding-inline-end: calc(0.25rem + 0.9em);
   }
-  #portal-logo img { inline-size: 7.5rem; }
+}
+
+@container derico-page (min-width: 64rem) and (max-width: 69.9375rem) {
+  .element-globalnav { --derico-header-lane-start: 7.5rem; }
+  #portal-logo img { inline-size: 7rem; }
+  #portal-globalnav > .nav-item > .nav-link { font-size: 1.0625rem; }
 }
 
 /* ── motion ──────────────────────────────────────────────────────────────
@@ -609,6 +736,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .searchbox-toggle,
   .element-anontools a,
+  .element-language a,
   .globalnav-toggle {
     transition: color var(--plone-duration-fast) linear;
   }

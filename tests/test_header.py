@@ -207,6 +207,7 @@ class TestHeaderSheet:
             ".globalnav-toggle",
             ".element-searchbox",
             ".searchbox-toggle",
+            ".element-language",
         )
         for selector, _ in css_tools.rules(HEADER_CSS.read_text()):
             for part in selector.split(","):
@@ -289,4 +290,82 @@ class TestLivesearchPanel:
         ]
         assert hidden and all("display: none" in body for body in hidden), (
             "a closed search must not leave its results standing over the page"
+        )
+
+
+class TestLanguageSwitch:
+    """The design's `DE / EN`, on Clara's language element.
+
+    The element itself is Clara's (plonetheme.clara.languageselector) and
+    exists because plone.app.multilingual registers its selector for a viewlet
+    manager the pagelet layout never renders. What is derico's is where it
+    stands in the bar and what it costs the row it stands in — and both are
+    arithmetic, so both are pinned here.
+    """
+
+    def _bodies(self, selector):
+        return [
+            body
+            for sel, body in css_tools.rules(HEADER_CSS.read_text())
+            if css_tools.normalise_selector(sel) == selector
+        ]
+
+    def test_the_sheet_dresses_the_element(self):
+        assert self._bodies(".element-language"), (
+            "the header sheet no longer dresses the language switch"
+        )
+
+    def test_the_slash_is_drawn_not_written(self):
+        """The mockup ships `<li aria-hidden="true">/</li>`; Clara's markup
+        does not, and should not — a separator that can be selected, read
+        aloud or sent to a translator is a word pretending to be a rule.
+
+        Generated between items rather than after each: a third language gets
+        two slashes and a single one gets none, with nothing to configure."""
+        bodies = self._bodies(".element-language li + li::before")
+        assert bodies, "the switch has lost its separator"
+        assert 'content: "/"' in bodies[0]
+
+    def test_the_current_language_is_marked_twice(self):
+        """Ink AND an underline, so the marker survives a greyscale print."""
+        bodies = self._bodies(".element-language .currentLanguage a")
+        assert bodies, "the current language is no longer marked"
+        assert "color:" in bodies[0] and "text-decoration: underline" in bodies[0]
+
+    def test_the_end_lane_counts_the_switch(self):
+        """`--derico-header-lane-end` is what the navigation keeps clear, and
+        the switch stands in it. Stated as a sum of the three widths rather
+        than as one measured number, so the lane and the margins that place
+        the three elements cannot drift apart."""
+        lane = css_tools.declarations(
+            HEADER_CSS.read_text(), [".plone-layout"]
+        )["--derico-header-lane-end"]
+        for knob in (
+            "--derico-header-toggle",
+            "--derico-header-lang",
+            "--derico-header-login",
+        ):
+            assert knob in lane, f"the end lane no longer counts {knob}"
+
+    def test_the_lane_is_free_again_without_a_switch(self):
+        """A monolingual site renders no switch at all (the pagelet's
+        render() returns ""), and a lane reserved for an absent element would
+        move the login link for nothing."""
+        text = css_tools.strip_comments(HEADER_CSS.read_text())
+        base = css_tools.declarations(HEADER_CSS.read_text(), [".plone-layout"])
+        assert base["--derico-header-lang"] == "0rem"
+        assert ".plone-layout:has(> .element-language)" in text, (
+            "nothing asks whether the switch is actually there"
+        )
+
+    def test_the_narrow_bar_keeps_the_switch(self):
+        """The mockup keeps `DE / EN` on the bar row at every width — only
+        the login link folds into the opened menu. The menu pill has to clear
+        both the magnifier and the switch to leave room for it."""
+        pill = self._bodies(".globalnav-toggle")
+        assert pill, "the narrow header has lost its menu pill"
+        clearing = [body for body in pill if "--derico-header-lang" in body]
+        assert clearing, (
+            "the menu pill does not clear the language switch; on the narrow "
+            "bar the two would sit on top of each other"
         )

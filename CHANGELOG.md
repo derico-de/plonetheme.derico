@@ -2,6 +2,42 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The header gets the design's language switch, and the bar gets its
+  arithmetic checked.** The mockup's `.utility-nav` — `DE / EN`, the current
+  one marked, immediately before the magnifier at every width — had no
+  counterpart on the site, because `plone.app.multilingual` hangs its selector
+  off a viewlet manager the pagelet layout never renders. Clara now ships the
+  element (`plonetheme.clara.languageselector`, profile version 1006) and this
+  sheet dresses it: the label step, the ink pair, and a slash drawn by
+  `li + li::before` rather than written into the markup — a separator that can
+  be selected, read aloud or sent to a translator is a word pretending to be a
+  rule.
+
+  Placing it meant counting the bar's end lane for the first time.
+  `--derico-header-lane-end` was a flat 9.5rem; it is now the sum of what
+  actually stands there — magnifier, switch, login link — and the three
+  margins that place them read the same knobs, so the lane and the elements
+  cannot drift apart. `--derico-header-lang` is `0rem` until
+  `.plone-layout:has(> .element-language)` says otherwise, so a monolingual
+  site's login link does not move for an element that is not rendered.
+
+  Counting it also turned up that the desktop row never fit: at a 1024px
+  layout the design's five German section labels need 768px and the bar had
+  744px, so `Kontakt` wrapped to a second line — invisible only because the
+  sandbox's navigation still has one item. The switch made a bar that was
+  already 24px short another 77px shorter, and the space now comes out of the
+  navigation, in two steps: 64–75rem takes the link padding and the row gap to
+  a flat 0.25rem, and 64–70rem additionally steps the labels to 17px and the
+  logo to 7rem. Measured across the band with the real labels in place: 654px
+  needed against 674px available at 1024, 720 against 737 at 1120, 780 against
+  817 at 1200 — one row, no wrap, and at least 14px between the last label and
+  the login link throughout. 17px stays above the project's 15px type floor,
+  and it is the only place the nav's size is not Clara's `--clara-text-nav`;
+  the mockup shows the COMPACT header below 70rem, so there is no design value
+  being contradicted, only one extended into a band the design never drew.
+
+  Pinned by `tests/test_header.py::TestLanguageSwitch`.
+
 - **A banded block is a section, and is now framed like one.** Blicca's
   reading frame — `--aurora-space-block`, which §10 aliases to the `l` step —
   pads a table, a teaser and a background band alike, so an Aurora band opened
