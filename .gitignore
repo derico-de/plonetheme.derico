@@ -98,3 +98,6 @@ blobs/
 # [tool.uv.sources]); the symlinks are environment-local.
 sources/*
 !sources/.gitkeep
+
+# Agent tooling: per-checkout settings, environment-local
+.claude/
