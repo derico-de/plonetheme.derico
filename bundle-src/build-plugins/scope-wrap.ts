@@ -2,7 +2,7 @@
  *
  * Copied verbatim from plone.blicca.auroraeditor:
  *     wrapper/build-plugins/scope-wrap.ts
- * at commit e5d64f3f3a1f57f192931c2f1b815728045b74ac.
+ * at commit 28e7cbd6e94c16c47f8ce61bb69439886f399d96.
  *
  * Hero ticket 04 §7 chose vendoring over an import across the checkout, so
  * this repo builds on its own. `tests/test_block_addon_lockstep.py` compares

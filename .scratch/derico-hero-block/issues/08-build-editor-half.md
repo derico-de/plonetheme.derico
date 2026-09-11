@@ -109,7 +109,7 @@ no toolbar), so it can be read as the reference again.
 
 ## Answer
 
-**Built and green**, in commit `71efe09` — the editor half exists, is served,
+**Built and green**, in commit `d366618` — the editor half exists, is served,
 and is guarded. The build session ended before it wrote this record; the answer
 below was reconstructed from the shipped code and re-verified: `pnpm typecheck`
 clean, **27 vitest cases pass**, the theme's Python suite is **116 passed, 1
