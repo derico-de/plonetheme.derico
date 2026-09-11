@@ -2,6 +2,36 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The footer band gets the design's type.** The authored footer
+  (`collective.blicca.footerblocks`'s `.element-footerblocks`, at the tail of
+  every page) rendered its paragraphs in the body's running type — 16px ink
+  where the mockup's `.site-footer` puts 15px ink-soft — and its links with
+  no touch target. `static/footer.css`, a new bundle
+  (`plonetheme-derico-footer`, profile version 1012, upgrade step 1011 → 1012
+  adds the record), says what a paragraph and a list are on the footer's
+  flat ground: ink-soft at the label step; a list laid out as the design's
+  `.footer-links` row (bullets gone, wrapping, the mockup's `xs`/`m` gaps,
+  Blicca's per-item padding zeroed through its token); links in the same
+  quiet ink hovering copper; every link a 2.75rem inline-flex target. Only
+  the flat ground: a banded block keeps its own foreground, the Promo keeps
+  its own type. Measured on the sandbox against the mockup at 1440 and 390:
+  15px, `oklch(0.38 0.03 225)` and a 24.75px line on the authored
+  paragraphs; the 44px link row and the 12/27.6px row gaps on probe links
+  and a probe list injected into the page, because the sandbox's links
+  column is still authored as plain text.
+
+  Two things it deliberately does not do. The mockup's `.footer-grid`
+  (`1fr auto`) is not translated onto Blicca's column group — the columns'
+  widths are the author's, set in the editor, and a rule re-laying them on
+  the page would make the canvas lie; author the split as a wide/narrow pair.
+  And the band's vertical frame is not restated: the column group's frame is
+  already the theme's `l` step (derico.css §10), the token the mockup pads
+  `.site-footer` with. Pinned by `tests/test_footer.py`; the sheet-parsing
+  helpers it shares with `test_hero_sheet.py` moved into `clara_css.py`.
+  Closes footer-blocks ticket 07; its "Edit footer" link paragraph was moot
+  by then — the link left `collective.blicca.footerblocks` for the editor's
+  Footer tab.
+
 - **The header gets the design's language switch, and the bar gets its
   arithmetic checked.** The mockup's `.utility-nav` — `DE / EN`, the current
   one marked, immediately before the magnifier at every width — had no

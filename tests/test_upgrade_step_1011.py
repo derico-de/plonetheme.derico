@@ -203,13 +203,6 @@ class TestUpgrade1011:
 
         assert PROFILE in HiddenProfiles().getNonInstallableProfiles()
 
-    def test_the_profile_is_at_this_version(self):
-        """The newest step's test owns the exact version."""
-        (version,) = self.setup_tool.getLastVersionForProfile(
-            "plonetheme.derico:default"
-        )
-        assert int(version) == 1011
-
     # ── the three files that must agree ───────────────────────────────────
 
     @staticmethod

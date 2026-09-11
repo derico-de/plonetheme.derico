@@ -253,3 +253,53 @@ def luminance(hex_color):
 def contrast(first, second):
     lighter, darker = sorted((luminance(first), luminance(second)), reverse=True)
     return (lighter + 0.05) / (darker + 0.05)
+
+
+def split_selector_list(selector):
+    """The parts of a selector list, split on the commas OUTSIDE parentheses.
+
+    `str.split(",")` would cut `:is(.a, .b)` and `:not(.a, .b)` in two;
+    this keeps a functional pseudo-class whole.
+    """
+    parts, depth, start = [], 0, 0
+    for index, char in enumerate(selector):
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        elif char == "," and depth == 0:
+            parts.append(selector[start:index])
+            start = index + 1
+    parts.append(selector[start:])
+    return [normalise_selector(part) for part in parts if part.strip()]
+
+
+def style_rules(css):
+    """(selector-part, properties) for every style rule in `css`.
+
+    One entry per part of a selector list, each with the rule's full
+    declaration block, so a part can be compared against a literal.
+    """
+    for selector, body in rules(css):
+        properties = {
+            name.strip(): value.strip()
+            for name, value in re.findall(r"([-\w]+)\s*:\s*([^;{}]+)", body)
+        }
+        for part in split_selector_list(selector):
+            yield part, properties
+
+
+def values_for(css, selector, property_name):
+    """EVERY value `selector` gives `property_name` in `css`, in document order.
+
+    A list rather than a merge: `_blocks` flattens at-rules, so a `@media`
+    override arrives under the same selector as the base rule. Merging would
+    let a responsive override quietly satisfy an assertion about the base — or
+    hide a bad one behind a good one. Asserting over every value avoids
+    ranking rules this parser cannot rank.
+    """
+    return [
+        properties[property_name]
+        for part, properties in style_rules(css)
+        if part == selector and property_name in properties
+    ]

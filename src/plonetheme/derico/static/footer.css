@@ -1,0 +1,106 @@
+/* The footer band — the authored footer blocks, dressed as the Jahresringe
+ * design draws its `.site-footer` (docs/design/derico.de/site/assets/site.css,
+ * "Footer"): a flat band on the page ground carrying two lines of small,
+ * quiet type and a row of links that are touch targets.
+ *
+ * What is dressed here is `collective.blicca.footerblocks`'s
+ * `<footer class="element-footerblocks">`, the pagelet at the tail of every
+ * page (footer-blocks ticket 07). Its CONTENT is authored blocks — the
+ * closing call to action is a Promo on a band, the address is a paragraph,
+ * the links a paragraph or a list, side by side in a column group — and
+ * every block brings its own sheet and its own frame (derico.css §10/§11
+ * set that rhythm on Blicca's tokens). So this sheet has little to do, and
+ * does exactly it: it says what a paragraph and a list ARE when they stand
+ * on the footer's flat ground. The Promo keeps its own type, a band keeps
+ * its own foreground.
+ *
+ * Why a sheet of its own (delivered as the `plonetheme-derico-footer`
+ * bundle): derico.css is guarded to stay a token sheet, and these are
+ * component rules — the header's argument, made again for the page's other
+ * end. Values are still tokens: every colour and step here is a `--derico-*`
+ * or `--plone-*` name, which is why the bundle `depends` on the token layer.
+ *
+ * Unlayered, like header.css, and for the same reason where Clara is
+ * concerned: Clara's link rules sit in `@layer components`, and an unlayered
+ * declaration beats a layered one whatever its specificity. Blicca's
+ * `blocks_view.css` is NOT layered, so against it the contest is plain
+ * specificity and load order — and its links are emitted after every
+ * bundle, so on a tie Blicca wins. Two things follow: the type is set on
+ * the block WRAPPER (`.block-p`, `.block-ul`), which Blicca never colours or
+ * sizes, and inherits down to the bare `<p>` and `<li>`; and the one rule
+ * that does contradict Blicca (the list's `display`) names
+ * `.aurora-blocks-view` to out-specify it rather than trusting the order.
+ *
+ * What is deliberately NOT here: the mockup's `.footer-grid`
+ * (`grid-template-columns: 1fr auto`). The columns are Blicca's column group
+ * and their widths are the author's, set in the editor; a theme that re-laid
+ * them on the page would make the canvas lie about the page. The design's
+ * split is authored instead, as a wide/narrow pair of columns. Nor the
+ * band's vertical frame: the column group's frame is already the theme's
+ * `l` step (derico.css §10), the same token the mockup pads `.site-footer`
+ * with. tests/test_footer.py pins both decisions.
+ *
+ * `:not(<complex selector>)` below is Selectors 4 — the first place in this
+ * theme that leans on it. The project's browser floor already asks for
+ * `@scope`, `:has()` and container queries, all younger. */
+
+/* ── the flat ground ─────────────────────────────────────────────────────
+ * The design's `.site-footer p` and `.footer-links`: ink-soft at the label
+ * step (15px, the theme's floor, 9.92:1 on the page ground). Only a block on
+ * the footer's own ground — neither banded itself nor inside a banded block
+ * — because the design measures its footer type on the page ground alone,
+ * and a band brings its own foreground: Blicca hands a dark slot's subtree
+ * `--aurora-block-fg-dark`, and ink-soft on the petrol slot would fail AA.
+ * The Promo is neither a paragraph nor a list and is untouched either way. */
+.element-footerblocks :is(.block-p, .block-ul):not([class*="has--backgroundColor--"]):not([class*="has--backgroundColor--"] *) {
+  font-size: var(--derico-text-label);
+  color: var(--derico-ink-soft);
+}
+
+/* The design's `.footer-links a`: the same quiet ink as the text around
+ * it, not Clara's brand-text link colour. Setting a colour on the link
+ * shadows Clara's layered `a:hover`, so the hover is restated — copper-text,
+ * the design's one link hover (`a:hover { color: var(--copper-text) }`) and
+ * the pairing Clara's own footer rows carry. */
+.element-footerblocks :is(.block-p, .block-ul):not([class*="has--backgroundColor--"]):not([class*="has--backgroundColor--"] *) a {
+  color: var(--derico-ink-soft);
+}
+.element-footerblocks :is(.block-p, .block-ul):not([class*="has--backgroundColor--"]):not([class*="has--backgroundColor--"] *) a:hover {
+  color: var(--derico-copper-text);
+}
+
+/* ── the link row ────────────────────────────────────────────────────────
+ * A list in the footer IS the design's `.footer-links`: bullets gone, the
+ * items in a wrapping row, `xs` between rows and `m` between items — the
+ * mockup's `gap: var(--space-xs) var(--space-m)`, whose steps Clara's
+ * `--plone-space-*` already carry bit for bit. Item rhythm is the row's gap,
+ * so Blicca's per-item padding (`--aurora-space-list`, read on the `<li>`)
+ * is zeroed on the wrapper as the token it is. `.aurora-blocks-view` is
+ * named so the `display` outranks Blicca's own `.aurora-blocks-view
+ * .block-ul ul { display: block }` (see the header); the rest would win on
+ * inheritance alone but rides along for one selector. */
+.element-footerblocks .block-ul {
+  --aurora-space-list: 0px;
+}
+.element-footerblocks .aurora-blocks-view .block-ul ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--plone-space-xs) var(--plone-space-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── touch targets ───────────────────────────────────────────────────────
+ * PRODUCT.md's 44px floor, as the mockup draws it: `min-height: 2.75rem`
+ * on an inline-flex link, centred on its own box. On every footer link,
+ * banded or not — a target's size does not depend on its ground. In
+ * running text the line box grows to the target, which is what the
+ * mockup's link row measures too (44px against the address's 24.75px
+ * lines), and the link's baseline stays the text's: an inline-flex box
+ * takes its baseline from its first item. */
+.element-footerblocks :is(.block-p, .block-ul) a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}

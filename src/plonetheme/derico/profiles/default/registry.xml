@@ -149,6 +149,23 @@
     <value key="enabled">True</value>
   </records>
 
+  <!-- The footer's stylesheet: the footer-blocks element at the tail of
+       every page (collective.blicca.footerblocks), dressed as the design's
+       flat footer band. footer.css holds component rules derico.css is
+       guarded never to contain — the header's argument, made again for the
+       page's other end. `depends` on the token layer because every value
+       the sheet paints with is a derico token derico.css declares. (An
+       ASCII double hyphen cannot appear in an XML comment, so custom
+       properties go unnamed in this file.) -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-footer">
+    <value key="csscompilation">++resource++plonetheme.derico/footer.css</value>
+    <value key="depends">plonetheme-derico</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
+  </records>
+
   <!-- ── the hero's top scale rung (hero ticket 05 §2/§4) ──────────────────
 
        APPENDED, never replacing: stock Plone templates and other add-ons

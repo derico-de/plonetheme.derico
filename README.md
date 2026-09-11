@@ -240,6 +240,26 @@ the base package's parity test still finds the names in the stored sequence.
 `profiles/uninstall/viewlets.xml` un-hides all three, so a site that drops the
 theme gets its stock footer back.
 
+### The band
+
+The authored footer is `collective.blicca.footerblocks`'s
+`<footer class="element-footerblocks">`, and `static/footer.css` — one
+bundle, `plonetheme-derico-footer`, profile version 1012 — dresses it as the
+mockup's `.site-footer`: a paragraph or list on the footer's flat ground is
+ink-soft at the label step, a list is the design's `.footer-links` row (no
+bullets, wrapping, `xs`/`m` gaps), and every footer link is a 2.75rem touch
+target in the same quiet ink, hovering copper. That is all the sheet says,
+on purpose. The closing call to action is a Promo on a band and keeps the
+Promo's own type; a banded paragraph keeps its band's foreground; the band's
+vertical frame is the column group's, which derico.css §10 already sets to
+the theme's `l` step — the token the mockup pads `.site-footer` with.
+
+What the sheet does not translate is the mockup's `.footer-grid`
+(`1fr auto`): the columns are Blicca's column group and their widths are the
+author's, set in the editor, so the design's wide/narrow split is authored
+as a wide/narrow pair rather than re-laid by a rule the canvas would not
+show. Pinned by `tests/test_footer.py`.
+
 ## Verifying the claim
 
 `tests/test_override_minimality.py` is the guard, and it parses Clara's

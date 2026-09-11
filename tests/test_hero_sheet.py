@@ -33,15 +33,7 @@ ROOT = ".derico-hero"
 def _style_rules():
     """(selector-part, properties) for every style rule in every block sheet."""
     for path in BLOCK_SHEETS:
-        for selector, body in css_tools.rules(path.read_text()):
-            properties = {
-                name.strip(): value.strip()
-                for name, value in re.findall(r"([-\w]+)\s*:\s*([^;{}]+)", body)
-            }
-            for part in selector.split(","):
-                part = css_tools.normalise_selector(part)
-                if part:
-                    yield part, properties
+        yield from css_tools.style_rules(path.read_text())
 
 
 def _declares(property_name, value=None):
@@ -55,18 +47,11 @@ def _declares(property_name, value=None):
 
 
 def _values_for(selector, property_name):
-    """EVERY value `selector` gives `property_name`, in document order.
-
-    A list rather than a merge: `_blocks` flattens at-rules, so a `@media`
-    override arrives under the same selector as the base rule. Merging would
-    let a responsive override quietly satisfy an assertion about the base — or
-    hide a bad one behind a good one. Asserting over every value avoids
-    ranking rules this parser cannot rank.
-    """
+    """EVERY value `selector` gives `property_name`, across every block sheet."""
     return [
-        properties[property_name]
-        for part, properties in _style_rules()
-        if part == selector and property_name in properties
+        value
+        for path in BLOCK_SHEETS
+        for value in css_tools.values_for(path.read_text(), selector, property_name)
     ]
 
 
