@@ -4,7 +4,7 @@
  * quiet type and a row of links that are touch targets.
  *
  * What is dressed here is `collective.blicca.footerblocks`'s
- * `<footer class="element-footerblocks">`, the pagelet at the tail of every
+ * `<div class="element-footerblocks">`, the element at the tail of every
  * page (footer-blocks ticket 07). Its CONTENT is authored blocks — the
  * closing call to action is a Promo on a band, the address is a paragraph,
  * the links a paragraph or a list, side by side in a column group — and
