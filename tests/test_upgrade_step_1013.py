@@ -1,11 +1,11 @@
-"""Tests for upgrade step 1011 -> 1012: the footer bundle.
+"""Tests for upgrade step 1012 -> 1013: the print bundle.
 
 An existing site carries the bundle records that were in the default
 profile the day derico was installed there, and nothing declared since. The
-footer's stylesheet is a NEW bundle record, and without it every page on an
-upgraded site would render the footer blocks in the body's running type —
-16px ink where the design puts 15px ink-soft, and links with no touch
-target.
+print stylesheet is a NEW bundle record, and without it a page printed from
+an upgraded site would still carry its header, breadcrumbs, footer and
+calls to action, and its links would print in the screen's cyan with no
+address beside them.
 """
 
 import pytest
@@ -16,8 +16,8 @@ from plone.registry.interfaces import IRegistry
 from zope.component import getUtility
 
 
-PROFILE = "plonetheme.derico.upgrades:1012"
-BUNDLE = "plone.bundles/plonetheme-derico-footer"
+PROFILE = "plonetheme.derico.upgrades:1013"
+BUNDLE = "plone.bundles/plonetheme-derico-print"
 FIELDS = (
     "csscompilation",
     "depends",
@@ -27,8 +27,8 @@ FIELDS = (
 )
 
 
-class TestUpgrade1012:
-    """Test upgrade to version 1012."""
+class TestUpgrade1013:
+    """Test upgrade to version 1013."""
 
     @pytest.fixture(autouse=True)
     def _setup(self, integration):
@@ -38,7 +38,7 @@ class TestUpgrade1012:
         self.registry = getUtility(IRegistry)
 
     def _drop_record(self):
-        """The site that predates 1012: derico installed, no footer bundle."""
+        """The site that predates 1013: derico installed, no print bundle."""
         for field in FIELDS:
             del self.registry.records[f"{BUNDLE}.{field}"]
         assert api.portal.get_registry_record(f"{BUNDLE}.enabled", default=None) is None
@@ -48,19 +48,24 @@ class TestUpgrade1012:
         flat = []
         for step in steps:
             flat.extend(step if isinstance(step, list) else [step])
-        assert any(step["sdest"] == "1012" and step["ssource"] == "1011" for step in flat)
+        assert any(step["sdest"] == "1013" and step["ssource"] == "1012" for step in flat)
 
     def test_upgrade_profile_is_hidden(self):
         from plonetheme.derico.setuphandlers import HiddenProfiles
 
         assert PROFILE in HiddenProfiles().getNonInstallableProfiles()
 
+    def test_the_profile_is_at_this_version(self):
+        """The newest step's test owns the exact version."""
+        (version,) = self.setup_tool.getLastVersionForProfile("plonetheme.derico:default")
+        assert int(version) == 1013
+
     def test_upgrade_adds_the_bundle(self):
         self._drop_record()
         self.setup_tool.runAllImportStepsFromProfile(f"profile-{PROFILE}")
         assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is True
         assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
-            "++resource++plonetheme.derico/footer.css"
+            "++resource++plonetheme.derico/print.css"
         )
         assert api.portal.get_registry_record(f"{BUNDLE}.depends") == "plonetheme-derico"
 

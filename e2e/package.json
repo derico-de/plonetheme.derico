@@ -2,10 +2,11 @@
   "name": "@derico/hero-e2e",
   "version": "1.0.0",
   "private": true,
-  "description": "Browser e2e checks for the Derico Hero brand block (see README.md).",
+  "description": "Browser e2e checks for the theme: the Derico Hero and the print sheet (see README.md).",
   "scripts": {
-    "e2e": "npm run e2e:view && npm run e2e:editor",
+    "e2e": "pnpm run e2e:view && pnpm run e2e:print && pnpm run e2e:editor",
     "e2e:view": "node hero-view.e2e.js",
+    "e2e:print": "node print.e2e.js",
     "e2e:editor": "node hero-editor.e2e.js"
   },
   "devDependencies": {

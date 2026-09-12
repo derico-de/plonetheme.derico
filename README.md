@@ -260,6 +260,26 @@ author's, set in the editor, so the design's wide/narrow split is authored
 as a wide/narrow pair rather than re-laid by a rule the canvas would not
 show. Pinned by `tests/test_footer.py`.
 
+## Printing
+
+The mockup's `@media print` block, as `static/print.css` — one bundle,
+`plonetheme-derico-print`, profile version 1013. On paper the header, the
+breadcrumbs and the footer go, and with them the hero's two buttons and the
+Promo's actions; the page prints ink on ground, and so does a block on the
+Dark slot, since a browser drops backgrounds when it prints; a banded block's
+frame comes down to the `m` step; links print in the running ink, underlined,
+with their address after them — internal ones too, because Plone writes every
+link absolute. The whole sheet is one `@media print` at-rule: the bundle
+loads with `media="all"` like every other, so the at-rule is what keeps it
+off the screen.
+
+Clara's own print block already hides the navigation, the search, the login
+link and the language switch — but in a layer, and this theme's header.css
+puts the navigation and the search back unlayered below 64rem, which is every
+sheet of paper. The print sheet takes those two itself. What it leaves alone:
+the editor toolbar, which is Clara's chrome. Pinned by `tests/test_print.py`;
+`e2e/print.e2e.js` checks the rendering under print emulation.
+
 ## Verifying the claim
 
 `tests/test_override_minimality.py` is the guard, and it parses Clara's

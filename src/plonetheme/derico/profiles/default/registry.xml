@@ -166,6 +166,24 @@
     <value key="enabled">True</value>
   </records>
 
+  <!-- The print sheet: the design's whole-page print block, said in the
+       site's markup. One `@media print` at-rule and nothing outside it —
+       the bundle loads on every page with media="all", like every other
+       bundle here, so the at-rule is what keeps it off the screen. Component
+       rules again (an element hidden, a link underlined), hence a sheet of
+       its own rather than a line in derico.css. `depends` on the token
+       layer because every value the sheet paints with is a derico token
+       derico.css declares. (An ASCII double hyphen cannot appear in an XML
+       comment, so custom properties go unnamed in this file.) -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-print">
+    <value key="csscompilation">++resource++plonetheme.derico/print.css</value>
+    <value key="depends">plonetheme-derico</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
+  </records>
+
   <!-- ── the hero's top scale rung (hero ticket 05 §2/§4) ──────────────────
 
        APPENDED, never replacing: stock Plone templates and other add-ons

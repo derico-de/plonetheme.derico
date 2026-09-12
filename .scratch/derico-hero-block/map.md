@@ -623,10 +623,11 @@ spec exists for it.
   can only reach the published view and would break the canvas/view parity
   Blicca's current stack buys. Its phrasing waits on that Blicca conversation.
 
-- **A print stylesheet for the theme.** The mockup ships a whole-page
-  `@media print` block; derico ships none. Ruled off ticket 06 as theme-wide
+- ~~**A print stylesheet for the theme.**~~ The mockup ships a whole-page
+  `@media print` block; derico shipped none. Ruled off ticket 06 as theme-wide
   rather than block-local — the site will want one, but not from this effort's
-  tickets.
+  tickets. **Built 2026-09-12** as its own effort
+  (`derico.de/.scratch/print-stylesheet/`, profile version 1013).
 
 - **The rest of the mockup as brand blocks.** The manifesto grid, the service
   atlas / Balkenlage, and the field-guide definition list are all "beyond

@@ -2,6 +2,40 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The theme gets the design's print stylesheet.** The mockup ships one
+  whole-page `@media print` block and the site shipped none: a printed page
+  carried its header, breadcrumbs, footer and calls to action, and its links
+  printed in the screen's cyan with no address beside them. `static/print.css`,
+  a new bundle (`plonetheme-derico-print`, profile version 1013, upgrade step
+  1012 → 1013 adds the record), is that block said in the site's markup: the
+  logo, breadcrumbs and footer-blocks element go (the footer is also where the
+  design's contact band — the closing Promo — lives); the hero's action row
+  and the Promo's actions go; the page prints ink on ground; a banded block's
+  frame comes down from the `2xl` step to `m`, whose floor is the mockup's
+  1.5rem; links print in the running ink, underlined, with their `href` after
+  them. Plone writes every link absolute, so unlike the mockup that annotates
+  internal links too — left so on purpose: on paper the address is what a
+  reader needs either way. One rule the mockup does not have, for a slot the
+  mockup does not have: Blicca's Dark slot is re-pointed to ground and ink,
+  because a browser drops backgrounds when it prints and would otherwise
+  leave white text on white paper.
+
+  Two things came out of measuring it in a browser. Clara's own print block
+  hides the navigation and the search, but from `@layer components`, and the
+  theme's unlayered header.css gives both `display: contents` below 64rem —
+  which is every sheet of paper (A4 lays out at 794px) — so the menu pill and
+  the magnifier printed regardless; the print sheet takes them itself, one
+  class deeper than header.css's rule. And the whole sheet is one `@media
+  print` at-rule, held to that by `tests/test_print.py`, because the bundle
+  loads with `media="all"` like every other one. `e2e/print.e2e.js` checks the
+  rendering under print emulation: no leak to the screen, the action row
+  gone against the block's own scoped rule, the Dark slot ink on ground, a
+  link underlined with its address.
+
+  Out of scope and left as found: the editor toolbar (Clara's chrome), and
+  Clara's `.plone-layout { display: block }` in print, which drops the
+  layout's gutters so a page title prints flush left of its blocks.
+
 - **The footer band gets the design's type.** The authored footer
   (`collective.blicca.footerblocks`'s `.element-footerblocks`, at the tail of
   every page) rendered its paragraphs in the body's running type — 16px ink

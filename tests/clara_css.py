@@ -303,3 +303,14 @@ def values_for(css, selector, property_name):
         for part, properties in style_rules(css)
         if part == selector and property_name in properties
     ]
+
+
+def bundle_record(xml, prefix):
+    """The (key, value) pairs of the IBundleRegistry record at `prefix`.
+
+    Sorted, so a default-profile record and its upgrade-profile copy compare
+    as sets of values rather than as text.
+    """
+    match = re.search(rf'<records[^>]*prefix="{re.escape(prefix)}">(.*?)</records>', xml, re.S)
+    assert match, f"no bundle record at {prefix}"
+    return sorted(re.findall(r"<value key=\"(\w+)\">(.*?)</value>", match.group(1)))

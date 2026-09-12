@@ -1,13 +1,14 @@
-# Derico Hero browser tests
+# Browser tests
 
-Two browser tests that answer the two questions the Python suite cannot: does
-the block work in a real `@@aurora-edit`, and does the published page look like
-the design source?
+Browser tests that answer the questions the Python suite cannot: does the
+hero work in a real `@@aurora-edit`, does the published page look like the
+design source, and does the print sheet do on paper what it says?
 
 | file | what it proves | needs the editor bundle |
 | --- | --- | --- |
 | `hero-editor.e2e.js` | insert, author, save, reload, the insert gate, one React, `<html lang>`, no clipping at 320/375 | yes |
 | `hero-view.e2e.js` | the published page measured against `docs/design/derico.de/site`, at 1440 / 900 / 375 / 320 | no |
+| `print.e2e.js` | the print sheet under print emulation: chrome and action row gone, no leak to the screen, the Dark slot ink on ground, links underlined with their address | no |
 
 They build their own fixture over `plone.restapi` (`hero-fixture.js`) and
 delete it again; set `DERICO_E2E_KEEP=1` to leave it on the site to look at.

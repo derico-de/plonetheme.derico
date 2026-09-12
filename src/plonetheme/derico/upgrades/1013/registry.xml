@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registry>
+
+  <!-- The print bundle, byte-identical to its record in
+       profiles/default/registry.xml. Only the new record: a registry import
+       adds and updates, so restating the rest of the default profile would
+       gain nothing and would overwrite values a site has since changed. -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-print">
+    <value key="csscompilation">++resource++plonetheme.derico/print.css</value>
+    <value key="depends">plonetheme-derico</value>
+    <value key="load_defer">True</value>
+    <value key="expression"></value>
+    <value key="enabled">True</value>
+  </records>
+
+</registry>

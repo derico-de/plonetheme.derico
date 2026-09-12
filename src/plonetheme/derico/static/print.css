@@ -1,0 +1,153 @@
+/* The print sheet — the Jahresringe design's whole-page `@media print`
+ * block (docs/design/derico.de/site/assets/site.css, "@media print"), said
+ * in the site's own markup. The mockup's block is five rules: the chrome and
+ * the calls to action go, the page prints ink on ground, a section's frame
+ * closes up, links print underlined in the running ink with their address
+ * beside them. This sheet is those five rules, each translated onto the
+ * element that plays the mockup's part here, plus two the site needs that
+ * the mockup had no occasion for: Blicca's Dark slot, which the mockup does
+ * not have, and the two header elements the theme's own header sheet puts
+ * back after Clara has hidden them. Both are marked where they stand.
+ *
+ * Why a sheet of its own (delivered as the `plonetheme-derico-print`
+ * bundle): derico.css is guarded to stay a token sheet, and hiding an
+ * element or underlining a link is a component rule — the header's and the
+ * footer's argument, made a third time. Values are still tokens: every
+ * colour and step here is a `--derico-*` or `--plone-*` name, which is why
+ * the bundle `depends` on the token layer.
+ *
+ * Unlayered, like the other sheets, and for the same reason: Clara's link
+ * and body rules sit in `@layer components`, and an unlayered declaration
+ * beats a layered one whatever its specificity. Against Blicca's unlayered
+ * `blocks_view.css` and the blocks' own `@scope`-wrapped sheets the contest
+ * is plain specificity, so the rules that reach into a block name
+ * `.aurora-blocks-view` — one class more than the rule they have to beat,
+ * and the public view only, which is the only surface anyone prints.
+ *
+ * The whole sheet is ONE `@media print` block, and tests/test_print.py holds
+ * it to that: the bundle loads on every page with `media="all"`, so a rule
+ * that slipped outside the at-rule would hide the header for everyone.
+ *
+ * What is deliberately NOT here: what Clara's own print block already
+ * removes — the navigation, the search, the login link, the language
+ * switch, the subnavigation — and the editor toolbar, which is Clara's
+ * chrome (its `_clara-toolbar.scss`), not this theme's. */
+
+@media print {
+  /* ── the chrome ──────────────────────────────────────────────────────
+   * The mockup's `.site-header, .breadcrumbs, .site-footer`. Of the header
+   * Clara's own print block leaves the logo standing on paper (header.css
+   * already takes the bar's hairline with it); the site's footer is the
+   * footer-blocks element — also where the design's `.contact-band`, the
+   * closing Promo on a band, lives — and Clara's stock portal footer beside
+   * it, an empty shell on this site since 1011 hid its rows but a footer
+   * all the same. */
+  .element-logo,
+  .element-breadcrumbs,
+  .element-portalfooter,
+  .element-footerblocks {
+    display: none;
+  }
+
+  /* Two more of the header's elements, although Clara's print block names
+   * them: Clara hides them from `@layer components`, and header.css — which
+   * is unlayered, like every sheet here — gives both `display: contents`
+   * below 64rem so their children can land on the bar's grid. Unlayered
+   * beats layered, so on any page narrower than 64rem the menu pill and the
+   * magnifier would print; and a sheet of paper is narrower than 64rem
+   * (A4 portrait lays out at 794px, 49.6rem). Restated here, one class
+   * deeper than header.css's own rule so specificity settles it rather
+   * than the order two sibling bundles happen to load in. */
+  .plone-layout .element-globalnav,
+  .plone-layout .element-searchbox {
+    display: none;
+  }
+
+  /* ── the calls to action ─────────────────────────────────────────────
+   * The mockup's `.action-row`: a button on paper is a promise nobody can
+   * keep. On the site that is the hero's two buttons and the Promo's
+   * actions; each block's own sheet places its row with a two-class
+   * selector, and `.aurora-blocks-view` is the third class that outranks
+   * it. The mockup's other rows — the page hero's, the error page's — have
+   * no block yet; when they do, they join this list. */
+  .aurora-blocks-view .derico-hero .action-row,
+  .aurora-blocks-view .promo .promo-actions {
+    display: none;
+  }
+
+  /* ── ink on ground ───────────────────────────────────────────────────
+   * The mockup's `body { color: var(--ink); background: var(--ground) }`.
+   * `--derico-ink` and `--derico-ground` are the near-black and the white
+   * in either colour scheme — derico.css's dark block re-points the roles,
+   * never the ladder — so a page printed from a dark screen still prints
+   * dark on light. */
+  body {
+    color: var(--derico-ink);
+    background: var(--derico-ground);
+  }
+
+  /* The one place the site paints light on dark: Blicca's `Dark` slot,
+   * whose petrol ground and white foreground derico.css §8 supplies. A
+   * browser drops backgrounds by default when it prints, which would leave
+   * that white text on white paper. The slot's pair is re-pointed on the
+   * blocks view — an ancestor of every wrapper that reads the two tokens
+   * through its inline `var()`, so inheritance settles it and load order
+   * never comes into it. The two light slots need nothing: a cyan tint
+   * under ink prints as ink, with or without its tint. */
+  .aurora-blocks-view {
+    --aurora-block-bg-dark: var(--derico-ground);
+    --aurora-block-fg-dark: var(--derico-ink);
+  }
+
+  /* ── a section's frame ───────────────────────────────────────────────
+   * The mockup's `.section, .page-hero { padding-block: 1.5rem }`. Every
+   * frame Blicca pads a block with reads one of two tokens — a banded block
+   * is a section on this design and derico.css §11 lifts its frame to the
+   * `2xl` step, an unbanded one keeps §10's reading frame — and on paper
+   * both come down to the `m` step, whose floor is the mockup's 1.5rem.
+   * Twice, because the two are declared in two places: on the blocks view
+   * for the `:root` values of §10, which every wrapper inherits, and on the
+   * banded wrapper for §11's own rule there, one class deeper so it
+   * outranks it. The inner gaps of a run (`--aurora-space-continued`) are
+   * not touched — the mockup does not close up the space between a
+   * section's paragraphs. */
+  .aurora-blocks-view,
+  .aurora-blocks-view .block[class*="has--backgroundColor--"] {
+    --aurora-space-block: var(--plone-space-m);
+    --aurora-space-bleed: var(--plone-space-m);
+  }
+
+  /* The `.page-hero` half of the same rule: on an inner page the mockup's
+   * hero is the title and lede, which is the content header here (a page
+   * the Derico Hero opens has already lost its header to derico.css §7).
+   * Clara pads it `xl` above and `m` below, from `@layer components`. */
+  .element-contentheader {
+    padding-block: var(--plone-space-m);
+  }
+
+  /* ── links ───────────────────────────────────────────────────────────
+   * The mockup's `a { color: inherit; text-decoration: underline }`: cyan
+   * is a screen colour, and an underline is the one link marker a
+   * greyscale print keeps. A bare `a`, as in the mockup, and with the same
+   * reach: a component that dresses its own links with a longer selector
+   * keeps that dress — the mockup's `.triage dt a` and `.pillar-line a`
+   * stay undecorated on paper, and so do Blicca's teaser and listing links
+   * and the Promo's card link here. The card-shaped links, in other words,
+   * which read as links by their shape rather than by an underline. */
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  /* The mockup's `a[href^="http"]::after`, verbatim. There the test picks
+   * out external links, because the mockup's own links are relative; Plone
+   * writes every link absolute, so here it annotates internal links too.
+   * Deliberately left so: a printed page cannot be clicked, and the address
+   * a reader has to type is as useful for a page on this site as for one
+   * elsewhere. `mailto:` links carry their address as their text already
+   * and stay unannotated, as in the mockup. */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+  }
+}

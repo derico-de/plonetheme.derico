@@ -88,15 +88,7 @@ class TestFooterBundle:
         upgrade = (
             css_tools.PACKAGE / "src/plonetheme/derico/upgrades/1012/registry.xml"
         ).read_text()
-
-        def record(text):
-            match = re.search(
-                rf'<records[^>]*prefix="{re.escape(BUNDLE)}">(.*?)</records>', text, re.S
-            )
-            assert match, "record not found"
-            return sorted(re.findall(r"<value key=\"(\w+)\">(.*?)</value>", match.group(1)))
-
-        assert record(default) == record(upgrade)
+        assert css_tools.bundle_record(default, BUNDLE) == css_tools.bundle_record(upgrade, BUNDLE)
 
 
 class TestFooterSheet:
