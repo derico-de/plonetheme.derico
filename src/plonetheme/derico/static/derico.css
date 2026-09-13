@@ -397,6 +397,27 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
  * continuing a band wants no gap from its predecessor, which is Blicca's
  * default. It is set per block in §11. tests/test_aurora_rhythm.py holds
  * every name here against the ones Blicca's sheet declares.
+ *
+ * The text styles — the roles a paragraph can name (`textStyle`: kicker,
+ * lede, statement, byline, term, muted; Blicca's docs/design/text-styles.md)
+ * — are dressed by Blicca's sheet from five more tokens, and each is the
+ * design's own step for that role, read off the mockup's rules:
+ *
+ *   · the display face is what the kicker (`.page-context`) and the aside's
+ *     statement (`.article-aside > p:last-child`) are set in — Literata,
+ *     Clara's `--clara-font-display`, which §3 already re-publishes;
+ *   · the lede step is the design's `--text-lede`, the size of `.lede`,
+ *     `.section-intro` and the aside statement alike; Clara's step is that
+ *     ramp exactly;
+ *   · the accent ink is copper-text, the colour of `.page-context` and
+ *     `.article-byline` — reached as Clara's amber-text, which §2 turns
+ *     copper, so a kicker and a link hover are the same ink by construction;
+ *   · the soft ink is `--ink-soft`, what `.lede`, a scenario paragraph and a
+ *     facts definition read in; the strong ink is `--brand-deep`, what a
+ *     facts term (`.article-facts dt`) and a scenario's closing line are.
+ *
+ * The kicker's italic and the term's weight are Blicca's own shape and are
+ * not restated: they are the mockup's shape too.
  */
 :root {
   --aurora-content-font-family: var(--plone-font-body);
@@ -407,6 +428,11 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-h3-leading: var(--plone-leading-tight);
   --aurora-space-block: var(--plone-space-l);
   --aurora-space-bleed: var(--plone-space-xl);
+  --aurora-display-font-family: var(--clara-font-display);
+  --aurora-lede-size:           var(--clara-text-lede);
+  --aurora-text-accent-color:   var(--clara-amber-text);
+  --aurora-text-soft-color:     var(--clara-ink-soft);
+  --aurora-text-strong-color:   var(--clara-brand-deep);
   /* A pinned grid column (Blicca's `stickyColumn` setting) holds this far
    * below the viewport top: the mockup's `.detail-aside` pins at `--space-l`
    * (site.css:1452). Blicca reads it at the point of use with a 2rem

@@ -155,6 +155,15 @@ EXPECTED_ALIASES = {
     "--aurora-space-block": "--plone-space-l",
     "--aurora-space-bleed": "--plone-space-xl",
     "--aurora-sticky-offset": "--plone-space-l",
+    # the text styles (derico.css §10, second half): the display face, the
+    # lede step and the three inks the mockup sets a kicker, a lede, a byline,
+    # a term and a definition in. Copper is reached as Clara's amber-text,
+    # which §2 re-points, so the alias stays a Clara name.
+    "--aurora-display-font-family": "--clara-font-display",
+    "--aurora-lede-size": "--clara-text-lede",
+    "--aurora-text-accent-color": "--clara-amber-text",
+    "--aurora-text-soft-color": "--clara-ink-soft",
+    "--aurora-text-strong-color": "--clara-brand-deep",
 }
 
 

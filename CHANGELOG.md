@@ -2,6 +2,15 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The paragraph text styles wear the design's own steps.** Blicca lets a
+  paragraph name its role — kicker, lede, statement, byline, term, muted —
+  and dresses it from five `--aurora-*` tokens; derico points them at Clara's
+  display face and lede step and at the copper, soft and deep inks
+  (derico.css §10), so the "Die Leitfrage" label and the statement under it
+  in the sustainability page's aside, and the "Aus der Praxis" kicker over
+  the case study, read exactly as the mockup's `.page-context`,
+  `.article-aside` and `.article-byline` rules set them.
+
 - **The page title and its description sit side by side.** Every inner page
   of the design opens with the title on the left and the description as the
   lede on the right, bottom-aligned, the title's half the wider
