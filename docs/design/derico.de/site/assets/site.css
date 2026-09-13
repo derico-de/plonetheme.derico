@@ -1144,6 +1144,113 @@ a:hover { color: var(--copper-text); }
 .prose ul { padding-inline-start: 1.2rem; }
 .prose li + li { margin-block-start: var(--space-xs); }
 
+/* Sustainability long-read. One reading shell for the whole essay: the prose
+   column is the measure, the rail sits one gap beside it and runs to the
+   shell's edge, so the two never drift apart on wide screens. */
+.sustainability-article {
+  --site-max: 66rem;
+  /* 66ch of Source Sans 3 at the essay's 1.125rem body size. */
+  --article-column: 37rem;
+  --article-gap: clamp(3rem, 6vw, 6rem);
+  --text-chapter: clamp(1.75rem, 1.4rem + 1.45vw, 2.6rem);
+  overflow: clip;
+}
+.sustainability-article .page-hero { padding-block-end: var(--space-xl); }
+.sustainability-article .page-hero h1 { max-width: 22ch; }
+.sustainability-article .section { padding-block: var(--space-xl); }
+.sustainability-article .section--soft,
+.sustainability-article .section--band,
+.sustainability-article .exit-section { padding-block: var(--space-2xl); }
+.sustainability-article .section-heading,
+.sustainability-article .case-study__header h2 { font-size: var(--text-chapter); }
+.sustainability-article .article-opening { padding-block-start: 0; }
+.article-layout { display: grid; gap: var(--space-xl) var(--article-gap); }
+.article-prose { max-width: var(--measure); font-size: 1.125rem; line-height: 1.6; }
+.article-prose > * + * { margin-block-start: var(--space-s); }
+.article-prose h2 { font-size: var(--text-chapter); }
+.article-prose h2 + p { margin-block-start: var(--space-m); }
+.article-prose--opening .article-byline + p { color: var(--ink-soft); font-size: var(--text-lede); }
+.article-byline { color: var(--copper-text); font-weight: 700; }
+.article-thesis {
+  max-width: 36ch;
+  margin-block-start: var(--space-l);
+  margin-inline: 0;
+  padding-block-start: var(--space-m);
+  border-top: 1px solid var(--band-rule);
+  color: var(--brand-deep);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.article-aside,
+.article-scenario {
+  align-self: start;
+  max-width: var(--measure);
+  padding-block: var(--space-m);
+  border-block: 1px solid var(--band-rule);
+}
+.article-aside > p:last-child { max-width: 30ch; margin-block-start: var(--space-xs); font-family: var(--font-display); font-size: var(--text-lede); line-height: 1.5; }
+.article-facts > div { padding-block: var(--space-s); border-top: 1px solid var(--rule); }
+.article-facts > div:first-child { margin-block-start: var(--space-s); }
+.article-facts dt { color: var(--brand-deep); font-weight: 700; }
+.article-facts dd { margin: var(--space-3xs) 0 0; color: var(--ink-soft); }
+.case-study__header { max-width: 48rem; }
+.case-study__header h2 { margin-block-start: var(--space-xs); }
+.case-study__grid { display: grid; gap: var(--space-xl) var(--article-gap); margin-block-start: var(--space-l); }
+.article-scenario h3 { font-size: var(--text-title); }
+.article-scenario p { margin-block-start: var(--space-s); color: var(--ink-soft); }
+.article-scenario p:last-child { color: var(--brand-deep); font-weight: 700; }
+.sharing-grid { display: grid; gap: var(--space-l) var(--article-gap); }
+.sharing-principles { max-width: var(--measure); }
+.sharing-principles section { padding-block: var(--space-m); border-top: 1px solid var(--band-rule); }
+.sharing-principles section:last-child { border-bottom: 1px solid var(--band-rule); }
+.sharing-principles h3 { font-size: var(--text-title); }
+.sharing-principles p { margin-block-start: var(--space-xs); color: var(--ink-soft); }
+.public-code-statement {
+  margin: 0;
+  padding-block-start: var(--space-l);
+  border-top: 1px solid var(--band-rule);
+  color: var(--brand-deep);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.3rem + 2vw, 3rem);
+  font-weight: 650;
+  line-height: 1.18;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.public-code-statement p { max-width: 22ch; }
+.checklist-layout { display: grid; gap: var(--space-l) var(--article-gap); }
+.sustainability-checklist { display: grid; gap: 0 var(--article-gap); padding: 0; list-style: none; }
+.sustainability-checklist li {
+  display: grid;
+  grid-template-columns: var(--space-m) minmax(0, 1fr);
+  gap: var(--space-xs);
+  padding-block: var(--space-s);
+  border-top: 1px solid var(--rule);
+}
+.sustainability-checklist li::before { content: "✓"; color: var(--copper-text); font-weight: 700; }
+.exit-section { border-block: 1px solid var(--brand-deep); color: var(--hero-ink); background: var(--hero-ground); }
+.exit-layout { display: grid; gap: var(--space-l) var(--article-gap); }
+.exit-section .page-context { color: var(--hero-copper); }
+.exit-section .section-heading { margin-block-start: var(--space-xs); }
+.exit-section header > p:last-child { margin-block-start: var(--space-s); color: var(--hero-ink-soft); font-size: var(--text-lede); }
+.exit-questions { padding: 0; list-style: none; counter-reset: question; }
+.exit-questions li {
+  display: grid;
+  grid-template-columns: var(--space-l) minmax(0, 1fr);
+  gap: var(--space-s);
+  padding-block: var(--space-m);
+  border-top: 1px solid var(--hero-rule);
+  counter-increment: question;
+}
+.exit-questions li:last-child { border-bottom: 1px solid var(--hero-rule); }
+.exit-questions li::before { content: counter(question); color: var(--hero-copper); font-family: var(--font-display); font-size: var(--text-title); font-weight: 700; }
+.exit-conclusion { color: var(--hero-ink-soft); font-family: var(--font-display); font-size: var(--text-lede); }
+.article-sources h2 { font-size: var(--text-title); }
+.article-sources ul { display: grid; gap: var(--space-xs); margin-block-start: var(--space-m); padding-inline-start: 1.2rem; }
+.article-sources a { color: var(--ink-soft); }
 .proof-band { display: grid; gap: var(--space-l); align-items: end; }
 .proof-band blockquote { max-width: 34ch; font-family: var(--font-display); font-size: clamp(1.35rem, 1.15rem + 1vw, 2rem); font-style: italic; line-height: 1.45; }
 .proof-band cite { display: block; margin-block-start: var(--space-s); color: var(--ink-soft); font-family: var(--font-body); font-size: var(--text-label); font-style: normal; }
@@ -1249,6 +1356,7 @@ a:hover { color: var(--copper-text); }
 .contact-band { padding-block: var(--space-2xl); border-block: 1px solid var(--band-rule); background: var(--band); text-align: center; }
 .contact-band h2 { max-width: 20ch; margin-inline: auto; font-size: var(--text-heading); }
 .contact-band p { margin: var(--space-s) auto 0; color: var(--ink-soft); font-size: var(--text-lede); }
+.contact-band p strong { display: block; margin-block-end: var(--space-2xs); color: var(--ink); font-family: var(--font-display); }
 .contact-band .action-row { justify-content: center; }
 
 .site-footer { padding-block: var(--space-l); }
@@ -1299,6 +1407,21 @@ a:hover { color: var(--copper-text); }
 }
 
 @media (min-width: 56rem) {
+  /* The essay title carries "Softwareentwicklung"; the lede yields the width. */
+  .sustainability-article .page-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.6fr); }
+  .article-layout,
+  .case-study__grid,
+  .sharing-grid { grid-template-columns: minmax(0, var(--article-column)) minmax(16rem, 1fr); align-items: start; }
+  .article-layout > .article-prose { grid-column: 1; }
+  .article-layout > .article-aside { grid-column: 2; }
+  .sharing-grid > .section-heading,
+  .public-code-statement { grid-column: 1 / -1; }
+  .public-code-statement { margin-block-start: var(--space-s); }
+  .checklist-layout,
+  .exit-layout { grid-template-columns: minmax(20rem, 22rem) minmax(0, 1fr); align-items: start; }
+  .sustainability-checklist { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); grid-auto-flow: column; }
+  .exit-conclusion { grid-column: 2; }
+
   /* Off: two columns the hero carries one darkening layer at one value, so the
      backdrop behind the copy is the backdrop behind the rings and the legend.
      A second wash at a different alpha met the scrim mid-hero and left a

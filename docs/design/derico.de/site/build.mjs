@@ -334,9 +334,11 @@ const pages = {
     },
     sustainability: {
       type: "sustainability",
-      title: "Nachhaltigkeit entsteht in der Architektur.",
+      title: "Nachhaltige Softwareentwicklung braucht Open Source.",
+      heroTitle: "Nachhaltige Software&shy;entwicklung braucht Open Source.",
       context: "Nachhaltigkeit",
-      lede: "Eine nachhaltige Anwendung bleibt verständlich, sicher, aktualisierbar und übertragbar. Diese Eigenschaften werden von Beginn an geplant und regelmäßig gepflegt.",
+      lede: "Offene Software schützt Investitionen, ermöglicht Zusammenarbeit und erhält die Freiheit, eine Anwendung über viele Jahre weiterzuführen.",
+      contactLead: "<strong>Wie handlungsfähig bleibt Ihre Software?</strong> Sie schildern uns Ihre Aufgabe. Wir klären gemeinsam, wie sich Quellcode, Daten und Wissen dauerhaft zugänglich halten lassen — und welcher nächste Schritt sinnvoll ist.",
     },
     care: {
       type: "overview",
@@ -596,9 +598,10 @@ const pages = {
     },
     sustainability: {
       type: "sustainability",
-      title: "Sustainability starts in the architecture.",
+      title: "Sustainable software development needs open source.",
       context: "Sustainability",
-      lede: "A sustainable application remains understandable, secure, upgradable and transferable. These qualities are planned from the start and maintained throughout its life.",
+      lede: "Open software protects investments, enables collaboration and preserves the freedom to keep an application going for many years.",
+      contactLead: "<strong>How much room to act does your software leave you?</strong> Tell us about your task. Together we work out how source code, data and knowledge can stay accessible for the long term — and which next step makes sense.",
     },
     care: {
       type: "overview",
@@ -823,12 +826,13 @@ function rings(lang) {
 }
 
 function pageHero(page) {
-  return `<section class="page-hero"><div class="shell page-hero__grid"><div><p class="page-context">${page.context}</p><h1>${page.title}</h1></div><p class="lede">${page.lede}</p></div></section>`;
+  return `<section class="page-hero"><div class="shell page-hero__grid"><div><p class="page-context">${page.context}</p><h1>${page.heroTitle ?? page.title}</h1></div><p class="lede">${page.lede}</p></div></section>`;
 }
 
-function contactBand(lang) {
+function contactBand(lang, page) {
   const nav = navigation[lang];
-  return `<section class="contact-band"><div class="shell"><h2>${nav.firstTalk}</h2><p>${nav.contactLead}</p><div class="action-row"><a class="button" href="${href(lang, "contact")}">${nav.contact}</a><a class="quiet-link" href="mailto:md@derico.de">${nav.email}</a></div></div></section>`;
+  const lead = page.contactLead ?? nav.contactLead;
+  return `<section class="contact-band"><div class="shell"><h2>${nav.firstTalk}</h2><p>${lead}</p><div class="action-row"><a class="button" href="${href(lang, "contact")}">${nav.contact}</a><a class="quiet-link" href="mailto:md@derico.de">${nav.email}</a></div></div></section>`;
 }
 
 function heroMedia() {
@@ -1088,30 +1092,304 @@ function renderDetail(lang, page) {
   return `${pageHero(page)}<section class="section"><div class="shell detail-grid"><div class="prose"><h2>${page.bodyTitle}</h2>${page.body.map((text) => `<p>${text}</p>`).join("")}<h2>${deliverablesTitle}</h2><ul>${page.deliverables.map((item) => `<li>${item}</li>`).join("")}</ul></div><dl class="detail-aside"><dt>${labels[0]}</dt><dd>${page.fit}</dd><dt>${labels[1]}</dt><dd>${page.foundation}</dd><dt>${labels[2]}</dt><dd>${page.horizon}</dd></dl></div></section>${childPages}<section class="section section--band"><div class="shell proof-band"><blockquote>“${page.quote}”<cite>— ${lang === "de" ? "Arbeitsprinzip, derico" : "Working principle, derico"}</cite></blockquote><div class="proof-links">${page.proofLinks.map(([target, label]) => `<a href="${resolvedHref(lang, target)}"${target.startsWith("http") ? ' rel="external"' : ""}>${label}</a>`).join("")}</div></div></section>`;
 }
 
+const sustainabilityEssay = {
+  de: {
+    byline: "Von Maik Derstappen",
+    opening: [
+      "Bei nachhaltiger Softwareentwicklung denken viele zunächst an Energieverbrauch und effiziente Infrastruktur. Das sind wichtige Themen. Hier geht es jedoch um eine andere Form der Nachhaltigkeit: um den langfristigen Erhalt von Investitionen, Wissen und digitaler Handlungsfähigkeit.",
+      "Eine Geschäftsanwendung ist selten nur ein Werkzeug, das einmal gekauft und anschließend unverändert verwendet wird. Mit jedem Jahr fließen weitere Arbeit, Erfahrungen und Daten hinein. Abläufe werden angepasst, Mitarbeitende geschult und Schnittstellen geschaffen. Die Software wird zu einem Teil des Unternehmens.",
+    ],
+    thesis: "Open Source ist allein noch keine Garantie für nachhaltige Software. Aber Open Source ist die notwendige Voraussetzung dafür, eine bestehende Lösung unabhängig vom ursprünglichen Anbieter erhalten und weiterentwickeln zu können.",
+    leadQuestion: { label: "Die Leitfrage", text: "Was geschieht, wenn der heutige Hersteller oder Dienstleister morgen nicht mehr zur Verfügung steht?" },
+    caseStudy: {
+      label: "Aus der Praxis",
+      title: "Wenn die eigenen Daten nicht wirklich erreichbar sind",
+      paragraphs: [
+        "Ein Kunde von uns hatte über viele Jahre eine proprietäre Anwendung zur Erfassung von Trainingsdaten im Sportbereich eingesetzt. Später sollten diese Daten auch auf seiner Website erscheinen. Die Anwendung bot jedoch weder eine dokumentierte Schnittstelle noch einen zugänglichen Datenbestand. Verfügbar war lediglich eine bereits erzeugte HTML-Ansicht, die wir mit zusätzlichem Aufwand aufbereiten konnten.",
+        "Eine saubere und dauerhaft tragfähige Anbindung war auf diesem Weg nicht möglich. Der Hersteller wollte keine Schnittstelle bereitstellen oder entwickeln. Aus seiner Sicht war der Kunde dafür zu klein. Damit entschied nicht der Bedarf des Kunden, sondern die Priorität des Anbieters darüber, was mit den über Jahre erfassten Daten geschehen konnte.",
+      ],
+      scenario: {
+        title: "Übertragen auf ein ERP-System",
+        paragraphs: [
+          "Sie führen es ein, passen Arbeitsabläufe an, schulen Ihr Team und sammeln über Jahre Kunden-, Produkt- und Prozessdaten. Wenn Sie dieses System nicht unabhängig betreiben, erweitern oder ablösen können, liegt ein Teil Ihrer geschäftlichen Handlungsfähigkeit außerhalb Ihrer Kontrolle.",
+          "Bei einem zentralen ERP-System kann eine solche Sackgasse existenzbedrohend werden.",
+        ],
+      },
+    },
+    chapters: [
+      {
+        title: "Auch ein großer Hersteller ist keine dauerhafte Absicherung",
+        paragraphs: [
+          "Ein bekannter Anbieter, ein langfristiger Vertrag oder hohe Lizenzkosten können Verlässlichkeit vermitteln. Sie beseitigen die grundsätzliche Abhängigkeit jedoch nicht. Unternehmen werden verkauft, Produkte eingestellt und Geschäftsmodelle verändert. Preise können steigen, Schnittstellen verschwinden und wichtige Erweiterungen abgelehnt werden. Selbst ein wirtschaftlich stabiler Hersteller kann entscheiden, dass eine Produktlinie oder eine kleine Kundengruppe nicht mehr zu seiner Strategie passt.",
+          "Bei proprietärer Software bleiben zentrale Entscheidungen beim Anbieter. Kunden erwerben Nutzungsrechte und Dienstleistungen, aber nicht automatisch die Möglichkeit, die Anwendung selbst oder durch einen anderen Dienstleister weiterführen zu lassen. Viel gezahltes Geld ändert an dieser Grenze nichts.",
+          "Für kleine, preiswerte und leicht ersetzbare Werkzeuge kann dieses Risiko vertretbar sein. Voraussetzung ist, dass alle relevanten Daten jederzeit vollständig und ohne Mitwirkung des Herstellers exportiert werden können. Bei größeren, langfristig genutzten Anwendungen sollte dagegen bereits vor der Einführung eine belastbare Ausstiegsstrategie bestehen.",
+        ],
+      },
+      {
+        title: "Open Source erhält die Möglichkeit, weiterzugehen",
+        paragraphs: [
+          "Open Source bedeutet mehr, als Quellcode ansehen zu können. Eine freie Lizenz muss das Recht einräumen, die Software zu verwenden, zu untersuchen, zu verändern und weiterzugeben. Erst diese Rechte schaffen die Grundlage dafür, Verantwortung zu übernehmen oder an einen anderen Partner zu übertragen.",
+          "Fällt ein Dienstleister aus, kann ein anderer auf dem vorhandenen Stand aufbauen. Verschwindet ein Hersteller, bleibt die Software nutzbar. Wird eine dringend benötigte Funktion nicht umgesetzt, kann das eigene Team oder ein beauftragtes Unternehmen sie entwickeln. Der ursprüngliche Anbieter verliert damit die Macht, jede weitere Entwicklung zu verhindern.",
+          "Das macht einen Wechsel nicht automatisch einfach oder günstig. Schlecht strukturierter Quellcode, fehlende Dokumentation und veraltete Abhängigkeiten können auch ein offenes Projekt schwer wartbar machen. Der entscheidende Unterschied lautet: Bei Open Source kann ein schwieriger Weg vor Ihnen liegen. Bei einer geschlossenen Lösung kann der Weg rechtlich oder technisch vollständig versperrt sein.",
+        ],
+        facts: {
+          label: "Was Offenheit ändert",
+          items: [
+            ["Ausfall", "Ein anderer Dienstleister kann übernehmen."],
+            ["Fehlende Funktion", "Das eigene Team oder ein beauftragtes Unternehmen kann sie entwickeln."],
+            ["Anbieterwechsel", "Er kann aufwendig sein, bleibt aber möglich."],
+          ],
+        },
+      },
+      {
+        title: "Offenheit ersetzt keine Verantwortung",
+        paragraphs: [
+          "Open Source bedeutet weder „kostenlos“ noch „ohne Ansprechpartner“. Entwicklung, Betrieb, Wartung und Wissenstransfer müssen weiterhin finanziert und organisiert werden. Verlässliche Ansprechpartner entstehen durch ein verantwortliches internes Team oder klare Verträge mit einem oder mehreren Dienstleistern — nicht allein durch das Logo eines Herstellers.",
+          "Auch Sicherheit folgt nicht automatisch aus einem offenen oder geschlossenen Entwicklungsmodell. Entscheidend sind überprüfbare Prozesse, zeitnahe Aktualisierungen, gepflegte Abhängigkeiten und ein klarer Umgang mit Sicherheitsmeldungen. Offener Quellcode ermöglicht zusätzliche Prüfungen und unabhängige Korrekturen. Nutzen entsteht daraus aber nur, wenn jemand diese Möglichkeiten tatsächlich wahrnimmt.",
+        ],
+      },
+    ],
+    sharing: {
+      title: "Geteilte Entwicklung vervielfacht den Nutzen",
+      paragraphs: [
+        "Ein weiterer Vorteil entsteht, wenn offen entwickelte Bausteine von mehreren Organisationen genutzt werden. Dafür braucht es nicht immer ein gemeinsam geplantes Großprojekt. Zusammenarbeit geschieht in Open-Source-Projekten häufig zeitversetzt.",
+        "Eine Organisation finanziert eine Funktion, weil sie diese heute benötigt, und veröffentlicht den entstandenen Baustein. Andere setzen ihn später ein, beheben Fehler, ergänzen Schnittstellen oder übernehmen Teile der Pflege. Jahre später kann auch der ursprüngliche Auftraggeber eine verbesserte und aktualisierte Version nutzen, ohne sämtliche dazwischenliegenden Arbeiten selbst finanziert zu haben.",
+        "Dabei bezahlt ein Unternehmen nicht dafür, dem Wettbewerb etwas zu schenken. Es bezahlt zunächst dafür, sein eigenes Problem zum benötigten Zeitpunkt zu lösen. Gleichzeitig kann es auf einer Grundlage aufbauen, in die andere bereits investiert haben, und künftig von deren Beiträgen profitieren.",
+      ],
+      principles: [
+        ["Gemeinsam nutzbar", "Allgemeine Funktionen, Standards und technische Grundlagen können offen weiterentwickelt werden."],
+        ["Individuell geschützt", "Spezifische Geschäftslogik oder wettbewerbsrelevante Abläufe müssen nicht öffentlich werden."],
+        ["Vom Kunden entschieden", "Unsere Kunden erhalten immer den vollständigen Quellcode und entscheiden selbst, welche Bestandteile sie mit der Gemeinschaft teilen."],
+      ],
+    },
+    publicMoney: {
+      title: "Öffentlich finanziert sollte öffentlich nutzbar werden",
+      paragraphs: [
+        "Besonders groß ist das Potenzial bei öffentlich finanzierten Individualentwicklungen. Behörden, Kommunen, Bildungseinrichtungen und andere öffentliche Organisationen benötigen häufig ähnliche Funktionen. Werden einzelne Bausteine offen entwickelt, kann aus mehreren zunächst lokalen Vorhaben schrittweise eine gemeinsame Lösung entstehen.",
+        "Das spart nicht automatisch jede doppelte Ausgabe. Anwendungen müssen weiterhin angepasst, geprüft, betrieben und gepflegt werden. Aber öffentliche Mittel schaffen auf diese Weise einen bleibenden Wert, den andere Stellen nutzen und weiterentwickeln können. Deshalb sollten öffentlich finanzierte Individualentwicklungen grundsätzlich unter einer freien Lizenz veröffentlicht werden.",
+      ],
+      statement: "Öffentliches Geld sollte öffentlichen Code schaffen.",
+    },
+    checklist: {
+      title: "Eine freie Lizenz allein reicht nicht",
+      intro: "Nachhaltigkeit entsteht durch Rechte, technische Qualität, Pflege und geteiltes Wissen. Diese Grundlagen halten eine Anwendung langfristig übertragbar.",
+      items: [
+        "Eine anerkannte freie Lizenz und vollständiger Quellcode",
+        "Offene Datenformate, dokumentierte Schnittstellen und ein vollständiger Datenexport",
+        "Verständliche Architektur und nachvollziehbare technische Entscheidungen",
+        "Automatisierte Tests sowie aktuelle Dokumentation",
+        "Reproduzierbare Installation und Bereitstellung",
+        "Regelmäßige Sicherheitsaktualisierungen und geplante Versionswechsel",
+        "Offene Standards und möglichst verbreitete Technologien",
+        "Zugriff des Kunden auf Quellcode und betriebliche Infrastruktur",
+        "Wissenstransfer an das eigene Team, soweit es dies leisten kann und möchte",
+      ],
+    },
+    responsibility: {
+      title: "Verantwortung zeigt sich auch in schwierigen Projekten",
+      paragraphs: [
+        "Bei derico entwickeln wir Anwendungen so, dass sie nicht dauerhaft von uns abhängig bleiben müssen. Kunden erhalten den vollständigen Quellcode. Dokumentation, Tests, offene Standards und nachvollziehbare Betriebswege sollen es eigenen Mitarbeitenden oder anderen Dienstleistern ermöglichen, Verantwortung zu übernehmen. Wo es sinnvoll ist, fließen allgemeine Verbesserungen in die zugrunde liegenden Open-Source-Projekte zurück.",
+        "Zu dieser Haltung gehört auch die Ausdauer, schwierige Projekte zu stabilisieren. Wir haben Anwendungen übernommen, bei denen Wartungsrückstände, fehlendes Wissen oder technische Altlasten den nächsten Schritt erschwerten.",
+        "Nachhaltig zu arbeiten heißt für uns dann nicht, vorschnell alles neu zu bauen. Es heißt, den vorhandenen Wert zu verstehen, Risiken zu ordnen und die Lösung Schritt für Schritt wieder in einen langfristig tragfähigen Zustand zu bringen.",
+      ],
+      aside: { label: "Unser Arbeitsprinzip", text: "Ausdauer gehört zur Nachhaltigkeit. Auch unbequeme Aufräumarbeiten können der richtige Weg zu einer langfristig besseren Lösung sein." },
+    },
+    exit: {
+      label: "Ihre Ausstiegsstrategie",
+      title: "Bleiben Sie handlungsfähig?",
+      intro: "Eine nachhaltige Anwendung muss nicht unabhängig von allen Menschen und Unternehmen sein. Aber sie darf nicht in einer Sackgasse enden, sobald sich ein Partner, ein Produkt oder ein Geschäftsmodell verändert.",
+      questions: [
+        "Haben Sie Zugriff auf den vollständigen Quellcode, Ihre Daten und die notwendige Dokumentation?",
+        "Dürfen Sie einen anderen Dienstleister mit Betrieb und Weiterentwicklung beauftragen?",
+        "Können Sie Ihre Daten vollständig und in einem dokumentierten Format exportieren?",
+        "Ist nachvollziehbar, wie die Anwendung installiert, getestet und aktualisiert wird?",
+        "Was geschieht, wenn der heutige Hersteller oder Dienstleister morgen nicht mehr verfügbar ist?",
+      ],
+      conclusion: "Open Source erhält die Freiheit, den nächsten Schritt selbst zu bestimmen — und schützt damit den Wert, der über viele Jahre in einer Anwendung entsteht.",
+    },
+    sources: {
+      title: "Weiterführende Hinweise",
+      links: [
+        ["https://opensource.org/osd", "Open Source Initiative: Definition von Open Source"],
+        ["https://publiccode.eu/de/", "Free Software Foundation Europe: Öffentliches Geld? Öffentlicher Code!"],
+        ["https://digital-strategy.ec.europa.eu/en/library/study-about-impact-open-source-software-and-hardware-technological-independence-competitiveness-and", "Europäische Kommission: Studie zu den wirtschaftlichen Auswirkungen von Open-Source-Software und -Hardware"],
+      ],
+    },
+  },
+  en: {
+    byline: "By Maik Derstappen",
+    opening: [
+      "When people hear “sustainable software development”, many first think of energy consumption and efficient infrastructure. Those are important topics. This essay is about a different kind of sustainability: preserving investments, knowledge and the ability to act digitally over the long term.",
+      "A business application is rarely just a tool that is bought once and then used unchanged. Every year, more work, experience and data flow into it. Processes are adapted, staff are trained and interfaces are built. The software becomes part of the company.",
+    ],
+    thesis: "Open source alone is no guarantee of sustainable software. But open source is the necessary precondition for keeping an existing solution alive and developing it further, independently of the original vendor.",
+    leadQuestion: { label: "The guiding question", text: "What happens if today’s vendor or service provider is no longer available tomorrow?" },
+    caseStudy: {
+      label: "From practice",
+      title: "When your own data is not really within reach",
+      paragraphs: [
+        "One of our clients had used a proprietary application for recording training data in sports for many years. Later, that data was also meant to appear on their website. The application, however, offered neither a documented interface nor an accessible data store. All that was available was a pre-rendered HTML view, which we could process only with additional effort.",
+        "A clean, permanently viable integration was not possible on that route. The vendor did not want to provide or develop an interface. From their point of view, the client was too small for that. So it was not the client’s need but the vendor’s priorities that decided what could happen to data collected over many years.",
+      ],
+      scenario: {
+        title: "Applied to an ERP system",
+        paragraphs: [
+          "You introduce it, adapt your workflows, train your team and collect customer, product and process data over years. If you cannot operate, extend or replace that system independently, part of your business’s ability to act lies outside your control.",
+          "With a central ERP system, a dead end like this can threaten the company’s existence.",
+        ],
+      },
+    },
+    chapters: [
+      {
+        title: "Even a large vendor is no lasting safeguard",
+        paragraphs: [
+          "A well-known vendor, a long-term contract or high licence fees can convey reliability. They do not remove the underlying dependency. Companies are sold, products are discontinued and business models change. Prices can rise, interfaces can disappear and important extensions can be refused. Even a financially stable vendor can decide that a product line or a small group of customers no longer fits its strategy.",
+          "With proprietary software, the central decisions stay with the vendor. Customers acquire usage rights and services, but not automatically the ability to continue the application themselves or through another service provider. Paying a lot of money does nothing to change that boundary.",
+          "For small, inexpensive and easily replaceable tools, this risk can be acceptable. The precondition is that all relevant data can be exported completely, at any time and without the vendor’s involvement. For larger applications used over the long term, a robust exit strategy should exist before they are introduced.",
+        ],
+      },
+      {
+        title: "Open source keeps the road open",
+        paragraphs: [
+          "Open source means more than being able to look at source code. A free licence must grant the right to use, study, modify and redistribute the software. Only these rights create the basis for taking responsibility, or for handing it to another partner.",
+          "If a service provider drops out, another can build on the existing state. If a vendor disappears, the software remains usable. If an urgently needed feature is not implemented, your own team or a contracted company can develop it. The original vendor loses the power to block every further development.",
+          "That does not automatically make a change easy or cheap. Poorly structured source code, missing documentation and outdated dependencies can make an open project hard to maintain as well. The decisive difference is this: with open source, a difficult road may lie ahead of you. With a closed solution, the road may be completely blocked, legally or technically.",
+        ],
+        facts: {
+          label: "What openness changes",
+          items: [
+            ["Provider drops out", "Another service provider can take over."],
+            ["Missing feature", "Your own team or a contracted company can develop it."],
+            ["Change of vendor", "It may be laborious, but it remains possible."],
+          ],
+        },
+      },
+      {
+        title: "Openness does not replace responsibility",
+        paragraphs: [
+          "Open source means neither “free of charge” nor “nobody to call”. Development, operations, maintenance and knowledge transfer still have to be funded and organised. Reliable contacts come from a responsible in-house team or clear contracts with one or more service providers — not from a vendor’s logo alone.",
+          "Security does not follow automatically from an open or a closed development model either. What matters are verifiable processes, timely updates, well-maintained dependencies and a clear way of handling security reports. Open source code allows additional reviews and independent fixes. But that only creates value if someone actually takes up those opportunities.",
+        ],
+      },
+    ],
+    sharing: {
+      title: "Shared development multiplies the benefit",
+      paragraphs: [
+        "A further advantage arises when openly developed building blocks are used by several organisations. That does not always require a jointly planned large project. In open-source projects, collaboration often happens at different points in time.",
+        "One organisation funds a feature because it needs it today, and publishes the resulting building block. Others adopt it later, fix bugs, add interfaces or take over part of the maintenance. Years later, the original client can use an improved and updated version without having funded all the work in between.",
+        "In doing so, a company is not paying to give something away to its competitors. It pays, first of all, to solve its own problem at the moment it needs solving. At the same time it can build on a foundation others have already invested in, and benefit from their contributions in future.",
+      ],
+      principles: [
+        ["Shared in common", "General features, standards and technical foundations can be developed further in the open."],
+        ["Individually protected", "Specific business logic or competitively relevant processes do not have to become public."],
+        ["Decided by the client", "Our clients always receive the complete source code and decide for themselves which parts they share with the community."],
+      ],
+    },
+    publicMoney: {
+      title: "Publicly funded should become publicly usable",
+      paragraphs: [
+        "The potential is particularly large for publicly funded custom development. Public authorities, municipalities, educational institutions and other public organisations often need similar features. If individual building blocks are developed in the open, several initially local projects can gradually grow into a shared solution.",
+        "That does not automatically save every duplicate expense. Applications still have to be adapted, tested, operated and maintained. But this way, public funds create a lasting value that other bodies can use and develop further. Publicly funded custom development should therefore be released under a free licence as a matter of principle.",
+      ],
+      statement: "Public money should create public code.",
+    },
+    checklist: {
+      title: "A free licence alone is not enough",
+      intro: "Sustainability comes from rights, technical quality, care and shared knowledge. These foundations keep an application transferable in the long run.",
+      items: [
+        "A recognised free licence and the complete source code",
+        "Open data formats, documented interfaces and a complete data export",
+        "An understandable architecture and traceable technical decisions",
+        "Automated tests and up-to-date documentation",
+        "Reproducible installation and deployment",
+        "Regular security updates and planned version upgrades",
+        "Open standards and technologies that are as widely used as possible",
+        "Client access to the source code and the operational infrastructure",
+        "Knowledge transfer to the client’s own team, as far as it can and wants to take it on",
+      ],
+    },
+    responsibility: {
+      title: "Responsibility shows in difficult projects too",
+      paragraphs: [
+        "At derico we build applications so that they do not have to stay dependent on us permanently. Clients receive the complete source code. Documentation, tests, open standards and traceable operating procedures are meant to let their own staff or other service providers take responsibility. Where it makes sense, general improvements flow back into the underlying open-source projects.",
+        "Part of this attitude is the stamina to stabilise difficult projects. We have taken over applications where maintenance backlogs, missing knowledge or technical legacy made the next step hard.",
+        "For us, working sustainably then does not mean hastily rebuilding everything. It means understanding the value that is there, ordering the risks and bringing the solution back, step by step, into a state that will carry it for the long term.",
+      ],
+      aside: { label: "How we work", text: "Stamina is part of sustainability. Even uncomfortable clean-up work can be the right road to a solution that is better in the long run." },
+    },
+    exit: {
+      label: "Your exit strategy",
+      title: "Do you keep your room to act?",
+      intro: "A sustainable application does not have to be independent of every person and every company. But it must not end in a dead end as soon as a partner, a product or a business model changes.",
+      questions: [
+        "Do you have access to the complete source code, your data and the necessary documentation?",
+        "Are you allowed to commission another service provider for operations and further development?",
+        "Can you export your data completely and in a documented format?",
+        "Is it traceable how the application is installed, tested and updated?",
+        "What happens if today’s vendor or service provider is no longer available tomorrow?",
+      ],
+      conclusion: "Open source preserves the freedom to decide the next step yourself — and with it, the value that builds up in an application over many years.",
+    },
+    sources: {
+      title: "Further reading",
+      links: [
+        ["https://opensource.org/osd", "Open Source Initiative: The Open Source Definition"],
+        ["https://publiccode.eu/en/", "Free Software Foundation Europe: Public Money? Public Code!"],
+        ["https://digital-strategy.ec.europa.eu/en/library/study-about-impact-open-source-software-and-hardware-technological-independence-competitiveness-and", "European Commission: Study about the impact of open source software and hardware on technological independence, competitiveness and innovation"],
+      ],
+    },
+  },
+};
+
+const paragraphs = (items) => items.map((text) => `<p>${text}</p>`).join("");
+
 function renderSustainability(lang, page) {
-  const steps = lang === "de" ? [
-    ["Verstehen", "Fachbegriffe, Verantwortlichkeiten und echte Arbeitsabläufe bilden die Grundlage der Architektur."],
-    ["Offen bauen", "Offene Standards, dokumentierte Schnittstellen und verfügbare Quelltexte erhalten Wahlfreiheit."],
-    ["Pflegen", "Updates, Sicherheitsarbeit und technische Zustandsberichte halten die Anwendung gesund."],
-    ["Erneuern", "Versionswechsel und Migrationen werden vorbereitet, getestet und nachvollziehbar umgesetzt."],
-  ] : [
-    ["Understand", "Domain language, responsibilities and real working processes form the architectural foundation."],
-    ["Build openly", "Open standards, documented interfaces and available source code preserve choice."],
-    ["Maintain", "Updates, security work and technical health reports keep the application healthy."],
-    ["Renew", "Release changes and migrations are prepared, tested and implemented transparently."],
-  ];
-  const mechanisms = lang === "de" ? [
-    ["Wartbarkeit", "Klare Module, Tests und Dokumentation senken die Kosten jeder späteren Änderung."],
-    ["Sicherheit", "Regelmäßige Updates und überprüfbare Betriebswege begrenzen technische Risiken."],
-    ["Übertragbarkeit", "Offene Formate und Standards halten einen Wechsel von Betrieb oder Partner möglich."],
-    ["Effizienz", "Schlanke Auslieferung und angemessene Infrastruktur reduzieren laufenden Aufwand."],
-  ] : [
-    ["Maintainability", "Clear modules, tests and documentation reduce the cost of every later change."],
-    ["Security", "Regular updates and verifiable operations limit technical risk."],
-    ["Portability", "Open formats and standards keep a change of operator or partner possible."],
-    ["Efficiency", "Lean delivery and proportionate infrastructure reduce ongoing effort."],
-  ];
-  return `${pageHero(page)}<section class="section"><div class="shell detail-grid"><div><h2 class="section-heading">${lang === "de" ? "Vier wiederkehrende Aufgaben" : "Four recurring responsibilities"}</h2><ol class="sequence">${steps.map(([title, text]) => `<li><div><h3>${title}</h3><p>${text}</p></div></li>`).join("")}</ol></div><div class="detail-aside"><p class="page-context">${lang === "de" ? "Der Maßstab" : "The measure"}</p><p>${lang === "de" ? "Eine Anwendung bleibt wertvoll, wenn Menschen sie verstehen, sicher betreiben und ohne Sackgasse weiterentwickeln können." : "An application keeps its value when people can understand it, operate it safely and continue its development without a dead end."}</p></div></div></section><section class="section section--band"><div class="shell"><h2 class="section-heading">${lang === "de" ? "Mechanismen, die den Anspruch belegen" : "Mechanisms that support the claim"}</h2><div class="manifesto-grid">${mechanisms.map(([title, text]) => `<article class="manifesto-item"><h3>${title}</h3><p>${text}</p></article>`).join("")}</div></div></section>`;
+  const essay = sustainabilityEssay[lang];
+  const { caseStudy, sharing, publicMoney, checklist, responsibility, exit, sources } = essay;
+  const chapters = essay.chapters.map((chapter) => {
+    const facts = chapter.facts
+      ? `<aside class="article-aside"><p class="page-context">${chapter.facts.label}</p><dl class="article-facts">${chapter.facts.items.map(([term, text]) => `<div><dt>${term}</dt><dd>${text}</dd></div>`).join("")}</dl></aside>`
+      : "";
+    return `<div class="article-prose"><h2>${chapter.title}</h2>${paragraphs(chapter.paragraphs)}</div>${facts}`;
+  }).join("");
+  return `<article class="sustainability-article">${pageHero(page)}
+      <section class="section article-opening"><div class="shell article-layout">
+        <div class="article-prose article-prose--opening"><p class="article-byline">${essay.byline}</p>${paragraphs(essay.opening)}<blockquote class="article-thesis">${essay.thesis}</blockquote></div>
+        <aside class="article-aside"><p class="page-context">${essay.leadQuestion.label}</p><p>${essay.leadQuestion.text}</p></aside>
+      </div></section>
+
+      <section class="section section--soft case-study"><div class="shell">
+        <header class="case-study__header"><p class="page-context">${caseStudy.label}</p><h2>${caseStudy.title}</h2></header>
+        <div class="case-study__grid"><div class="article-prose">${paragraphs(caseStudy.paragraphs)}</div><aside class="article-scenario"><h3>${caseStudy.scenario.title}</h3>${paragraphs(caseStudy.scenario.paragraphs)}</aside></div>
+      </div></section>
+
+      <section class="section"><div class="shell article-layout">${chapters}</div></section>
+
+      <section class="section section--band"><div class="shell sharing-grid">
+        <h2 class="section-heading">${sharing.title}</h2>
+        <div class="article-prose">${paragraphs(sharing.paragraphs)}</div>
+        <div class="sharing-principles">${sharing.principles.map(([title, text]) => `<section><h3>${title}</h3><p>${text}</p></section>`).join("")}</div>
+      </div></section>
+
+      <section class="section"><div class="shell article-layout">
+        <div class="article-prose"><h2>${publicMoney.title}</h2>${paragraphs(publicMoney.paragraphs)}</div>
+        <blockquote class="public-code-statement"><p>${publicMoney.statement}</p></blockquote>
+      </div></section>
+
+      <section class="section section--soft"><div class="shell checklist-layout">
+        <header><h2 class="section-heading">${checklist.title}</h2><p class="section-intro">${checklist.intro}</p></header>
+        <ul class="sustainability-checklist">${checklist.items.map((item) => `<li>${item}</li>`).join("")}</ul>
+      </div></section>
+
+      <section class="section"><div class="shell article-layout">
+        <div class="article-prose"><h2>${responsibility.title}</h2>${paragraphs(responsibility.paragraphs)}</div>
+        <aside class="article-aside"><p class="page-context">${responsibility.aside.label}</p><p>${responsibility.aside.text}</p></aside>
+      </div></section>
+
+      <section class="section exit-section"><div class="shell exit-layout"><header><p class="page-context">${exit.label}</p><h2 class="section-heading">${exit.title}</h2><p>${exit.intro}</p></header><ol class="exit-questions">${exit.questions.map((question) => `<li>${question}</li>`).join("")}</ol><p class="exit-conclusion">${exit.conclusion}</p></div></section>
+
+      <footer class="section article-sources"><div class="shell"><h2>${sources.title}</h2><ul>${sources.links.map(([url, text]) => `<li><a href="${url}" rel="external">${text}</a></li>`).join("")}</ul></div></footer>
+    </article>`;
 }
 
 function renderTraining(lang, page) {
@@ -1190,7 +1468,7 @@ function document(lang, key, page) {
   ${breadcrumbs(lang, key, page.context.split(" · ").at(-1))}
   <main id="main">${renderBody(lang, page)}</main>
   ${subnav(lang, page)}
-  ${includeContact ? contactBand(lang) : ""}
+  ${includeContact ? contactBand(lang, page) : ""}
   ${footer(lang)}
 </body>
 </html>`;
