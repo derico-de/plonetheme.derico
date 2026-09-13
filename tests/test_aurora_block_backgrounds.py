@@ -104,6 +104,11 @@ EXPECTED_ALIASES = {
     "--aurora-block-bg-accent": "--derico-band-soft",
     "--aurora-block-bg-dark": "--derico-brand-deep",
     "--aurora-block-fg-dark": "--derico-ground",
+    # what the dark slot hands the text styles: the exit section's lightened
+    # copper, soft ink and rule (derico.css §8)
+    "--aurora-block-accent-dark": "--derico-copper-light",
+    "--aurora-block-fg-soft-dark": "--derico-ground-soft",
+    "--aurora-block-rule-dark": "--derico-rule-light",
 }
 
 
@@ -133,6 +138,11 @@ SLOT_PAIRS = [
     ("--clara-ink-soft", "--aurora-block-bg-grey", 4.5),
     ("--clara-ink-soft", "--aurora-block-bg-accent", 4.5),
     ("--aurora-block-fg-dark", "--aurora-block-bg-dark", 4.5),
+    # a kicker, a byline or a list marker, and a lede or a definition, on
+    # the dark slot; the rule between rows as a graphical object
+    ("--aurora-block-accent-dark", "--aurora-block-bg-dark", 4.5),
+    ("--aurora-block-fg-soft-dark", "--aurora-block-bg-dark", 4.5),
+    ("--aurora-block-rule-dark", "--aurora-block-bg-dark", 3.0),
     # Links, on every light slot. This is the pair that decided the accent
     # value: the theme's own table tests links on --clara-band-soft and
     # deliberately does not test them on --clara-band, and a picker slot has

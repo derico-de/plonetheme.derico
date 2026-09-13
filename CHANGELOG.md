@@ -10,6 +10,12 @@
   in the sustainability page's aside, and the "Aus der Praxis" kicker over
   the case study, read exactly as the mockup's `.page-context`,
   `.article-aside` and `.article-byline` rules set them.
+  The list styles (checklist, questions, sources) and the quote styles
+  (statement, display) take four more aliases — the hairline, the
+  structural rule, Clara's title and heading steps — and the dark slot's
+  three new hooks are filled with the exit section's lightened copper, soft
+  ink and rule, so a kicker or the questions' counters stay readable on the
+  petrol band.
 
 - **The page title and its description sit side by side.** Every inner page
   of the design opens with the title on the left and the description as the

@@ -74,6 +74,15 @@
   --derico-on-copper:      oklch(0.99 0.004 50);  /* #fefbf9 — 4.60:1 on the copper fill */
   --derico-copper-surface: oklch(0.95 0.04 55);   /* #ffe8d6 — warning/notice tint on the copper hue */
 
+  /* The dark band's own steps: what the design sets on its exit section
+     (`.exit-section`, site.css:1234–1249), whose ground is the ladder's deep
+     petrol. Copper lightened until it clears ink-on-dark, the soft ink and
+     the rule of a light-on-dark section — all measured on --derico-brand-deep,
+     the "Dark" slot's ground (§8). */
+  --derico-copper-light: oklch(0.82 0.13 65);      /* #feb263 — 5.95:1 on brand-deep */
+  --derico-ground-soft:  oklch(0.93 0.018 215);    /* #dbebef — 8.67:1 on brand-deep */
+  --derico-rule-light:   oklch(0.72 0.045 213);    /* #85adb5 — 4.37:1 on brand-deep */
+
   --derico-info-surface: oklch(0.96 0.028 215.55); /* #def7fe — brand-text on it 5.38:1 */
   --derico-success:      oklch(0.39 0.10 155);     /* #00542c — 9.11:1 on ground */
   --derico-success-text: oklch(0.33 0.085 155);    /* #004221 — hover/active step */
@@ -287,6 +296,14 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
  * `color: inherit` at zero specificity under the dark slot, so a theme rule
  * that deliberately colours something still wins.
  *
+ * The dark slot hands its subtree three more values, because the text
+ * styles' inks and the list rules (§10, second half) are tuned for the page
+ * ground and would vanish on the petrol: the accent a kicker, a byline and
+ * a list marker take, the soft ink of a lede or a definition, and the rule
+ * between a checklist's rows. They are the design's exit section, which is
+ * exactly this — copper and ink lightened for a dark ground (the ladder's
+ * `--derico-copper-light`, `--derico-ground-soft`, `--derico-rule-light`).
+ *
  * Only these three slots exist to fill. A fourth would have to be added to
  * Blicca's palette first — a value this file invented would name a slot no
  * picker offers. `tests/test_aurora_block_backgrounds.py` holds the names
@@ -296,6 +313,9 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-block-bg-accent: var(--derico-band-soft);
   --aurora-block-bg-dark:   var(--derico-brand-deep);
   --aurora-block-fg-dark:   var(--derico-ground);
+  --aurora-block-accent-dark:  var(--derico-copper-light);
+  --aurora-block-fg-soft-dark: var(--derico-ground-soft);
+  --aurora-block-rule-dark:    var(--derico-rule-light);
 }
 
 /* ══ 9. The Promo block's theme seam ═════════════════════════════════════
@@ -418,6 +438,19 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
  *
  * The kicker's italic and the term's weight are Blicca's own shape and are
  * not restated: they are the mockup's shape too.
+ *
+ * The list styles (checklist, questions, sources) and the quote styles
+ * (statement, display) take four more:
+ *
+ *   · the rule between a checklist's or the questions' rows is the design's
+ *     hairline (`--rule`, `.sustainability-checklist li`) — Blicca's
+ *     `--aurora-divider`, which its listings already draw with;
+ *   · a quote's top rule is the structural rule (`--band-rule`, the
+ *     `.article-thesis` and `.public-code-statement` border);
+ *   · a quote as a statement is the design's thesis
+ *     (`clamp(1.25rem, …, 1.75rem)`), which is Clara's title step within a
+ *     hair; as a display line it is the public-code statement
+ *     (`clamp(1.75rem, …, 3rem)`), the section-heading step.
  */
 :root {
   --aurora-content-font-family: var(--plone-font-body);
@@ -433,6 +466,10 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-text-accent-color:   var(--clara-amber-text);
   --aurora-text-soft-color:     var(--clara-ink-soft);
   --aurora-text-strong-color:   var(--clara-brand-deep);
+  --aurora-divider:             var(--clara-rule);
+  --aurora-quote-border:        var(--clara-band-rule);
+  --aurora-quote-statement-size: var(--clara-text-title);
+  --aurora-quote-display-size:   var(--clara-text-heading);
   /* A pinned grid column (Blicca's `stickyColumn` setting) holds this far
    * below the viewport top: the mockup's `.detail-aside` pins at `--space-l`
    * (site.css:1452). Blicca reads it at the point of use with a 2rem

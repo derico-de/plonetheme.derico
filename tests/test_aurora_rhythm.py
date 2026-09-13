@@ -164,6 +164,12 @@ EXPECTED_ALIASES = {
     "--aurora-text-accent-color": "--clara-amber-text",
     "--aurora-text-soft-color": "--clara-ink-soft",
     "--aurora-text-strong-color": "--clara-brand-deep",
+    # the list and quote styles: the hairline between rows, the structural
+    # rule a quote stands on, and the thesis and public-code sizes
+    "--aurora-divider": "--clara-rule",
+    "--aurora-quote-border": "--clara-band-rule",
+    "--aurora-quote-statement-size": "--clara-text-title",
+    "--aurora-quote-display-size": "--clara-text-heading",
 }
 
 
