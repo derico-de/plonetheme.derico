@@ -4,12 +4,14 @@
 
 - **The page title and its description sit side by side.** Every inner page
   of the design opens with the title on the left and the description as the
-  lede on the right, bottom-aligned (`.page-hero__grid`). Clara's content
-  header is that pair, and it now lays out from a token API (Clara's
-  architecture §1.7), so derico sets two values — a column minimum of `27rem`
-  and `end` alignment — and the description moves beside the title on a wide
-  content column and back under it on a narrow one. The start page is
-  unchanged: a page the Hero opens has no content header (derico.css §7).
+  lede on the right, bottom-aligned, the title's half the wider
+  (`.page-hero__grid`). Clara's content header is that pair, and it now lays
+  out from a token API (Clara's architecture §1.7), so derico sets five
+  values — two-up from a header width of `56rem`, `end` alignment,
+  `space-between` justification and the mockup's `0.9`/`0.75` shares — and
+  the description moves beside the title
+  on a wide content column and back under it on a narrow one. The start page
+  is unchanged: a page the Hero opens has no content header (derico.css §7).
 
 - **The theme gets the design's print stylesheet.** The mockup ships one
   whole-page `@media print` block and the site shipped none: a printed page

@@ -184,16 +184,20 @@
   --plone-space-2xl: clamp(4.5rem, 3.7rem + 3vw, 7.5rem);
   --plone-space-3xl: clamp(6rem, 5rem + 4vw, 10rem);
 
-  /* The page hero of every inner page (`.page-hero__grid`, site.css:1411,
-   * 1450): the title on the left, the description as the lede on the right,
-   * the two bottom-aligned. Clara's content header carries exactly that pair
-   * and lays it out from these tokens (architecture §1.7); the description
-   * moves beside the title once the content column can hold two columns of
-   * this minimum — about the mockup's 56rem — and stacks under it again
-   * below that, with no breakpoint of our own. The start page is untouched:
-   * a page the Hero opens has no content header at all (§7). */
-  --plone-contentheader-column-min: 27rem;
+  /* The page hero of every inner page (`.page-hero__grid`, site.css:1450):
+   * the title on the left, the description as the lede at the far right,
+   * the two bottom-aligned, the title's half the wider (0.9fr against
+   * 0.75fr, justified space-between).
+   * Clara's content header carries exactly that pair and lays it out from
+   * these tokens (architecture §1.7): two-up once the header is 56rem wide —
+   * the mockup's own switch — and stacked under it below that, with no
+   * breakpoint of our own. The start page is untouched: a page the Hero
+   * opens has no content header at all (§7). */
+  --plone-contentheader-threshold: 56rem;
   --plone-contentheader-align: end;
+  --plone-contentheader-justify: space-between;
+  --plone-contentheader-title-grow: 0.9;
+  --plone-contentheader-description-grow: 0.75;
 }
 
 /* ══ 6. Dark mode ════════════════════════════════════════════════════════
