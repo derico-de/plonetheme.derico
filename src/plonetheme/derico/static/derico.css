@@ -392,6 +392,11 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-h3-leading: var(--plone-leading-tight);
   --aurora-space-block: var(--plone-space-l);
   --aurora-space-bleed: var(--plone-space-xl);
+  /* A pinned grid column (Blicca's `stickyColumn` setting) holds this far
+   * below the viewport top: the mockup's `.detail-aside` pins at `--space-l`
+   * (site.css:1452). Blicca reads it at the point of use with a 2rem
+   * fallback and declares it nowhere, like `--aurora-space-continued`. */
+  --aurora-sticky-offset: var(--plone-space-l);
 }
 
 /* ══ 11. The frame around a block, per block ══════════════════════════════

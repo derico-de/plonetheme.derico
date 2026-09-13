@@ -143,7 +143,8 @@ def test_the_run_markers_the_frame_rules_key_on_are_blicca_s():
 #: token -> the step it must alias verbatim. The face and leadings are
 #: Clara's; the heading steps are the design's prose and component headings
 #: (derico.css §10 says why not the section step); the frames are §5's
-#: section rhythm.
+#: section rhythm; the sticky offset is the mockup's `.detail-aside` pin
+#: (`--space-l`), read by Blicca at the point of use only.
 EXPECTED_ALIASES = {
     "--aurora-content-font-family": "--plone-font-body",
     "--aurora-content-line-height": "--plone-leading-body",
@@ -153,6 +154,7 @@ EXPECTED_ALIASES = {
     "--aurora-h3-leading": "--plone-leading-tight",
     "--aurora-space-block": "--plone-space-l",
     "--aurora-space-bleed": "--plone-space-xl",
+    "--aurora-sticky-offset": "--plone-space-l",
 }
 
 
