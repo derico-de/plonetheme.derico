@@ -26,6 +26,7 @@ const slugs = {
     talks: "vortraege.html",
     contact: "kontakt.html",
     imprint: "impressum.html",
+    styleguide: "styleguide.html",
   },
   en: {
     home: "index.html",
@@ -48,6 +49,7 @@ const slugs = {
     talks: "talks.html",
     contact: "contact.html",
     imprint: "legal-notice.html",
+    styleguide: "styleguide.html",
   },
 };
 
@@ -416,6 +418,13 @@ const pages = {
       context: "Impressum",
       lede: "Angaben zum Anbieter dieser Website und Nachweise für verwendete Inhalte.",
     },
+    styleguide: {
+      type: "styleguide",
+      title: "Styleguide für die Redaktion",
+      heroTitle: "So sieht Text auf derico.de aus.",
+      context: "Redaktion · Styleguide",
+      lede: "Alle Textformate, Farben und Blockbreiten des Designs – mit den Namen, unter denen sie im Aurora-Editor zu finden sind.",
+    },
   },
   en: {
     home: {
@@ -678,6 +687,13 @@ const pages = {
       title: "Legal notice",
       context: "Legal notice",
       lede: "Provider information for this website and credits for licensed content.",
+    },
+    styleguide: {
+      type: "styleguide",
+      title: "Editorial style guide",
+      heroTitle: "This is what text looks like on derico.de.",
+      context: "Editorial · Style guide",
+      lede: "Every text format, colour and block width of the design, under the names the Aurora editor uses for them.",
     },
   },
 };
@@ -1432,6 +1448,369 @@ function renderImprint(lang, page) {
   return `${pageHero(page)}<section class="section"><div class="shell"><div class="prose"><h2>${isDe ? "Anbieter" : "Provider"}</h2><p>Maik Derstappen<br>Laaver Weg 2<br>19273 Neuhaus/Elbe<br>${isDe ? "Deutschland" : "Germany"}</p><h2>${isDe ? "Kontakt" : "Contact"}</h2><p>${isDe ? "Telefon" : "Phone"}: <a href="tel:+491788612833">+49 178 861 2 833</a><br>${isDe ? "E-Mail" : "Email"}: <a href="mailto:md@derico.de">md@derico.de</a></p><h2>${isDe ? "Bildnachweis" : "Image credit"}</h2><p>${isDe ? "Das Hintergrundfoto der Startseite stammt von" : "The homepage background photograph is by"} <a href="https://unsplash.com/photos/brown-and-green-trees-on-brown-grass-field-during-daytime-hZX4tYgljUI" rel="external">Kat Closon</a>${isDe ? " und wird unter der" : " and is used under the"} <a href="https://unsplash.com/license" rel="external">Unsplash License</a>${isDe ? " verwendet." : "."}</p></div></div></section>`;
 }
 
+const styleguideCopy = {
+  de: {
+    toc: "Auf dieser Seite",
+    spec: { aurora: "In Aurora", font: "Schrift", color: "Farbe", use: "Einsatz" },
+    how: {
+      title: "So formatieren Sie in Aurora",
+      intro: "Das Design kennt für jede Textrolle einen Namen. Sie wählen die Rolle, das Theme übernimmt Schrift, Größe und Farbe. Vier Handgriffe reichen.",
+      steps: [
+        ["Block einfügen", "In einer leeren Zeile <kbd>/</kbd> tippen. Das Menü „Text blocks“ bietet Text, Heading 2 bis 4, Listen, Toggle, Code Block, Table, Blockquote und Callout."],
+        ["Blocktyp wechseln", "Text markieren, in der schwebenden Werkzeugleiste „Turn into“ öffnen: Text, Heading 2/3/4, Bulleted list, Numbered list, To-do list oder Quote."],
+        ["Textstil wählen", "Ein Wort markieren. Rechts in der Werkzeugleiste erscheint „Text style“ – bei Listen „List style“, bei Zitaten „Quote style“. Blöcke auf oberster Ebene zeigen dieselbe Auswahl in der Seitenleiste; in Spalten geht es nur über die Werkzeugleiste."],
+        ["Breite und Hintergrund", "Block anklicken, in der Seitenleiste „Block width“ und „Background“ setzen. Ein Hintergrund läuft über aufeinanderfolgende Blöcke weiter, bis ein Block ohne folgt."],
+      ],
+      rulesTitle: "Grundsätze",
+      rules: [
+        "Eine Seite hat einen Titel – den Titelblock oben. Überschriften beginnen bei Heading 2.",
+        "Überschriften gliedern, sie machen nichts groß. Wer eine große oder farbige Zeile braucht, nimmt einen Textstil.",
+        "„Normal“ entfernt einen Stil wieder. Ein Block ohne Stil sieht aus wie immer.",
+        "Farben werden nie direkt gewählt. Sie kommen aus Stil, Hintergrund und Theme – so bleibt jede Kombination lesbar.",
+        "Nichts unter 15 Pixel. Es gibt kein Kleingedrucktes; Hierarchie entsteht aus Gewicht, Farbe und Abstand.",
+      ],
+    },
+    fonts: {
+      title: "Schriften",
+      intro: "Zwei Schriften tragen die Seite. Beide liegen auf dem Server, nichts wird von Dritten geladen.",
+      items: [
+        ["Source Sans 3", "Fließtext, Listen, Navigation, Byline, Term", "Die Arbeitsschrift. 16 Pixel Grundgröße, Zeilenabstand 1,6."],
+        ["Literata", "Überschriften, Kicker, Statement, Zitate", "Die Display-Schrift, ein Lesefont aus dem Buchdruck. Erscheint überall dort, wo eine Zeile für sich stehen soll."],
+      ],
+      sample: "Anwendungen, die bleiben. Nachhaltige Lösungen seit über zwanzig Jahren – flexibel, modern, sicher.",
+    },
+    headings: {
+      title: "Überschriften",
+      intro: "Vier Stufen, alle in Literata. Die Stufe folgt der Gliederung, nicht der gewünschten Größe.",
+      entries: [
+        { level: "title", sample: "Odoo verbindet Ihre Geschäftsprozesse.", aurora: "Titelblock (einmal pro Seite)", font: "Literata 600 · 32–56 px", color: "Ink", use: "Der Seitentitel. Wird aus dem Titel der Seite gefüllt, nicht getippt." },
+        { level: "h2", sample: "Was wir gemeinsam erarbeiten", aurora: "Heading 2", font: "Literata 600 · 26–39 px", color: "Ink", use: "Kapitel. Die erste Stufe, die Sie selbst setzen." },
+        { level: "h3", sample: "Zuständigkeiten und Reaktionswege", aurora: "Heading 3", font: "Literata 600 · 22–28 px", color: "Ink", use: "Abschnitt innerhalb eines Kapitels." },
+        { level: "h4", sample: "Upgrade-Zyklen", aurora: "Heading 4", font: "Source Sans 3 700 · 18 px", color: "Ink", use: "Zwischenzeile in langen Abschnitten. Sparsam." },
+      ],
+    },
+    text: {
+      title: "Textstile",
+      intro: "Das Menü „Text style“ auf einem Absatz. Sieben Rollen, benannt nach ihrer Aufgabe im Text.",
+      entries: [
+        { style: "normal", sample: "<p>Wir entwickeln Geschäftsanwendungen auf Basis von Python, modernem JavaScript und Open Source. Wartbarkeit, offene Standards und klare Entscheidungen sichern ihren Wert über viele Jahre.</p>", aurora: "Text style → Normal", font: "Source Sans 3 · 16 px · Zeilenabstand 1,6", color: "Ink", use: "Fließtext. Die Lesebreite liegt bei 66 Zeichen." },
+        { style: "kicker", sample: "<p class=\"sg-kicker\">Aus der Praxis</p><h2 class=\"sg-h2\">Ein Verband, drei Systeme, ein Datenmodell</h2>", aurora: "Text style → Kicker", font: "Literata kursiv · 16 px", color: "Accent (Copper text)", use: "Die Zeile über einer Überschrift oder einem Statement. Bindet sich an das, was folgt: kein Abstand darunter." },
+        { style: "lede", sample: "<p class=\"sg-lede\">Technologie ist tragfähig, wenn sie zur Aufgabe passt, verständlich bleibt und zuverlässig weiterentwickelt werden kann.</p>", aurora: "Text style → Lede", font: "Source Sans 3 · 18–22 px · Zeilenabstand 1,5", color: "Soft (Ink soft)", use: "Der Vorspann unter einer Überschrift. Ein Absatz, selten zwei." },
+        { style: "statement", sample: "<p class=\"sg-statement\">Nachhaltig ist eine Anwendung, die nach zehn Jahren noch jemand versteht.</p>", aurora: "Text style → Statement", font: "Literata · 18–22 px · Zeilenabstand 1,5", color: "Ink", use: "Eine Aussage, die für sich steht – in einer Randspalte oder als Schluss eines Kapitels. Bis 30 Zeichen Breite." },
+        { style: "byline", sample: "<p class=\"sg-byline\">Von Maik Derstappen</p>", aurora: "Text style → Byline", font: "Source Sans 3 700 · 16 px", color: "Accent (Copper text)", use: "Die Autorenzeile über dem ersten Absatz eines Beitrags." },
+        { style: "term", sample: "<p class=\"sg-term\">Laufzeit</p><p class=\"sg-muted\">Seit 2009 in Betrieb, dreimal migriert, nie neu geschrieben.</p>", aurora: "Text style → Term", font: "Source Sans 3 700 · 16 px", color: "Strong (Brand deep)", use: "Der Begriff einer Faktenliste. Bindet sich an den Absatz darunter, der meist „Muted“ ist." },
+        { style: "muted", sample: "<p class=\"sg-muted\">Kontaktdaten und Telefonnummern sind Platzhalter der aktuellen Seite und werden vor der Veröffentlichung geprüft.</p>", aurora: "Text style → Muted", font: "Source Sans 3 · 16 px", color: "Soft (Ink soft)", use: "Zurückgenommener Text: Erläuterungen, Definitionen, Nebensätze." },
+      ],
+    },
+    lists: {
+      title: "Listenstile",
+      intro: "Das Menü „List style“ auf einem Listeneintrag. Der Stil gilt für die ganze Liste, nicht für einen Eintrag.",
+      entries: [
+        { style: "normal", sample: "<ul><li>Architektur, Benutzeroberfläche und Betrieb als eine Aufgabe</li><li>Frameworks nach Prozess und Lebensdauer gewählt</li><li>Offene Standards statt Abhängigkeiten</li></ul>", aurora: "List style → Normal (Bulleted list, Numbered list, To-do list)", font: "Source Sans 3 · 16 px", color: "Ink", use: "Die gewöhnliche Aufzählung. Nummeriert, wenn die Reihenfolge zählt." },
+        { style: "checklist", sample: "<ul class=\"sg-list sg-list--checklist\"><li>Der Quellcode gehört Ihnen und liegt in Ihrem Repository.</li><li>Jede Abhängigkeit ist offen lizenziert und aktiv gepflegt.</li><li>Ein Upgrade-Pfad ist vor dem Start beschrieben.</li></ul>", aurora: "List style → Checklist", font: "Source Sans 3 · 16 px · Haken in Copper", color: "Ink, Haken Accent", use: "Kriterien, die erfüllt sind oder sein sollen. Kein Aufzählungspunkt, ein Haken je Zeile, Haarlinie darüber." },
+        { style: "questions", sample: "<ol class=\"sg-list sg-list--questions\"><li>Wer kann die Anwendung in fünf Jahren noch weiterentwickeln?</li><li>Welche Daten müssen exportierbar bleiben – und in welchem Format?</li><li>Was passiert, wenn der Anbieter aufhört?</li></ol>", aurora: "List style → Questions", font: "Source Sans 3 · 16 px · Zähler in Literata 700", color: "Ink, Zähler Accent", use: "Die Fragen zum Mitnehmen am Ende eines Beitrags. Nummeriert, mit Linien über jeder Zeile und unter der letzten." },
+        { style: "sources", sample: "<ul class=\"sg-list sg-list--sources\"><li><a href=\"#\">Bundesministerium des Innern: Open-Source-Strategie (2024)</a></li><li><a href=\"#\">Plone Foundation: Release history</a></li></ul>", aurora: "List style → Sources", font: "Source Sans 3 · 16 px", color: "Soft (Ink soft)", use: "Quellen und Verweise. Ruhige Zeilen, Links in weichem Ink." },
+      ],
+    },
+    quotes: {
+      title: "Zitatstile",
+      intro: "Das Menü „Quote style“ auf einem Blockquote.",
+      entries: [
+        { style: "normal", sample: "<blockquote class=\"sg-quote\">Wir wählen Frameworks nach Prozess, Organisation und Lebensdauer der Anwendung.</blockquote>", aurora: "Quote style → Normal (Blockquote)", font: "Source Sans 3 kursiv · 16 px", color: "Soft, Linie Band rule", use: "Ein Zitat im Lauf des Textes. Linie links, kursiv." },
+        { style: "statement", sample: "<blockquote class=\"sg-quote sg-quote--statement\">Software ist dann nachhaltig, wenn man sie loslassen kann, ohne sie zu verlieren.</blockquote>", aurora: "Quote style → Statement", font: "Literata 500 · 20–28 px · Zeilenabstand 1,4", color: "Strong (Brand deep), Linie Band rule", use: "Die These eines Beitrags. Linie oben, bis 36 Zeichen Breite." },
+        { style: "display", sample: "<blockquote class=\"sg-quote sg-quote--display\">Public Money, Public Code.</blockquote>", aurora: "Quote style → Display", font: "Literata 650 · 28–48 px · Zeilenabstand 1,18", color: "Strong (Brand deep), Linie Band rule", use: "Eine Zeile als Plakat. Wenige Worte, bis 22 Zeichen Breite. Einmal pro Seite." },
+      ],
+    },
+    marks: {
+      title: "Auszeichnungen",
+      intro: "Für Wörter innerhalb eines Absatzes. Text markieren, Schaltfläche in der Werkzeugleiste. Auf Windows und Linux steht Strg für ⌘.",
+      entries: [
+        ["Bold", "<strong>Verlässliche Betreuung</strong> für Anwendungen, die täglich gebraucht werden.", "⌘ B", "Ein Begriff, der beim Überfliegen hängen bleiben soll. Nie ganze Sätze."],
+        ["Italic", "Das Wort <em>nachhaltig</em> meint hier Wartbarkeit, nicht Marketing.", "⌘ I", "Betonung, Fremdwörter, Titel von Werken."],
+        ["Strikethrough", "Reaktion <s>innerhalb von zwei Werktagen</s> am selben Werktag.", "⌘ ⇧ M", "Eine Korrektur, die sichtbar bleiben soll. Selten."],
+        ["Code", "Der Befehl <code>uv run pytest</code> führt die Tests aus.", "⌘ E", "Befehle, Dateinamen, Bezeichner."],
+        ["Link", "Mehr dazu auf <a href=\"#\">plone.org</a>.", "Link-Schaltfläche", "Verweise. Der Linktext sagt, wohin es geht – nie „hier“."],
+      ],
+    },
+    colors: {
+      title: "Farben",
+      intro: "Die Palette „Jahresringe“: Petrol als Marke, Kupfer als Akzent. Redaktionell wählen Sie nie eine Farbe – jeder Textstil und jeder Hintergrund bringt seine mit. Die Namen in Klammern sind die Token, die Aurora und das Theme benutzen.",
+      groups: [
+        { title: "Grund und Text", note: "Was jede Seite trägt.", swatches: [
+          ["Ground", "ground", "#fafcfd", "Der Seitengrund."],
+          ["Surface", "surface", "#ebf6f8", "Ruhige Fläche. Hintergrund „Grey“."],
+          ["Ink", "ink", "#101d22", "Fließtext, Überschriften."],
+          ["Ink soft", "ink-soft", "#31464e", "Aurora „Soft“: Lede, Muted, Sources."],
+          ["Rule", "rule", "#b9cfd5", "Haarlinien: Checklist, Questions."],
+          ["Band rule", "band-rule", "#53838f", "Strukturlinien: Zitate, Bänder."],
+        ] },
+        { title: "Petrol", note: "Die Marke. Das exakte Cyan gehört Logo und Ringen – als Textfarbe kommt es nie vor.", swatches: [
+          ["Brand", "brand", "#039fba", "Logo, Jahresringe, Bedienelemente."],
+          ["Brand link", "brand-link", "#006d81", "Links im Text."],
+          ["Brand deep", "brand-deep", "#004553", "Aurora „Strong“: Term, Statement- und Display-Zitate. Hintergrund „Dark“."],
+          ["Band", "band", "#94e6fb", "Das Kontaktband."],
+          ["Band soft", "band-soft", "#bdeaf6", "Hintergrund „Accent“, Menüfläche."],
+        ] },
+        { title: "Kupfer", note: "Der Akzent. Fläche und Text sind zwei Stufen, damit beide lesbar bleiben.", swatches: [
+          ["Copper", "copper", "#c64c00", "Schaltflächen."],
+          ["Copper hover", "copper-hover", "#b43b00", "Schaltfläche unter dem Zeiger."],
+          ["Copper text", "copper-text", "#a83500", "Aurora „Accent“: Kicker, Byline, Haken, Zähler, Link-Hover."],
+          ["On copper", "on-copper", "#fefbf9", "Schrift auf Kupfer."],
+        ] },
+        { title: "Auf dunklem Grund", note: "Der Hintergrund „Dark“ tauscht die Tinten automatisch aus, damit Kicker und Zähler auf Petrol lesbar bleiben.", dark: true, swatches: [
+          ["Ground", "ground", "#fafcfd", "Fließtext auf Dark."],
+          ["Ground soft", "hero-ink-soft", "#dbebef", "„Soft“ auf Dark: Lede, Muted."],
+          ["Copper light", "hero-copper", "#feb263", "„Accent“ auf Dark: Kicker, Zähler."],
+          ["Rule light", "hero-rule", "#85adb5", "Linien auf Dark."],
+        ] },
+      ],
+    },
+    widths: {
+      title: "Blockbreiten",
+      intro: "„Block width“ in der Seitenleiste oder über die Breiten-Schaltfläche der Werkzeugleiste. Text steht auf „Narrow“, alles andere ist Layoutentscheidung.",
+      entries: [
+        ["Narrow", "Die Lesebreite von 66 Zeichen. Standard für jeden Textblock – und für die meisten der richtige."],
+        ["Default", "Die Inhaltsspalte. Bilder, Tabellen, Teaser und Spaltengruppen."],
+        ["Layout", "Die ganze Seitenspalte bis 76 rem. Für Listings und breite Spaltengruppen."],
+        ["Full Width", "Randlos von Kante zu Kante. Für Bänder und den Hero; Textblöcken wird sie nicht angeboten."],
+      ],
+    },
+    backgrounds: {
+      title: "Hintergründe",
+      intro: "„Background“ in der Seitenleiste. Ein Hintergrund macht aus Blöcken einen Abschnitt: aufeinanderfolgende Blöcke mit demselben Wert teilen sich ein Band.",
+      entries: [
+        { name: "none", label: "None", text: "Der Seitengrund. Der Normalfall." },
+        { name: "grey", label: "Grey", text: "Surface. Ein ruhiger Abschnitt, etwa eine Übersicht unter dem Kapitel." },
+        { name: "accent", label: "Accent", text: "Band soft. Ein Abschnitt, der Aufmerksamkeit verdient." },
+        { name: "dark", label: "Dark", text: "Brand deep. Das Schlusskapitel. Text wird hell, Kicker und Zähler wechseln auf Copper light." },
+      ],
+      darkSample: { kicker: "Zum Mitnehmen", heading: "Drei Fragen vor dem nächsten Projekt", lede: "Wer sie beantworten kann, hat die Weichen gestellt.", questions: ["Wer kann die Anwendung in fünf Jahren weiterentwickeln?", "Welche Daten müssen exportierbar bleiben?"] },
+      lightSample: { kicker: "Übersicht", heading: "Drei erprobte Grundlagen", lede: "Wir wählen Frameworks nach Prozess, Organisation und Lebensdauer der Anwendung." },
+    },
+    blocks: {
+      title: "Blöcke",
+      intro: "Was das Menü hinter <kbd>/</kbd> und die Seitenleiste anbieten.",
+      groups: [
+        { title: "Textblöcke", items: [
+          ["Text", "Ein Absatz. Trägt die Textstile."],
+          ["Heading 2 / 3 / 4", "Die Gliederung."],
+          ["Bulleted list · Numbered list · To-do list", "Listen. Tragen die Listenstile."],
+          ["Blockquote", "Ein Zitat. Trägt die Zitatstile."],
+          ["Callout", "Ein hervorgehobener Hinweis mit Symbol."],
+          ["Toggle", "Aufklappbarer Abschnitt, etwa für Details oder FAQ."],
+          ["Code Block", "Mehrzeiliger Code mit Sprache."],
+          ["Table", "Eine Tabelle."],
+        ] },
+        { title: "Plone-Blöcke", items: [
+          ["Image · Video", "Medien mit Bildunterschrift."],
+          ["Teaser", "Verweis auf eine andere Seite mit Bild, Titel und Beschreibung."],
+          ["Listing", "Automatische Liste von Inhalten, etwa Vorträge oder Schulungen."],
+          ["Table of contents", "Inhaltsverzeichnis aus den Überschriften."],
+          ["Columns", "Spaltengruppe. Eine Spalte kann beim Scrollen haften („Sticky column“)."],
+          ["Promo · Metadata · Actions", "Die Blöcke der derico-Seiten: Werbefläche, Metadaten und Handlungsaufrufe."],
+        ] },
+      ],
+    },
+  },
+  en: {
+    toc: "On this page",
+    spec: { aurora: "In Aurora", font: "Type", color: "Colour", use: "Use" },
+    how: {
+      title: "How to format in Aurora",
+      intro: "The design has a name for every role text can play. You pick the role; the theme supplies face, size and colour. Four moves cover it.",
+      steps: [
+        ["Insert a block", "Type <kbd>/</kbd> on an empty line. The “Text blocks” menu offers Text, Heading 2 to 4, lists, Toggle, Code Block, Table, Blockquote and Callout."],
+        ["Change the block type", "Select some text and open “Turn into” in the floating toolbar: Text, Heading 2/3/4, Bulleted list, Numbered list, To-do list or Quote."],
+        ["Pick a text style", "Select a word. “Text style” appears at the right end of the toolbar – “List style” on a list, “Quote style” on a quote. Top-level blocks show the same choice in the sidebar; inside columns only the toolbar reaches it."],
+        ["Width and background", "Click a block and set “Block width” and “Background” in the sidebar. A background continues across consecutive blocks until one without it follows."],
+      ],
+      rulesTitle: "Principles",
+      rules: [
+        "A page has one title – the title block at the top. Headings start at Heading 2.",
+        "Headings structure, they never enlarge. A line that needs size or colour takes a text style.",
+        "“Normal” removes a style again. A block without a style looks the way it always did.",
+        "Colours are never chosen directly. They come from style, background and theme, so every combination stays readable.",
+        "Nothing below 15 pixels. There is no small print; hierarchy comes from weight, colour and spacing.",
+      ],
+    },
+    fonts: {
+      title: "Typefaces",
+      intro: "Two typefaces carry the site. Both are self-hosted; nothing is loaded from third parties.",
+      items: [
+        ["Source Sans 3", "Body text, lists, navigation, byline, term", "The working face. 16 pixels at body size, line height 1.6."],
+        ["Literata", "Headings, kicker, statement, quotes", "The display face, a reading font from book printing. Appears wherever a line should stand on its own."],
+      ],
+      sample: "Applications, grown to last. Sustainable solutions for more than twenty years – flexible, modern, secure.",
+    },
+    headings: {
+      title: "Headings",
+      intro: "Four levels, all in Literata. The level follows the outline, not the size you want.",
+      entries: [
+        { level: "title", sample: "Odoo connects your business processes.", aurora: "Title block (once per page)", font: "Literata 600 · 32–56 px", color: "Ink", use: "The page title. Filled from the page's title, not typed." },
+        { level: "h2", sample: "What we build together", aurora: "Heading 2", font: "Literata 600 · 26–39 px", color: "Ink", use: "A chapter. The first level you set yourself." },
+        { level: "h3", sample: "Responsibilities and response paths", aurora: "Heading 3", font: "Literata 600 · 22–28 px", color: "Ink", use: "A section within a chapter." },
+        { level: "h4", sample: "Upgrade cycles", aurora: "Heading 4", font: "Source Sans 3 700 · 18 px", color: "Ink", use: "A run-in line in long sections. Sparingly." },
+      ],
+    },
+    text: {
+      title: "Text styles",
+      intro: "The “Text style” menu on a paragraph. Seven roles, named for their job in the text.",
+      entries: [
+        { style: "normal", sample: "<p>We build business applications on Python, modern JavaScript and open source. Maintainability, open standards and clear decisions keep their value for many years.</p>", aurora: "Text style → Normal", font: "Source Sans 3 · 16 px · line height 1.6", color: "Ink", use: "Body text. The reading measure is 66 characters." },
+        { style: "kicker", sample: "<p class=\"sg-kicker\">From practice</p><h2 class=\"sg-h2\">One association, three systems, one data model</h2>", aurora: "Text style → Kicker", font: "Literata italic · 16 px", color: "Accent (Copper text)", use: "The line above a heading or a statement. Binds to what follows: no space below it." },
+        { style: "lede", sample: "<p class=\"sg-lede\">Technology is sound when it fits the task, stays understandable and can be developed reliably.</p>", aurora: "Text style → Lede", font: "Source Sans 3 · 18–22 px · line height 1.5", color: "Soft (Ink soft)", use: "The opening under a heading. One paragraph, rarely two." },
+        { style: "statement", sample: "<p class=\"sg-statement\">An application is sustainable when someone still understands it ten years on.</p>", aurora: "Text style → Statement", font: "Literata · 18–22 px · line height 1.5", color: "Ink", use: "A claim that stands on its own – in a side column or closing a chapter. Up to 30 characters wide." },
+        { style: "byline", sample: "<p class=\"sg-byline\">By Maik Derstappen</p>", aurora: "Text style → Byline", font: "Source Sans 3 700 · 16 px", color: "Accent (Copper text)", use: "The author line above the first paragraph of an article." },
+        { style: "term", sample: "<p class=\"sg-term\">In service</p><p class=\"sg-muted\">Running since 2009, migrated three times, never rewritten.</p>", aurora: "Text style → Term", font: "Source Sans 3 700 · 16 px", color: "Strong (Brand deep)", use: "The term of a facts list. Binds to the paragraph below it, usually “Muted”." },
+        { style: "muted", sample: "<p class=\"sg-muted\">Contact details and phone numbers are placeholders from the current site and are verified before publishing.</p>", aurora: "Text style → Muted", font: "Source Sans 3 · 16 px", color: "Soft (Ink soft)", use: "Quiet text: explanations, definitions, asides." },
+      ],
+    },
+    lists: {
+      title: "List styles",
+      intro: "The “List style” menu on a list item. The style describes the whole list, not one item.",
+      entries: [
+        { style: "normal", sample: "<ul><li>Architecture, interface and operations planned as one task</li><li>Frameworks chosen by process and lifespan</li><li>Open standards instead of dependencies</li></ul>", aurora: "List style → Normal (Bulleted list, Numbered list, To-do list)", font: "Source Sans 3 · 16 px", color: "Ink", use: "The ordinary list. Numbered when order matters." },
+        { style: "checklist", sample: "<ul class=\"sg-list sg-list--checklist\"><li>The source code is yours and lives in your repository.</li><li>Every dependency is openly licensed and actively maintained.</li><li>An upgrade path is written down before launch.</li></ul>", aurora: "List style → Checklist", font: "Source Sans 3 · 16 px · copper check mark", color: "Ink, mark Accent", use: "Criteria that are or should be met. No bullet, one check per row, a hairline above each." },
+        { style: "questions", sample: "<ol class=\"sg-list sg-list--questions\"><li>Who can still develop the application in five years?</li><li>Which data must stay exportable – and in which format?</li><li>What happens if the vendor stops?</li></ol>", aurora: "List style → Questions", font: "Source Sans 3 · 16 px · counter in Literata 700", color: "Ink, counter Accent", use: "The take-away questions at the end of an article. Numbered, rules above each row and below the last." },
+        { style: "sources", sample: "<ul class=\"sg-list sg-list--sources\"><li><a href=\"#\">Federal Ministry of the Interior: open-source strategy (2024)</a></li><li><a href=\"#\">Plone Foundation: release history</a></li></ul>", aurora: "List style → Sources", font: "Source Sans 3 · 16 px", color: "Soft (Ink soft)", use: "Sources and references. Quiet rows, links in soft ink." },
+      ],
+    },
+    quotes: {
+      title: "Quote styles",
+      intro: "The “Quote style” menu on a blockquote.",
+      entries: [
+        { style: "normal", sample: "<blockquote class=\"sg-quote\">We choose frameworks by process, organisation and the lifespan of the application.</blockquote>", aurora: "Quote style → Normal (Blockquote)", font: "Source Sans 3 italic · 16 px", color: "Soft, rule Band rule", use: "A quotation in the run of the text. Rule on the left, italic." },
+        { style: "statement", sample: "<blockquote class=\"sg-quote sg-quote--statement\">Software is sustainable when you can let it go without losing it.</blockquote>", aurora: "Quote style → Statement", font: "Literata 500 · 20–28 px · line height 1.4", color: "Strong (Brand deep), rule Band rule", use: "The thesis of an article. Rule on top, up to 36 characters wide." },
+        { style: "display", sample: "<blockquote class=\"sg-quote sg-quote--display\">Public Money, Public Code.</blockquote>", aurora: "Quote style → Display", font: "Literata 650 · 28–48 px · line height 1.18", color: "Strong (Brand deep), rule Band rule", use: "A line as a poster. A few words, up to 22 characters wide. Once per page." },
+      ],
+    },
+    marks: {
+      title: "Inline marks",
+      intro: "For words inside a paragraph. Select text, press the toolbar button. On Windows and Linux, Ctrl stands in for ⌘.",
+      entries: [
+        ["Bold", "<strong>Reliable care</strong> for applications that are needed every day.", "⌘ B", "A term that should catch a skimming eye. Never whole sentences."],
+        ["Italic", "The word <em>sustainable</em> here means maintainability, not marketing.", "⌘ I", "Emphasis, foreign words, titles of works."],
+        ["Strikethrough", "Response <s>within two working days</s> on the same working day.", "⌘ ⇧ M", "A correction that should stay visible. Rare."],
+        ["Code", "The command <code>uv run pytest</code> runs the tests.", "⌘ E", "Commands, file names, identifiers."],
+        ["Link", "More on <a href=\"#\">plone.org</a>.", "Link button", "References. The link text says where it goes – never “here”."],
+      ],
+    },
+    colors: {
+      title: "Colours",
+      intro: "The “Jahresringe” palette: petrol as the brand, copper as the accent. Editorially you never pick a colour – every text style and background brings its own. The names in brackets are the tokens Aurora and the theme use.",
+      groups: [
+        { title: "Ground and text", note: "What every page carries.", swatches: [
+          ["Ground", "ground", "#fafcfd", "The page ground."],
+          ["Surface", "surface", "#ebf6f8", "A quiet surface. Background “Grey”."],
+          ["Ink", "ink", "#101d22", "Body text, headings."],
+          ["Ink soft", "ink-soft", "#31464e", "Aurora “Soft”: Lede, Muted, Sources."],
+          ["Rule", "rule", "#b9cfd5", "Hairlines: Checklist, Questions."],
+          ["Band rule", "band-rule", "#53838f", "Structural rules: quotes, bands."],
+        ] },
+        { title: "Petrol", note: "The brand. The exact cyan belongs to the logo and the rings – it never appears as a text colour.", swatches: [
+          ["Brand", "brand", "#039fba", "Logo, growth rings, controls."],
+          ["Brand link", "brand-link", "#006d81", "Links in text."],
+          ["Brand deep", "brand-deep", "#004553", "Aurora “Strong”: Term, Statement and Display quotes. Background “Dark”."],
+          ["Band", "band", "#94e6fb", "The contact band."],
+          ["Band soft", "band-soft", "#bdeaf6", "Background “Accent”, menu panel."],
+        ] },
+        { title: "Copper", note: "The accent. Fill and text are two steps so both stay readable.", swatches: [
+          ["Copper", "copper", "#c64c00", "Buttons."],
+          ["Copper hover", "copper-hover", "#b43b00", "A button under the pointer."],
+          ["Copper text", "copper-text", "#a83500", "Aurora “Accent”: Kicker, Byline, check marks, counters, link hover."],
+          ["On copper", "on-copper", "#fefbf9", "Type on copper."],
+        ] },
+        { title: "On dark ground", note: "The “Dark” background swaps the inks automatically so kickers and counters stay readable on petrol.", dark: true, swatches: [
+          ["Ground", "ground", "#fafcfd", "Body text on Dark."],
+          ["Ground soft", "hero-ink-soft", "#dbebef", "“Soft” on Dark: Lede, Muted."],
+          ["Copper light", "hero-copper", "#feb263", "“Accent” on Dark: Kicker, counters."],
+          ["Rule light", "hero-rule", "#85adb5", "Rules on Dark."],
+        ] },
+      ],
+    },
+    widths: {
+      title: "Block widths",
+      intro: "“Block width” in the sidebar, or the width button in the toolbar. Text sits on “Narrow”; everything else is a layout decision.",
+      entries: [
+        ["Narrow", "The reading measure of 66 characters. Default for every text block – and the right one for most."],
+        ["Default", "The content column. Images, tables, teasers and column groups."],
+        ["Layout", "The whole page column up to 76 rem. For listings and wide column groups."],
+        ["Full Width", "Edge to edge. For bands and the hero; text blocks are not offered it."],
+      ],
+    },
+    backgrounds: {
+      title: "Backgrounds",
+      intro: "“Background” in the sidebar. A background turns blocks into a section: consecutive blocks with the same value share one band.",
+      entries: [
+        { name: "none", label: "None", text: "The page ground. The usual case." },
+        { name: "grey", label: "Grey", text: "Surface. A quiet section, such as an overview under a chapter." },
+        { name: "accent", label: "Accent", text: "Band soft. A section that deserves attention." },
+        { name: "dark", label: "Dark", text: "Brand deep. The closing chapter. Text turns light; kickers and counters switch to Copper light." },
+      ],
+      darkSample: { kicker: "Take-away", heading: "Three questions before the next project", lede: "Whoever can answer them has set the course.", questions: ["Who can develop the application in five years?", "Which data must stay exportable?"] },
+      lightSample: { kicker: "Overview", heading: "Three proven foundations", lede: "We choose frameworks by process, organisation and the lifespan of the application." },
+    },
+    blocks: {
+      title: "Blocks",
+      intro: "What the menu behind <kbd>/</kbd> and the sidebar offer.",
+      groups: [
+        { title: "Text blocks", items: [
+          ["Text", "A paragraph. Carries the text styles."],
+          ["Heading 2 / 3 / 4", "The outline."],
+          ["Bulleted list · Numbered list · To-do list", "Lists. Carry the list styles."],
+          ["Blockquote", "A quotation. Carries the quote styles."],
+          ["Callout", "A highlighted note with an icon."],
+          ["Toggle", "A collapsible section, for details or FAQ."],
+          ["Code Block", "Multi-line code with a language."],
+          ["Table", "A table."],
+        ] },
+        { title: "Plone blocks", items: [
+          ["Image · Video", "Media with a caption."],
+          ["Teaser", "A reference to another page with image, title and description."],
+          ["Listing", "An automatic list of content, such as talks or training."],
+          ["Table of contents", "Generated from the headings."],
+          ["Columns", "A column group. One column can stick while scrolling (“Sticky column”)."],
+          ["Promo · Metadata · Actions", "The derico blocks: promotional band, metadata and calls to action."],
+        ] },
+      ],
+    },
+  },
+};
+
+const sgSpec = (t, rows) => `<dl class="sg-spec">${rows.map(([key, value]) => `<div><dt>${t.spec[key]}</dt><dd>${value}</dd></div>`).join("")}</dl>`;
+const sgEntry = (t, name, sample, spec, modifier = "") => `<div class="sg-entry${modifier}"><div class="sg-entry__sample">${sample}</div><div class="sg-entry__meta"><h3 class="sg-entry__name">${name}</h3>${sgSpec(t, spec)}</div></div>`;
+const sgSection = (id, title, intro, body) => `<section class="sg-section" id="${id}"><h2 class="section-heading">${title}</h2><p class="section-intro">${intro}</p>${body}</section>`;
+const sgStyled = (level, text) => level === "title" ? `<h1 class="sg-h1">${text}</h1>` : `<${level} class="sg-${level}">${text}</${level}>`;
+
+function renderStyleguide(lang, page) {
+  const t = styleguideCopy[lang];
+  const sections = ["how", "fonts", "headings", "text", "lists", "quotes", "marks", "colors", "widths", "backgrounds", "blocks"];
+  const toc = `<nav class="sg-toc" aria-label="${t.toc}"><p class="page-context">${t.toc}</p><ol>${sections.map((id) => `<li><a href="#${id}">${t[id].title}</a></li>`).join("")}</ol></nav>`;
+
+  const how = sgSection("how", t.how.title, t.how.intro, `<ol class="sg-steps">${t.how.steps.map(([title, text]) => `<li><strong>${title}</strong><span>${text}</span></li>`).join("")}</ol><h3 class="sg-subheading">${t.how.rulesTitle}</h3><ul class="sg-list sg-list--checklist">${t.how.rules.map((rule) => `<li>${rule}</li>`).join("")}</ul>`);
+
+  const fonts = sgSection("fonts", t.fonts.title, t.fonts.intro, `<div class="sg-fonts">${t.fonts.items.map(([name, roles, text]) => `<div class="sg-font sg-font--${name === "Literata" ? "display" : "body"}"><p class="sg-font__sample" lang="${lang}">${t.fonts.sample}</p><h3>${name}</h3><p class="sg-term">${roles}</p><p class="sg-muted">${text}</p></div>`).join("")}</div>`);
+
+  const headings = sgSection("headings", t.headings.title, t.headings.intro, t.headings.entries.map((e) => sgEntry(t, e.aurora, sgStyled(e.level, e.sample), [["font", e.font], ["color", e.color], ["use", e.use]])).join(""));
+
+  const styled = (key) => sgSection(key, t[key].title, t[key].intro, t[key].entries.map((e) => sgEntry(t, e.aurora, e.sample, [["font", e.font], ["color", e.color], ["use", e.use]])).join(""));
+
+  const marks = sgSection("marks", t.marks.title, t.marks.intro, `<div class="sg-table-wrap"><table class="sg-table"><thead><tr><th>${t.spec.aurora}</th><th>${lang === "de" ? "Beispiel" : "Example"}</th><th>${lang === "de" ? "Tastatur" : "Keyboard"}</th><th>${t.spec.use}</th></tr></thead><tbody>${t.marks.entries.map(([name, sample, keys, use]) => `<tr><th scope="row">${name}</th><td>${sample}</td><td><kbd>${keys}</kbd></td><td>${use}</td></tr>`).join("")}</tbody></table></div>`);
+
+  const colors = sgSection("colors", t.colors.title, t.colors.intro, t.colors.groups.map((group) => `<div class="sg-palette${group.dark ? " sg-palette--dark" : ""}"><h3 class="sg-subheading">${group.title}</h3><p class="sg-muted">${group.note}</p><ul class="sg-swatches">${group.swatches.map(([name, token, hex, role]) => `<li><span class="sg-swatch" style="--sg-swatch: var(--${token})"></span><strong>${name}</strong><code>--${token} · ${hex}</code><span>${role}</span></li>`).join("")}</ul></div>`).join(""));
+
+  const widths = sgSection("widths", t.widths.title, t.widths.intro, `<div class="sg-widths" aria-hidden="true">${["full", "layout", "default", "narrow"].map((w) => `<div class="sg-width sg-width--${w}"><span>${t.widths.entries.find(([label]) => label.toLowerCase().startsWith(w))[0]}</span></div>`).join("")}</div><dl class="sg-spec sg-spec--row">${t.widths.entries.map(([label, text]) => `<div><dt>${label}</dt><dd>${text}</dd></div>`).join("")}</dl>`);
+
+  const dark = t.backgrounds.darkSample;
+  const light = t.backgrounds.lightSample;
+  const bandInner = (s) => `<p class="sg-kicker">${s.kicker}</p><h3 class="sg-h3">${s.heading}</h3><p class="sg-lede">${s.lede}</p>`;
+  const backgrounds = sgSection("backgrounds", t.backgrounds.title, t.backgrounds.intro, `<div class="sg-bands">${t.backgrounds.entries.map((b) => `<div class="sg-band sg-band--${b.name}"><p class="sg-band__label"><strong>${b.label}</strong> <span>${b.text}</span></p>${b.name === "dark" ? `${bandInner(dark)}<ol class="sg-list sg-list--questions">${dark.questions.map((q) => `<li>${q}</li>`).join("")}</ol>` : bandInner(light)}</div>`).join("")}</div>`);
+
+  const blocks = sgSection("blocks", t.blocks.title, t.blocks.intro, `<div class="sg-blocks">${t.blocks.groups.map((group) => `<div><h3 class="sg-subheading">${group.title}</h3><dl class="sg-spec sg-spec--row">${group.items.map(([label, text]) => `<div><dt>${label}</dt><dd>${text}</dd></div>`).join("")}</dl></div>`).join("")}</div>`);
+
+  return `${pageHero(page)}<div class="shell sg">${toc}<div class="sg-body">${how}${fonts}${headings}${styled("text")}${styled("lists")}${styled("quotes")}${marks}${colors}${widths}${backgrounds}${blocks}</div></div>`;
+}
+
 function renderBody(lang, page) {
   if (page.type === "home") return renderHome(lang, page);
   if (page.type === "overview") return renderOverview(lang, page);
@@ -1441,12 +1820,13 @@ function renderBody(lang, page) {
   if (page.type === "talks") return renderTalks(lang, page);
   if (page.type === "contact") return renderContact(lang, page);
   if (page.type === "imprint") return renderImprint(lang, page);
+  if (page.type === "styleguide") return renderStyleguide(lang, page);
   throw new Error(`Unknown page type: ${page.type}`);
 }
 
 function document(lang, key, page) {
   const description = page.lede.replace(/<[^>]+>/g, "");
-  const includeContact = !["contact", "imprint"].includes(key);
+  const includeContact = !["contact", "imprint", "styleguide"].includes(key);
   const heroPreload = key === "home" ? `
   <link rel="preload" as="image" href="../assets/images/hero-managed-forest-portrait-720.avif" imagesrcset="../assets/images/hero-managed-forest-portrait-720.avif 720w, ../assets/images/hero-managed-forest-portrait-1080.avif 1080w" imagesizes="100vw" type="image/avif" media="(max-width: 55.99rem)">
   <link rel="preload" as="image" href="../assets/images/hero-managed-forest-wide-1600.avif" imagesrcset="../assets/images/hero-managed-forest-wide-960.avif 960w, ../assets/images/hero-managed-forest-wide-1600.avif 1600w, ../assets/images/hero-managed-forest-wide-2400.avif 2400w" imagesizes="100vw" type="image/avif" media="(min-width: 56rem)">` : "";

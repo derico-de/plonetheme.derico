@@ -69,7 +69,15 @@ node site/build.mjs
 
 Serve `site/` from any static server and open `de/index.html`. The implementation
 contains five reusable patterns: home, section overview, capability detail,
-training/talk listing, and contact. Its desktop navigation borrows DLR's
+training/talk listing, and contact.
+
+`de/styleguide.html` and `en/styleguide.html` are the editorial style guide:
+every heading level, text/list/quote style, inline mark, colour, block width
+and background of the design, each under the name the Aurora editor shows for
+it (Text style → Kicker, Background → Dark, Block width → Narrow …) and with a
+note on where in the editor to set it. The page is not linked from the
+navigation; the samples are set with the same values as the page rules they
+document (see the "Style guide" section at the end of `assets/site.css`). Its desktop navigation borrows DLR's
 click-open grouped-panel behavior; the visual language remains Jahresringe.
 Mobile uses a menu button and nested accordions, with the same information
 architecture and no hover-only actions.
