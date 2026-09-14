@@ -2,6 +2,17 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Grid columns stand the design's article gap apart.** The mockup sets
+  every article grid — the sharing grid's prose beside its principles, the
+  checklist's header beside its two list columns — on one column gap,
+  `--article-gap` (`clamp(3rem, 6vw, 6rem)`); on the site the columns of a
+  Blicca grid butted together, with only their two 1rem insets between the
+  text. derico.css §5 now states that gap as `--derico-article-gap` — the one
+  rhythm step the design keeps outside its space scale — and §10 hands it to
+  Blicca as `--aurora-column-gutter`, so the sustainability page's
+  "Geteilte Entwicklung" pair and "Eine freie Lizenz" triple measure the
+  mockup's gap between their text boxes, on the page and in the editor.
+
 - **The paragraph text styles wear the design's own steps.** Blicca lets a
   paragraph name its role — kicker, lede, statement, byline, term, muted —
   and dresses it from five `--aurora-*` tokens; derico points them at Clara's

@@ -192,6 +192,14 @@
   --plone-space-xl:  clamp(3rem, 2.75rem + 1vw, 4rem);
   --plone-space-2xl: clamp(4.5rem, 3.7rem + 3vw, 7.5rem);
   --plone-space-3xl: clamp(6rem, 5rem + 4vw, 10rem);
+  /* The gap between two columns of an article layout — `--article-gap`,
+   * site.css:1154, the column gap of every `.article-layout`,
+   * `.sharing-grid`, `.checklist-layout` and `.exit-layout` grid. A value,
+   * not an alias: it is the one rhythm step the design states outside its
+   * space scale (6vw between 3rem and 6rem, where xl is 55–60px and 2xl
+   * 92–107px across the design's widths), and no Clara token means it.
+   * Read by §10, which hands it to Blicca as the grid column gutter. */
+  --derico-article-gap: clamp(3rem, 6vw, 6rem);
 
   /* The page hero of every inner page (`.page-hero__grid`, site.css:1450):
    * the title on the left, the description as the lede at the far right,
@@ -475,6 +483,13 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
    * (site.css:1452). Blicca reads it at the point of use with a 2rem
    * fallback and declares it nowhere, like `--aurora-space-continued`. */
   --aurora-sticky-offset: var(--plone-space-l);
+  /* The gutter between two grid columns' text boxes is the design's article
+   * gap (§5): the mockup's `.sharing-grid` prose against its principles,
+   * the checklist's header against its two list columns. Blicca hands the
+   * gutter less its two 1rem insets to the flex row as a real gap, on the
+   * page and in the canvas alike, and the columns pay for it in proportion
+   * to their share. */
+  --aurora-column-gutter: var(--derico-article-gap);
 }
 
 /* ══ 11. The frame around a block, per block ══════════════════════════════

@@ -155,6 +155,9 @@ EXPECTED_ALIASES = {
     "--aurora-space-block": "--plone-space-l",
     "--aurora-space-bleed": "--plone-space-xl",
     "--aurora-sticky-offset": "--plone-space-l",
+    # the gutter between two grid columns' text boxes: the design's article
+    # gap, the one rhythm step it states outside its space scale (§5)
+    "--aurora-column-gutter": "--derico-article-gap",
     # the text styles (derico.css §10, second half): the display face, the
     # lede step and the three inks the mockup sets a kicker, a lede, a byline,
     # a term and a definition in. Copper is reached as Clara's amber-text,
@@ -197,10 +200,15 @@ def test_the_root_sets_no_rhythm_token_beyond_the_expected_ones():
 
 
 @needs_clara
-def test_every_alias_points_at_a_token_clara_defines():
+def test_every_alias_points_at_a_token_clara_or_the_scale_defines():
+    """A Clara name Clara dropped, or a derico name §5 never states, is a
+    value nothing resolves."""
     clara = css_tools.declarations(CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS)
-    missing = sorted(t for t in EXPECTED_ALIASES.values() if t not in clara)
-    assert not missing, f"Clara no longer defines {missing}"
+    own = {name for name in _derico_root() if name.startswith("--derico-")}
+    missing = sorted(
+        t for t in EXPECTED_ALIASES.values() if t not in clara and t not in own
+    )
+    assert not missing, f"neither Clara nor derico.css defines {missing}"
 
 
 # --------------------------------------------------------------------------
