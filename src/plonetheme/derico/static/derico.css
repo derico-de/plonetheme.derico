@@ -490,6 +490,16 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
    * page and in the canvas alike, and the columns pay for it in proportion
    * to their share. */
   --aurora-column-gutter: var(--derico-article-gap);
+  /* Blicca pads the published blocks view 24px each side so a
+   * layout-width block clamps to the same box as on the editing canvas,
+   * which keeps that gutter for its drag handles. On this design the
+   * page's column IS the shell: the mockup sets every section's text on
+   * the same left edge as the page hero's h1, and Clara's content header
+   * already stands on that edge. The gutter would set every block — and
+   * every grid — 24px inside the title above it. Zero, the one number in
+   * §10 that is not an alias: there is no step for "none", and Blicca
+   * itself hands the gutter back below 37.5rem for the same reason. */
+  --aurora-view-gutter: 0px;
 }
 
 /* ══ 11. The frame around a block, per block ══════════════════════════════
@@ -564,4 +574,17 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
 
 .block-promo {
   --aurora-space-frame: var(--plone-space-xl);
+}
+
+/* A grid is a section on this design. Every two-column article layout in
+ * the mockup — the essay's prose beside its aside, the sharing grid, the
+ * checklist, the exit questions — is a `.section`, and an unbanded section
+ * breathes on the `xl` step (`.sustainability-article .section`,
+ * site.css:1160; the site's default `.section` is 2xl, the essay's is xl).
+ * Blicca frames a grid on the reading step a table or a teaser gets, `l`,
+ * which leaves two grids 22px closer than two of the mockup's sections.
+ * A banded grid is untouched: the background rule above outranks this one
+ * on specificity and keeps the band's 2xl. */
+.block-column_group {
+  --aurora-space-block: var(--plone-space-xl);
 }

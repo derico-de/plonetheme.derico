@@ -175,6 +175,14 @@ EXPECTED_ALIASES = {
     "--aurora-quote-display-size": "--clara-text-heading",
 }
 
+#: token -> the literal it states. The one place §10 is not an alias: Blicca's
+#: 24px view gutter sets every block 24px inside Clara's content header, and
+#: the design puts a section's text on the h1's own edge. "None" is not a
+#: step, so no token can be aliased for it.
+EXPECTED_LITERALS = {
+    "--aurora-view-gutter": "0px",
+}
+
 
 @pytest.mark.parametrize(("token", "target"), sorted(EXPECTED_ALIASES.items()))
 def test_each_root_token_aliases_a_step_rather_than_restating_a_value(
@@ -187,15 +195,23 @@ def test_each_root_token_aliases_a_step_rather_than_restating_a_value(
     )
 
 
+@pytest.mark.parametrize(("token", "value"), sorted(EXPECTED_LITERALS.items()))
+def test_the_view_gutter_is_handed_back_to_the_theme(token, value):
+    root = _derico_root()
+    assert token in root, f"derico.css does not declare {token} on :root"
+    assert root[token] == value, f"{token} declares {root[token]!r}, not {value!r}"
+
+
 def test_the_root_sets_no_rhythm_token_beyond_the_expected_ones():
     """A new token here is a new design claim; name it above."""
     root = {
         name for name in _derico_root()
         if name.startswith("--aurora-") and not name.startswith("--aurora-block-")
     }
-    assert root == set(EXPECTED_ALIASES), (
-        f"unexpected: {sorted(root - set(EXPECTED_ALIASES))}, "
-        f"missing: {sorted(set(EXPECTED_ALIASES) - root)}"
+    expected = set(EXPECTED_ALIASES) | set(EXPECTED_LITERALS)
+    assert root == expected, (
+        f"unexpected: {sorted(root - expected)}, "
+        f"missing: {sorted(expected - root)}"
     )
 
 
@@ -235,6 +251,15 @@ def test_a_heading_that_opens_a_band_is_the_section_step():
         s for s, _ in _frame_rules() if ".block-h2" in s
     )
     assert ":not(.is-background-continuation)" in selector
+
+
+def test_a_grid_is_framed_on_the_section_step():
+    """Every article grid in the mockup is a `.section`, padded on `xl`
+    (`.sustainability-article .section`); Blicca frames a grid on the
+    reading step. Unbanded only: the background rule outranks this one."""
+    assert _frame(".block-column_group") == {
+        "--aurora-space-block": "var(--plone-space-xl)"
+    }
 
 
 def test_a_background_run_opens_and_closes_on_the_section_step():

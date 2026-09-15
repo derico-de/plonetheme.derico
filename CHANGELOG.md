@@ -2,6 +2,16 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **A section's text stands on the page hero's edge.** The mockup sets
+  every section's text on the same left edge as the hero's h1; on the site
+  every block stood 24px inside Clara's content header, and a grid's text
+  another 16px inside that. derico.css §10 hands Blicca's view gutter back
+  (`--aurora-view-gutter: 0px`, the one literal in §10), and Blicca's column
+  inset no longer runs on a row's outer edges, so the sustainability page's
+  byline, prose and asides start where its title does. §11 frames an
+  unbanded grid on the `xl` step — the mockup's `.section` — instead of the
+  reading step, so two grids stand as far apart as two of its sections.
+
 - **Grid columns stand the design's article gap apart.** The mockup sets
   every article grid — the sharing grid's prose beside its principles, the
   checklist's header beside its two list columns — on one column gap,
