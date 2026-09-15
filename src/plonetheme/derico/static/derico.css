@@ -208,8 +208,9 @@
    * Clara's content header carries exactly that pair and lays it out from
    * these tokens (architecture §1.7): two-up once the header is 56rem wide —
    * the mockup's own switch — and stacked under it below that, with no
-   * breakpoint of our own. The start page is untouched: a page the Hero
-   * opens has no content header at all (§7). */
+   * breakpoint of our own. A blocks page prints the pair from its own tree
+   * instead (Blicca's title row, §10 aliases these same tokens for it); the
+   * start page has no title block at all, so the hero opens it. */
   --plone-contentheader-threshold: 56rem;
   --plone-contentheader-align: end;
   --plone-contentheader-justify: space-between;
@@ -247,21 +248,22 @@
  * kind of rule that may ever join it: it styles the page AROUND a block,
  * which the block's own sheet cannot reach (see the header).
  *
- * `blocks_view.pt` deliberately leaves the content-title and
- * content-description slots unfilled, so Plone renders the breadcrumbs, the
- * contentheader and the byline above the first block. The Derico Hero opens
- * the page with a full-bleed photograph and has to sit flush under Clara's
- * header hairline, exactly as the Jahresringe mockup does — so when it is
- * the FIRST block, that chrome goes. Mirrors Clara's own
- * `body:has(.clara-home)` treatment (_clara-components.scss §Homepage).
+ * Plone renders the breadcrumbs and the byline above the first block. The
+ * Derico Hero opens the page with a full-bleed photograph and has to sit
+ * flush under Clara's header hairline, exactly as the Jahresringe mockup
+ * does — so when it is the FIRST block, that chrome goes. Mirrors Clara's
+ * own `body:has(.clara-home)` treatment (_clara-components.scss §Homepage).
+ * The content header is not listed: on a blocks page its two slots are
+ * empty (plone.blicca.auroraeditor ADR 0017 — the tree renders the title
+ * and the description from its own blocks) and Clara collapses the element;
+ * a hero page simply has no title block, the author's call.
  *
  * No gap is closed by hand: every bit of vertical space above the first
  * block lives on these elements themselves (`.element-breadcrumbs`
- * padding-block-start, `.element-contentheader` padding-block), and Clara
- * sets `--plone-layout-space: 0` on `.plone-layout`, so removing them from
- * the grid is the whole of it. `.element-body` carries padding-block-END
- * only and is deliberately left alone — the hero opens the page, it does
- * not close it.
+ * padding-block-start), and Clara sets `--plone-layout-space: 0` on
+ * `.plone-layout`, so removing them from the grid is the whole of it.
+ * `.element-body` carries padding-block-END only and is deliberately left
+ * alone — the hero opens the page, it does not close it.
  *
  * `.element-byline` is aspirational and `#section-byline` is the live hook;
  * both are listed because Clara lists both.
@@ -271,7 +273,6 @@
  * it is a working surface, where the title and breadcrumbs orient the
  * author. */
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-breadcrumbs,
-body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-contentheader,
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-byline,
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-byline {
   display: none;
@@ -478,6 +479,24 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-quote-border:        var(--clara-band-rule);
   --aurora-quote-statement-size: var(--clara-text-title);
   --aurora-quote-display-size:   var(--clara-text-heading);
+  /* The title block's air and its row with the description block (Blicca's
+   * "the title" and "the title row", ADR 0017): the tree's title and
+   * description now stand where Clara's content header stood, so they read
+   * the very values §5 hands that element — two-up from the mockup's 56rem
+   * switch, bottom-aligned, the two on the element's own frame above and
+   * below (Clara: xl and m). Aliases of Clara's content-header tokens, so
+   * the page hero is stated once, in §5, for both markups. The shares are
+   * the mockup's `minmax(0, 0.9fr) minmax(22rem, 0.75fr)` as fractions of
+   * the row (0.9 of 1.65 is 54%), literal because Blicca reads a share of
+   * the line where Clara reads a grow factor — the one place the two
+   * contracts do not meet on a name. */
+  --aurora-title-space-above:    var(--plone-space-xl);
+  --aurora-title-space-below:    var(--plone-space-m);
+  --aurora-title-row-threshold:  var(--plone-contentheader-threshold);
+  --aurora-title-row-gap:        var(--plone-contentheader-gap);
+  --aurora-title-row-align:      var(--plone-contentheader-align);
+  --aurora-title-row-title-share: 54%;
+  --aurora-title-row-lede-share:  42%;
   /* A pinned grid column (Blicca's `stickyColumn` setting) holds this far
    * below the viewport top: the mockup's `.detail-aside` pins at `--space-l`
    * (site.css:1452). Blicca reads it at the point of use with a 2rem

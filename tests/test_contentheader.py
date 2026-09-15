@@ -3,8 +3,10 @@
 The design's inner pages open with the title on the left and the description
 as the lede on the right (`.page-hero__grid`). Clara lays the pair out from
 its `--plone-contentheader-*` tokens (architecture §1.7); derico moves two of
-them and leaves the rest to Clara. The start page keeps no content header at
-all — the Hero opens it — which the §7 chrome rule already guards.
+them and leaves the rest to Clara. A blocks page prints the pair from its own
+tree since Blicca's ADR 0017, and §10 aliases these same tokens to Blicca's
+title row, so the page hero is stated once for both markups
+(tests/test_aurora_rhythm.py holds the aliases).
 """
 
 import pytest

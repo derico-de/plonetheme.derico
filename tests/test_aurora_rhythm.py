@@ -173,6 +173,13 @@ EXPECTED_ALIASES = {
     "--aurora-quote-border": "--clara-band-rule",
     "--aurora-quote-statement-size": "--clara-text-title",
     "--aurora-quote-display-size": "--clara-text-heading",
+    # the title block's air and its row with the description block (Blicca
+    # ADR 0017): the content header's own values, stated once in §5
+    "--aurora-title-space-above": "--plone-space-xl",
+    "--aurora-title-space-below": "--plone-space-m",
+    "--aurora-title-row-threshold": "--plone-contentheader-threshold",
+    "--aurora-title-row-gap": "--plone-contentheader-gap",
+    "--aurora-title-row-align": "--plone-contentheader-align",
 }
 
 #: token -> the literal it states. The one place §10 is not an alias: Blicca's
@@ -181,6 +188,10 @@ EXPECTED_ALIASES = {
 #: step, so no token can be aliased for it.
 EXPECTED_LITERALS = {
     "--aurora-view-gutter": "0px",
+    # the title row's shares: the mockup's 0.9fr/0.75fr as fractions of the
+    # row, where Blicca reads a share of the line and Clara a grow factor
+    "--aurora-title-row-title-share": "54%",
+    "--aurora-title-row-lede-share": "42%",
 }
 
 

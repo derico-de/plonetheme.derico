@@ -2,6 +2,18 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The page title and its lede come from the blocks.** Blicca renders a
+  page's h1 and its lede from its title and description blocks
+  (plone.blicca.auroraeditor ADR 0017), so a kicker paragraph can
+  stand above the title and the author sees the opening on the canvas as
+  the page shows it. derico.css §10 aliases Blicca's title tokens to the
+  content-header values §5 already states — the 56rem two-up, bottom
+  alignment, the far-edge description, 0.9 against 0.75, and Clara's xl/m
+  frame above and below — so the page hero is stated once for both
+  markups. The §7 chrome rule no longer names the content header: on a
+  blocks page its slots are empty and Clara collapses the element, and a
+  hero page simply has no title block.
+
 - **A section's text stands on the page hero's edge.** The mockup sets
   every section's text on the same left edge as the hero's h1; on the site
   every block stood 24px inside Clara's content header, and a grid's text

@@ -47,7 +47,6 @@ CHROME_PREFIX = (
 )
 CHROME_TARGETS = {
     ".element-breadcrumbs",
-    ".element-contentheader",
     ".element-byline",
     "#section-byline",
 }
