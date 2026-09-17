@@ -2,6 +2,11 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The page title stands on the mockup's heading step.** derico.css §10
+  aliases Blicca's `--aurora-title-size` to Clara's heading token, so a
+  blocks page's h1 measures what the page hero's h1 does (56px at 1440)
+  instead of Clara's plain 2.5rem h1, on the canvas as on the page.
+
 - **The page title and its lede come from the blocks.** Blicca renders a
   page's h1 and its lede from its title and description blocks
   (plone.blicca.auroraeditor ADR 0017), so a kicker paragraph can
