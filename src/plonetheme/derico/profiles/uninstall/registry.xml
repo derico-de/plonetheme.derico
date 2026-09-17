@@ -30,6 +30,9 @@
   <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
            prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.hero"
            remove="true" />
+  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader"
+           remove="true" />
 
   <!-- DELIBERATELY ASYMMETRIC, and not an oversight to be tidied up: neither
        the `enormous` scale rung nor the two `hero-*` picture variants is

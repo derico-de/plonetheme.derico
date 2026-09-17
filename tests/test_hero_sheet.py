@@ -29,6 +29,10 @@ needs_block_sheets = css_tools.needs_block_sheets
 
 ROOT = ".derico-hero"
 
+#: Every brand block's own root class. The sheets share one built artifact,
+#: so the namespace guard below admits any of them — and only them.
+BLOCK_ROOTS = (".derico-hero", ".derico-page-header")
+
 
 def _style_rules():
     """(selector-part, properties) for every style rule in every block sheet."""
@@ -84,14 +88,16 @@ def test_every_selector_stays_inside_the_blocks_namespace():
     Packaging wraps the file in `@scope (.aurora-editor, .aurora-editor-portal,
     .aurora-blocks-view)`, which is three whole surfaces — so a bare `h1` here
     would restyle every page the editor renders. Every selector must name a
-    class of this block's own: `.derico-hero` for the component (the sidebar
-    widgets and the authoring hint live outside it, under `.derico-hero-widget`
-    and `.derico-hero-incomplete`, and are namespaced for the same reason).
+    class of a brand block's own: `.derico-hero` or `.derico-page-header` for
+    the component (the hero's sidebar widgets and authoring hint live outside
+    it, under `.derico-hero-widget` and `.derico-hero-incomplete`, and are
+    namespaced for the same reason).
     """
+    namespace = "|".join(re.escape(root[1:]) for root in BLOCK_ROOTS)
     strays = sorted(
         selector
         for selector, _ in _style_rules()
-        if not re.search(r"\.derico-hero[\w-]*\b", selector)
+        if not re.search(rf"\.(?:{namespace})[\w-]*\b", selector)
     )
     assert not strays, (
         "these selectors escape the block's namespace and would style the "

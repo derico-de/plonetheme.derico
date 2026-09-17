@@ -11,7 +11,7 @@ design that cannot be a token.
 
 The exception is the **brand blocks**: designs that are not a value Clara's
 rules already read, so they ship their own component rules and their own
-editor-side JavaScript. The Derico Hero is the first. Their source lives in
+editor-side JavaScript. The Derico Hero and the Derico Page Header. Their source lives in
 [`bundle-src/`](bundle-src/README.md) and their built, committed artifacts in
 `src/plonetheme/derico/static-blocks/` — installing the theme never requires
 Node, but changing a block requires a rebuild.
@@ -41,6 +41,16 @@ The source of record is `docs/design/derico.de/` — the
 implementation the theme is built against. Two colours carry it: exact brand
 cyan `#039fba` (OKLCH hue 215.55) and a copper complement; Literata over Source
 Sans 3; flat and hairlined, no shadows.
+
+## The Derico Page Header
+
+The second brand block: the opening of every inner page from the mockup —
+kicker, title and description as one piece, two-up and bottom-aligned once
+the page is 56rem wide. The kicker is the block's own; the **title and the
+description are the page's fields**, edited inline on the canvas through the
+host's form atom and printed from the content on the page. A page that opens
+with it has no title block and no description block — delete them, the
+fields stay bound. No insert gate: any editor may insert it.
 
 ## The Derico Hero
 

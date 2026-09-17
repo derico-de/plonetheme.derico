@@ -2,12 +2,13 @@
  * The brand blocks' editor bundles (block add-on contract §1.2, hero ticket
  * 04).
  *
- * One workspace, N entry points, N bundles, N records. Two members today:
- * `hero`, and `fragments` — which registers no block at all, only the
- * ornaments derico provides to collective.fragmentsblock. Note the
+ * One workspace, N entry points, N bundles, N records. Three members today:
+ * `hero`, `pageheader`, and `fragments` — which registers no block at all,
+ * only the ornaments derico provides to collective.fragmentsblock. Note the
  * shared-stylesheet caveat below only concerns entries that IMPORT css;
  * `fragments` imports none (the ornaments are styled by the theme's
- * `static/snippets.css`), so `blocks.css` remains the hero's alone.
+ * `static/snippets.css`), so `blocks.css` is the two blocks' sheets, one
+ * after the other.
  *
  * Output goes to `src/plonetheme/derico/static-blocks/`, a second static
  * directory registered as `++plone++plonetheme.derico.blocks` and reserved
@@ -57,6 +58,7 @@ export default defineConfig({
     lib: {
       entry: {
         hero: path.resolve(here, 'src/hero/index.tsx'),
+        pageheader: path.resolve(here, 'src/pageheader/index.tsx'),
         // Not a block: it registers the ornament corpus as fragments for
         // collective.fragmentsblock's generic block, so its record declares
         // no `types`. Its own entry, because install() runs once per RECORD

@@ -79,6 +79,28 @@
     <value key="weight">100</value>
   </records>
 
+  <!-- The Derico Page Header: kicker, title and description as one block,
+       the mockup's `.page-hero` on every inner page. Its own record and its
+       own bundle, like the hero (§3.2). The title and the description are
+       the page's own fields, bound on the canvas through the host's form
+       atom (contract §1.7); the block stores only the kicker.
+
+       No `permission`: unrestricted on purpose. The hero's gate names the
+       site administrator because a hero is the homepage; a page header is
+       how EVERY page opens, and the editor who writes the page inserts it.
+       Same shared `blocks.css` (ticket 04 §5). -->
+  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader">
+    <value key="bundle">++plone++plonetheme.derico.blocks/pageheader.js</value>
+    <value key="block_api">1.0</value>
+    <value key="css">++plone++plonetheme.derico.blocks/blocks.css</value>
+    <value key="types">
+      <element>derico-page-header</element>
+    </value>
+    <value key="enabled">True</value>
+    <value key="weight">110</value>
+  </records>
+
   <!-- derico as a FRAGMENT PROVIDER, not a block: this bundle publishes the
        `snippets/` corpus into the shared registry as fragments for
        collective.fragmentsblock's generic fragment block (see

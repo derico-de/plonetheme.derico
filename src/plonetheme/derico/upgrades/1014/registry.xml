@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registry>
+
+  <!-- The page header's block record, byte-identical to its record in
+       profiles/default/registry.xml. Only the new record: a registry import
+       adds and updates, so restating the rest of the default profile would
+       gain nothing and would overwrite values a site has since changed. -->
+  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
+           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader">
+    <value key="bundle">++plone++plonetheme.derico.blocks/pageheader.js</value>
+    <value key="block_api">1.0</value>
+    <value key="css">++plone++plonetheme.derico.blocks/blocks.css</value>
+    <value key="types">
+      <element>derico-page-header</element>
+    </value>
+    <value key="enabled">True</value>
+    <value key="weight">110</value>
+  </records>
+
+</registry>

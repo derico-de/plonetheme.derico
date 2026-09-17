@@ -48,4 +48,16 @@
       layer="plonetheme.derico.interfaces.IPlonethemeDericoLayer"
       />
 
+  <!-- The Derico Page Header's public renderer: the same registration as
+       the hero's, for the same reasons. The kicker comes from the block,
+       the title and the description from the context (pageheader.py). -->
+  <browser:page
+      name="aurora-block-derico-page-header"
+      for="*"
+      class=".pageheader.DericoPageHeaderView"
+      template="templates/pageheader.pt"
+      permission="zope2.View"
+      layer="plonetheme.derico.interfaces.IPlonethemeDericoLayer"
+      />
+
 </configure>

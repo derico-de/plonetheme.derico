@@ -2,6 +2,18 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The Derico Page Header block.** The second brand block: kicker, title
+  and description as ONE block, the mockup's `.page-hero` on every inner
+  page. The kicker is the block's own; the title and the description are
+  the page's fields, edited inline on the canvas through the host's form
+  atom (block add-on contract §1.7) and printed from the context on the
+  page — so a page opened by it needs neither the tree's title node nor
+  its description node, and its three words stand on the canvas exactly
+  where the page puts them. Layout rung, two-up and bottom-aligned from
+  56rem, the title on Blicca's title-size token, no insert gate. Its own
+  bundle (`pageheader.js`) and record; upgrade step 1014 adds the record
+  to existing sites.
+
 - **The page title stands on the mockup's heading step.** derico.css §10
   aliases Blicca's `--aurora-title-size` to Clara's heading token, so a
   blocks page's h1 measures what the page hero's h1 does (56px at 1440)
