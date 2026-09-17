@@ -175,6 +175,7 @@ EXPECTED_ALIASES = {
     "--aurora-quote-display-size": "--clara-text-heading",
     # the title block's air and its row with the description block (Blicca
     # ADR 0017): the content header's own values, stated once in §5
+    "--aurora-title-size": "--clara-text-heading",
     "--aurora-title-space-above": "--plone-space-xl",
     "--aurora-title-space-below": "--plone-space-m",
     "--aurora-title-row-threshold": "--plone-contentheader-threshold",
