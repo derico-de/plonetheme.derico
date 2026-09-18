@@ -9,8 +9,9 @@ The block stores ONE thing, the kicker. The title and the description are the
 page's own fields: on the canvas the block binds them through the host's form
 atom (contract §1.7), here they are read from the context. So a page that
 opens with this block needs neither the tree's title node nor its description
-node, and ``context.Title`` — head title, listings, breadcrumbs — stays what
-the author typed into the header.
+node — ``document_header`` below tells Blicca to skip both on a page that
+still holds them (contract §1.8) — and ``context.Title`` — head title,
+listings, breadcrumbs — stays what the author typed into the header.
 
 ``PageHeader.tsx`` is the reference tree and ``pageheader.pt`` matches it
 class for class: one scope-wrapped ``blocks.css`` styles both surfaces. No
@@ -29,6 +30,11 @@ def text(value):
 
 class DericoPageHeaderView(BaseBlockView):
     """Render a ``derico-page-header`` block on the published page."""
+
+    # The block prints the page's title and description itself (contract
+    # §1.8), so Blicca skips the tree's title and description nodes on a
+    # page that holds it — the pair would print the opening twice.
+    document_header = True
 
     @property
     def kicker(self):

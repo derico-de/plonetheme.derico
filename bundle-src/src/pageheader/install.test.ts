@@ -46,6 +46,14 @@ describe('install()', () => {
     expect(fieldsetFields(entry.blockSchema)).not.toContain('blockWidth');
   });
 
+  test('declares itself the document header', () => {
+    // The host seeds a new page with it instead of the title and
+    // description nodes, and drops the pair from a tree that holds it
+    // (contract §1.8): the header prints both, bound to the same fields.
+    const entry = install(makeConfig()).blocks.blocksConfig[PAGE_HEADER_BLOCK_TYPE];
+    expect(entry.documentHeader).toBe(true);
+  });
+
   test('stores the kicker and nothing else', () => {
     // The title and the description are the page's fields, bound on the
     // canvas; a schema copy would be a second control for the same value.

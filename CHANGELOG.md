@@ -2,6 +2,15 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The page header is the document header.** The block declares
+  `documentHeader: true` on its registry entry and `document_header = True`
+  on its renderer (Blicca's block add-on contract §1.8, ADR 0019), so a new
+  derico page opens with the page header instead of the tree's title and
+  description nodes, a tree that still holds the pair beside the header
+  prints its opening once — on the canvas and on the page — and the slash
+  menu withholds "Title" and "Description" while the header stands. Removing
+  the header stays the author's call, as removing the title block is.
+
 - **The Derico Page Header block.** The second brand block: kicker, title
   and description as ONE block, the mockup's `.page-hero` on every inner
   page. The kicker is the block's own; the title and the description are

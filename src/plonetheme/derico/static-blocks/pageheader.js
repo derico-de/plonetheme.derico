@@ -258,6 +258,7 @@ function installDericoPageHeader(config) {
 		edit: PageHeaderEdit,
 		view: PageHeaderView,
 		blockSchema: PageHeaderSchema,
+		documentHeader: true,
 		defaultBlockWidth: "layout"
 	};
 	return config;

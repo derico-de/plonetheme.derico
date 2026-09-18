@@ -65,12 +65,16 @@ class PageHeaderTestCase:
         """The block's own root element."""
         return self.soup(data).find("section", class_="derico-page-header")
 
-    def page(self, node):
-        """The whole published page, through Blicca's dispatcher."""
+    def page(self, node, *before):
+        """The whole published page, through Blicca's dispatcher; ``before``
+        are tree nodes standing above the header."""
         self.doc.blocks = {
             SOMERSAULT_BLOCK_ID: {
                 "@type": SOMERSAULT_BLOCK_TYPE,
-                "value": [dict(node, type="ploneBlock", children=[{"text": ""}])],
+                "value": [
+                    *before,
+                    dict(node, type="ploneBlock", children=[{"text": ""}]),
+                ],
             }
         }
         self.doc.blocks_layout = {"items": [SOMERSAULT_BLOCK_ID]}
@@ -183,6 +187,26 @@ class TestOnThePage(PageHeaderTestCase):
         soup = self.page({"@type": BLOCK_TYPE, "kicker": "Nachhaltigkeit"})
         headings = soup.find_all("h1")
         assert [h.get_text() for h in headings] == ["Nachhaltige Softwareentwicklung"]
+
+    def test_the_block_is_the_document_header(self):
+        """A tree that still holds the title and description nodes — authored
+        before the block existed, or through the API — prints the opening
+        once, through the header (Blicca's contract §1.8)."""
+        soup = self.page(
+            {"@type": BLOCK_TYPE, "kicker": "Nachhaltigkeit"},
+            {"type": "title", "children": [{"text": "Nachhaltige Softwareentwicklung"}]},
+            {"type": "description", "children": [{"text": "Offene Software."}]},
+        )
+        assert [h.get_text() for h in soup.find_all("h1")] == [
+            "Nachhaltige Softwareentwicklung"
+        ]
+        assert soup.find(class_="documentFirstHeading").find_parent(
+            class_="derico-page-header"
+        )
+        assert len(soup.find_all(class_="documentDescription")) == 1
+        assert soup.find(class_="documentDescription").find_parent(
+            class_="derico-page-header"
+        )
 
     def test_the_wrapper_carries_the_stamp_the_sheet_leaves_free(self):
         soup = self.page({"@type": BLOCK_TYPE, "blockWidth": "layout"})

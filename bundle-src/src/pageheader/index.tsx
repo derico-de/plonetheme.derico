@@ -28,6 +28,11 @@ export default function installDericoPageHeader<T extends BlocksConfig>(config: 
     edit: PageHeaderEdit,
     view: PageHeaderView,
     blockSchema: PageHeaderSchema,
+    // The page's opening, whole: this block prints the title and the
+    // description itself (contract §1.8), so a new page opens with it in
+    // place of the tree's title and description nodes, and a tree that
+    // holds it drops the pair — the page would open twice otherwise.
+    documentHeader: true,
     // The layout rung: the page's title stands on the layout edge (derico
     // grid alignment, derico.css §10), and so does this header. Aurora
     // MATERIALISES the resolved width onto the node at insert, so the server
