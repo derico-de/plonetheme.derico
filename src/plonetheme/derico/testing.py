@@ -2,11 +2,12 @@
 import os
 
 import collective.fragmentsblock
-import derico.blicca.promoblock
+import plone.app.caching
 import plone.app.theming
 import plone.blicca.auroraeditor
 import plone.pageletlayout
 import plone.restapi
+from plone import api
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
@@ -14,6 +15,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.testing.zope import WSGI_SERVER_FIXTURE
 
+import derico.blicca.promoblock
 import plonetheme.clara
 import plonetheme.derico
 
@@ -67,6 +69,28 @@ FUNCTIONAL_TESTING = FunctionalTesting(
 ACCEPTANCE_TESTING = FunctionalTesting(
     bases=(FIXTURE, WSGI_SERVER_FIXTURE),
     name="PlonethemeDericoLayer:AcceptanceTesting",
+)
+
+
+class CachingLayer(PloneSandboxLayer):
+    """plonetheme.derico with plone.app.caching enabled."""
+
+    defaultBases = (FIXTURE,)
+
+    def setUpZope(self, app, configurationContext):
+        self.loadZCML(package=plone.app.caching)
+
+    def setUpPloneSite(self, portal):
+        self.applyProfile(portal, "plone.app.caching:default")
+        self.applyProfile(portal, "plone.app.caching:without-caching-proxy")
+        api.portal.set_registry_record("plone.caching.interfaces.ICacheSettings.enabled", True)
+
+
+CACHING_FIXTURE = CachingLayer()
+
+CACHING_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(CACHING_FIXTURE,),
+    name="PlonethemeDericoLayer:CachingFunctionalTesting",
 )
 
 

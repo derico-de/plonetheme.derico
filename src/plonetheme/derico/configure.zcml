@@ -31,6 +31,17 @@
       directory="static"
       />
 
+  <!-- Bundles under `++webresource++<hash>/++resource++…` get
+       plone.stableResource (1 year). plone.resource's own lookup for hashed
+       requests loses to plone.app.caching's ContentItemLookup, because a
+       `++resource++` file is a browser view; this registration is more
+       specific than both. Covers every `++resource++` bundle on the site. -->
+  <adapter
+      factory="plone.resource.caching.UniqueResourceLookup"
+      for="zope.browserresource.interfaces.IFileResource
+           plone.resource.interfaces.IUniqueResourceRequest"
+      />
+
   <!-- The brand blocks' editor bundles, built from bundle-src/ and committed.
        A SECOND directory, and `++plone++` rather than `++resource++`: the
        contract's cache-buster names `++plone++` (blockaddons.py:170), and

@@ -1,6 +1,7 @@
 """Pytest configuration for plonetheme.derico tests."""
 from pytest_plone import fixtures_factory
 
+from plonetheme.derico.testing import CACHING_FUNCTIONAL_TESTING
 from plonetheme.derico.testing import FUNCTIONAL_TESTING
 from plonetheme.derico.testing import INTEGRATION_TESTING
 
@@ -10,6 +11,7 @@ globals().update(
         (
             (INTEGRATION_TESTING, "integration"),
             (FUNCTIONAL_TESTING, "functional"),
+            (CACHING_FUNCTIONAL_TESTING, "caching_functional"),
         )
     )
 )
