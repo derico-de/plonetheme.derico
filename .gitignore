@@ -101,3 +101,6 @@ sources/*
 
 # Agent tooling: per-checkout settings, environment-local
 .claude/
+
+# Lighthouse reports: local measurement artefacts
+docs/design/derico.de/new.derico.de_*.json
