@@ -57,6 +57,12 @@ SVG = b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>'
 PORTRAIT_MEDIA = "(max-width: 55.99rem)"
 
 
+def original_sources(root):
+    """The `<source>` elements in the upload's format — Blicca puts an AVIF
+    twin in front of each (contract §5.2), told apart by `type`."""
+    return [s for s in root.find_all("source") if s.get("type") is None]
+
+
 class HeroTestCase:
     """A hero rendered on a real content object, on the theme's layer."""
 
@@ -334,7 +340,7 @@ class TestPhotograph(HeroTestCase):
 
     def test_the_resolution_ladder_includes_the_new_top_rung(self):
         """`enormous 2600` is what ticket 05 added the scale for."""
-        source = self.hero(self._crops(wide=self.image("wide"))).find("source")
+        source = original_sources(self.hero(self._crops(wide=self.image("wide"))))[0]
         assert "/@@images/image/enormous 2600w" in source["srcset"]
         assert "/@@images/image/huge 1600w" in source["srcset"]
         assert source["sizes"] == "100vw"
@@ -346,12 +352,12 @@ class TestPhotograph(HeroTestCase):
         query would leave everything above the breakpoint with no matching
         source and therefore no ladder at all.
         """
-        sources = self.hero(self._crops(wide=self.image("wide"))).find_all("source")
+        sources = original_sources(self.hero(self._crops(wide=self.image("wide"))))
         assert len(sources) == 1
         assert sources[0].get("media") is None
 
     def test_a_portrait_alone_renders_at_every_breakpoint(self):
-        sources = self.hero(self._crops(portrait=self.image("tall"))).find_all("source")
+        sources = original_sources(self.hero(self._crops(portrait=self.image("tall"))))
         assert len(sources) == 1
         assert sources[0].get("media") is None
         assert "/plone/tall/" in sources[0]["srcset"]
@@ -361,12 +367,27 @@ class TestPhotograph(HeroTestCase):
         picture = self.hero(self._crops(wide=self.image("wide"), portrait=self.image("tall"))).find(
             "picture"
         )
-        sources = picture.find_all("source")
+        sources = original_sources(picture)
         assert len(sources) == 2
         assert sources[0]["media"] == PORTRAIT_MEDIA
         assert "/plone/tall/" in sources[0]["srcset"]
         assert sources[1].get("media") is None
         assert "/plone/wide/" in sources[1]["srcset"]
+
+    def test_every_source_is_preceded_by_its_avif_twin(self):
+        """Portrait AVIF, portrait, wide AVIF, wide: `media` still decides the
+        framing first, then the browser takes AVIF within it if it can."""
+        picture = self.hero(self._crops(wide=self.image("wide"), portrait=self.image("tall"))).find(
+            "picture"
+        )
+        sources = picture.find_all("source")
+        assert [s.get("type") for s in sources] == ["image/avif", None, "image/avif", None]
+        assert sources[0]["media"] == PORTRAIT_MEDIA
+        assert "/plone/tall/@@images/image/larger.avif 1000w" in sources[0]["srcset"]
+        assert sources[0]["sizes"] == sources[1]["sizes"]
+        assert sources[2].get("media") is None
+        assert "/plone/wide/@@images/image/enormous.avif 2600w" in sources[2]["srcset"]
+        assert ".avif" not in picture.img["src"]
 
     def test_the_spliced_picture_keeps_exactly_one_img(self):
         """The portrait's own `<img>` is discarded, not left behind."""

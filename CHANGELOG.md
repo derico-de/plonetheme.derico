@@ -2,6 +2,13 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The hero offers AVIF.** Blicca now puts an `image/avif` twin in front of
+  every `<source>` `Img2PictureTag` builds, so the spliced hero picture comes
+  out as portrait AVIF, portrait, wide AVIF, wide — `media` still picks the
+  framing, then an AVIF-capable browser takes the smaller encoding, whatever
+  format the crops were uploaded in. Nothing changed in the renderer; the
+  tests pin the order and count the upload-format sources only.
+
 - **The theme follows plone.pageletlayout's slot layout.** The header sheet
   keys its language lane and its hairline on `#portal-top`, the header
   landmark, instead of on elements sitting directly on the page grid. The
