@@ -107,16 +107,16 @@
    `--space-xs` is a flat 12px where the theme's is fluid. A third language
    pushes past it — at which point this number, and the tight band's budget
    below, are what have to be re-measured. */
-.plone-layout:has(> .element-language) {
+.plone-layout:has(#portal-top > .element-language) {
   --derico-header-lang: calc(4.5rem + var(--plone-space-xs));
 }
 
 /* ── the bar's hairline ───────────────────────────────────────────────────
- * The design's `.site-header { border-bottom }`. There is no header element
- * to carry it — the elements sit directly on the layout grid — so a pseudo
- * grid item draws it along the first row's bottom edge, full-bleed. Scoped
- * to a layout that actually has a header: the body-only layouts do not. */
-.plone-layout:has(> .element-logo)::before {
+ * The design's `.site-header { border-bottom }`. `#portal-top` is a subgrid
+ * whose later rows open beneath the bar (the narrow layout's menu and
+ * search), so a pseudo grid item draws it along the first row's bottom
+ * edge, full-bleed. Scoped to a header that has a logo. */
+#portal-top:has(> .element-logo)::before {
   content: "";
   grid-row: 1;
   grid-column: full-start / full-end;
@@ -769,5 +769,5 @@
 }
 
 @media print {
-  .plone-layout:has(> .element-logo)::before { display: none; }
+  #portal-top:has(> .element-logo)::before { display: none; }
 }

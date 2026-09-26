@@ -20,12 +20,9 @@
          authored as footer blocks. Below it, Plone's attribution rows read as
          chrome that escaped the design rather than as part of it.
 
-       HIDDEN, not removed from the order: hiding is what the layout manager
-       offers for an element it should keep knowing about
-       (`plone.app.viewletmanager`'s storage, the same storage the order lives
-       in), so `@@manage-layout-viewlets` shows each row as hidden and can put
-       it back. Removing the names would take them out of the stored sequence,
-       where the base package's own parity test expects to find them.
+       HIDDEN in plone.portalfooter, the slot plone.pageletlayout assigns the
+       three rows to: `@@manage-layout-viewlets` shows each row as hidden and
+       can put it back.
 
        Nothing about Plone's licence obliges the badge or the copyright row to
        be on the page; the attribution that matters is in the source and the
@@ -33,9 +30,20 @@
 
        The uninstall profile un-hides all three, so a site that drops the
        theme gets its stock footer back. -->
-  <hidden manager="plone.pageletlayout.layout" skinname="Plone Default">
+  <hidden manager="plone.portalfooter" skinname="Plone Default">
     <viewlet name="plone.pageletlayout.copyright" />
     <viewlet name="plone.pageletlayout.colophon" />
     <viewlet name="plone.pageletlayout.siteactions" />
+  </hidden>
+
+  <!-- The lead image leaves the page.
+
+       plone.app.contenttypes renders it in plone.abovecontenttitle, inside
+       the content header, which the slot layout renders on every page. A
+       derico page opens with what its author composed (a hero, an image
+       block); the lead image is the teaser and social-card picture, never
+       part of the page itself. The uninstall profile un-hides it. -->
+  <hidden manager="plone.abovecontenttitle" skinname="Plone Default">
+    <viewlet name="contentleadimage" />
   </hidden>
 </object>

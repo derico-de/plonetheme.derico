@@ -196,10 +196,11 @@ class TestHeaderSheet:
 
     def test_addresses_only_the_header(self):
         """Every selector names a header element, the layout container (its
-        own knobs and the hairline pseudo item) or a descendant of one —
-        the sheet reaches nothing beyond the bar."""
+        own knobs), the header landmark (the hairline pseudo item) or a
+        descendant of one — the sheet reaches nothing beyond the bar."""
         roots = (
             ".plone-layout",
+            "#portal-top",
             "#portal-logo",
             ".element-anontools",
             ".element-globalnav",
@@ -354,7 +355,7 @@ class TestLanguageSwitch:
         text = css_tools.strip_comments(HEADER_CSS.read_text())
         base = css_tools.declarations(HEADER_CSS.read_text(), [".plone-layout"])
         assert base["--derico-header-lang"] == "0rem"
-        assert ".plone-layout:has(> .element-language)" in text, (
+        assert ".plone-layout:has(#portal-top > .element-language)" in text, (
             "nothing asks whether the switch is actually there"
         )
 

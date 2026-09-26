@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1015"
+      title="plonetheme.derico: upgrade to 1015"
+      directory="1015"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1014"
+      destination="1015"
+      profile="plonetheme.derico:default">
+
+    <!-- Declarative and narrowed to the viewlets step, as 1011 was. -->
+    <genericsetup:upgradeDepends
+        title="Hide the footer rows and the lead image in their slots"
+        description="plone.pageletlayout renders the footer rows in plone.portalfooter and the content header's managers on every page; keep the rows hidden there and hide the lead image"
+        import_profile="plonetheme.derico.upgrades:1015"
+        import_steps="viewlets"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

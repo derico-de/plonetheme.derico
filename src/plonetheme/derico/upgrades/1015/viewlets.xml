@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- The rows 1011 hid, hidden again in the slot plone.pageletlayout 1004
+       moved them to, and the lead image (see profiles/default/viewlets.xml).
+       plone.pageletlayout carries a site's hidden set over itself; this
+       covers a site whose derico 1011 ran after that migration. The importer
+       appends each name once, so this is idempotent. -->
+  <hidden manager="plone.portalfooter" skinname="Plone Default">
+    <viewlet name="plone.pageletlayout.copyright" />
+    <viewlet name="plone.pageletlayout.colophon" />
+    <viewlet name="plone.pageletlayout.siteactions" />
+  </hidden>
+
+  <!-- The lead image leaves the page.
+
+       plone.app.contenttypes renders it in plone.abovecontenttitle, inside
+       the content header, which the slot layout renders on every page. A
+       derico page opens with what its author composed (a hero, an image
+       block); the lead image is the teaser and social-card picture, never
+       part of the page itself. The uninstall profile un-hides it. -->
+  <hidden manager="plone.abovecontenttitle" skinname="Plone Default">
+    <viewlet name="contentleadimage" />
+  </hidden>
+</object>

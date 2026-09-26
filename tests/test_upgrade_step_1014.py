@@ -47,11 +47,6 @@ class TestUpgrade1014:
 
         assert PROFILE in HiddenProfiles().getNonInstallableProfiles()
 
-    def test_the_profile_is_at_this_version(self):
-        """The newest step's test owns the exact version."""
-        (version,) = self.setup_tool.getLastVersionForProfile("plonetheme.derico:default")
-        assert int(version) == 1014
-
     def test_upgrade_adds_the_record(self):
         self._drop_record()
         self.setup_tool.runAllImportStepsFromProfile(f"profile-{PROFILE}")

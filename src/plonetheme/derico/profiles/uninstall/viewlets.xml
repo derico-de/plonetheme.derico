@@ -9,9 +9,12 @@
        the name from the hidden list and, without the attribute, would append
        it), and it is idempotent: a name that is not hidden is simply not
        there to remove. -->
-  <hidden manager="plone.pageletlayout.layout" skinname="Plone Default">
+  <hidden manager="plone.portalfooter" skinname="Plone Default">
     <viewlet name="plone.pageletlayout.copyright" remove="True" />
     <viewlet name="plone.pageletlayout.colophon" remove="True" />
     <viewlet name="plone.pageletlayout.siteactions" remove="True" />
+  </hidden>
+  <hidden manager="plone.abovecontenttitle" skinname="Plone Default">
+    <viewlet name="contentleadimage" remove="True" />
   </hidden>
 </object>

@@ -46,13 +46,11 @@ class TestUpgrade1006:
             )
 
     def test_the_upgrade_places_the_band_in_the_layout(self):
-        """The 1005 site: the element exists, the stored order predates it."""
-        order = [
-            name
-            for name in self.storage.getOrder(MANAGER, "Plone Default")
-            if name != VIEWLET
-        ]
-        self.storage.setOrder(MANAGER, "Plone Default", tuple(order))
+        """The 1005 site: the element exists, the stored order predates it.
+        That order is the retired whole-body manager's, which a fresh install
+        of the current plone.pageletlayout no longer writes, so it is seeded."""
+        order = ("plone.pageletlayout.body", "plone.pageletlayout.copyright")
+        self.storage.setOrder(MANAGER, "Plone Default", order)
         assert VIEWLET not in self.storage.getOrder(MANAGER, "Plone Default")
 
         self._apply()

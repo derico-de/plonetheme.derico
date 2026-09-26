@@ -2,6 +2,14 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The theme follows plone.pageletlayout's slot layout.** The header sheet
+  keys its language lane and its hairline on `#portal-top`, the header
+  landmark, instead of on elements sitting directly on the page grid. The
+  three stock footer rows stay hidden, now in `plone.portalfooter`, and the
+  lead image (`contentleadimage`, which the content header renders on every
+  page now) is hidden too: a derico page opens with what its author
+  composed. Upgrade step 1015; the uninstall profile mirrors both.
+
 - **The page header is the document header.** The block declares
   `documentHeader: true` on its registry entry and `document_header = True`
   on its renderer (Blicca's block add-on contract §1.8, ADR 0019), so a new
