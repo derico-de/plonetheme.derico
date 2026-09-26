@@ -452,7 +452,7 @@ wheels = [
 [[package]]
 name = "collective-fragmentsblock"
 version = "1.0.0a1"
-source = { editable = "../derico.de/derico.de/sources/collective.fragmentsblock" }
+source = { editable = "../collective.fragmentsblock" }
 dependencies = [
     { name = "plone" },
     { name = "plone-blicca-auroraeditor" },
@@ -462,7 +462,7 @@ dependencies = [
 requires-dist = [
     { name = "plone", specifier = ">=6.0" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
-    { name = "plone-blicca-auroraeditor", editable = "../derico.de/derico.de/sources/plone.blicca.auroraeditor" },
+    { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'" },
@@ -631,7 +631,7 @@ wheels = [
 [[package]]
 name = "derico-blicca-promoblock"
 version = "1.0.0a1"
-source = { editable = "../derico.de/derico.de/sources/derico.blicca.promoblock" }
+source = { editable = "../derico.blicca.promoblock" }
 dependencies = [
     { name = "plone" },
     { name = "plone-blicca-auroraeditor" },
@@ -641,7 +641,7 @@ dependencies = [
 requires-dist = [
     { name = "plone", specifier = ">=6.0" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
-    { name = "plone-blicca-auroraeditor", editable = "../derico.de/derico.de/sources/plone.blicca.auroraeditor" },
+    { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'" },
@@ -3568,8 +3568,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "collective-fragmentsblock", editable = "../derico.de/derico.de/sources/collective.fragmentsblock" },
-    { name = "derico-blicca-promoblock", editable = "../derico.de/derico.de/sources/derico.blicca.promoblock" },
+    { name = "collective-fragmentsblock", editable = "../collective.fragmentsblock" },
+    { name = "derico-blicca-promoblock", editable = "../derico.blicca.promoblock" },
     { name = "paste" },
     { name = "plone", specifier = ">=6.2" },
     { name = "plone-app-caching" },
