@@ -58,7 +58,7 @@ PORTRAIT_MEDIA = "(max-width: 55.99rem)"
 
 
 def original_sources(root):
-    """The `<source>` elements in the upload's format — Blicca puts an AVIF
+    """The `<source>` elements in the upload's format — plone.namedfile puts an AVIF
     twin in front of each (contract §5.2), told apart by `type`."""
     return [s for s in root.find_all("source") if s.get("type") is None]
 
