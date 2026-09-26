@@ -159,6 +159,10 @@ constraint-dependencies = ["Products.CMFPlone==6.2.1"]
 [tool.uv.sources]
 "plonetheme.clara" = { path = "../plonetheme.clara", editable = true }
 "plone.pageletlayout" = { path = "../plone.pageletlayout", editable = true }
+"plone.app.viewletmanager" = { path = "../plone.app.viewletmanager", editable = true }
+# Not on PyPI: the derico.de project's local checkouts.
+"collective.fragmentsblock" = { path = "../derico.de/derico.de/sources/collective.fragmentsblock", editable = true }
+"derico.blicca.promoblock" = { path = "../derico.de/derico.de/sources/derico.blicca.promoblock", editable = true }
 "plone.blicca.auroraeditor" = { path = "../plone.blicca.auroraeditor", editable = true }
 
 [dependency-groups]
