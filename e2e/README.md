@@ -15,8 +15,8 @@ delete it again; set `DERICO_E2E_KEEP=1` to leave it on the site to look at.
 
 ## Prerequisites
 
-- A running Plone with `plonetheme.derico` installed at profile version
-  **1001** or later, and `plone.restapi`.
+- A running Plone with `plonetheme.derico` installed at the current profile
+  version (every upgrade step run), and `plone.restapi`.
 - A content type carrying the blocks behaviour. The fixture uses `Article`;
   override with `DERICO_E2E_PAGE_TYPE`.
 - For `hero-editor.e2e.js` only: the mockup `bundle-plone` (pat-auroraeditor,
