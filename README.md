@@ -6,8 +6,7 @@
 Almost all of the theme is one stylesheet of custom properties:
 `src/plonetheme/derico/static/derico.css`. No Sass, no Bootstrap compile —
 Clara ships all of that, and derico mostly moves the values its rules read.
-The one template override is the header search box
-(`browser/templates/searchbox.pt`). Plus one brand mark, which is the single part of the
+It overrides no template. Plus one brand mark, which is the single part of the
 design that cannot be a token.
 
 The exception is the **brand blocks**: designs that are not a value Clara's
@@ -177,9 +176,8 @@ measurement, and fails the day the link step darkens enough to revisit it.
 ## The header
 
 The one part of the theme that is neither a token nor a block. Clara's header
-elements carry the design's bar through `static/header.css` and
-`static/header.js` — one bundle, `plonetheme-derico-header` — plus a searchbox
-template registered on derico's own layer.
+elements carry the design's bar through `static/header.css`, the
+`plonetheme-derico-header` bundle.
 
 It is a separate sheet for the reason `derico.css` is guarded to stay a token
 sheet: the design's bar is a **composition**, not a set of values. Clara stacks
@@ -215,18 +213,10 @@ layouts, a full row under the bar on the narrow one. The mockup gained the same
 control in the same place, so the design source and the theme still describe
 one header.
 
-The disclosure is the same pure-CSS `.opener` checkbox Clara's mega menu uses,
-so **search works with no JavaScript at all**. `header.js` adds only what a
-stylesheet cannot: focus into the field, Escape and outside-click to close, and
-one open thing at a time in the bar. The form keeps the base template's ids,
-names and classes — `pat-livesearch` and `@@search` read them — so only how it
-opens changed.
-
-`browser/templates/searchbox.pt` is registered under the base provider name on
-`IPlonethemeDericoLayer`, which extends `IPlonePageletlayoutLayer` (Clara's own
-move for its globalnav): that makes the override unambiguously more specific
-than the base registration, with no change to the stored layout order and
-nothing for an upgrade step to migrate.
+The search is Clara's on-demand option: derico's profile sets
+`plonetheme.clara.search_on_demand` to `True`, and Clara renders the
+`.opener` toggle and handles its gestures in `clara.js`. `header.css` only
+places and dresses it.
 
 ## The footer
 

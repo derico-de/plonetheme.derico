@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1017"
+      title="plonetheme.derico: upgrade to 1017"
+      directory="1017"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1016"
+      destination="1017"
+      profile="plonetheme.derico:default">
+
+    <genericsetup:upgradeDepends
+        title="Switch to Clara's on-demand search"
+        description="Turn on plonetheme.clara.search_on_demand and drop header.js from the header bundle."
+        import_profile="plonetheme.derico.upgrades:1017"
+        import_steps="plone.app.registry"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

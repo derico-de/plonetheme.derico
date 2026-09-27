@@ -133,7 +133,8 @@
   border-block-end-color: var(--derico-brand-text);
 }
 
-/* Search: a pure-CSS `.opener` checkbox disclosure; works without JS. */
+/* Search: Clara's on-demand toggle (`.searchbox-on-demand`) opens and closes
+ * it; this places and dresses it. */
 .element-searchbox {
   grid-row: 1;
   align-self: center;
@@ -141,12 +142,7 @@
   /* No z-index: it follows the nav in DOM order and already paints above it. */
   position: relative;
   z-index: auto;
-}
-.element-searchbox > .opener {
-  /* focusable while invisible, so keyboard and AT can drive the label */
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+  text-align: start;
 }
 .searchbox-toggle {
   inline-size: var(--derico-header-toggle);
@@ -158,27 +154,19 @@
   cursor: pointer;
 }
 .searchbox-toggle:hover { color: var(--derico-brand-text); }
-.element-searchbox > .opener:focus-visible ~ .searchbox-toggle {
-  outline: 3px solid var(--plone-color-focus-ring);
-  outline-offset: 3px;
-}
 .element-searchbox > .opener:checked ~ .searchbox-toggle { color: var(--derico-brand-text); }
-.searchbox-toggle__glyph { grid-area: 1 / 1; }
-.searchbox-toggle__glyph--close { opacity: 0; transform: rotate(-45deg) scale(0.8); }
-.element-searchbox > .opener:checked ~ .searchbox-toggle .searchbox-toggle__glyph--open {
-  opacity: 0;
-  transform: rotate(45deg) scale(0.8);
-}
-.element-searchbox > .opener:checked ~ .searchbox-toggle .searchbox-toggle__glyph--close {
-  opacity: 1;
-  transform: none;
-}
 
-.element-searchbox > .opener:not(:checked) ~ form { display: none; }
+/* Undoes Clara's placement, which the wide layout below replaces. `display`
+   only when open, so Clara's closed state still hides the form. */
+.element-searchbox > .opener:checked ~ form { display: block; }
 .element-searchbox form {
   position: relative;
-  display: block;
+  z-index: auto;
+  inset: auto;
+  inline-size: auto;
   min-inline-size: 0;
+  margin-block-start: 0;
+  translate: none;
 }
 .element-searchbox .searchField {
   inline-size: 100%;
@@ -236,8 +224,6 @@
   box-shadow: none;
   color: var(--derico-ink);
 }
-/* The results are the form's sibling, so hiding the form does not hide them. */
-.element-searchbox > .opener:not(:checked) ~ .livesearch-results { display: none; }
 .element-searchbox .livesearch-results li { padding: var(--plone-space-2xs) var(--plone-space-s); }
 /* `.active` carries a light Bootstrap colour; restate the ink. */
 .element-searchbox .livesearch-results li:hover,

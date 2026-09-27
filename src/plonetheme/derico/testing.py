@@ -36,6 +36,7 @@ class PlonethemeDericoLayer(PloneSandboxLayer):
         # dependency-profile install asks for it.
         self.loadZCML(package=plone.pageletlayout)
         self.loadZCML(package=plonetheme.clara)
+        self.loadZCML(name="overrides.zcml", package=plonetheme.clara)
         # The brand blocks' host, and the same story: derico's profile depends
         # on `profile-plone.blicca.auroraeditor:default`, which only exists
         # once its ZCML has been read.

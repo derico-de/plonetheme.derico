@@ -1,14 +1,8 @@
 """The header: the design's bar on Clara's header elements.
 
-Three things ship it — the searchbox override (browser/configure.zcml +
-templates/searchbox.pt), the header bundle (registry.xml: header.css +
-header.js) and the layer change that makes the override win — and each is
-checked from the side that would fail silently without it: the provider that
-renders, the record the page reads, the layer the lookup resolves through.
-
-Looks are not asserted here. The stylesheet's contract with Clara — that it
-names no `--clara-*` token and reads only tokens derico.css declares — is
-test_override_minimality.py's, which globs every sheet under static/.
+The search is Clara's on-demand toggle (plonetheme.clara.search_on_demand,
+set by derico's profile); header.css only places and dresses it. Looks are
+not asserted here; test_override_minimality.py holds the token contract.
 """
 
 import re
@@ -16,13 +10,10 @@ import re
 import pytest
 from bs4 import BeautifulSoup
 from plone import api
-from plone.app.testing import logout
-from plone.pageletlayout.interfaces import IPlonePageletlayoutLayer
-from plone.pageletlayout.pagelets.header import SearchboxChromePagelet
+from plone.testing.zope import Browser
 from zope.component import getMultiAdapter
 from zope.contentprovider.interfaces import IContentProvider
 from zope.interface import alsoProvides
-from zope.interface import noLongerProvides
 
 from plonetheme.derico.interfaces import IPlonethemeDericoLayer
 
@@ -33,7 +24,7 @@ BUNDLE = "plone.bundles/plonetheme-derico-header"
 PROVIDER = "plone.pageletlayout.searchbox"
 
 HEADER_CSS = css_tools.STATIC / "header.css"
-HEADER_JS = css_tools.STATIC / "header.js"
+RECORD = "plonetheme.clara.search_on_demand"
 
 
 class TestHeaderBundle:
@@ -48,21 +39,19 @@ class TestHeaderBundle:
         assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
             "++resource++plonetheme.derico/header.css"
         )
-        assert api.portal.get_registry_record(f"{BUNDLE}.jscompilation") == (
-            "++resource++plonetheme.derico/header.js"
-        )
+
+    def test_bundle_ships_no_script(self):
+        """Clara's clara.js drives the search now."""
+        assert not api.portal.get_registry_record(f"{BUNDLE}.jscompilation")
+        assert not (css_tools.STATIC / "header.js").exists()
 
     def test_bundle_loads_after_the_token_layer(self):
         """Every value the sheet paints with is a token derico.css declares."""
         assert api.portal.get_registry_record(f"{BUNDLE}.depends") == "plonetheme-derico"
 
-    @pytest.mark.parametrize("filename", ["header.css", "header.js"])
-    def test_static_resources_are_traversable(self, filename):
+    def test_stylesheet_is_traversable(self):
         """A record pointing at a missing file is a 404 on every page."""
-        resource = self.portal.restrictedTraverse(
-            f"++resource++plonetheme.derico/{filename}"
-        )
-        assert resource is not None
+        assert self.portal.restrictedTraverse("++resource++plonetheme.derico/header.css")
 
     def test_uninstall_profile_removes_the_record(self):
         """The mirror of the default profile, so uninstall leaves no orphan
@@ -74,23 +63,16 @@ class TestHeaderBundle:
         ), "profiles/uninstall/registry.xml does not remove the header bundle"
 
 
-class TestSearchboxOverride:
-    """The same provider name as the base, on the theme's layer."""
+class TestOnDemandSearch:
+    """Clara's searchbox, switched to its on-demand toggle."""
 
     @pytest.fixture(autouse=True)
     def _setup(self, integration):
         self.portal = integration["portal"]
         self.request = integration["request"]
 
-    def _render(self, layered=True):
-        # The test request arrives with every installed browser layer already
-        # marked on it (plone.browserlayer marks on traversal, which the
-        # integration layer simulates), so "off the theme's layer" is a
-        # removal, not the absence of an addition.
-        if layered:
-            alsoProvides(self.request, IPlonethemeDericoLayer)
-        else:
-            noLongerProvides(self.request, IPlonethemeDericoLayer)
+    def _render(self):
+        alsoProvides(self.request, IPlonethemeDericoLayer)
         view = self.portal.restrictedTraverse("@@plone")
         provider = getMultiAdapter(
             (self.portal, self.request, view), IContentProvider, name=PROVIDER
@@ -98,68 +80,28 @@ class TestSearchboxOverride:
         provider.update()
         return BeautifulSoup(provider.render(), "html.parser")
 
-    def test_layer_extends_the_pagelet_layout_layer(self):
-        """What makes the override unambiguous: a request that provides the
-        theme's layer provides the base layer THROUGH it, so the more
-        specific registration is the theme's and never a coin toss between
-        two unrelated layers."""
-        assert IPlonethemeDericoLayer.extends(IPlonePageletlayoutLayer)
+    def test_the_record_is_on(self):
+        assert api.portal.get_registry_record(RECORD) is True
 
-    def test_override_wins_on_the_theme_layer(self):
+    def test_the_header_renders_the_toggle(self):
         soup = self._render()
-        assert soup.select_one("#portal-searchbox > .opener#portal-searchbox-opener")
-        toggle = soup.select_one("#portal-searchbox > label.searchbox-toggle")
-        assert toggle["for"] == "portal-searchbox-opener"
-        assert len(toggle.select("svg.searchbox-toggle__glyph")) == 2
+        box = soup.select_one("#portal-searchbox")
+        assert "searchbox-on-demand" in box["class"]
+        assert box.select_one(":scope > input.opener#portal-searchbox-opener")
+        assert box.select_one(":scope > label.searchbox-toggle[for=portal-searchbox-opener]")
 
-    def test_base_template_off_the_theme_layer(self):
-        """Every other layer keeps plone.pageletlayout's always-open form."""
-        soup = self._render(layered=False)
-        assert soup.select_one("#portal-searchbox")
-        assert not soup.select_one(".searchbox-toggle")
-
-    def test_provider_is_the_base_class(self):
-        """The class stays the base's: livesearch setting and action URL are
-        its computation, and this template reads exactly those."""
-        alsoProvides(self.request, IPlonethemeDericoLayer)
-        view = self.portal.restrictedTraverse("@@plone")
-        provider = getMultiAdapter(
-            (self.portal, self.request, view), IContentProvider, name=PROVIDER
-        )
-        assert isinstance(provider, SearchboxChromePagelet)
-
-    def test_form_keeps_the_base_contract(self):
-        """`pat-livesearch` and `@@search` read the form by id, name and
-        class; the override changes how it opens, not what it submits."""
-        soup = self._render()
-        form = soup.select_one("form#searchGadget_form")
-        assert form["action"] == f"{self.portal.absolute_url()}/@@search"
-        assert form["role"] == "search"
+    def test_the_form_keeps_livesearch(self):
+        form = self._render().select_one("form#searchGadget_form")
         assert "pat-livesearch" in form["class"]
-        assert form["data-pat-livesearch"] == (
-            f"ajaxUrl:{self.portal.absolute_url()}/@@ajax-search"
-        )
-        field = form.select_one("input#searchGadget")
-        assert field["name"] == "SearchableText"
-        assert field["type"] == "text", "pat-livesearch binds input[type=text]"
-        assert "searchField" in field["class"]
-        assert form.select_one("button.searchButton[type=submit]")
-        assert form.select_one("#portal-advanced-search a")["href"].endswith("/@@search")
+        assert form["action"] == f"{self.portal.absolute_url()}/@@search"
 
-    def test_toggle_has_an_accessible_name(self):
-        """The label's text is visually hidden, never absent."""
-        soup = self._render()
-        name = soup.select_one(".searchbox-toggle .visually-hidden")
-        assert name and name.get_text(strip=True)
 
-    def test_submit_keeps_its_label(self):
-        soup = self._render()
-        assert soup.select_one("button.searchButton .visually-hidden").get_text(strip=True)
-
-    def test_renders_for_anonymous(self):
-        logout()
-        soup = self._render()
-        assert soup.select_one(".searchbox-toggle")
+def test_the_page_header_is_on_demand(functional):
+    browser = Browser(functional["app"])
+    browser.open(functional["portal"].absolute_url())
+    soup = BeautifulSoup(browser.contents, "html.parser")
+    assert soup.select_one("#portal-top .searchbox-on-demand .searchbox-toggle")
+    assert "header.js" not in browser.contents
 
 
 class TestHeaderSheet:
@@ -194,18 +136,14 @@ class TestHeaderSheet:
                 part = css_tools.normalise_selector(part)
                 assert part.startswith(roots), f"{part!r} reaches outside the header"
 
-    def test_script_is_gestures_only(self):
-        """It toggles the checkbox and moves focus; it never writes markup
-        or styles, which stay the template's and the sheet's."""
-        text = HEADER_JS.read_text()
-        for forbidden in (
-            "innerHTML",
-            "insertAdjacentHTML",
-            "createElement",
-            ".style.",
-            "classList",
-        ):
-            assert forbidden not in text, f"header.js uses {forbidden}"
+    def test_the_closed_form_stays_hidden(self):
+        """Unlayered, any `display` here beats Clara's closed state; only the
+        open state may set one."""
+        for selector, body in css_tools.rules(HEADER_CSS.read_text()):
+            for part in selector.split(","):
+                part = css_tools.normalise_selector(part)
+                if part.endswith(("form", ".livesearch-results")) and "display" in body:
+                    assert ":checked" in part, f"{part!r} would show a closed search"
 
     def test_reduced_motion_covers_every_animation(self):
         """Every animation and transition is declared under
@@ -260,16 +198,16 @@ class TestLivesearchPanel:
             ".element-searchbox .livesearch-results"
         )), "the narrow header must place the panel as a row of its own"
 
+    @pytest.mark.skipif(
+        css_tools.clara_bundle_path() is None,
+        reason="plonetheme.clara's compiled bundle is not available",
+    )
     def test_closing_the_search_takes_the_panel_with_it(self):
-        """The pattern inserts the list beside the form, not inside it."""
-        hidden = [
-            body
-            for sel, body in css_tools.rules(HEADER_CSS.read_text())
-            if ".opener:not(:checked)" in css_tools.normalise_selector(sel)
-            and "livesearch-results" in css_tools.normalise_selector(sel)
-        ]
-        assert hidden and all("display: none" in body for body in hidden), (
-            "a closed search must not leave its results standing over the page"
+        """Clara hides everything after the closed toggle, results included."""
+        css = css_tools.clara_bundle_path().read_text()
+        assert re.search(
+            r"\.searchbox-on-demand>\.opener:not\(:checked\)~:not\(\.searchbox-toggle\)\{display:none",
+            css,
         )
 
 

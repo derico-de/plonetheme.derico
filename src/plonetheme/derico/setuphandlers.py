@@ -54,6 +54,7 @@ class HiddenProfiles:
     def getNonInstallableProfiles(self):
         return [
             "plonetheme.derico:uninstall",
+            "plonetheme.derico.upgrades:1017",
         ]
 
 

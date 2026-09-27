@@ -76,12 +76,9 @@
     <value key="enabled">True</value>
   </records>
 
-  <!-- CSS and JS in one record: the script drives a control only the sheet
-       draws. -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico-header">
     <value key="csscompilation">++resource++plonetheme.derico/header.css</value>
-    <value key="jscompilation">++resource++plonetheme.derico/header.js</value>
     <value key="depends">plonetheme-derico</value>
     <value key="load_defer">True</value>
     <value key="expression"></value>
@@ -107,6 +104,11 @@
     <value key="expression"></value>
     <value key="enabled">True</value>
   </records>
+
+  <!-- The header's search is Clara's toggle; header.css styles it. -->
+  <record name="plonetheme.clara.search_on_demand">
+    <value>True</value>
+  </record>
 
   <!-- Appended (`purge="false"`), never replacing: other code hardcodes the
        stock scale names. 2600 covers a 2560 desktop. Picture variants are a

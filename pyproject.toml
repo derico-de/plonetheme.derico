@@ -31,8 +31,7 @@ dependencies = [
     "plonetheme.clara",
     # Named directly, and not left to arrive through Clara, because derico
     # imports it: the theme's browser layer extends IPlonePageletlayoutLayer
-    # (interfaces.py) and browser/configure.zcml registers a chrome pagelet
-    # through its `plone:` directives.
+    # (interfaces.py).
     "plone.pageletlayout",
     # The brand blocks' host and the rendering API `browser/hero.py` imports.
     # The floor is where `image_source` / `path_of` arrived; the record's
