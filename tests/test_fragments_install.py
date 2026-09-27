@@ -184,3 +184,10 @@ class TestTheStylesheetBundle(InstallTestCase):
         """The seam rule the block sheets follow, applied to this one."""
         sheet = (STATIC_DIR / "snippets.css").read_text()
         assert "--clara-" not in sheet
+
+
+class TestUninstall(InstallTestCase):
+    def test_the_record_is_removed(self):
+        api.addon.get_installer(self.portal).uninstall_product("plonetheme.derico")
+        assert record("bundle", default=None) is None
+        assert record("enabled", default=None) is None
