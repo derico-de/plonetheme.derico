@@ -137,10 +137,6 @@ def _derico_light():
     return css_tools.declarations(DERICO, css_tools.ROOT_SELECTORS)
 
 
-def _derico_dark():
-    return css_tools.declarations(DERICO, css_tools.DARK_SELECTORS)
-
-
 def _clara_light():
     return css_tools.declarations(CLARA, css_tools.ROOT_SELECTORS)
 
@@ -173,7 +169,7 @@ def test_sheet_declares_only_root_level_selectors():
     selectors = {
         _normalise(selector) for selector, _ in css_tools._blocks(DERICO)
     }
-    allowed = {":root", '[data-bs-theme="dark"]'}
+    allowed = {":root"}
     offenders = sorted(
         selector
         for selector in selectors
@@ -272,7 +268,7 @@ def test_every_override_targets_a_token_clara_defines():
     clara = _clara_light()
     unknown = [
         name
-        for name in (_derico_light() | _derico_dark())
+        for name in _derico_light()
         if not name.startswith(("--derico-", "--aurora-", "--promo-"))
         and name not in clara
     ]

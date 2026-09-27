@@ -287,8 +287,7 @@ the editor toolbar, which is Clara's chrome. Pinned by `tests/test_print.py`;
 **compiled bundle**, not its Sass — what has to be overridden is decided by
 what lands in the page.
 
-- the sheet declares nothing but custom properties, under `:root` and one dark
-  block; no `@layer`, `@import`, `@font-face` or `!important`
+- the sheet declares nothing but custom properties, under `:root`; no `@layer`, `@import`, `@font-face` or `!important`
 - every override targets a token Clara actually defines
 - **no override restates a value Clara already resolves to** (both sides
   normalised to sRGB, so an `oklch()` that happens to equal Clara's hex is
@@ -296,7 +295,7 @@ what lands in the page.
 - every token listed as inherited is *not* overridden — and still matches the
   design; if Clara retunes one, the test says so and names it
 - no Klarsicht blue survives anywhere in the resolved token layer
-- WCAG ratios measured on the resolved sRGB values, light and dark
+- WCAG ratios measured on the resolved sRGB values
   (`tests/test_color_contrast.py`)
 
 ```bash
@@ -348,9 +347,8 @@ that forces a downstream override is a bug in the contract).
 
 - **Light-only by design.** Clara follows a dark OS unless `<html>` carries
   `data-bs-theme="light"`, so derico stamps it on every page it themes
-  (`browser/colormode.py`, a transform on derico's browser layer).
-  derico still flips the identity roles so Plone's toolbar switch never renders
-  blue chrome, but the dark neutrals stay Clara's.
+  (`browser/colormode.py`, a transform on derico's browser layer). derico.css
+  has no dark palette.
 - **Roboto Slab is not shipped.** It is scoped to the mockup homepage's service
   atlas — page-level content styling, not theme chrome.
 

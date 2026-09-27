@@ -16,13 +16,11 @@ needs_clara = pytest.mark.skipif(
 DERICO = css_tools.DERICO_CSS.read_text()
 
 
-def _effective(selectors_extra=()):
+def _effective():
     clara = css_tools.declarations(
         CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS
     )
     clara.update(css_tools.declarations(DERICO, css_tools.ROOT_SELECTORS))
-    for selectors in selectors_extra:
-        clara.update(css_tools.declarations(DERICO, selectors))
     return clara
 
 
@@ -92,29 +90,6 @@ def test_light_mode_contrast(foreground, background, minimum):
     ratio, fg, bg = _ratio(props, foreground, background)
     assert ratio >= minimum, (
         f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, needs {minimum}:1"
-    )
-
-
-#: Dark chrome only appears where Plone's toolbar switch is used; derico flips
-#: the identity roles so nothing renders Plone-blue there. Clara's own dark
-#: ground is --plone-gray-900.
-DARK_PAIRS = [
-    ("--plone-color-primary", "--plone-gray-900", 4.5),
-    ("--plone-color-link", "--plone-gray-900", 4.5),
-    ("--plone-color-link-hover", "--plone-gray-900", 4.5),
-    ("--clara-amber-text", "--plone-gray-900", 4.5),
-    ("--plone-color-info-text", "--plone-color-info-surface", 4.5),
-]
-
-
-@needs_clara
-@pytest.mark.parametrize(("foreground", "background", "minimum"), DARK_PAIRS)
-def test_dark_mode_contrast(foreground, background, minimum):
-    props = _effective(selectors_extra=(css_tools.DARK_SELECTORS,))
-    ratio, fg, bg = _ratio(props, foreground, background)
-    assert ratio >= minimum, (
-        f"[dark] {foreground} {fg} on {background} {bg} is {ratio:.2f}:1, "
-        f"needs {minimum}:1"
     )
 
 

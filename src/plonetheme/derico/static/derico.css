@@ -113,22 +113,6 @@
   --plone-contentheader-description-grow: 0.75;
 }
 
-/* Dark mode: the design is light-only, but Clara's dark block re-declares the
- * identity roles with literal blues the ladder cannot reach. */
-[data-bs-theme="dark"] {
-  --plone-color-primary:        oklch(0.78 0.10 215.55);  /* #62c8e0 — 8.44:1 on Clara's dark ground */
-  --plone-color-primary-hover:  oklch(0.85 0.075 215.55); /* #94dbed */
-  --plone-color-primary-active: oklch(0.92 0.045 215.55); /* #c4edf8 */
-  --plone-color-link:           oklch(0.85 0.075 215.55); /* #94dbed — 10.58:1 */
-  --plone-color-link-hover:     oklch(0.92 0.045 215.55); /* #c4edf8 */
-  --plone-color-focus-ring:     oklch(0.92 0.045 215.55); /* #c4edf8 */
-  --plone-color-info:           oklch(0.78 0.10 215.55);
-  --plone-color-info-border:    oklch(0.78 0.10 215.55);
-  --plone-color-info-text:      oklch(0.92 0.045 215.55);
-  --plone-color-info-surface:   oklch(0.28 0.05 215.55);  /* #002f38 */
-  --clara-amber-text:           oklch(0.80 0.13 65);      /* #f7ab5d — 8.50:1 */
-}
-
 /* A hero as first block sits flush under the header, so the chrome above it
  * goes. Public view only: `@@aurora-edit` emits no `.aurora-blocks-view`. */
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-breadcrumbs,

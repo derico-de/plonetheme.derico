@@ -164,7 +164,6 @@ def declarations(css, selectors):
 
 
 ROOT_SELECTORS = (":root", '[data-bs-theme="light"]', "[data-bs-theme=light]")
-DARK_SELECTORS = ('[data-bs-theme="dark"]', "[data-bs-theme=dark]")
 
 
 def resolve(name, props, seen=None):
