@@ -69,6 +69,10 @@ test = [
     "pytest-plone>=0.5.0",
     "plone.app.testing",
     "plone.testing",
+    # Named for their [tool.uv.sources] entries: uv ignores sources of
+    # transitive dependencies, and the hero tests need the AVIF branches.
+    "plone.namedfile",
+    "plone.scale",
 ]
 
 [project.urls]
@@ -164,6 +168,9 @@ constraint-dependencies = ["Products.CMFPlone==6.2.1"]
 "collective.fragmentsblock" = { path = "../collective.fragmentsblock", editable = true }
 "derico.blicca.promoblock" = { path = "../derico.blicca.promoblock", editable = true }
 "plone.blicca.auroraeditor" = { path = "../plone.blicca.auroraeditor", editable = true }
+# The AVIF support the hero's <picture> relies on, unreleased.
+"plone.namedfile" = { path = "../plone.namedfile", editable = true }
+"plone.scale" = { path = "../plone.scale", editable = true }
 
 [dependency-groups]
 dev = ["invoke", "watchdog"]

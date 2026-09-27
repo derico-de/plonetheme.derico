@@ -2952,8 +2952,8 @@ wheels = [
 
 [[package]]
 name = "plone-namedfile"
-version = "8.1.0"
-source = { registry = "https://pypi.org/simple" }
+version = "8.1.2.dev0"
+source = { editable = "../plone.namedfile" }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "persistent" },
@@ -2974,10 +2974,32 @@ dependencies = [
     { name = "zope-cachedescriptors" },
     { name = "zope-copy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/29/fd1b6eeb711489a5ab84f110370495b8db8fcc5f01af1a783ae6622531fb/plone_namedfile-8.1.0.tar.gz", hash = "sha256:f8d2a2ef57c15dd350001fe01526ae008f4ef65887f285efefb3546a4110794c", size = 471835, upload-time = "2026-06-15T21:15:55.265Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/21/0dc7a2db98edd0781172d1af7c10ad069ef6afe98b3bdaa0aef53e196cd7/plone_namedfile-8.1.0-py3-none-any.whl", hash = "sha256:d59fab3f2d02cfd61cce3fcbdcb6c5203894523d1dbf5f96e9d61dccdffa4546", size = 458904, upload-time = "2026-06-15T21:15:53.396Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "beautifulsoup4" },
+    { name = "lxml", marker = "extra == 'test'" },
+    { name = "persistent" },
+    { name = "piexif" },
+    { name = "pillow" },
+    { name = "plone-app-testing", marker = "extra == 'test'" },
+    { name = "plone-app-uuid", specifier = ">=2.2.0" },
+    { name = "plone-base" },
+    { name = "plone-dexterity" },
+    { name = "plone-memoize" },
+    { name = "plone-protect" },
+    { name = "plone-rfc822", specifier = ">=2.0.0" },
+    { name = "plone-scale", extras = ["storage"], specifier = ">=4.2.0" },
+    { name = "plone-schemaeditor" },
+    { name = "plone-supermodel" },
+    { name = "plone-testing", marker = "extra == 'test'" },
+    { name = "products-cmfcore" },
+    { name = "z3c-caching" },
+    { name = "zope" },
+    { name = "zope-cachedescriptors" },
+    { name = "zope-copy" },
 ]
+provides-extras = ["test"]
 
 [[package]]
 name = "plone-outputfilters"
@@ -3235,17 +3257,13 @@ wheels = [
 
 [[package]]
 name = "plone-scale"
-version = "5.0.0"
-source = { registry = "https://pypi.org/simple" }
+version = "5.1.1.dev0"
+source = { editable = "../plone.scale" }
 dependencies = [
     { name = "lxml" },
     { name = "pillow" },
     { name = "zope-annotation" },
     { name = "zope-interface" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5b/52/251ad87b0f8742a8fac46a79b376393945b0fa0d4ec7c4efeaa31a185799/plone_scale-5.0.0.tar.gz", hash = "sha256:9845d0f0026ffeb24c80e4525f6816d8ab69f4f903825ed77f887197cce96643", size = 2697371, upload-time = "2026-05-07T13:55:33.52Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a1/ef/db9178bca511c060ca2628e66c5797b28052aefcf1a05855d425cbbc8657/plone_scale-5.0.0-py3-none-any.whl", hash = "sha256:07fa11c5e2a2760d3e8d5a2c88483337b771ff155950ecaa9d68c2d5695daa5d", size = 2691704, upload-time = "2026-05-07T13:55:31.106Z" },
 ]
 
 [package.optional-dependencies]
@@ -3253,6 +3271,21 @@ storage = [
     { name = "persistent" },
     { name = "zodb" },
 ]
+
+[package.metadata]
+requires-dist = [
+    { name = "lxml" },
+    { name = "persistent", marker = "extra == 'storage'" },
+    { name = "persistent", marker = "extra == 'test'" },
+    { name = "pillow" },
+    { name = "plone-testing", extras = ["test"], marker = "extra == 'test'" },
+    { name = "zodb", marker = "extra == 'storage'" },
+    { name = "zodb", marker = "extra == 'test'" },
+    { name = "zope-annotation" },
+    { name = "zope-component", marker = "extra == 'test'" },
+    { name = "zope-interface" },
+]
+provides-extras = ["storage", "test"]
 
 [[package]]
 name = "plone-schema"
@@ -3554,6 +3587,8 @@ dependencies = [
 [package.optional-dependencies]
 test = [
     { name = "plone-app-testing" },
+    { name = "plone-namedfile" },
+    { name = "plone-scale" },
     { name = "plone-testing" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -3577,7 +3612,9 @@ requires-dist = [
     { name = "plone-app-upgrade" },
     { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
     { name = "plone-classicui" },
+    { name = "plone-namedfile", marker = "extra == 'test'", editable = "../plone.namedfile" },
     { name = "plone-pageletlayout", editable = "../plone.pageletlayout" },
+    { name = "plone-scale", marker = "extra == 'test'", editable = "../plone.scale" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "plonetheme-clara", editable = "../plonetheme.clara" },
     { name = "pytest", marker = "extra == 'test'" },
