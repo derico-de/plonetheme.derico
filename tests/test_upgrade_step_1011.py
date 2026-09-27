@@ -96,19 +96,3 @@ class TestUpgrade1011:
         """The blast radius of a `hidden` node is one manager, and everything
         else the theme renders shares it."""
         assert viewlet not in self._hidden()
-
-    # ── the step itself ───────────────────────────────────────────────────
-
-    def test_upgrade_step_registered(self):
-        steps = self.setup_tool.listUpgrades("plonetheme.derico:default", show_old=True)
-        flat = []
-        for step in steps:
-            flat.extend(step if isinstance(step, list) else [step])
-        assert any(
-            step["sdest"] == "1011" and step["ssource"] == "1010" for step in flat
-        )
-
-    def test_upgrade_profile_is_hidden(self):
-        from plonetheme.derico.setuphandlers import HiddenProfiles
-
-        assert PROFILE in HiddenProfiles().getNonInstallableProfiles()

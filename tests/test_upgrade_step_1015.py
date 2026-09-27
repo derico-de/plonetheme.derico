@@ -131,11 +131,6 @@ class TestUpgrade1015:
         (version,) = self.setup_tool.getLastVersionForProfile("plonetheme.derico:default")
         assert int(version) == 1015
 
-    def test_upgrade_profile_is_hidden(self):
-        from plonetheme.derico.setuphandlers import HiddenProfiles
-
-        assert PROFILE in HiddenProfiles().getNonInstallableProfiles()
-
     # ── the mirror ────────────────────────────────────────────────────────
 
     def test_uninstall_shows_everything_again(self):

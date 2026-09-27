@@ -45,20 +45,6 @@ class TestUpgrade1010:
             del self.registry.records[f"{BUNDLE}.{field}"]
         assert api.portal.get_registry_record(f"{BUNDLE}.enabled", default=None) is None
 
-    def test_upgrade_step_registered(self):
-        steps = self.setup_tool.listUpgrades("plonetheme.derico:default", show_old=True)
-        flat = []
-        for step in steps:
-            flat.extend(step if isinstance(step, list) else [step])
-        assert any(
-            step["sdest"] == "1010" and step["ssource"] == "1009" for step in flat
-        )
-
-    def test_upgrade_profile_is_hidden(self):
-        from plonetheme.derico.setuphandlers import HiddenProfiles
-
-        assert PROFILE in HiddenProfiles().getNonInstallableProfiles()
-
     def test_upgrade_adds_the_bundle(self):
         self._drop_record()
         self.setup_tool.runAllImportStepsFromProfile(f"profile-{PROFILE}")

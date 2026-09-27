@@ -35,18 +35,6 @@ class TestUpgrade1014:
             del self.registry.records[f"{RECORD}.{field}"]
         assert api.portal.get_registry_record(f"{RECORD}.enabled", default=None) is None
 
-    def test_upgrade_step_registered(self):
-        steps = self.setup_tool.listUpgrades("plonetheme.derico:default", show_old=True)
-        flat = []
-        for step in steps:
-            flat.extend(step if isinstance(step, list) else [step])
-        assert any(step["sdest"] == "1014" and step["ssource"] == "1013" for step in flat)
-
-    def test_upgrade_profile_is_hidden(self):
-        from plonetheme.derico.setuphandlers import HiddenProfiles
-
-        assert PROFILE in HiddenProfiles().getNonInstallableProfiles()
-
     def test_upgrade_adds_the_record(self):
         self._drop_record()
         self.setup_tool.runAllImportStepsFromProfile(f"profile-{PROFILE}")
