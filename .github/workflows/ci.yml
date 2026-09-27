@@ -16,14 +16,17 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
 
-    steps:
-      - uses: actions/checkout@v4
+    defaults:
+      run:
+        working-directory: plonetheme.derico
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+    steps:
+      # [tool.uv.sources] resolves the unreleased dependencies from "../<name>".
+      # `actions/checkout` refuses paths outside the workspace, so this package
+      # moves into a subdirectory and its siblings go beside it.
+      - uses: actions/checkout@v4
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
+          path: plonetheme.derico
 
       # plone.blicca.auroraeditor is not optional and is not on PyPI. It is
       # the editor the brand blocks mount in, the source of the promised
@@ -32,58 +35,102 @@ jobs:
       # does not load, and its profile cannot be applied. It is also where the
       # lockstep guards (hero ticket 04 §9) get their upstream from.
       #
-      # The repository is PRIVATE, so this needs a token with read access.
-      # Missing token = red job, deliberately: before the hero landed, its
-      # absence only made two guards skip, and skipping quietly was the
-      # tolerable half of a bad trade. It is no longer tolerable, because now
-      # nothing at all would be tested. A named failure beats a green run over
-      # an uninstallable package.
-      - name: Require the host checkout token
+      # The repository is PRIVATE, so this needs a token with read access
+      # (to it and to any other private sibling below). Missing token = red
+      # job, deliberately: a named failure beats a green run over an
+      # uninstallable package.
+      - name: Require the sibling checkout token
         if: env.BLICCA_TOKEN == ''
+        working-directory: .
         run: |
           echo "::error::BLICCA_TOKEN is not set. plonetheme.derico depends on"
           echo "::error::plone.blicca.auroraeditor, which is private and not on"
           echo "::error::PyPI, so neither the install nor the tests can run."
           exit 1
 
-      # `actions/checkout` refuses paths outside the workspace, so the guards
-      # are pointed at this one explicitly rather than by sibling convention.
+      - name: Check out plonetheme.clara
+        uses: actions/checkout@v4
+        with:
+          repository: MrTango/plonetheme.clara
+          ref: main
+          token: ${{ env.BLICCA_TOKEN }}
+          path: plonetheme.clara
+
+      - name: Check out plone.pageletlayout
+        uses: actions/checkout@v4
+        with:
+          repository: MrTango/plone.pageletlayout
+          ref: main
+          token: ${{ env.BLICCA_TOKEN }}
+          path: plone.pageletlayout
+
+      - name: Check out plone.app.viewletmanager
+        uses: actions/checkout@v4
+        with:
+          repository: plone/plone.app.viewletmanager
+          ref: additional-viewlets
+          path: plone.app.viewletmanager
+
+      - name: Check out collective.fragmentsblock
+        uses: actions/checkout@v4
+        with:
+          repository: collective/collective.fragmentsblock
+          ref: main
+          path: collective.fragmentsblock
+
+      - name: Check out derico.blicca.promoblock
+        uses: actions/checkout@v4
+        with:
+          repository: MrTango/derico.blicca.promoblock
+          ref: main
+          token: ${{ env.BLICCA_TOKEN }}
+          path: derico.blicca.promoblock
+
       - name: Check out plone.blicca.auroraeditor
         uses: actions/checkout@v4
         with:
           repository: derico-de/plone.blicca.auroraeditor
+          ref: main
           token: ${{ env.BLICCA_TOKEN }}
-          path: .siblings/plone.blicca.auroraeditor
+          path: plone.blicca.auroraeditor
+
+      - name: Check out plone.namedfile
+        uses: actions/checkout@v4
+        with:
+          repository: plone/plone.namedfile
+          ref: avif-support
+          path: plone.namedfile
+
+      - name: Check out plone.scale
+        uses: actions/checkout@v4
+        with:
+          repository: plone/plone.scale
+          ref: avif-support
+          path: plone.scale
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: plonetheme.derico/uv.lock
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          # Before the theme, so its `>=` floor resolves against the checkout
-          # instead of sending pip to an index that does not carry it.
-          pip install -e .siblings/plone.blicca.auroraeditor
-          pip install -e ".[test]"
+        run: uv sync --extra test
 
       - name: Run tests
-        run: pytest -v
-        env:
-          BLICCA_CHECKOUT: ${{ github.workspace }}/.siblings/plone.blicca.auroraeditor
+        run: uv run pytest -v
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-
-      - name: Install ruff
-        run: pip install ruff
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
 
       - name: Run ruff
-        run: ruff check .
+        run: uvx ruff check .
 
   # Hero ticket 04 §10. `static-blocks/` is committed build output and nothing
   # rebuilds it at install time, so it rots the moment someone edits source and
