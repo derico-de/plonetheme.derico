@@ -105,8 +105,6 @@
        `snippets/` corpus into the shared registry as fragments for
        collective.fragmentsblock's generic fragment block (see
        bundle-src/src/fragments/, fragments.py, and the add-on's ADR 0001).
-       The same corpus the Derico Snippet block above renders, reachable
-       through the generic block as well.
 
        A record all the same, because a record is the ONLY way a bundle gets
        loaded into the editor: `@@aurora-edit` gates on `enabled`, a

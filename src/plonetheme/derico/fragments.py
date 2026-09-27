@@ -2,14 +2,12 @@
 
 ``collective.fragmentsblock`` renders *fragments* — static design markup an
 add-on ships as files — into any Aurora-edited page. This module makes the
-theme the first provider, over the corpus it already keeps: the very
-``snippets/`` directory the Derico Snippet block reads. One corpus, one
-file per ornament, now reachable through either block.
+theme the first provider, over the corpus it keeps in ``snippets/``: one
+file per ornament.
 
 The editor half of the same registration lives in
 ``bundle-src/src/fragments/index.tsx``, which imports those files ``?raw``
-and publishes them into ``@plone/registry``. Neither half owns a copy — the
-same property the Derico Snippet buys, extended to a second reader.
+and publishes them into ``@plone/registry``. Neither half owns a copy.
 
 Adding a fragment stays what it was: one file in ``snippets/``, one entry
 in the editor's map. Nothing here needs touching; the provider is the
@@ -21,9 +19,8 @@ from pathlib import Path
 from collective.fragmentsblock.fragments import FragmentsFolder
 
 
-#: The shared corpus. ``browser/snippet.py`` reads the same directory for
-#: the Derico Snippet block; ``tests/test_fragments.py`` holds the two
-#: readers and the editor's map in lockstep.
+#: The shared corpus. ``tests/test_fragments.py`` holds this provider and
+#: the editor's map in lockstep.
 FRAGMENTS_DIR = Path(__file__).resolve().parent / "snippets"
 
 #: Registered as a named ``IFragmentsProvider`` utility in configure.zcml.
