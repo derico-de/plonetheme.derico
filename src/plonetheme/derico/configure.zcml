@@ -85,13 +85,6 @@
       directory="profiles/uninstall"
       />
 
-  <genericsetup:importStep
-      name="plonetheme.derico-uninstall"
-      title="Plonetheme Derico uninstall"
-      description="Uninstall plonetheme.derico"
-      handler="plonetheme.derico.setuphandlers.uninstall"
-      />
-
   <!-- Keep the uninstall profile out of the Add-ons control panel. -->
   <utility
       factory=".setuphandlers.HiddenProfiles"

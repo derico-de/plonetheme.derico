@@ -158,9 +158,3 @@ def post_install(context):
     """Run after the default profile is applied."""
     set_site_logo()
     ensure_hero_variants()
-
-
-def uninstall(context):
-    """Uninstall script."""
-    # Do something on uninstall if needed
-    pass
