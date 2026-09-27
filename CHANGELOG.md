@@ -5,6 +5,7 @@
 - Squash the upgrade steps 1001–1015 into the 1015 baseline; upgrades start again at 1016.
 - Remove the empty `catalog.xml` scaffold (upgrade step 1016, a no-op).
 - Use Clara's on-demand search; drop the searchbox override and `header.js` (upgrade step 1017).
+- Pin pages to light with `data-bs-theme="light"` on `<html>`; Clara would follow a dark OS.
 - Follow `plone.pageletlayout`'s slot layout.
 - The Derico Page Header block (kicker, inline-edited title and description) is the document header.
 - Page title and lede come from Blicca's title and description blocks.

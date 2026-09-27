@@ -346,7 +346,9 @@ that forces a downstream override is a bug in the contract).
 
 ## Accepted deviations
 
-- **Dark mode is light-only by design.** Jahresringe sets `color-scheme: light`.
+- **Light-only by design.** Clara follows a dark OS unless `<html>` carries
+  `data-bs-theme="light"`, so derico stamps it on every page it themes
+  (`browser/colormode.py`, a transform on derico's browser layer).
   derico still flips the identity roles so Plone's toolbar switch never renders
   blue chrome, but the dark neutrals stay Clara's.
 - **Roboto Slab is not shipped.** It is scoped to the mockup homepage's service

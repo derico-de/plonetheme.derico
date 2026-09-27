@@ -40,4 +40,10 @@
       layer="plonetheme.derico.interfaces.IPlonethemeDericoLayer"
       />
 
+  <!-- derico is light-only; Clara would follow a dark OS otherwise. -->
+  <adapter
+      name="plonetheme.derico.colormode"
+      factory=".colormode.LightColorMode"
+      />
+
 </configure>
