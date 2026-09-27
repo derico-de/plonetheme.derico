@@ -21,7 +21,7 @@
          bundle are code, live the moment the package is; the record is what
          makes @@aurora-edit load the bundle.
 
-         No `reload_gs_profile`, and `import_steps` narrowed to the registry,
+         No full profile reload, and `import_steps` narrowed to the registry,
          for the reasons 1013 states. -->
     <genericsetup:upgradeDepends
         title="Add the Derico Page Header brand block"

@@ -21,8 +21,8 @@
          dropping them into the default profile does not reach a site that is
          already installed. One file, carrying exactly the node that changed.
 
-         No `reload_gs_profile`: that re-imports every step of the DEFAULT
-         profile, including the ones that write a site logo and a
+         No full reload of the DEFAULT profile: that re-imports every step,
+         including the ones that write a site logo and a
          picture-variant ladder an administrator may have edited since.
 
          `import_steps` narrows it once more: without them GenericSetup runs

@@ -17,8 +17,8 @@
 
     <!-- No Python handler, unlike 1003/1005: everything the contact band adds
          to an existing site is declarative, and the upgrade profile carries
-         exactly the two files that changed. A `reload_gs_profile` would
-         re-import every step of the DEFAULT profile instead, including the
+         exactly the two files that changed. Reloading the DEFAULT
+         profile would re-import every one of its steps instead, including the
          ones that write a site logo and a picture-variant ladder an
          administrator may have edited since.
 

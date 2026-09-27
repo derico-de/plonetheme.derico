@@ -3,15 +3,9 @@
 import logging
 
 from plone import api
-from plone.app.upgrade.utils import loadMigrationProfile
 
 
 logger = logging.getLogger(__name__)
-
-
-def reload_gs_profile(context):
-    """Reload the default GenericSetup profile."""
-    loadMigrationProfile(context, "profile-plonetheme.derico:default")
 
 
 # The add-on half of `profiles/default/metadata.xml`'s <dependencies>, in the

@@ -20,8 +20,8 @@
          stored layout order, a bundle record and a setting — and each of the
          two files undoes exactly one half of what 1006's two files did.
 
-         No `reload_gs_profile`: that re-imports every step of the DEFAULT
-         profile, including the ones that write a site logo and a
+         No full reload of the DEFAULT profile: that re-imports every step,
+         including the ones that write a site logo and a
          picture-variant ladder an administrator may have edited since. And
          it would not do this job anyway — the default profile no longer says
          anything about the band, and GenericSetup removes nothing by being

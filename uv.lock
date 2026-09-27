@@ -3537,22 +3537,16 @@ name = "plonetheme-clara"
 version = "1.0.0a1"
 source = { editable = "../plonetheme.clara" }
 dependencies = [
-    { name = "paste" },
     { name = "plone" },
-    { name = "plone-app-caching" },
     { name = "plone-app-upgrade" },
-    { name = "plone-classicui" },
     { name = "plone-pageletlayout" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "paste" },
     { name = "plone", specifier = ">=6.2" },
-    { name = "plone-app-caching" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
     { name = "plone-app-upgrade" },
-    { name = "plone-classicui" },
     { name = "plone-pageletlayout", editable = "../plone.pageletlayout" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "pytest", marker = "extra == 'test'" },
@@ -3564,6 +3558,8 @@ provides-extras = ["test"]
 [package.metadata.requires-dev]
 dev = [
     { name = "invoke" },
+    { name = "paste" },
+    { name = "plone-classicui" },
     { name = "watchdog" },
 ]
 
@@ -3577,7 +3573,6 @@ dependencies = [
     { name = "paste" },
     { name = "plone" },
     { name = "plone-app-caching" },
-    { name = "plone-app-upgrade" },
     { name = "plone-blicca-auroraeditor" },
     { name = "plone-classicui" },
     { name = "plone-pageletlayout" },
@@ -3609,7 +3604,6 @@ requires-dist = [
     { name = "plone", specifier = ">=6.2" },
     { name = "plone-app-caching" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
-    { name = "plone-app-upgrade" },
     { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
     { name = "plone-classicui" },
     { name = "plone-namedfile", marker = "extra == 'test'", editable = "../plone.namedfile" },

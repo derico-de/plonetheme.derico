@@ -21,8 +21,8 @@
          are a stylesheet, live the moment the code is; the record is what
          makes a page request it.
 
-         No `reload_gs_profile`: that re-imports every step of the DEFAULT
-         profile, including the ones that write a site logo and a
+         No full reload of the DEFAULT profile: that re-imports every step,
+         including the ones that write a site logo and a
          picture-variant ladder an administrator may have edited since.
 
          `import_steps` narrows it once more, as in 1010: without them
