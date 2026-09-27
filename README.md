@@ -4,9 +4,10 @@
 [plonetheme.clara](../plonetheme.clara).**
 
 Almost all of the theme is one stylesheet of custom properties:
-`src/plonetheme/derico/static/derico.css`. No Sass, no Bootstrap compile, no
-template overrides — Clara ships all of that, and derico mostly moves the
-values its rules read. Plus one brand mark, which is the single part of the
+`src/plonetheme/derico/static/derico.css`. No Sass, no Bootstrap compile —
+Clara ships all of that, and derico mostly moves the values its rules read.
+The one template override is the header search box
+(`browser/templates/searchbox.pt`). Plus one brand mark, which is the single part of the
 design that cannot be a token.
 
 The exception is the **brand blocks**: designs that are not a value Clara's
@@ -22,13 +23,13 @@ plone.pageletlayout   rendering machinery + markup contract, no CSS
 plonetheme.clara      the one compiled bundle: @layer, Bootstrap 5.3,
                       primitives, --bs-* bridge, components, token defaults
       ↑
-plonetheme.derico     ~60 lines of :root, a logo, and the brand blocks
+plonetheme.derico     :root tokens, a logo, the search box, and the brand blocks
 ```
 
 ## Install
 
 ```bash
-uv sync --extra test        # sources/ symlinks Clara and plone.pageletlayout
+uv sync --extra test        # sibling checkouts via [tool.uv.sources]
 ```
 
 Then install *Plonetheme Derico* from the Add-ons control panel. It pulls in
