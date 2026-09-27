@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:upgradeStep
+      source="1015"
+      destination="1016"
+      title="Drop the empty catalog.xml"
+      description="The profile shipped an empty catalog.xml; nothing to migrate."
+      profile="plonetheme.derico:default"
+      handler=".v1016.upgrade"
+      />
+
+</configure>

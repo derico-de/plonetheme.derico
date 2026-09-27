@@ -3,4 +3,6 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="plonetheme.derico">
 
+  <include file="1016.zcml" />
+
 </configure>
