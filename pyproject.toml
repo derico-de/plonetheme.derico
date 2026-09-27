@@ -58,7 +58,6 @@ dependencies = [
     "derico.blicca.promoblock>=1.0.0a1",
     "plone.classicui",
     "Paste",
-    "plone.app.caching",
 ]
 
 [project.optional-dependencies]
@@ -68,6 +67,8 @@ test = [
     "pytest-plone>=0.5.0",
     "plone.app.testing",
     "plone.testing",
+    # Only the caching test layer loads it.
+    "plone.app.caching",
     # Named for their [tool.uv.sources] entries: uv ignores sources of
     # transitive dependencies, and the hero tests need the AVIF branches.
     "plone.namedfile",

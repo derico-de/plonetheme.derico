@@ -3572,7 +3572,6 @@ dependencies = [
     { name = "derico-blicca-promoblock" },
     { name = "paste" },
     { name = "plone" },
-    { name = "plone-app-caching" },
     { name = "plone-blicca-auroraeditor" },
     { name = "plone-classicui" },
     { name = "plone-pageletlayout" },
@@ -3581,6 +3580,7 @@ dependencies = [
 
 [package.optional-dependencies]
 test = [
+    { name = "plone-app-caching" },
     { name = "plone-app-testing" },
     { name = "plone-namedfile" },
     { name = "plone-scale" },
@@ -3602,7 +3602,7 @@ requires-dist = [
     { name = "derico-blicca-promoblock", editable = "../derico.blicca.promoblock" },
     { name = "paste" },
     { name = "plone", specifier = ">=6.2" },
-    { name = "plone-app-caching" },
+    { name = "plone-app-caching", marker = "extra == 'test'" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
     { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
     { name = "plone-classicui" },
