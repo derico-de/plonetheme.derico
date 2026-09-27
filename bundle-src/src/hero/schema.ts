@@ -1,5 +1,5 @@
 /**
- * The Derico Hero's sidebar form (hero ticket 02, contract §1.5).
+ * The Derico Hero's sidebar form (contract §1.5).
  *
  * Deliberately inflexible: the design's text and images and nothing else. No
  * width control, no palette variant, no "hide the rings" toggle — a brand
@@ -72,9 +72,7 @@ export const HeroSchema = {
   properties: {
     kicker: { title: 'Kicker' },
     headline: { title: 'Headline' },
-    // Namespaced, never the generic `textarea`: `registerWidget` is a global
-    // last-wins map, and a theme must not redefine vocabulary for blocks it
-    // knows nothing about (ticket 02).
+    // Namespaced: `registerWidget` is a global last-wins map.
     lede: { title: 'Lede', widget: 'derico_textarea' },
 
     cta_label: { title: 'Primary call to action' },

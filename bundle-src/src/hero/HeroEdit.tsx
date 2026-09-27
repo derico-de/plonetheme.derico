@@ -1,16 +1,9 @@
 /**
  * The `edit` half: the canvas is a live preview, never an editing surface.
  *
- * Every field is edited in the sidebar (ticket 02). The block is a Plate VOID
- * node, so in-canvas text would mean re-solving focus, undo and selection
- * inside a void — a large bespoke cost, in a block whose whole premise is
- * that the author gets no choices to make.
- *
- * That decision is what makes two of the sheet's rules safe: the hero states
- * `white-space: normal`, overriding the `pre-wrap` the Plate editable
- * computes and inherits into everything it contains (ticket 07 measured the
- * canvas breaking the headline where the view kept it whole). Nothing here is
- * contenteditable, so nothing is lost by normalising it.
+ * Every field is edited in the sidebar; the block is a Plate VOID node. With
+ * nothing contenteditable, the hero can safely reset the editable's inherited
+ * `white-space: pre-wrap` to `normal`.
  *
  * The canvas is also where a fresh insert gets its words. Aurora writes a
  * node carrying `@type` and nothing else, and `blocksConfig` has no

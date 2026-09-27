@@ -1,11 +1,7 @@
 /**
- * Reading the hero's stored JSON (hero ticket 02).
- *
- * Nothing in the schema is `required`, so every one of these has to answer
- * "absent" without throwing — a half-authored hero must preview and save.
- * The degradation table lives in ticket 02 and is enforced by
- * `degradation.test.tsx`; the server half implements the same table against
- * the same data, so any change here is a change to both.
+ * Reading the hero's stored JSON. Nothing is `required`, so every reader
+ * answers "absent" without throwing. The server renderer implements the same
+ * degradation rules (`degradation.test.tsx`); change both together.
  */
 
 export type Reference = { '@id'?: unknown };
@@ -38,7 +34,7 @@ export function text(value: unknown): string {
 /**
  * The `@id` of a reference field.
  *
- * Stored as a one-element list of `{"@id": …}` (ticket 02), but a value that
+ * Stored as a one-element list of `{"@id": …}`, but a value that
  * never went through the editor may be a bare object or a plain string, and
  * neither is worth throwing over.
  */
@@ -71,12 +67,8 @@ export function link(
 /**
  * The canvas preview URL for a picked image.
  *
- * One plain scale, derived from the `@id` alone (ticket 05). The editor
- * cannot reuse the public `<picture>`: art direction needs the two crops
- * spliced server-side, and the enriched `image_scales` restapi injects on
- * load is absent for an image the author has just picked, because the widget
- * trims the brain down to its `@id` before storing it. Deriving the URL is
- * the one code path that works in both states.
+ * One plain scale derived from the `@id`: a freshly picked image has no
+ * `image_scales` yet, so deriving the URL is the only path that always works.
  */
 export function previewImage(value: unknown): string {
   const id = reference(value);
@@ -92,7 +84,7 @@ export function legend(value: unknown): Array<{ title: string; subtitle: string 
   });
 }
 
-/** The value a freshly inserted hero carries (ticket 02's insert default). */
+/** The legend a freshly inserted hero carries. */
 export function emptyLegend(): Array<{ title: string; subtitle: string }> {
   return Array.from({ length: LEGEND_LENGTH }, () => ({
     title: '',

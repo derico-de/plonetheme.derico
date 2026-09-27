@@ -66,7 +66,7 @@ class InstallTestCase:
 
 
 class TestTheHost(InstallTestCase):
-    """Ticket 04 §12: a Python dependency does not install a profile."""
+    """A Python dependency does not install a profile."""
 
     def test_the_editor_is_installed_with_the_theme(self):
         installer = api.addon.get_installer(self.portal)
@@ -125,23 +125,12 @@ class TestTheBlockRecord(InstallTestCase):
         assert self.status().css_url
 
     def test_the_assets_are_served_from_the_block_directory(self):
-        """`++plone++`, not `++resource++` (ticket 04 §3).
-
-        The contract's cache-buster names `++plone++`, and one directory
-        registered under both directives would give every file two public
-        URLs — two URLs for one JS module is the duplicate-React failure the
-        contract exists to prevent.
-        """
+        """`++plone++`, not `++resource++`: two URLs for one JS module means duplicate React."""
         assert record("bundle") == f"{STATIC_BASE}/hero.js"
         assert record("css") == f"{STATIC_BASE}/blocks.css"
 
     def test_the_stylesheet_is_the_shared_one(self):
-        """Lib mode emits ONE sheet per build, not per entry (ticket 04 §5).
-
-        Every future brand block's record names this same file, so a record
-        pointing at a per-block sheet is a build that has silently changed
-        shape.
-        """
+        """Lib mode emits ONE sheet per build, not per entry."""
         assert record("css").endswith("/blocks.css")
 
     def test_the_record_declares_the_block_type(self):
@@ -175,13 +164,7 @@ class TestTheBlockRecord(InstallTestCase):
 
 
 class TestTheInsertGate(InstallTestCase):
-    """Ticket 03's gate, from the theme's side: define it, grant it, name it.
-
-    Guidance, not security — the block stays authorable through the API. What
-    is being checked is that the right ROLES hold it, because the failure this
-    guards against is silent in the opposite direction: a permission nobody
-    holds hides the block from the site administrator the destination names.
-    """
+    """The insert gate: guidance, not security; the right roles must hold it."""
 
     def test_the_record_names_the_permission(self):
         assert record("permission") == PERMISSION
@@ -226,7 +209,7 @@ class TestTheInsertGate(InstallTestCase):
 
 
 class TestImaging(InstallTestCase):
-    """Ticket 05: a scale rung through GS, two variants through a handler."""
+    """A scale rung through GS, two variants through a handler."""
 
     def _variants(self):
         registry = getUtility(IRegistry)
@@ -325,7 +308,7 @@ class TestUninstall:
 
     def test_the_scale_rung_is_left_in_place(self):
         """Removing a scale that content elsewhere now references is worse
-        than leaving a harmless extra rung in the ladder (ticket 05 §5)."""
+        than leaving a harmless extra rung in the ladder."""
         assert NEW_SCALE in api.portal.get_registry_record("plone.allowed_sizes")
 
     def test_the_picture_variants_are_left_in_place(self):

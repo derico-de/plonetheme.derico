@@ -1,4 +1,4 @@
-"""derico's values for Blicca's `backgroundColor` palette (derico.css §8).
+"""derico's values for Blicca's `backgroundColor` palette.
 
 The `backgroundColor` style field is a contract split across three packages:
 Blicca names the slots and reads an `--aurora-block-*` custom property per
@@ -105,7 +105,7 @@ EXPECTED_ALIASES = {
     "--aurora-block-bg-dark": "--derico-brand-deep",
     "--aurora-block-fg-dark": "--derico-ground",
     # what the dark slot hands the text styles: the exit section's lightened
-    # copper, soft ink and rule (derico.css §8)
+    # copper, soft ink and rule
     "--aurora-block-accent-dark": "--derico-copper-light",
     "--aurora-block-fg-soft-dark": "--derico-ground-soft",
     "--aurora-block-rule-dark": "--derico-rule-light",

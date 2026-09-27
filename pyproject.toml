@@ -34,17 +34,9 @@ dependencies = [
     # (interfaces.py) and browser/configure.zcml registers a chrome pagelet
     # through its `plone:` directives.
     "plone.pageletlayout",
-    # The brand blocks' host: the editor they mount in, and the promised
-    # rendering surface `@@aurora-block-derico-hero` imports (contract §5.2).
-    # Hard, not conditional — there is no user who wants derico's brand
-    # without its brand blocks, and a conditional dependency means ZCML
-    # guards and a half-installed theme (hero ticket 04 §12).
-    #
-    # The floor is a claim about `plone.blicca.auroraeditor.rendering`, whose
-    # `image_source` / `path_of` arrived in 1.0.0a2 (news/45.feature). It is
-    # NOT covered by the record's `block_api`, which versions the JS facades
-    # alone (contract §5.2/§2.2), so both signals ship and neither implies
-    # the other.
+    # The brand blocks' host and the rendering API `browser/hero.py` imports.
+    # The floor is where `image_source` / `path_of` arrived; the record's
+    # `block_api` versions only the JS facades.
     "plone.blicca.auroraeditor>=1.0.0a2",
     # The generic fragment block. derico is a fragment PROVIDER (fragments.py
     # registers `snippets/` as a named IFragmentsProvider utility), so this is

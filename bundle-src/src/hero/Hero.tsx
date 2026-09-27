@@ -3,18 +3,8 @@
  *
  * ## `.derico-hero`, not `.block-derico-hero`
  *
- * Aurora stamps `block-<@type>` on the block WRAPPER, and ticket 07 measured
- * what that wrapper actually is on each surface at 1440: on the public view
- * it is the full-bleed box (1220 @220), but in the canvas it is only the
- * column box (1134.9 @262.5) with the breakout one level in, on
- * `.block-inner-container`. Painting the hero on the wrapper therefore gives
- * the editor a 1134.9px hero whose `overflow: hidden` clips the 1220px
- * container inside it — the dark ground stops at the column edge and there is
- * no breakout at all. The component owns its own root element instead, and
- * both surfaces then measure 1220 @220 to the pixel.
- *
- * The `.block-derico-hero` stamp stays free for `derico.css`'s
- * chrome-suppression rule, which wants the wrapper anyway.
+ * Aurora's `block-<@type>` wrapper is the full-bleed box on the public view
+ * but only the column box in the canvas, so the hero paints on its own root.
  *
  * ## The hero never sets its own width
  *
@@ -24,12 +14,9 @@
  *
  * ## No whitespace-only text nodes
  *
- * The Plate editable computes `white-space: pre-wrap`, which inherits in and
- * turns every newline BETWEEN two elements into a real line box — ticket 07
- * measured the mockup's indented markup inflating the rings figure by 76%.
- * JSX drops inter-element whitespace, so this file is safe by construction;
- * a `dangerouslySetInnerHTML` preview would not be, and the server template
- * has to strip its own indentation.
+ * The Plate editable's inherited `white-space: pre-wrap` turns newlines
+ * between elements into line boxes; JSX drops them, the server template
+ * must strip its own.
  */
 import Rings from './Rings';
 import { legend, link, reference, text } from './data';

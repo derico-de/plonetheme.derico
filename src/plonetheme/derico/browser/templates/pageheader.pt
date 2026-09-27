@@ -1,9 +1,9 @@
 <section xmlns:tal="http://xml.zope.org/namespaces/tal"
          class="derico-page-header">
   <!--! `.derico-page-header`, never Aurora's `.block-derico-page-header`
-       wrapper stamp: the wrapper is a different box on each surface (hero
-       ticket 07), and the block owns its own root so one sheet measures the
-       same on both. The tree below matches PageHeader.tsx class for class.
+       wrapper stamp: the wrapper is a different box on each surface, and the
+       block owns its own root so one sheet measures the same on both. The
+       tree below matches PageHeader.tsx class for class.
 
        The kicker is the block's; the title and the description are the
        page's fields (see pageheader.py). Each element renders only with

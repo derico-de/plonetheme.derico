@@ -5,8 +5,8 @@
 
   <configure zcml:condition="installed AccessControl.security">
 
-    <!-- Who may INSERT a brand block from the slash menu (hero ticket 03,
-         contract §7). The record's `permission` field names the TITLE below,
+    <!-- Who may INSERT a brand block from the slash menu (contract §7).
+         The record's `permission` field names the TITLE below,
          not this id; @@aurora-edit evaluates it against the object being
          edited and ships the verdict as `restrictedBlockTypes`.
 

@@ -1,22 +1,6 @@
-"""The Derico Hero's stylesheet, pinned on the artifact that actually ships.
+"""The Derico Hero's stylesheet, pinned on the shipped `static-blocks/*.css` artifact.
 
-Hero ticket 15 settled that the headline's guarantee — text never clips, down
-to a 320 viewport — is a LAYOUT rule and not a type rule, and expressed it as
-four rungs. Ticket 07 settled two more properties by measurement. All six are
-one-line declarations that read as inert housekeeping, which is exactly what
-makes them easy to delete: none of them changes anything visible until the
-viewport is narrow, the stacking context is contested, or the canvas inherits
-the Plate editable's `pre-wrap`. So they are pinned here.
-
-Deliberately declaration-level, never rendering-level. Rung 4 (`hyphens`) is a
-labelled enhancement that is a NO-OP in this container's Chromium — it ships no
-hyphenation dictionaries, and `de` and `en` probes both failed to hyphenate —
-so asserting a wrap would assert the absence of a dictionary. Ticket 15 §4 is
-explicit: a test may assert the declaration, never the rendering.
-
-The subject is `static-blocks/*.css`, the built and committed artifact, not
-`bundle-src/src/hero/hero.css` — the sheet the browser gets is the one worth
-guarding, and it is what `css_tools.block_stylesheets()` globs.
+Declaration-level only: `hyphens` is a no-op in this Chromium, so rendering is never asserted.
 """
 
 import re
@@ -61,15 +45,7 @@ def _values_for(selector, property_name):
 
 @needs_block_sheets
 def test_no_rule_paints_on_auroras_wrapper_stamp():
-    """Hero ticket 08, corrected from 07 by measuring both surfaces.
-
-    Aurora stamps `block-<@type>` on the block WRAPPER, which is the full-bleed
-    box on the public view but only the column-width box in the canvas — so a
-    hero painted on it clips its own breakout in the editor. The component owns
-    `.derico-hero` and both halves emit it; the wrapper stamp is the theme
-    layer's to use (`derico.css` §7 hides the chrome above a leading hero with
-    it), never a block sheet's.
-    """
+    """The wrapper is full-bleed publicly but column-width in the canvas; paint the root."""
     offenders = sorted(
         selector
         for selector, _ in _style_rules()
@@ -107,13 +83,7 @@ def test_every_selector_stays_inside_the_blocks_namespace():
 
 @needs_block_sheets
 def test_rung_one_floors_every_grid_and_flex_item():
-    """THE guarantee (ticket 15 §1).
-
-    A grid or flex item floors at `min-content`, so without `min-width: 0` the
-    copy cell grows to its longest word — measured at 320px inside a 288px
-    shell at a 320 viewport — and the hero's `overflow: hidden` clips it. Rung
-    2 cannot stand in for this: `overflow-wrap` does not feed intrinsic sizing.
-    """
+    """Without `min-width: 0` the copy cell grows to its longest word and gets clipped."""
     floored = _declares("min-width", "0")
     for container in ("home-hero__grid", "action-row", "ring-legend"):
         assert f"{ROOT} .{container} > *" in floored, (
@@ -124,7 +94,7 @@ def test_rung_one_floors_every_grid_and_flex_item():
 
 @needs_block_sheets
 def test_rung_two_breaks_a_word_that_cannot_fit():
-    """Every text element that can receive an unfittable word (ticket 15 §2)."""
+    """Every text element that can receive an unfittable word."""
     breaking = _declares("overflow-wrap", "break-word")
     for selector in (
         "h1",
@@ -141,13 +111,7 @@ def test_rung_two_breaks_a_word_that_cannot_fit():
 
 @needs_block_sheets
 def test_rung_three_ramps_the_headline_against_its_container():
-    """`cqi`, not `vw` (ticket 15 §3).
-
-    The hero is viewport-minus-toolbar for every logged-in user on BOTH
-    surfaces — measured 1220 at a 1440 viewport on the public view too — so a
-    `vw` ramp sizes the headline against a box the page does not have, which
-    is the 320 clipping defect in miniature.
-    """
+    """`cqi`, not `vw`: the hero is narrower than the viewport for logged-in users."""
     ramps = _values_for(f"{ROOT} h1", "font-size")
     assert ramps, "the headline declares no font-size at all"
     for ramp in ramps:
@@ -162,12 +126,7 @@ def test_rung_three_ramps_the_headline_against_its_container():
 
 @needs_block_sheets
 def test_rung_three_states_the_clamp_rather_than_redefining_the_alias():
-    """`--derico-text-display` is not the hero's to redefine (ticket 15 §3).
-
-    It meant "Clara's display size" and Clara's own consumers read it, so the
-    hero states one design's voice locally instead. That decision is why the
-    alias is no longer published at all — `derico.css` §3 publishes three.
-    """
+    """`--derico-text-display` belongs to the type layer; the hero states its clamp locally."""
     for selector, properties in _style_rules():
         assert "--derico-text-display" not in properties, (
             f"{selector} redefines an alias that belongs to the type layer"
@@ -176,7 +135,7 @@ def test_rung_three_states_the_clamp_rather_than_redefining_the_alias():
 
 @needs_block_sheets
 def test_rung_four_labels_the_enhancement():
-    """Declaration only — never a rendering claim (ticket 15 §4)."""
+    """Declaration only — never a rendering claim."""
     assert _declares("hyphens", "auto"), (
         "rung 4 is gone; it is a no-op in this container's Chromium but it is "
         "the difference between a break and a syllable break where a "
@@ -186,12 +145,7 @@ def test_rung_four_labels_the_enhancement():
 
 @needs_block_sheets
 def test_the_hero_owns_a_stacking_context():
-    """Ticket 07, measured in the live canvas.
-
-    `container-type: inline-size` does NOT supply a stacking context, and
-    without one the `z-index: -2` hero media falls behind the hero's own opaque
-    ground and the photograph disappears.
-    """
+    """`container-type` gives no stacking context; without one the z-index: -2 media vanishes."""
     assert ROOT in _declares("isolation", "isolate"), (
         "the hero must isolate; without a stacking context the z-index: -2 "
         "media falls behind the hero's own ground and the photograph vanishes"
@@ -200,12 +154,7 @@ def test_the_hero_owns_a_stacking_context():
 
 @needs_block_sheets
 def test_the_hero_states_how_it_wraps():
-    """Ticket 07/08: parity comes from stating the value, not from which value.
-
-    The Plate editable computes `white-space: pre-wrap` and it inherits into
-    the canvas, so a hero that says nothing wraps its headline differently in
-    the editor than on the page.
-    """
+    """The canvas inherits Plate's `pre-wrap`, so the hero must state `white-space`."""
     assert ROOT in _declares("white-space", "normal"), (
         "the hero must state `white-space`, or the canvas inherits the Plate "
         "editable's `pre-wrap` and wraps differently from the public view"
@@ -214,15 +163,7 @@ def test_the_hero_states_how_it_wraps():
 
 @needs_block_sheets
 def test_the_hero_takes_its_body_type_from_the_public_ladder():
-    """Ticket 17/22 — the seam, and why it is not a hardcoded family.
-
-    `--plone-font-body` and `--plone-leading-body` already carry the mockup's
-    exact values on Clara's `:root`, so the hero names them instead of
-    restating them. A hardcoded `"Source Sans 3"` passes every visual check
-    while silently dropping the theme seam, and the leading is easy to drop on
-    its own — 1.6 against 1.65 is the legend's whole 291-against-330 height gap
-    that ticket 10 measured.
-    """
+    """Name Clara's body tokens; a hardcoded family passes visually but drops the theme seam."""
     for prop, token in (
         ("font-family", "var(--plone-font-body)"),
         ("line-height", "var(--plone-leading-body)"),
@@ -259,18 +200,14 @@ RING_PAIRS = [
     (f"{ROOT} .rings-disc .ring-now", f"{ROOT} .rings-disc .ring-halo .ring-now"),
 ]
 
-#: A FLOOR the sheet must clear, not a mirror of what it declares (ticket 20).
-#: 3 = 1.5px a side, under the 2px the halo ships; the sheet may thicken the
-#: halo freely and only thinning past this is a regression. Ticket 18's
-#: "never hardcode the CSS value" is the opposite construction and does not
-#: apply: a test carrying its own copy of 6.5 would stay green when the halo
-#: is softened, which is exactly what this catches.
+#: A FLOOR the sheet must clear, not a mirror of what it declares.
+#: 3 = 1.5px a side, under the 2px the halo ships; only thinning past this is a regression.
 MINIMUM_HALO_SURROUND = 3.0
 
 
 @needs_block_sheets
 def test_the_halo_is_wider_than_every_stroke_it_surrounds():
-    """Ticket 20/23. A halo the same width as its ink is invisible."""
+    """A halo the same width as its ink is invisible."""
     for ink_selector, halo_selector in RING_PAIRS:
         ink = _values_for(ink_selector, "stroke-width")
         halo = _values_for(halo_selector, "stroke-width")
@@ -376,17 +313,7 @@ def test_the_legend_has_no_rounded_corner():
 
 @needs_block_sheets
 def test_the_scrim_cannot_hang_outside_the_hero():
-    """Ticket 21, and a defect found by measurement rather than by reading.
-
-    The scrim was first anchored to the copy column, inset past it by the
-    plateau margin plus the feather. That hangs 72px outside the hero at a 320
-    viewport — measured, the hero reporting 392 against a 320 client width —
-    and `overflow: hidden` clips it visually while still reporting the overflow
-    that ticket 15's guarantee is *stated in terms of*. Widening that guarantee
-    to let a decorative box through would blind it to the headline overflow it
-    exists for, so the scrim moved to the hero root instead, where there is
-    nothing to hang over.
-    """
+    """A scrim anchored to the copy column overflows at 320px; it rides the root instead."""
     scrims = {
         selector
         for selector, properties in _style_rules()
@@ -483,16 +410,7 @@ def test_the_ground_line_ends_the_plateau_below_the_action_row():
 
 @needs_block_sheets
 def test_the_wash_is_cut_away_from_the_copy_where_it_is_still_painted():
-    """Ticket 21 §3, now single column only — the scrim is the ONLY layer.
-
-    Stacking two translucent layers composites darker than either, which is the
-    solid copy panel this design avoids and is not the alpha the guarantee was
-    computed for. Two columns there is no second layer to stack (see above);
-    single column the wash is the composition below the copy band, and it is
-    cut to fully transparent across the band rather than merely softened over
-    it. The stop is proportional because the copy's box is: measured on the
-    design source it occupies the top 4.1% to at most 45.5% of the hero.
-    """
+    """Single column, the scrim is the only layer over the copy; stacking two would darken it."""
     masks = _values_for(f"{ROOT} .hero-wash", "mask-image")
     assert len(masks) == 1, (
         "the wash is painted at one breakpoint and so states one mask; found "

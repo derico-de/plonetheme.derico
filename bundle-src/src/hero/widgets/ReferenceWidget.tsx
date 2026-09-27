@@ -3,16 +3,9 @@
  *
  * ## Why this widget exists at all
  *
- * Ticket 02 decided the stored shape (`[{"@id": "../resolveuid/<uid>"}]` and
- * nothing else) and said the block's *edit component* would trim the enriched
- * brain in its `onChange` before calling `setBlock`. That is how Aurora's
- * teaser does it — but the teaser renders its own browser inside the canvas.
- * The hero edits every field in the SIDEBAR, and the sidebar writes straight
- * onto the Plate node: `SidebarAfterEditable`'s `onFormDataChange` calls
- * `editor.tf.setNodes(patch)` itself (`wrapper/src/editor/plone-block-sidebar.tsx`).
- * The edit component is never consulted and has no interception point, so a
- * widget is the only seam where the trim can happen. The stored shape ticket
- * 02 fixed is unchanged; only the place that produces it moved.
+ * The stored shape is `[{"@id": "../resolveuid/<uid>"}]`. The sidebar writes
+ * straight onto the Plate node, bypassing the edit component, so a widget is
+ * the only seam where the trim can happen.
  *
  * ## Why trim
  *

@@ -1,13 +1,6 @@
 /**
- * Ticket 02's degradation table, case for case.
- *
- * Nothing in the hero's schema is `required`, so a half-authored block has to
- * save and preview without throwing — and the canvas and the published page
- * have to agree on *what* it shows, or the author is previewing a different
- * page from the one they will publish. The server half implements this same
- * table from the same stored JSON; these are the canvas's half of it.
- *
- * The table (ticket 02):
+ * The hero's degradation table, case for case. The server renderer
+ * implements the same table; canvas and published page must agree.
  *
  * | State                          | Renders                                |
  * | ------------------------------ | -------------------------------------- |
@@ -54,8 +47,8 @@ const draw = (data: HeroData) => {
 
 describe('the hero renders its own root', () => {
   test('the component owns `.derico-hero`, never Aurora’s wrapper stamp', () => {
-    // Ticket 07: `.block-derico-hero` is the block WRAPPER, which is the
-    // full-bleed box on the view but only the column box in the canvas.
+    // `.block-derico-hero` is the block WRAPPER, which is the full-bleed box
+    // on the view but only the column box in the canvas.
     const hero = draw(full);
     expect(hero.tagName).toBe('SECTION');
     expect(hero.className).toBe('derico-hero');
@@ -214,11 +207,8 @@ describe('an entirely empty hero', () => {
     expect(hero.querySelectorAll('.ring-legend > div')).toHaveLength(4);
   });
 
-  /* Ticket 20/23. The halo is only a contrast guarantee if it is actually
-   * PAIRED with the ink — a halo group that drifted to seven circles, or that
-   * moved after the ink group and so paints over it, is a silent failure. The
-   * geometry is stated twice in this file and twice again in `hero.pt`; this
-   * is what makes that duplication safe rather than merely regretted. */
+  /* The halo only guarantees contrast while it is paired with the ink and
+   * painted beneath it; the geometry is duplicated here and in `hero.pt`. */
   test('pairs every ring stroke with a halo beneath it', () => {
     const hero = draw(full);
     const disc = hero.querySelector('.rings-disc')!;

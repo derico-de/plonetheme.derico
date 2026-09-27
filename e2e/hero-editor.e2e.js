@@ -1,23 +1,21 @@
-/* E2E: the Derico Hero in `@@aurora-edit` (hero ticket 10).
+/* E2E: the Derico Hero in `@@aurora-edit`.
  *
- * Four claims, in the order the ticket makes them:
+ * Four claims:
  *
  * 1. A site administrator finds the block in the slash menu, inserts it, fills
  *    every field it offers — text, both crops, both links, the four legend
  *    rows — and the values survive a save and a reload.
  * 2. An ordinary editor does NOT find it in the slash menu, and a page that
  *    already carries a hero still RENDERS it for them rather than showing an
- *    unknown-block placeholder. This is the specific claim ticket 03's design
- *    makes, and the one most likely to be subtly wrong: the bundle loads for
- *    everyone and only the menu is filtered.
+ *    unknown-block placeholder: the bundle loads for everyone and only the
+ *    menu is filtered.
  * 3. Exactly one React is on the page — the duplicate-instance failure the
- *    import map exists to prevent (ticket 04 §1, ticket 08). A block bundle
+ *    import map exists to prevent. A block bundle
  *    that shipped its own React would fail inside Plate, so the evidence is
  *    both structural (nothing but the entry and its sheet under the block's
  *    resource directory) and behavioural (the block mounted, and hooks ran).
  * 4. `<html lang>` on the editor matches the content language, and nothing
- *    clips at 320 or 375 on the canvas — the two checks ticket 15 handed
- *    over as unverified assumptions.
+ *    clips at 320 or 375 on the canvas.
  *
  * Prerequisites: a running Plone with plonetheme.derico installed at profile
  * version 1001+, plone.restapi, and the mockup bundle (pat-auroraeditor,
@@ -282,11 +280,8 @@ function heroGeometry(page) {
       const html = await response.text();
       return (html.match(/<html[^>]*\slang="([^"]*)"/i) || [])[1];
     }, `${BASE}${fixture.heroPage}`);
-    /* Ticket 15 reasoned this out with no instance running and deliberately
-     * did not trust it: `aurora_edit.pt` declares `lang="en"` on the element
-     * carrying `metal:use-macro`, which METAL should discard in favour of
-     * main_template's `lang python:portal_state.language()`. If it did not,
-     * `hyphens: auto` would hyphenate a German canvas with English rules. */
+    /* `aurora_edit.pt` declares `lang="en"` on its `metal:use-macro` element;
+     * if METAL kept it, `hyphens: auto` would use English rules on German. */
     check(
       editorLang === viewLang,
       `editor and view agree on <html lang> (editor ${editorLang}, view ${viewLang})`,
@@ -344,14 +339,9 @@ function heroGeometry(page) {
       `the sidebar form shows the seeded values on first insert (kicker ${JSON.stringify(sidebarSeed.kicker)}, ring 4 ${JSON.stringify(sidebarSeed.lastLegendTitle)})`,
     );
 
-    /* -- the body type, in the CANVAS: ticket 17/22 -------------------- */
-    /* This assertion is the whole justification for the seam. The theme-layer
-     * alternative would have fixed the published view and BROKEN this, because
-     * Blicca states its Tailwind stack on `.aurora-blocks-view` only and the
-     * canvas takes its stack from Aurora's scoped preflight instead. One
-     * declaration in the block's own scope-wrapped sheet lands on both
-     * surfaces, so the same numbers must come back here as in
-     * `hero-view.e2e.js`. Pinned rather than assumed. */
+    /* -- the body type, in the CANVAS ------------------------------------ */
+    /* The block's scope-wrapped sheet sets it on both surfaces, so the same
+     * numbers must come back here as in `hero-view.e2e.js`. */
     const canvasType = await page.evaluate(() => {
       const style = getComputedStyle(document.querySelector('.derico-hero'));
       const size = parseFloat(style.fontSize);
@@ -369,7 +359,7 @@ function heroGeometry(page) {
       `the canvas hero's leading is the design's 1.65 (${canvasType.leading})`,
     );
 
-    /* -- the ring halo, in the canvas: ticket 20/23 -------------------- */
+    /* -- the ring halo, in the canvas ---------------------------------- */
     const canvasHalo = await page.evaluate(() => {
       const disc = document.querySelector('.derico-hero .rings-disc');
       const halo = disc && disc.querySelector('.ring-halo');
@@ -453,17 +443,9 @@ function heroGeometry(page) {
         stored.blockWidth === 'full',
         `the editor materialised blockWidth (${stored.blockWidth})`,
       );
-      /* Ticket 02's shape: one element carrying the bare `@id`. The object
-       * browser hands over a whole brain; `derico_reference` trims it, so a
-       * rename survives and no stale metadata is persisted.
-       *
-       * `image_scales` is the ONE key allowed beside it, and it is not the
-       * block's: stock plone.restapi enriches any nested `@id` with it on
-       * read and strips it again on write (ticket 01, contract §5.3), which
-       * is why the two content picks come back bare and the two image picks
-       * do not. Anything else in the object would be the widget failing to
-       * trim. That the enrichment is not PERSISTED is pinned server-side by
-       * `tests/test_hero_view.py`; from out here only the read is visible. */
+      /* One element carrying the bare `@id`, trimmed by `derico_reference`.
+       * `image_scales` is the one key allowed beside it: plone.restapi adds
+       * it on read and strips it on write (contract §5.3). */
       for (const field of ['cta_href', 'link_href', 'image_wide', 'image_portrait']) {
         const value = stored[field];
         const one = Array.isArray(value) && value.length === 1 && typeof value[0] === 'object';
@@ -555,7 +537,7 @@ function heroGeometry(page) {
     }
 
     /* ------------------------------------------------------------------ *
-     * 4. Nothing clips at 320 or 375 in the canvas (ticket 15)
+     * 4. Nothing clips at 320 or 375 in the canvas
      * ------------------------------------------------------------------ */
     console.log('\n# the canvas at mobile widths');
     await openEditor(page, fixture.longPage);

@@ -178,11 +178,11 @@ class TestPrintSheet:
 
     def test_a_section_closes_up_on_paper(self):
         """The mockup's `.section { padding-block: 1.5rem }`. Every block
-        frame reads one of Blicca's two tokens — §10's reading frame from
-        `:root`, §11's section frame on the banded wrapper — so both are
+        frame reads one of Blicca's two tokens — the reading frame from
+        `:root`, the section frame on the banded wrapper — so both are
         re-pointed to the `m` step, the mockup's 1.5rem being that step's
         floor: on the blocks view for the inherited values, and on the
-        banded wrapper, one class deeper, to out-specify §11's own rule."""
+        banded wrapper, one class deeper, to out-specify the theme's own frame rule."""
         for selector in (".aurora-blocks-view", SECTION):
             assert _values_for(selector, "--aurora-space-block") == ["var(--plone-space-m)"]
             assert _values_for(selector, "--aurora-space-bleed") == ["var(--plone-space-m)"]

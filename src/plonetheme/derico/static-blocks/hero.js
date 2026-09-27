@@ -7,7 +7,7 @@ function text(value) {
 /**
 * The `@id` of a reference field.
 *
-* Stored as a one-element list of `{"@id": …}` (ticket 02), but a value that
+* Stored as a one-element list of `{"@id": …}`, but a value that
 * never went through the editor may be a bare object or a plain string, and
 * neither is worth throwing over.
 */
@@ -38,12 +38,8 @@ function link(label, href) {
 /**
 * The canvas preview URL for a picked image.
 *
-* One plain scale, derived from the `@id` alone (ticket 05). The editor
-* cannot reuse the public `<picture>`: art direction needs the two crops
-* spliced server-side, and the enriched `image_scales` restapi injects on
-* load is absent for an image the author has just picked, because the widget
-* trims the brain down to its `@id` before storing it. Deriving the URL is
-* the one code path that works in both states.
+* One plain scale derived from the `@id`: a freshly picked image has no
+* `image_scales` yet, so deriving the URL is the only path that always works.
 */
 function previewImage(value) {
 	const id = reference(value);
@@ -71,14 +67,10 @@ function legend(value) {
 * derived from position, and the `is-now` highlight is the last ring by
 * construction.
 *
-* The legend is HTML *beneath* the SVG precisely so it does not scale with
-* the graphic: ticket 07 measured captions at 15px on both surfaces and at
-* both 1440 and 375, which is Clara's label floor exactly. Fold the legend
-* into the SVG and that floor goes.
+* The legend is HTML beneath the SVG so its captions don't scale with the
+* graphic and stay at Clara's 15px label floor.
 *
-* A half-filled entry keeps its numeral and emits only the half that has
-* text; an entirely empty entry is a numeral and a rule (ticket 02's
-* degradation table).
+* An empty entry still renders its numeral and rule.
 */
 function Rings({ entries }) {
 	return /* @__PURE__ */ jsxs("figure", {
@@ -219,18 +211,8 @@ function Rings({ entries }) {
 *
 * ## `.derico-hero`, not `.block-derico-hero`
 *
-* Aurora stamps `block-<@type>` on the block WRAPPER, and ticket 07 measured
-* what that wrapper actually is on each surface at 1440: on the public view
-* it is the full-bleed box (1220 @220), but in the canvas it is only the
-* column box (1134.9 @262.5) with the breakout one level in, on
-* `.block-inner-container`. Painting the hero on the wrapper therefore gives
-* the editor a 1134.9px hero whose `overflow: hidden` clips the 1220px
-* container inside it — the dark ground stops at the column edge and there is
-* no breakout at all. The component owns its own root element instead, and
-* both surfaces then measure 1220 @220 to the pixel.
-*
-* The `.block-derico-hero` stamp stays free for `derico.css`'s
-* chrome-suppression rule, which wants the wrapper anyway.
+* Aurora's `block-<@type>` wrapper is the full-bleed box on the public view
+* but only the column box in the canvas, so the hero paints on its own root.
 *
 * ## The hero never sets its own width
 *
@@ -240,12 +222,9 @@ function Rings({ entries }) {
 *
 * ## No whitespace-only text nodes
 *
-* The Plate editable computes `white-space: pre-wrap`, which inherits in and
-* turns every newline BETWEEN two elements into a real line box — ticket 07
-* measured the mockup's indented markup inflating the rings figure by 76%.
-* JSX drops inter-element whitespace, so this file is safe by construction;
-* a `dangerouslySetInnerHTML` preview would not be, and the server template
-* has to strip its own indentation.
+* The Plate editable's inherited `white-space: pre-wrap` turns newlines
+* between elements into line boxes; JSX drops them, the server template
+* must strip its own.
 */
 function Hero({ data, media }) {
 	const kicker = text(data.kicker);
@@ -297,28 +276,13 @@ function Hero({ data, media }) {
 /**
 * The hero's photograph — one `<picture>`, two crops, art-directed.
 *
-* Plone's named scales give variants of ONE crop, never art direction, so the
-* wide and portrait framings stay two uploads (ticket 05). The portrait
-* `<source>` comes first and carries the narrow `media`, because a `<picture>`
-* takes the first source that matches.
+* Wide and portrait framings are two uploads; the portrait `<source>` comes
+* first because `<picture>` takes the first match. `media` is a viewport
+* query since `<picture>` has no container-query form.
 *
-* `media` is a VIEWPORT query here while the layout switch next door is a
-* container query, and that is deliberate: `<picture>` has no container-query
-* form, and the mismatch costs at most a slightly-too-large image for a
-* logged-in author whose canvas is narrower than the viewport by the toolbar.
-* Bytes, not layout — 06 §8/§9 put the error on this side on purpose.
-*
-* One plain scale per crop, derived from the `@id` (ticket 05): the editor
-* has no `image_scales` for an image the author has only just picked, since
-* the reference widget trims the brain down to its `@id` before storing it.
-* The public half builds the real resolution ladder server-side through
-* `Img2PictureTag`; this is the editor's preview and Aurora-proper's
-* fallback, and both halves emit the same `.hero-media` element either way.
-*
-* Degradation (ticket 02): both crops → art direction; one crop → that image
-* at every breakpoint, with the source it has no image for dropped; no crop →
-* `null`, so the caller emits no `<picture>` and no wash and the hero falls
-* back to its token ground.
+* One plain scale per crop, derived from the `@id`; the public view builds
+* the real ladder server-side. One crop → that image everywhere; none →
+* `null`.
 *
 * `aria-hidden`, and no `alt` field anywhere in the schema: the photograph is
 * decorative in this design.
@@ -400,7 +364,7 @@ function unseeded(data) {
 * The block data a fresh insert should carry.
 *
 * A merge, not a replacement: whatever the host already put on the node —
-* `@type`, the materialised `blockWidth` (ticket 11), anything a future
+* `@type`, the materialised `blockWidth`, anything a future
 * plugin adds — survives untouched.
 */
 function seeded(data) {
@@ -414,16 +378,9 @@ function seeded(data) {
 /**
 * The `edit` half: the canvas is a live preview, never an editing surface.
 *
-* Every field is edited in the sidebar (ticket 02). The block is a Plate VOID
-* node, so in-canvas text would mean re-solving focus, undo and selection
-* inside a void — a large bespoke cost, in a block whose whole premise is
-* that the author gets no choices to make.
-*
-* That decision is what makes two of the sheet's rules safe: the hero states
-* `white-space: normal`, overriding the `pre-wrap` the Plate editable
-* computes and inherits into everything it contains (ticket 07 measured the
-* canvas breaking the headline where the view kept it whole). Nothing here is
-* contenteditable, so nothing is lost by normalising it.
+* Every field is edited in the sidebar; the block is a Plate VOID node. With
+* nothing contenteditable, the hero can safely reset the editable's inherited
+* `white-space: pre-wrap` to `normal`.
 *
 * The canvas is also where a fresh insert gets its words. Aurora writes a
 * node carrying `@type` and nothing else, and `blocksConfig` has no
@@ -538,7 +495,7 @@ function HeroView({ data }) {
 //#endregion
 //#region src/hero/schema.ts
 /**
-* The Derico Hero's sidebar form (hero ticket 02, contract §1.5).
+* The Derico Hero's sidebar form (contract §1.5).
 *
 * Deliberately inflexible: the design's text and images and nothing else. No
 * width control, no palette variant, no "hide the rings" toggle — a brand
@@ -640,16 +597,9 @@ var HeroSchema = {
 *
 * ## Why this widget exists at all
 *
-* Ticket 02 decided the stored shape (`[{"@id": "../resolveuid/<uid>"}]` and
-* nothing else) and said the block's *edit component* would trim the enriched
-* brain in its `onChange` before calling `setBlock`. That is how Aurora's
-* teaser does it — but the teaser renders its own browser inside the canvas.
-* The hero edits every field in the SIDEBAR, and the sidebar writes straight
-* onto the Plate node: `SidebarAfterEditable`'s `onFormDataChange` calls
-* `editor.tf.setNodes(patch)` itself (`wrapper/src/editor/plone-block-sidebar.tsx`).
-* The edit component is never consulted and has no interception point, so a
-* widget is the only seam where the trim can happen. The stored shape ticket
-* 02 fixed is unchanged; only the place that produces it moved.
+* The stored shape is `[{"@id": "../resolveuid/<uid>"}]`. The sidebar writes
+* straight onto the Plate node, bypassing the edit component, so a widget is
+* the only seam where the trim can happen.
 *
 * ## Why trim
 *
@@ -722,10 +672,8 @@ function DericoReferenceWidget(props) {
 * Exactly four, always: the numerals are derived from position and the "now"
 * highlight is unambiguously the last one, so the count is a template
 * invariant both halves may assert rather than defend against. Aurora has no
-* object-list widget at all — cmsui's `Field` has no `items`/`array` branch —
-* so an array field needs a widget of its own either way; ticket 02 chose the
-* array over eight flat `ring1Title…ring4Subtitle` keys so that a design which
-* ever wants five rings is a template change and not a data migration.
+* object-list widget, hence this one; an array rather than eight flat keys
+* keeps a fifth ring a template change, not a data migration.
 *
 * Writes the WHOLE four-element array on every keystroke. Uncontrolled inputs
 * over a ref, for the same reason as the textarea: cmsui hands widgets a

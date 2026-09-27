@@ -1,6 +1,6 @@
 """The hero's contrast guarantees, read off the sheet that actually ships.
 
-Tickets 18, 20 and 21. Three structural guarantees, one test each:
+Three structural guarantees, one test each:
 
 * the **legend card** — an opaque ground under the `<dl>`, because the is-now
   cyan is unreachable by any translucent treatment;
@@ -13,11 +13,8 @@ declares rather than something the author uploads. That is why these are
 arithmetic and not screenshots, and why only the scrim needs a photograph in
 the sum at all: it is the one layer that is translucent.
 
-Values are read from the built artifact, never restated here. Ticket 18's rule:
-a test carrying its own copy of `0.926` stays green after somebody softens the
-CSS, which is the one regression it exists to catch. Where a bare number does
-appear it is a WCAG threshold or a *floor* the sheet must clear — the opposite
-construction, and deliberately so (ticket 20's answer, "a floor, not a mirror").
+Values are read from the built artifact, never restated here; a bare number is
+a WCAG threshold or a *floor* the sheet must clear.
 """
 
 import re
@@ -29,8 +26,8 @@ BLOCK_SHEETS = css_tools.BLOCK_SHEETS
 needs_block_sheets = css_tools.needs_block_sheets
 
 #: The worst photograph for any dark backdrop: it composites lightest there,
-#: which is where a light ink has least room. Ticket 20 measured the shipped
-#: forest at a 0.0116 median in the rings band with canopy gaps up to 0.815, so
+#: which is where a light ink has least room. The shipped forest measures
+#: a 0.0116 median in the rings band with canopy gaps up to 0.815, so
 #: this is the bound, not the fixture.
 WHITE = "#ffffff"
 
@@ -105,17 +102,15 @@ def _check(pairs, backdrop, label):
 
 
 # --------------------------------------------------------------------------
-# The legend card (ticket 18 §2)
+# The legend card
 # --------------------------------------------------------------------------
 
 #: (token, WCAG minimum, what wears it, the worst backdrop under it). 4.5 =
 #: normal text, 3.0 = a hairline read as a graphical object.
 #:
 #: The backdrops are MEASURED, and that is the whole difference from the other
-#: three guarantees on this page. Ticket 18 made the legend's card opaque
-#: precisely so its contrast would not depend on the upload; the design has
-#: since traded that for a card the photograph shows through, which means the
-#: sum needs a photograph in it again. These are the brightest pixels found
+#: three guarantees on this page: the card is translucent, so the sum needs a
+#: photograph in it. These are the brightest pixels found
 #: under each ink on the shipped hero image with the legend's own ground
 #: removed — the photo as the hero's scrim and ground line leave it, sampled
 #: over each run of text rather than over its block box.
@@ -136,8 +131,7 @@ def test_the_legend_ground_carries_every_colour_the_legend_wears():
 
     Each ink is checked against its own worst backdrop with the legend's ground
     composited over it at the alpha the sheet declares. The is-now cyan is the
-    binding case and always was: 18 measured that it needs 0.983 over a WHITE
-    photograph, which is why the card used to be opaque. Over this photograph
+    binding case: it needs 0.983 over a WHITE photograph. Over this photograph
     it needs far less, and that gap is exactly the guarantee that was spent.
     """
     props = _properties()
@@ -147,7 +141,7 @@ def test_the_legend_ground_carries_every_colour_the_legend_wears():
     assert hex_base, f"the legend ground is not a colour: {ground!r}"
     assert alpha < 1.0, (
         "an opaque legend ground makes this test vacuous — it would be the "
-        "photograph-independent card of ticket 18, and the measured backdrops "
+        "photograph-independent card, and the measured backdrops "
         "below would no longer be reachable"
     )
 
@@ -209,7 +203,7 @@ def test_the_legend_ground_would_go_red_if_it_were_made_more_transparent():
 
 
 # --------------------------------------------------------------------------
-# The ring halo (ticket 20)
+# The ring halo
 # --------------------------------------------------------------------------
 
 #: Both ring inks, against 1.4.11's 3:1 for a meaningful non-text graphic.
@@ -236,7 +230,7 @@ def test_the_ring_halo_carries_both_ring_inks():
 
 
 # --------------------------------------------------------------------------
-# The copy scrim (ticket 18 §3, built by 21)
+# The copy scrim
 # --------------------------------------------------------------------------
 
 #: The copy column's inks. The headline is large text, so 3:1; `quiet-link`
@@ -260,15 +254,15 @@ def test_the_copy_scrim_carries_every_copy_ink_over_the_worst_photograph():
     props = _properties()
     scrim, alpha = _backdrop("--derico-hero-copy-scrim", props, over=WHITE)
     assert alpha < 1.0, (
-        "an opaque scrim is the solid copy panel this design avoids "
-        "(ticket 18 §3); if it has become opaque, the mask is doing nothing"
+        "an opaque scrim is the solid copy panel this design avoids"
+        "; if it has become opaque, the mask is doing nothing"
     )
     _check(COPY_INK, scrim, "the copy scrim")
 
 
 @needs_block_sheets
 def test_the_scrim_would_go_red_if_it_were_softened():
-    """Non-vacuity: prove the assertion above can fail (ticket 19's lesson).
+    """Non-vacuity: prove the assertion above can fail.
 
     A guarantee that would hold at any alpha is not a guarantee. This derives
     the floor the sheet must clear rather than restating what it declares —
@@ -308,7 +302,7 @@ def test_the_scrim_would_go_red_if_it_were_softened():
 
 
 # --------------------------------------------------------------------------
-# The marker chips (ticket 20 §6)
+# The marker chips
 # --------------------------------------------------------------------------
 
 #: (ink, backdrop, minimum, role). The chips are the one text in the hero whose
@@ -334,16 +328,7 @@ MARKER_PAIRS = [
 
 @needs_block_sheets
 def test_the_marker_chips_carry_their_own_backdrop():
-    """Ticket 20 §6, on the record rather than by luck.
-
-    The ticket claimed the chips were "unaffected" because they carry their own
-    backdrop — but that is a claim about the numerals (1.4.3) standing in for a
-    claim about the chip's silhouette over the photograph (1.4.11). The two
-    happen to agree, because the chip is two-tone: an opaque copper fill inside
-    a ground border, so whichever way the photograph goes, one of the pair is
-    the adjacent colour. That is the same construction as the ring halo, and
-    the chips are where it was already in the block. Both halves asserted here.
-    """
+    """Numerals on the fill (1.4.3) and the two-tone chip against the photograph (1.4.11)."""
     props = _properties()
     failures = []
     for ink_name, ground_name, minimum, role in MARKER_PAIRS:

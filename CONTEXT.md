@@ -57,9 +57,8 @@ generic mechanism a brand block is built on, not a synonym)
 The darkening that lets the Derico Hero's words sit on its photograph — a
 gradient over the image, keyed to the side the copy is on, not a flat tint over
 the whole picture. It belongs to the hero's composition, not to the Jahresringe
-palette. It is a compositional layer, not a contrast guarantee: ticket 18 made
-the **copy scrim** carry the guarantee and left the wash deliberately
-non-load-bearing.
+palette. It is a compositional layer, not a contrast guarantee: the **copy scrim**
+carries the guarantee and the wash is deliberately non-load-bearing.
 _Avoid_: overlay, tint, gradient, scrim (that is the copy scrim, a different
 layer with a different job — see below)
 

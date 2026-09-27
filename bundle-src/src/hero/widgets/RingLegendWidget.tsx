@@ -4,10 +4,8 @@
  * Exactly four, always: the numerals are derived from position and the "now"
  * highlight is unambiguously the last one, so the count is a template
  * invariant both halves may assert rather than defend against. Aurora has no
- * object-list widget at all — cmsui's `Field` has no `items`/`array` branch —
- * so an array field needs a widget of its own either way; ticket 02 chose the
- * array over eight flat `ring1Title…ring4Subtitle` keys so that a design which
- * ever wants five rings is a template change and not a data migration.
+ * object-list widget, hence this one; an array rather than eight flat keys
+ * keeps a fifth ring a template change, not a data migration.
  *
  * Writes the WHOLE four-element array on every keystroke. Uncontrolled inputs
  * over a ref, for the same reason as the textarea: cmsui hands widgets a

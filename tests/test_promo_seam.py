@@ -1,24 +1,7 @@
-"""derico's values for the Promo block's theme seam (derico.css §9).
+"""derico's values for the Promo block's theme seam.
 
-The seam is a contract split across two packages, and like `backgroundColor`'s
-palette it fails silently in both directions. `derico.blicca.promoblock`
-publishes nineteen `--promo-*` properties and **declares none of them**: every
-default lives at its point of use as `var(--promo-x, <literal>)` (the block's
-ADR 0002). So a theme that misspells a name, or that keeps setting one the
-block has dropped, gets no error at all — it gets the literal default, which is
-a promo that quietly is not derico's.
-
-Blicca's half of §8 is read from the package rather than restated; the block's
-half is read the same way, out of the built stylesheet it ships. That file is
-the set of names the block actually consumes — the README's property table is
-the block's own published contract and its own lockstep test
-(`bundle-src/test/seam-lockstep.test.ts`) already holds the two together, so
-restating the table here would fork it.
-
-The theme's side of the same lockstep is the last test in section 1: **only
-derico.css may declare a `--promo-*` property**. Ticket 16 asked for tokens and
-no rules and had to say "caught at review" — the block's lockstep test cannot
-see this repository. It is caught here instead.
+The block declares none of its `--promo-*` properties, so drift fails silently;
+names are read from the built block stylesheet, and only derico.css may set them.
 """
 
 import re
@@ -93,7 +76,7 @@ def test_every_property_the_theme_sets_is_one_the_block_reads():
     """A name the block does not read paints nothing, and says nothing."""
     unknown = sorted(set(_declared()) - _block_hooks())
     assert not unknown, (
-        f"derico.css §9 declares {unknown}, which the Promo block's stylesheet "
+        f"derico.css declares {unknown}, which the Promo block's stylesheet "
         "never reads — either the property was renamed upstream or this is a "
         "typo; both paint the block's literal default instead"
     )
@@ -110,20 +93,12 @@ def test_the_block_still_reads_every_property_the_theme_sets():
     the theme ever declares nothing at all.
     """
     declared = set(_declared())
-    assert declared, "derico.css §9 declares no --promo-* property at all"
+    assert declared, "derico.css declares no --promo-* property at all"
     assert declared <= _block_hooks()
 
 
 def test_only_the_token_layer_declares_a_promo_property():
-    """The theme's half of the block's lockstep test (ticket 16).
-
-    The seam is tokens, never rules: the block's sheet is `@scope`-wrapped and
-    beats an unlayered theme rule at equal specificity, so a theme that reaches
-    for a rule has to escalate — and a `--promo-*` set on `.promo` itself would
-    shadow the inherited value, which is the one failure ADR 0002 exists to
-    prevent. The block's own lockstep test covers its stylesheet and cannot see
-    this repository; this is the half that can.
-    """
+    """The seam is tokens, never rules; a `--promo-*` on `.promo` would shadow inheritance."""
     leaked = {}
     for path in css_tools.theme_stylesheets() + css_tools.block_stylesheets():
         names = sorted(
@@ -146,7 +121,7 @@ def test_the_token_layer_declares_them_only_where_they_inherit_in():
 
     Per RULE, not per name: comparing the set of names declared anywhere
     against the set declared on `:root` cannot see a SECOND declaration of a
-    name §9 already sets, which is the likely shape of the mistake — someone
+    name derico.css already sets, which is the likely shape of the mistake — someone
     re-tuning one property for one context by adding `.promo { … }` below.
     """
     root = {re.sub(r"\s+", "", selector) for selector in css_tools.ROOT_SELECTORS}
@@ -170,7 +145,7 @@ def test_the_token_layer_declares_them_only_where_they_inherit_in():
 
 #: property -> the ladder step it must alias verbatim. `--clara-text-title` is
 #: named directly rather than re-published as a `--derico-text-*` alias first:
-#: §3's aliases exist for the sheets that may not name a Clara token, and
+#: the `--derico-text-*` aliases exist for the sheets that may not name a Clara token, and
 #: derico.css is the one that may. `--plone-radius-pill` is Clara's radius
 #: scale, which derico inherits untouched (test_override_minimality).
 EXPECTED_ALIASES = {
@@ -190,7 +165,7 @@ def test_each_property_aliases_a_ladder_step_rather_than_restating_a_value(
 ):
     """A literal here would fork the brand palette where nobody looks."""
     declared = _declared()
-    assert prop in declared, f"derico.css §9 does not declare {prop}"
+    assert prop in declared, f"derico.css does not declare {prop}"
     assert re.fullmatch(rf"var\(\s*{re.escape(target)}\s*\)", declared[prop]), (
         f"{prop} must alias {target} verbatim; it declares {declared[prop]!r}"
     )
@@ -198,15 +173,7 @@ def test_each_property_aliases_a_ladder_step_rather_than_restating_a_value(
 
 @needs_clara
 def test_the_title_step_is_the_design_s_component_heading_not_its_section_one():
-    """Why `--clara-text-title` and not `--derico-text-heading` (ticket 16).
-
-    The design source of record puts every component heading on the title step
-    and reserves the heading step for page and section headings — `.page-hero
-    h1`, `.section-heading`, `.contact-band h2`. The promo is a block an author
-    drops on a page, so it is dressed as a card. Reproducing the contact band's
-    scale needs a size that varies with `blockWidth`, which the seam does not
-    publish; that is ticket 20, not a value here.
-    """
+    """The promo is a card, so its heading takes the component title step, not the section one."""
     props = _effective()
     title = css_tools.resolve("--promo-title-size", props)
     heading = css_tools.resolve("--clara-text-heading", props)
@@ -214,11 +181,11 @@ def test_the_title_step_is_the_design_s_component_heading_not_its_section_one():
     assert title != heading, (
         "the promo's title is on the design's SECTION heading step; that scale "
         "belongs to the page's own headings, and a card wearing it towers over "
-        "its own copy (measured on /Plone/promo-band-probe, ticket 16)"
+        "its own copy (measured on /Plone/promo-band-probe)"
     )
 
 
-#: The two properties ticket 16's own mapping table listed and the design
+#: The two properties the original mapping table listed and the design
 #: declined, each with the line that decided it. Pinned rather than merely
 #: omitted, because the table is the obvious place a later reader looks.
 DECLINED = {
@@ -254,8 +221,8 @@ def test_the_declined_properties_stay_declined(prop, reason):
 #: below says why. It IS present as a text row: on that slot Blicca flattens
 #: every colour under the band to `--aurora-block-fg-dark` at (0,3,0), so the
 #: button's label is the band's foreground however `--promo-cta-fg` is set
-#: (the block's README, "Two documented interactions"; ticket 13 asked for the
-#: copper to be measured against THAT ink). It lands at the same 4.60:1,
+#: (the block's README, "Two documented interactions"), so the copper is
+#: measured against THAT ink. It lands at the same 4.60:1,
 #: because both inks are near-white — the caveat is real and costs nothing.
 PROMO_PAIRS = [
     # the button's label on its fill, and on the fill it hovers to
@@ -293,7 +260,7 @@ def test_promo_contrast(foreground, background, minimum):
 
 @needs_clara
 def test_the_copper_button_does_not_outline_itself_against_the_dark_slot():
-    """The one measurement that fails, stated as a measurement (ticket 16).
+    """The one measurement that fails, stated as a measurement.
 
     A copper pill on the deep-petrol band is 2.24:1 fill-against-ground, under
     the 3:1 a graphical object wants. It ships anyway, and this test is where

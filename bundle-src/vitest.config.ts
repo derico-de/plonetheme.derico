@@ -1,12 +1,8 @@
 /**
  * Unit tests for the editor half.
  *
- * The block's degradation table (hero ticket 02) is a seven-case contract
- * both halves have to honour identically, and the public view is tested from
- * pytest — so the canvas side needs a runner of its own or those cases go
- * unchecked until someone clicks through the editor. Hero ticket 04 §11 ruled
- * out a linter for a ~500-line workspace; a test runner is the opposite
- * trade, and it never reaches the shipped bundle.
+ * The public view's degradation rules are tested from pytest; these pin the
+ * canvas side of the same table.
  *
  * Note the promised modules are NOT external here: the bundle resolves them
  * through the page import map at runtime, while these tests resolve them from

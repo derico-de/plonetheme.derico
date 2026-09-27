@@ -1,19 +1,12 @@
 /**
- * The brand blocks' editor bundles (block add-on contract §1.2, hero ticket
- * 04).
- *
- * One workspace, N entry points, N bundles, N records. Three members today:
- * `hero`, `pageheader`, and `fragments` — which registers no block at all,
- * only the ornaments derico provides to collective.fragmentsblock. Note the
- * shared-stylesheet caveat below only concerns entries that IMPORT css;
- * `fragments` imports none (the ornaments are styled by the theme's
- * `static/snippets.css`), so `blocks.css` is the two blocks' sheets, one
- * after the other.
+ * The brand blocks' editor bundles (block add-on contract §1.2): one entry,
+ * bundle and record each for `hero`, `pageheader` and `fragments` (ornaments
+ * only, no css).
  *
  * Output goes to `src/plonetheme/derico/static-blocks/`, a second static
  * directory registered as `++plone++plonetheme.derico.blocks` and reserved
  * ENTIRELY for build output — `emptyOutDir` wipes it on every build, so a
- * hand-written file placed there is deleted without warning (04 §3).
+ * hand-written file placed there is deleted without warning.
  */
 import path from 'node:path';
 import { defineConfig } from 'vite';
@@ -68,7 +61,7 @@ export default defineConfig({
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,
       // Lib mode emits ONE stylesheet per build, not per entry, so every
-      // block record points its `css` field at this same asset (04 §5).
+      // block record points its `css` field at this same asset.
       cssFileName: 'blocks',
     },
     outDir: path.resolve(here, '../src/plonetheme/derico/static-blocks'),

@@ -4,11 +4,9 @@
  *     wrapper/build-plugins/scope-wrap.ts
  * at commit 28e7cbd6e94c16c47f8ce61bb69439886f399d96.
  *
- * Hero ticket 04 §7 chose vendoring over an import across the checkout, so
- * this repo builds on its own. `tests/test_block_addon_lockstep.py` compares
- * everything BELOW the sentinel line against the upstream file whenever
- * plone.blicca.auroraeditor is checked out beside this package, and skips
- * when it is not.
+ * Vendored so this repo builds on its own. `tests/test_block_addon_lockstep.py`
+ * compares everything BELOW the sentinel line against upstream when it is
+ * checked out beside this package.
  *
  * The *code* is upstream's; the *invocation* deliberately is not. This build
  * passes three scope roots where the wrapper passes two, because a block's

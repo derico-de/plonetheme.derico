@@ -5,7 +5,7 @@
  * bottom-aligned once the header is 56rem wide, stacked below that.
  *
  * `.derico-page-header`, never Aurora's `.block-derico-page-header` wrapper
- * stamp: the wrapper is a different box on each surface (hero ticket 07),
+ * stamp: the wrapper is a different box on each surface,
  * and the block owns its own root so one sheet measures the same on both.
  * The block never sets its width; `defaultBlockWidth: 'layout'` is the whole
  * of the wiring, and the wrapper carries it.

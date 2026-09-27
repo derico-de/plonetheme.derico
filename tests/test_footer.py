@@ -3,7 +3,7 @@
 `collective.blicca.footerblocks` renders the authored footer blocks inside
 `<footer class="element-footerblocks">` at the tail of every page, and the
 theme dresses that element the way the Jahresringe mockup dresses its
-`.site-footer` (footer-blocks ticket 07). Two things ship it — the footer
+`.site-footer`. Two things ship it — the footer
 bundle (registry.xml: footer.css) and the sheet itself — and each is checked
 from the side that would fail silently without it: the record the page
 reads, the resource it points at, and the handful of design values the sheet

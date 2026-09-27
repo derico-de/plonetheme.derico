@@ -47,11 +47,7 @@ def theme_stylesheets():
 def block_stylesheets():
     """The brand blocks' scope-wrapped sheets, if `bundle-src` has built them.
 
-    `static-blocks/` is build output served as `++plone++plonetheme.derico.blocks`
-    (hero ticket 04 §3) and it is committed, so a normal checkout has it — but
-    it does not exist at all until the first block entry point lands, and Vite
-    empties it on every build. Callers treat "absent" as "no block sheets yet",
-    never as an error.
+    Committed build output; callers treat "absent" as "no block sheets yet", never as an error.
     """
     if not BLOCK_STATIC.is_dir():
         return []
@@ -106,12 +102,8 @@ def _blocks(css):
         if selector.startswith(
             ("@layer", "@media", "@supports", "@scope", "@container")
         ):
-            # descend into the at-rule body. `@container` was missing until
-            # hero ticket 21: the hero's whole responsive half lives in
-            # `@container (min-width: 56rem)` (ticket 06 §8 chose a container
-            # query over a media query deliberately), so every rule at the wide
-            # breakpoint was invisible to these tests — they read as covering
-            # the sheet while covering only half of it.
+            # descend into the at-rule body; the hero's wide breakpoint lives
+            # in `@container`, so skipping it would hide half the sheet.
             index = brace + 1
             continue
         depth, end = 0, None

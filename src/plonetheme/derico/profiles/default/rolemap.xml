@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <rolemap>
   <permissions>
-    <!-- The insert gate of hero ticket 03. `acquire="True"` on purpose:
+    <!-- The brand block insert gate. `acquire="True"` on purpose:
          @@aurora-edit checks the permission on the object being edited, so
          the grant made here at the site root has to reach every page below
          it. Manager AND Site Administrator, because `cmf.ManagePortal` — the

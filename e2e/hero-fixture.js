@@ -1,10 +1,10 @@
-/* Shared fixture for the Derico Hero browser tests (hero ticket 10).
+/* Shared fixture for the Derico Hero browser tests.
  *
  * Builds, over plone.restapi, everything the hero needs to be looked at on a
  * real site: the two crops it takes as content, the two pages its links point
  * at, and two Articles carrying an API-authored hero — one with the mockup's
- * own copy, one whose headline holds a compound long enough to force the
- * break rung ticket 15 added.
+ * own copy, one whose headline holds a compound long enough to force a
+ * break.
  *
  * Authoring the block through the API rather than through the editor is
  * deliberate on both counts: it is the state an ordinary editor finds on a
@@ -15,7 +15,7 @@
  * The fixture is published, so the view tests browse it anonymously: no
  * toolbar, and `--plone-toolbar-width` — which the full-bleed breakout
  * subtracts — is out of the picture. The editor tests log in and therefore
- * see a hero narrowed by exactly that toolbar (ticket 07's table).
+ * see a hero narrowed by exactly that toolbar.
  *
  * Prerequisites: plone.restapi, plonetheme.derico installed at profile
  * version 1001 or later, and a content type carrying the blocks behaviour
@@ -42,8 +42,7 @@ const LONG_PAGE_PATH = `/${FOLDER_ID}/${LONG_PAGE_ID}`;
 const EMPTY_PAGE_PATH = `/${FOLDER_ID}/${EMPTY_PAGE_ID}`;
 
 /* The ordinary editor of contract §7: may edit the page, may not insert a
- * brand block. Created by the fixture because the claim ticket 03's design
- * makes is about this exact user, and an instance is unlikely to have one. */
+ * brand block. Created here because an instance is unlikely to have one. */
 const EDITOR_USER = 'derico-hero-e2e-editor';
 const EDITOR_PASSWORD = 'derico-hero-e2e-editor-pw';
 
@@ -75,7 +74,7 @@ const COPY = {
 
 /* The break rung's exercise. 30 characters with no break opportunity: longer
  * than the 320 shell at any rung of the headline ramp, so it is `min-width: 0`
- * plus `overflow-wrap: break-word` or nothing (ticket 15). */
+ * plus `overflow-wrap: break-word` or nothing. */
 const LONG_HEADLINE = 'Geschäftsanwendungsentwicklung für Bestandskunden';
 
 const SOMERSAULT_BLOCK_ID = '__somersault__';
@@ -131,9 +130,7 @@ function upload(filename) {
   };
 }
 
-/* A reference as the hero stores it: the bare `@id`, one element, nothing
- * else (ticket 02 — `derico_reference` trims the object browser's pick so a
- * rename survives and no stale brain metadata is persisted). */
+/* A reference as the hero stores it: the bare `@id`, one element. */
 function reference(url) {
   return [{ '@id': url }];
 }
@@ -142,10 +139,8 @@ function heroNode(urls, overrides = {}) {
   return {
     type: 'ploneBlock',
     '@type': 'derico-hero',
-    /* Materialised, exactly as the editor materialises it at insert
-     * (ticket 11): `plate.py` reads an explicit width and stamps
-     * `has--block-width--full`, which is where the viewport breakout lives.
-     * A node authored without it renders `default` — 11's accepted limit. */
+    /* Materialised as the editor does at insert; without it the node
+     * renders `default` width. */
     blockWidth: 'full',
     children: [{ text: '' }],
     kicker: COPY.kicker,

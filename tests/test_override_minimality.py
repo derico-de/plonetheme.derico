@@ -37,7 +37,7 @@ THEME_SHEETS = css_tools.theme_stylesheets()
 needs_block_sheets = css_tools.needs_block_sheets
 
 #: The one non-token rule `derico.css` is allowed to carry: the page chrome
-#: above a brand block (derico.css §7). It styles the page AROUND a block,
+#: above a brand block. It styles the page AROUND a block,
 #: which the block's own sheet cannot reach — `scope-wrap.ts` rewrites `body`
 #: to `:where(:scope)`. Matched structurally rather than as a literal string,
 #: so reformatting the sheet does not break the guard while any OTHER
@@ -51,7 +51,7 @@ CHROME_TARGETS = {
     "#section-byline",
 }
 
-#: The second admitted shape (derico.css §11): a rule keyed on the wrapper
+#: The second admitted shape, the frame rules: a rule keyed on the wrapper
 #: Blicca stamps around a block — its type, its background slot, its place in
 #: a background run — that declares NOTHING but `--aurora-*` tokens. The
 #: wrapper belongs to the host and is read by the host's own padding rules,
@@ -77,8 +77,8 @@ FRAME_SELECTOR = re.compile(
 
 #: Tokens `derico.css` publishes FOR the brand-block sheets rather than using
 #: itself: Clara's private type tokens, re-exported under a `--derico-*` name
-#: so a block sheet speaks one vocabulary and a Clara rename breaks one file
-#: (hero ticket 06 §3). They read as declared-but-unused until a block sheet
+#: so a block sheet speaks one vocabulary and a Clara rename breaks one file.
+#: They read as declared-but-unused until a block sheet
 #: exists to consume them, which is why they are exempted below and checked
 #: by their own test instead.
 PUBLISHED_TO_BLOCK_SHEETS = {
@@ -102,7 +102,7 @@ _normalise = css_tools.normalise_selector
 
 
 def _is_chrome_suppression(selector):
-    """True for the §7 rule, and for nothing that merely resembles it."""
+    """True for the chrome-suppression rule, and for nothing that merely resembles it."""
     parts = [part.strip() for part in _normalise(selector).split(",")]
     if not parts or any(not part for part in parts):
         return False
@@ -157,7 +157,7 @@ def _effective_light():
 # --------------------------------------------------------------------------
 
 def _is_frame_rule(selector):
-    """True for a §11 rule: every comma-part a bare wrapper-stamp compound."""
+    """True for a frame rule: every comma-part a bare wrapper-stamp compound."""
     parts = [part.strip() for part in selector.split(",")]
     return all(FRAME_SELECTOR.match(part) for part in parts)
 
@@ -165,8 +165,8 @@ def _is_frame_rule(selector):
 def test_sheet_declares_only_root_level_selectors():
     """No component rules, no element selectors — the customization contract.
 
-    Two exceptions, and neither is a loophole: the §7 chrome-suppression rule
-    and the §11 frame rules both style the page AROUND a block, which the
+    Two exceptions, and neither is a loophole: the chrome-suppression rule
+    and the frame rules both style the page AROUND a block, which the
     block's own scope-wrapped sheet is structurally unable to reach. Every
     other rule is still a gap in Clara's token contract.
     """
@@ -207,7 +207,7 @@ def test_sheet_declares_nothing_but_custom_properties():
         if _is_frame_rule(_normalise(selector)):
             for declaration in declarations:
                 assert declaration.startswith("--aurora-"), (
-                    "a §11 frame rule may only set a Blicca token on the "
+                    "a frame rule may only set a Blicca token on the "
                     f"wrapper; {selector!r} declares {declaration!r}"
                 )
             continue
@@ -230,7 +230,7 @@ def test_the_chrome_rule_is_present_and_stays_narrow():
     assert ".aurora-blocks-view" in CHROME_PREFIX, (
         "the chrome rule must key on the public blocks view, which "
         "@@aurora-edit does not emit — the canvas is a working surface, where "
-        "the title and breadcrumbs orient the author (hero ticket 06 §1)"
+        "the title and breadcrumbs orient the author"
     )
     assert ":first-child" in CHROME_PREFIX, (
         "the chrome only goes when the hero OPENS the page; a hero further "
@@ -262,8 +262,8 @@ def test_every_override_targets_a_token_clara_defines():
     """A typo or a token Clara dropped would silently do nothing.
 
     Clara is no longer the only upstream this sheet writes to: Blicca
-    publishes the `--aurora-block-*` palette hooks (derico.css §8) and the
-    Promo block the `--promo-*` seam (§9), and those names are of course
+    publishes the `--aurora-block-*` palette hooks and the
+    Promo block the `--promo-*` seam, and those names are of course
     absent from Clara's bundle. Both are exempted here and checked against
     their own publisher's list — by `test_aurora_block_backgrounds.py` and
     `test_promo_seam.py` respectively — so the exemption widens which upstream
@@ -348,14 +348,7 @@ def test_published_aliases_reach_a_block_sheet():
 
 
 def test_no_other_sheet_names_a_clara_token():
-    """The reason the aliases exist (hero ticket 06 §3).
-
-    Every sheet but derico.css speaks `--derico-*` and `--plone-*` only. If one
-    reached for `--clara-*` directly, a Clara rename would break every sheet
-    instead of the one file that is meant to be the seam, and the seam would be
-    a seam in name only. Block sheets and the theme's own sheets alike: the
-    argument never mentioned how a sheet is built.
-    """
+    """Only derico.css may name `--clara-*`, so a Clara rename breaks one file, not every sheet."""
     leaked = {}
     for path in THEME_SHEETS + BLOCK_SHEETS:
         names = sorted(
@@ -425,7 +418,7 @@ def test_no_override_restates_claras_own_value():
 def test_token_is_deliberately_not_overridden(token):
     assert token not in _derico_light(), (
         f"{token} is overridden but was documented as inherited — "
-        "update derico.css's header comment and this list together"
+        "remove it from this list or drop the override"
     )
 
 
@@ -565,7 +558,7 @@ def test_primary_role_is_the_exact_brand_cyan():
 #: Clara's bridge covered them a derico page rendered 13 Plone-blue spots
 #: (measured live, 2026-07-28).
 #:
-#: The fix landed in Clara — `_clara-bridge.scss` §3 — not here, because every
+#: The fix landed in Clara — `_clara-bridge.scss` — not here, because every
 #: theme on Clara hit the same wall (its architecture doc, principle 1). This
 #: test is derico's stake in that fix: it fails if a rebuild of Clara ever
 #: drops one of them again.
@@ -614,7 +607,7 @@ def test_compile_time_blue_is_overridden_by_the_token_bridge(selector, prop):
     assert not KLARSICHT_BLUE.search(value), (
         f"{selector} {{{prop}: {value}}} is still Bootstrap's compiled Plone "
         "blue — Clara's bridge lost the rebind, and no token override can "
-        "reach it. Fix plonetheme.clara/theme/scss/_clara-bridge.scss §3."
+        "reach it. Fix plonetheme.clara/theme/scss/_clara-bridge.scss."
     )
     assert "var(--plone-" in value, (
         f"{selector} {{{prop}: {value}}} is a literal; it must read a token"

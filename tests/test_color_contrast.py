@@ -45,9 +45,9 @@ LIGHT_PAIRS = [
     ("--clara-ink-soft", "--clara-ground", 4.5),
     ("--clara-ink-soft", "--clara-surface", 4.5),
     ("--clara-ink-soft", "--clara-band", 4.5),
-    # secondary copy on the ACCENT SLOT (`--aurora-block-bg-accent`, derico.css
-    # §8) — the ground a tinted block stands on, and where the page's closing
-    # call to action now lives as a footer block
+    # secondary copy on the ACCENT SLOT (`--aurora-block-bg-accent`) — the
+    # ground a tinted block stands on, and where the page's closing call to
+    # action now lives as a footer block
     ("--clara-ink-soft", "--clara-band-soft", 4.5),
     # links. NOT tested against --clara-band: the strong cyan band takes ink
     # text and quiet ink links by design (DESIGN.md §5, "Quiet link"), and

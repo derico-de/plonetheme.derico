@@ -1,4 +1,4 @@
-/* E2E: the Derico Hero's published page against the design source (ticket 10).
+/* E2E: the Derico Hero's published page against the design source.
  *
  * Loads the mockup — `docs/design/derico.de/site/de/index.html`, served from
  * this repository over a throwaway origin — and the published Plone page side
@@ -9,18 +9,8 @@
  *
  * The page is browsed ANONYMOUSLY. The hero is `blockWidth: full` and the
  * breakout subtracts `--plone-toolbar-width`, so a logged-in measurement is
- * viewport-minus-toolbar (1220 at 1440 — ticket 07's table) and would compare
+ * viewport-minus-toolbar (1220 at 1440) and would compare
  * a narrower hero against a full-width mockup.
- *
- * Two things this file measures and reports but does NOT assert, because both
- * are open decisions rather than regressions:
- *
- * - the hero's body font falls through to Blicca's `.aurora-blocks-view`
- *   stack instead of the theme's own (ticket 17);
- * - the ring legend misses WCAG AA over the brightest part of the photograph
- *   — in the design source as much as here (ticket 18). The named exceptions
- *   below are exactly those cases; everything else must hold AA, so a NEW
- *   contrast failure still fails this test.
  *
  * Prerequisites: a running Plone with plonetheme.derico installed at profile
  * version 1001+ and plone.restapi. The editor is never loaded, so the mockup
@@ -63,23 +53,9 @@ const TEXT_PARTS = [
   '.ring-legend b',
 ];
 
-/* `.ring-markers li` is deliberately NOT here, and its removal is a finding
- * rather than a convenience. This probe exists to catch text sitting on a
- * PHOTOGRAPH; the marker numerals never do. They are ground-coloured glyphs on
- * an opaque copper chip with a 2px ground border, so their whole backdrop is
- * element-painted — and what the probe was actually reporting was the glyph's
- * antialiased edge overlapping that border, ground on ground, at a worst-pixel
- * ratio of 1.02. Measured: 2% of the glyph area before the hero took the
- * theme's body type (ticket 22) and 3% after, either side of a SPECKLE
- * threshold whose stated basis was that "nothing observed lands between 2% and
- * 11%". Nothing about the contrast changed; the glyph shape did.
- *
- * Raising SPECKLE would have bought this by blunting the guard for every
- * element that IS over the photograph. The chips belong to the value test
- * instead, where their real question — is ground legible on copper, and on the
- * is-now cyan — is answered exactly and at every width at once:
- * `test_the_marker_chips_carry_their_own_backdrop`. Their geometry is still
- * pinned here (28x28, nothing under 15px). */
+/* `.ring-markers li` is deliberately NOT here: the numerals sit on an opaque
+ * chip, never the photograph. Their contrast is pinned by
+ * `test_the_marker_chips_carry_their_own_backdrop`. */
 
 /* The share of a glyph's own pixels allowed to miss AA before the miss counts
  * as a contrast defect rather than as a speckle in a photograph. Measured:
@@ -87,18 +63,9 @@ const TEXT_PARTS = [
  * and nothing observed lands between 2% and 11%. */
 const SPECKLE = 0.02;
 
-/* Ticket 18's named exceptions are GONE, and their deletion is ticket 21's
- * acceptance criterion. They recorded three inherited failures — the is-now
- * row at every width, and the whole legend at 375 where it crossed the
- * brightest part of the photograph. All three were the same defect: text with
- * nothing but the photograph behind it. The legend card and the copy scrim
- * give every glyph a ground the sheet declares, so there is no longer a case
- * to except, and this file's job becomes proving that every glyph actually
- * SITS on the ground the value test proved strong enough.
- *
- * That is why the two tests are not redundant. The value test cannot see a
- * layout change that moves text off its backdrop; this one cannot see a colour
- * that was never strong enough. */
+/* No contrast exceptions: the legend card and copy scrim give every glyph a
+ * declared ground. This proves glyphs SIT on it; the value test proves the
+ * ground is strong enough. */
 
 const failures = [];
 function check(condition, message) {
@@ -206,15 +173,9 @@ const near = (a, b, tolerance = 1) =>
         `the ring markers stay 28px (${plone.parts.marker.width}x${plone.parts.marker.height})`,
       );
 
-      /* -- the body type, now asserted: ticket 17/22 -------------------- */
-      /* Ticket 10 found this by measuring the legend 291 tall against the
-       * design's 330 and working backwards. Blicca states a Tailwind sans
-       * stack on `.aurora-blocks-view`, so without the hero's own declaration
-       * the published page renders in the browser's generic sans while the
-       * canvas — which gets its stack from Aurora's scoped preflight — does
-       * not. Hence both halves: family AND leading, and the same pair asserted
-       * in the canvas by `hero-editor.e2e.js`, since parity is the whole
-       * justification for putting this in the block sheet. */
+      /* -- the body type ---------------------------------------------- */
+      /* Blicca's `.aurora-blocks-view` Tailwind stack would win without the
+       * hero's own declaration; `hero-editor.e2e.js` asserts the same pair. */
       const bodyType = await page.evaluate(() => {
         const style = getComputedStyle(document.querySelector('.derico-hero'));
         const size = parseFloat(style.fontSize);
@@ -269,14 +230,10 @@ const near = (a, b, tolerance = 1) =>
         }
       }
 
-      /* -- the ring halo: ticket 20/23 ----------------------------------- */
-      /* The value test proves the halo's colour is strong enough; this proves
-       * the halo is WHERE the stroke is. Pairing, order and surround, read off
-       * computed styles rather than pixels — a photograph cannot tell a halo
-       * from a dark leaf behind it. `vector-effect` is asserted as a
-       * DECLARATION (ticket 15's posture): it is what keeps the 2px a side
-       * constant at 375 as well as 1440, and reading it back is the only way
-       * to see it without measuring a rendered stroke. */
+      /* -- the ring halo ------------------------------------------------ */
+      /* Pairing, order and surround, read off computed styles: a photograph
+       * can't tell a halo from a dark leaf. `vector-effect` keeps the 2px
+       * constant across widths. */
       const halo = await page.evaluate(() => {
         const disc = document.querySelector('.derico-hero .rings-disc');
         const group = (name) => disc.querySelector(`.${name}`);

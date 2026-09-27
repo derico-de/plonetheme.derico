@@ -1,9 +1,9 @@
-"""derico's values for Blicca's reading rhythm and type (derico.css §10, §11).
+"""derico's values for Blicca's reading rhythm and type.
 
 The third publisher's contract this sheet fills, and the one with the widest
 reach: Blicca's ``blocks_view.css`` dresses every block on the published page
 AND the editing canvas from one scale of ``--aurora-*`` tokens. Like the
-palette (§8) and the promo seam (§9) it fails silently in both directions — a
+palette and the promo seam it fails silently in both directions — a
 token Blicca renamed leaves derico's value read by nobody, a name derico
 misspells sets nothing — so these tests hold the two sheets to each other.
 
@@ -67,7 +67,7 @@ def _derico_root():
 
 
 def _frame_rules():
-    """The §11 rules: (selector, {token: value}) for every wrapper-scoped rule.
+    """The frame rules: (selector, {token: value}) for every wrapper-scoped rule.
 
     Keyed on `.block`, not on `.block-`: a rule may name the background slot
     alone (`.block[class*="has--backgroundColor--"]`), which is the frame that
@@ -112,7 +112,7 @@ def test_blicca_declares_its_scale_at_zero_specificity():
 
     A `body { }` declaration in Blicca would beat derico's `:root` on every
     element below body — which is every block — no matter the order the two
-    sheets load in. §10 rests on Blicca's `:where(:root)`.
+    sheets load in. The `--aurora-*` aliases rest on Blicca's `:where(:root)`.
     """
     declared_on = {
         css_tools.normalise_selector(selector)
@@ -121,7 +121,7 @@ def test_blicca_declares_its_scale_at_zero_specificity():
     }
     assert ":where(:root)" in declared_on, (
         "blocks_view.css no longer declares its scale on `:where(:root)`; "
-        f"found it on {sorted(declared_on)}. derico.css §10 can no longer win."
+        f"found it on {sorted(declared_on)}. derico.css's `--aurora-*` aliases can no longer win."
     )
 
 
@@ -142,7 +142,7 @@ def test_the_run_markers_the_frame_rules_key_on_are_blicca_s():
 
 #: token -> the step it must alias verbatim. The face and leadings are
 #: Clara's; the heading steps are the design's prose and component headings
-#: (derico.css §10 says why not the section step); the frames are §5's
+#: (not the section step); the frames are the design's
 #: section rhythm; the sticky offset is the mockup's `.detail-aside` pin
 #: (`--space-l`), read by Blicca at the point of use only.
 EXPECTED_ALIASES = {
@@ -156,12 +156,12 @@ EXPECTED_ALIASES = {
     "--aurora-space-bleed": "--plone-space-xl",
     "--aurora-sticky-offset": "--plone-space-l",
     # the gutter between two grid columns' text boxes: the design's article
-    # gap, the one rhythm step it states outside its space scale (§5)
+    # gap, the one rhythm step it states outside its space scale
     "--aurora-column-gutter": "--derico-article-gap",
-    # the text styles (derico.css §10, second half): the display face, the
+    # the text styles: the display face, the
     # lede step and the three inks the mockup sets a kicker, a lede, a byline,
     # a term and a definition in. Copper is reached as Clara's amber-text,
-    # which §2 re-points, so the alias stays a Clara name.
+    # which derico.css re-points, so the alias stays a Clara name.
     "--aurora-display-font-family": "--clara-font-display",
     "--aurora-lede-size": "--clara-text-lede",
     "--aurora-text-accent-color": "--clara-amber-text",
@@ -174,7 +174,7 @@ EXPECTED_ALIASES = {
     "--aurora-quote-statement-size": "--clara-text-title",
     "--aurora-quote-display-size": "--clara-text-heading",
     # the title block's air and its row with the description block (Blicca
-    # ADR 0017): the content header's own values, stated once in §5
+    # ADR 0017): the content header's own values, stated once in derico.css
     "--aurora-title-size": "--clara-text-heading",
     "--aurora-title-space-above": "--plone-space-xl",
     "--aurora-title-space-below": "--plone-space-m",
@@ -183,7 +183,7 @@ EXPECTED_ALIASES = {
     "--aurora-title-row-align": "--plone-contentheader-align",
 }
 
-#: token -> the literal it states. The one place §10 is not an alias: Blicca's
+#: token -> the literal it states. The one place the rhythm is not an alias: Blicca's
 #: 24px view gutter sets every block 24px inside Clara's content header, and
 #: the design puts a section's text on the h1's own edge. "None" is not a
 #: step, so no token can be aliased for it.
@@ -229,7 +229,7 @@ def test_the_root_sets_no_rhythm_token_beyond_the_expected_ones():
 
 @needs_clara
 def test_every_alias_points_at_a_token_clara_or_the_scale_defines():
-    """A Clara name Clara dropped, or a derico name §5 never states, is a
+    """A Clara name Clara dropped, or a derico name derico.css never states, is a
     value nothing resolves."""
     clara = css_tools.declarations(CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS)
     own = {name for name in _derico_root() if name.startswith("--derico-")}
@@ -240,14 +240,14 @@ def test_every_alias_points_at_a_token_clara_or_the_scale_defines():
 
 
 # --------------------------------------------------------------------------
-# The frames (§11): the hero flush, the band heading, the promo's section air
+# The frames: the hero flush, the band heading, the promo's section air
 # --------------------------------------------------------------------------
 
 def _frame(selector_fragment):
     for selector, tokens in _frame_rules():
         if selector_fragment in selector:
             return tokens
-    pytest.fail(f"no §11 rule matches {selector_fragment!r}")
+    pytest.fail(f"no frame rule matches {selector_fragment!r}")
 
 
 def test_the_hero_wrapper_carries_no_bleed_frame():
@@ -279,8 +279,8 @@ def test_a_background_run_opens_and_closes_on_the_section_step():
 
     Blicca pads every block in a run from the same frame at both ends, which
     makes the band's outer air and the gaps between its blocks one number.
-    The frame moves to §5's section step and the run's inner gaps are pinned
-    back to the §10 reading step, so the band opens and closes on 2xl and
+    The frame moves to the section step and the run's inner gaps are pinned
+    back to the reading step, so the band opens and closes on 2xl and
     still breathes on l inside.
     """
     tokens = _frame('.block[class*="has--backgroundColor--"]')
@@ -356,7 +356,7 @@ def test_an_unbanded_promo_gets_the_same_step_from_the_frame_token():
     is in none of those lists.
     """
     bare = [tokens for selector, tokens in _frame_rules() if selector == ".block-promo"]
-    assert bare, "no §11 rule keys on a bare `.block-promo`"
+    assert bare, "no frame rule keys on a bare `.block-promo`"
     assert bare == [{"--aurora-space-frame": "var(--plone-space-xl)"}], (
         "the bare .block-promo rule must carry the frame and nothing else"
     )

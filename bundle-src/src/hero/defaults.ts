@@ -1,21 +1,9 @@
 /**
  * What a freshly inserted hero already says.
  *
- * Ticket 02 specified an insert-time default of empty strings plus four empty
- * legend pairs. Nothing writes it: Aurora's slash menu creates a ploneBlock
- * node carrying `@type` and nothing else (`slash-menu.tsx`,
- * `insertSomersaultNativeBlock`), and `blocksConfig` has no initial-data hook
- * to hang one on. So the seeding happens in `HeroEdit` instead — the first
- * place the block itself gets to see its own node.
- *
- * Given that it has to be written by hand anyway, it carries the mockup's own
- * copy rather than eight empty strings. Two things follow from that, and both
- * are the point:
- *
- * - the author fills a hero in by **editing** eight fields rather than
- *   inventing them, and
- * - the canvas shows which field is which the moment the block lands, without
- *   the author having to type into each one to find out.
+ * Aurora's slash menu inserts a node with only `@type` and `blocksConfig` has
+ * no initial-data hook, so `HeroEdit` seeds it with the mockup's copy: the
+ * author edits fields instead of inventing them.
  *
  * This is text, not template: every word here is stored on the block and
  * every word is editable. It is a starting draft, not a fallback — the
@@ -85,7 +73,7 @@ export function unseeded(data: HeroData): boolean {
  * The block data a fresh insert should carry.
  *
  * A merge, not a replacement: whatever the host already put on the node —
- * `@type`, the materialised `blockWidth` (ticket 11), anything a future
+ * `@type`, the materialised `blockWidth`, anything a future
  * plugin adds — survives untouched.
  */
 export function seeded(data: HeroData): HeroData {

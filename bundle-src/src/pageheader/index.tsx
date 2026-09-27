@@ -5,9 +5,8 @@
  * registration record, before `mount()` (contract §1.3). It MUST return the
  * config object — the loader throws otherwise.
  *
- * Its own bundle and its own record, like the hero: `loadBlockAddons` calls
- * `install(config)` per RECORD with no dedupe, so a shared bundle would
- * quietly kill the per-block `enabled` kill switch (hero ticket 04 §1).
+ * Its own bundle, like the hero: a shared bundle would defeat the per-record
+ * `enabled` kill switch.
  */
 import './pageheader.css';
 
@@ -33,11 +32,9 @@ export default function installDericoPageHeader<T extends BlocksConfig>(config: 
     // place of the tree's title and description nodes, and a tree that
     // holds it drops the pair — the page would open twice otherwise.
     documentHeader: true,
-    // The layout rung: the page's title stands on the layout edge (derico
-    // grid alignment, derico.css §10), and so does this header. Aurora
-    // MATERIALISES the resolved width onto the node at insert, so the server
-    // reads an explicit `"layout"`. It works only while `blockSchema`
-    // declares no `blockWidth` — a schema style field wins (contract §1.4).
+    // The page title stands on the layout edge. Aurora materialises this onto
+    // the node; works only while `blockSchema` declares no `blockWidth`
+    // (contract §1.4).
     defaultBlockWidth: 'layout',
   };
   return config;

@@ -494,7 +494,7 @@ a:hover { color: var(--copper-text); }
 .hero-media,
 .hero-wash { position: absolute; z-index: -2; inset: 0; }
 .hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-/* 21 §3 — the wash is cut away from the copy so the scrim is the only layer
+/* The wash is cut away from the copy so the scrim is the only layer
    over it; stacking 0.72 under 0.926 composites to 0.98, a solid copy panel.
    Single column, the copy occupies the top 4.1% to at most 45.5% of the hero. */
 .hero-wash {
@@ -602,7 +602,7 @@ a:hover { color: var(--copper-text); }
 .rings-disc .ring-future { stroke-dasharray: 5 8; }
 .home-hero .rings-disc circle { stroke: var(--hero-ring); }
 .home-hero .rings-disc .ring-now { stroke: var(--brand); }
-/* Ticket 20/23 — the ring halo, identical to the block's own sheet. Opaque
+/* The ring halo, identical to the block's own sheet. Opaque
    ground beneath each stroke, 2px per side; no ink passes 3:1 over an arbitrary
    photograph and this image already fails for 10.3 percent of the rings band. */
 .home-hero .rings-disc .ring-halo circle { stroke: var(--hero-ground); stroke-width: 6.5; }
@@ -622,9 +622,9 @@ a:hover { color: var(--copper-text); }
 .ring-legend dd { grid-column: 2; margin: -0.35rem 0 0; color: var(--ink-soft); font-size: var(--text-label); }
 .ring-legend b { color: var(--copper-text); }
 .ring-legend .is-now dt { color: var(--copper-text); }
-/* 18 §2 — the legend card. Opaque and forced: the is-now cyan is unreachable
+/* The legend card. Opaque and forced: the is-now cyan is unreachable
    translucently. No colour changes; the rings disc keeps floating and carries
-   its own halo instead (ticket 20). */
+   its own halo instead. */
 .home-hero .ring-legend {
   padding: var(--space-m);
   /* Square: with the ground line under it and the ground fading out to the

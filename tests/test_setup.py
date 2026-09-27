@@ -39,8 +39,8 @@ class TestSetup:
 
         A second static directory, `++plone++` rather than `++resource++`,
         because the contract's cache-buster names `++plone++` and one
-        directory under both directives would give every file two public URLs
-        (hero ticket 04 §3). Registration is ZCML, so nothing else in the
+        directory under both directives would give every file two public URLs.
+        Registration is ZCML, so nothing else in the
         install would notice it missing — the artifacts would simply 404.
         """
         from plone.resource.interfaces import IResourceDirectory

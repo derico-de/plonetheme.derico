@@ -158,7 +158,7 @@ Clara is not the only upstream the token layer writes to. Blicca's
 `backgroundColor` style field lets an author put any Aurora block on a
 **named** palette slot — never on a colour — and reads one
 `--aurora-block-*` custom property per slot, with a generic slate baked in
-as the fallback. `derico.css` §8 fills all three:
+as the fallback. `derico.css` fills all three:
 
 | slot | value | measured |
 |---|---|---|
@@ -262,7 +262,7 @@ bullets, wrapping, `xs`/`m` gaps), and every footer link is a 2.75rem touch
 target in the same quiet ink, hovering copper. That is all the sheet says,
 on purpose. The closing call to action is a Promo on a band and keeps the
 Promo's own type; a banded paragraph keeps its band's foreground; the band's
-vertical frame is the column group's, which derico.css §10 already sets to
+vertical frame is the column group's, which derico.css already sets to
 the theme's `l` step — the token the mockup pads `.site-footer` with.
 
 What the sheet does not translate is the mockup's `.footer-grid`
@@ -332,7 +332,7 @@ that forces a downstream override is a bug in the contract).
    checked/indeterminate/range-thumb properties all painted `#0083be` — 13 blue
    spots measured on a live derico page. Four are plain properties with no
    `--bs-*` knob, so no token override could have reached them. Fixed in
-   `_clara-bridge.scss` §3; §5 of `tests/test_override_minimality.py` keeps
+   `_clara-bridge.scss`; `tests/test_override_minimality.py` keeps
    derico's stake in it. **Residual, out of reach by design:** `--bs-*-rgb` and
    the `.text-primary` / `.link-primary` / `.table-primary` utilities that read
    them cannot be expressed as a var. Clara's contract markup uses none of them.

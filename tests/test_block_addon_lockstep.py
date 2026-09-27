@@ -1,22 +1,7 @@
-"""Lockstep with `plone.blicca.auroraeditor` (hero ticket 04 §7/§8/§9).
+"""Lockstep with `plone.blicca.auroraeditor`: vendored scope-wrap and `block_api` floor.
 
-Two things in this package are copies of, or claims about, another package.
-Neither fails loudly on its own when it drifts:
-
-1. `bundle-src/build-plugins/scope-wrap.ts` is **vendored** — copied verbatim
-   so this repo builds without reaching across a checkout (§7). A vendored file
-   is a fork the moment upstream changes and nobody notices.
-2. The block record declares a `block_api` **floor** (§8). Declaring more than
-   the host provides is a §2.4 mismatch, and a mismatch is a fail-soft skip:
-   the block silently vanishes from the slash menu rather than erroring.
-
-Both skip when `plone.blicca.auroraeditor` cannot be found. That is a real
-weakness — §9: *"a guard that always skips reads green while protecting
-nothing, which is worse than no guard"* — which is why CI checks the package
-out for the pytest job. The package is private, so that step needs the
-`BLICCA_TOKEN` secret; until it is set these guards skip on CI.
+Both skip when the Blicca checkout is missing; CI checks it out (needs `BLICCA_TOKEN`).
 """
-
 import json
 import os
 import re
@@ -71,13 +56,7 @@ def _below_sentinel(text):
 
 @needs_blicca
 def test_the_vendored_scope_wrap_still_matches_upstream():
-    """§7 bought independence, not a fork.
-
-    The *code* is upstream's; only the *invocation* differs (this build passes
-    three scope roots where the wrapper passes two, because a block's sheet has
-    to reach the published page as well). So everything below the sentinel must
-    still be byte-identical.
-    """
+    """Only the invocation differs; the code below the sentinel must be byte-identical."""
     upstream = BLICCA / "wrapper" / "build-plugins" / "scope-wrap.ts"
     assert upstream.is_file(), f"upstream plugin is missing: {upstream}"
 
@@ -94,13 +73,7 @@ def test_the_vendored_scope_wrap_still_matches_upstream():
 
 @needs_blicca
 def test_the_declared_block_api_floor_is_one_the_host_provides():
-    """§8: declare the floor, guard the ceiling.
-
-    The record declares the minimum the block actually needs, not the host's
-    current version — declaring the host's would let a later bump strand the
-    block. Either way the declared value must not EXCEED what the host offers,
-    because a mismatch is a fail-soft skip: the block just stops appearing.
-    """
+    """Declare the floor, not the host's version; exceeding it makes the block vanish."""
     stamp = BLICCA / "src" / "plone" / "blicca" / "auroraeditor" / "static" / "block-api.json"
     assert stamp.is_file(), f"the host's block-api stamp is missing: {stamp}"
     host = json.loads(stamp.read_text())["blockApi"]
@@ -109,7 +82,7 @@ def test_the_declared_block_api_floor_is_one_the_host_provides():
     if declared is None:
         pytest.skip(
             "no block record declares a block_api yet — the record lands with "
-            "the server half (hero ticket 09)"
+            "the server half"
         )
 
     assert _version(declared) <= _version(host), (

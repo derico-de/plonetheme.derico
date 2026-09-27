@@ -1,22 +1,6 @@
-"""The Derico Hero's public renderer (hero ticket 09).
+"""The Derico Hero's public renderer, the server twin of the editor's `degradation.test.tsx`.
 
-Two implementations render this block: `bundle-src/src/hero/` draws the
-editing canvas, `browser/hero.py` draws the published page. They share one
-scope-wrapped stylesheet and one degradation table, and neither owns both — so
-the guard against them drifting apart has to exist on both sides. The editor's
-copy is `degradation.test.tsx`; this is the server's, written against the same
-rules and, where it can be, against the same cases.
-
-What is deliberately NOT asserted here:
-
-- **Anything about how the block looks.** `test_hero_sheet.py` pins the
-  stylesheet, and the pixels were settled by measurement in ticket 07.
-- **Anything about who may insert a hero.** The gate is guidance, not
-  security (ticket 03), and this renderer is explicitly indifferent to it.
-- **The block wrapper's full-bleed breakout.** It is Blicca's, stamped by
-  `plate.py` from the `blockWidth` the editor materialises onto the node
-  (ticket 11). The one thing worth checking here is the negative: that this
-  view adds no breakout of its own.
+Looks, the insert gate and the full-bleed breakout are deliberately not asserted here.
 """
 
 import pytest
@@ -222,12 +206,7 @@ class TestLinks(HeroTestCase):
 
 
 class TestReferenceShapes(HeroTestCase):
-    """The widget writes a one-element list of `{"@id": …}` (ticket 02).
-
-    A value that never went through the widget may be a bare dict or a plain
-    string. Neither is worth throwing over — a hero authored through the API
-    or carried in by a migration still has to render.
-    """
+    """The widget writes `[{"@id": …}]`; a bare dict or string from the API must still render."""
 
     def test_the_widget_shape_is_read(self):
         hero = self.hero({"cta_label": "K", "cta_href": [{"@id": "/plone/a"}]})
@@ -295,12 +274,7 @@ class TestLegend(HeroTestCase):
 
 
 class TestPhotograph(HeroTestCase):
-    """Two uploads, one `<picture>`, art-directed by splicing (ticket 05 §6).
-
-    Plone's named scales give variants of ONE crop, never art direction, so
-    the wide and the portrait framing stay two uploads. Two separate
-    `<picture>` elements toggled by CSS would download both.
-    """
+    """Two uploads, one `<picture>`, art-directed by splicing; two pictures would download both."""
 
     def _crops(self, wide=None, portrait=None):
         node = {}
@@ -332,14 +306,14 @@ class TestPhotograph(HeroTestCase):
         assert picture.img["alt"] == ""
 
     def test_the_photograph_is_never_lazy(self):
-        """It is the page's LCP image (ticket 05 §8)."""
+        """It is the page's LCP image."""
         img = self.hero(self._crops(wide=self.image("wide"))).find("picture").img
         assert img.get("loading") is None
         assert img["fetchpriority"] == "high"
         assert img["decoding"] == "async"
 
     def test_the_resolution_ladder_includes_the_new_top_rung(self):
-        """`enormous 2600` is what ticket 05 added the scale for."""
+        """`enormous 2600` is the scale this package adds for the hero."""
         source = original_sources(self.hero(self._crops(wide=self.image("wide"))))[0]
         assert "/@@images/image/enormous 2600w" in source["srcset"]
         assert "/@@images/image/huge 1600w" in source["srcset"]
@@ -481,15 +455,11 @@ class TestMarkupParity(HeroTestCase):
         )
 
     def test_the_hero_root_is_not_auroras_wrapper_stamp(self):
-        """Ticket 07 measured why: the wrapper is a different box per surface.
-
-        Painting the hero on `.block-derico-hero` gives the canvas a hero
-        whose `overflow: hidden` clips the very breakout it is meant to have.
-        """
+        """The wrapper is a different box per surface; painting on it clips the canvas breakout."""
         assert self.soup(self.FULL).find(class_="block-derico-hero") is None
 
     def test_the_shell_is_folded_in_rather_than_emitted(self):
-        """06 §7: the mockup's `.shell` formula became a rule, not an element."""
+        """The mockup's `.shell` formula became a rule, not an element."""
         assert self.soup(self.FULL).find(class_="shell") is None
 
     def test_nothing_stamps_a_language(self):
@@ -501,14 +471,7 @@ class TestMarkupParity(HeroTestCase):
         assert not self.soup(self.FULL).find(attrs={"lang": True})
 
     def test_the_view_emits_no_breakout_of_its_own(self):
-        """Ticket 11: the wrapper carries the breakout, and twice is a bug.
-
-        Blicca stamps `has--block-width--full` and the `--block-width` custom
-        property on the block WRAPPER, from the width the editor materialises
-        onto the node. A hero that also sized itself would be a second,
-        competing breakout — and one that differs between the two surfaces,
-        since the wrapper is a different box on each.
-        """
+        """Blicca's wrapper carries the breakout; a second one in the hero is a bug."""
         hero = self.hero(self.FULL)
         assert "block-width" not in self.render(self.FULL)
         assert hero.get("style") is None
@@ -524,15 +487,7 @@ class TestMarkupParity(HeroTestCase):
         assert disc["aria-label"]
 
     def test_every_ring_stroke_is_paired_with_a_halo_beneath_it(self):
-        """Ticket 20/23, on the server half.
-
-        The halo is only a contrast guarantee if it is where the stroke is. The
-        geometry is stated twice in this template and twice again in
-        `Rings.tsx`, and this is what makes that duplication safe: a halo group
-        that drifted to seven circles, or that moved after the ink group and so
-        paints over it, is a silent failure — the disc still renders, just
-        without the guarantee.
-        """
+        """The halo group must mirror the ink group and paint beneath it."""
         disc = self.soup(self.FULL).find("svg", class_="rings-disc")
         groups = disc.find_all("g", recursive=False)
         assert [group.get("class") for group in groups] == [
@@ -581,20 +536,7 @@ class TestDispatch(HeroTestCase):
 
 
 class TestDerivedDataIsSuppliedByStockRestapi(HeroTestCase):
-    """Contract §5.3, satisfied without an add-on transformer of our own.
-
-    §5.3 requires the derived data the EDITOR component expects at render
-    time to be injected by an `IBlockFieldSerializationTransformer`, so both
-    surfaces see identical data, and stripped again by a paired
-    deserialization transformer so it is never persisted.
-
-    Ticket 01 found that stock `plone.restapi` already does exactly this for
-    a nested `{"@id": …}`, regardless of the field's name — which is why this
-    package registers no transformer. That is a claim about somebody else's
-    code, so it is asserted here rather than trusted: the day it stops being
-    true, the hero silently loses its resolution ladder and serves one
-    full-size original to every visitor.
-    """
+    """Contract §5.3 derived data comes from stock `plone.restapi`; no transformer here."""
 
     def _node(self, item):
         return {"@type": BLOCK_TYPE, "image_wide": [{"@id": f"../resolveuid/{item.UID()}"}]}

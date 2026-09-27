@@ -1,6 +1,6 @@
 /**
  * The host's promised module surface, and the guard that keeps it out of the
- * bundle (block add-on contract §2.1, hero ticket 04 §6).
+ * bundle (block add-on contract §2.1).
  *
  * Every specifier below is served to the browser as an import-map facade by
  * `@@aurora-edit`, so the bundle must import it rather than contain it. A

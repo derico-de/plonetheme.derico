@@ -1,14 +1,9 @@
 /**
- * The registration contract (hero ticket 08, contract §1.3/§1.4).
+ * The registration contract (contract §1.3/§1.4). The loader throws if
+ * `install()` doesn't return the config, costing the whole editor.
  *
- * `install()` runs once per registration record, before `mount()`, and the
- * loader THROWS if it does not hand the config object back (`main.tsx:96`) —
- * a failure that costs the whole editor, not just this block. None of it is
- * exercised by rendering a hero, so it is pinned here.
- *
- * The `defaultBlockWidth` / `blockSchema` interlock is the subtle one: the two
- * are a single decision expressed in two files, and either one drifting alone
- * silently returns the width control to the author (ticket 11).
+ * `defaultBlockWidth` and `blockSchema` are one decision in two files; either
+ * drifting alone returns the width control to the author.
  */
 import { describe, expect, test } from 'vitest';
 
@@ -97,9 +92,7 @@ describe('install()', () => {
       'derico_ring_legend',
       'derico_textarea',
     ]);
-    // `registerWidget` is a global, last-wins map shared with every other
-    // add-on: claiming `textarea` would rewrite it for blocks this theme
-    // knows nothing about (ticket 02).
+    // `registerWidget` is a global, last-wins map shared with every add-on.
     for (const generic of ['textarea', 'legend', 'reference']) {
       expect(definition).not.toHaveProperty(generic);
     }

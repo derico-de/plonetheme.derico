@@ -5,11 +5,8 @@
  * registration record, before `mount()` (contract §1.3). It MUST return the
  * config object — the loader throws otherwise.
  *
- * One record, one bundle, one `install()`: a shared bundle registering every
- * derico block would quietly kill the per-block `enabled` kill switch, since
- * `loadBlockAddons` calls `install(config)` per RECORD with no dedupe and the
- * first record's install would re-register the block a second record had
- * disabled (ticket 04 §1).
+ * One bundle per block: a shared bundle would defeat the per-record
+ * `enabled` kill switch.
  */
 import './hero.css';
 
@@ -36,9 +33,7 @@ export default function installDericoHero<T extends BlocksConfig>(
   config: T,
 ): T {
   const registry = config as unknown as Partial<WidgetRegistry>;
-  // Namespaced keys, never the generic `textarea` / `legend` / `reference`:
-  // this map is global and last-wins, and a theme must not redefine
-  // vocabulary for blocks it knows nothing about (ticket 02).
+  // Namespaced keys: this map is global and last-wins.
   registry.registerWidget?.({
     key: 'widget',
     definition: {
@@ -55,13 +50,8 @@ export default function installDericoHero<T extends BlocksConfig>(
     edit: HeroEdit,
     view: HeroView,
     blockSchema: HeroSchema,
-    // The whole of the full-bleed wiring (ticket 11, contract §1.4). Aurora
-    // resolves the width as `styleFields.blockWidth ?? defaultBlockWidth` and
-    // MATERIALISES the result onto the node at insert, so the server reads an
-    // explicit `"full"` and needs no per-@type default of its own. It works
-    // only while `blockSchema` declares no `blockWidth` — a schema style
-    // field wins, and declaring both hands the author back the control this
-    // block exists to withhold.
+    // The whole full-bleed wiring (contract §1.4); Aurora materialises it onto
+    // the node. Works only while `blockSchema` declares no `blockWidth`.
     defaultBlockWidth: 'full',
   };
 

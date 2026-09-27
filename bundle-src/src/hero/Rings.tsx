@@ -7,14 +7,10 @@
  * derived from position, and the `is-now` highlight is the last ring by
  * construction.
  *
- * The legend is HTML *beneath* the SVG precisely so it does not scale with
- * the graphic: ticket 07 measured captions at 15px on both surfaces and at
- * both 1440 and 375, which is Clara's label floor exactly. Fold the legend
- * into the SVG and that floor goes.
+ * The legend is HTML beneath the SVG so its captions don't scale with the
+ * graphic and stay at Clara's 15px label floor.
  *
- * A half-filled entry keeps its numeral and emits only the half that has
- * text; an entirely empty entry is a numeral and a rule (ticket 02's
- * degradation table).
+ * An empty entry still renders its numeral and rule.
  */
 import { LEGEND_NOW_INDEX } from './data';
 
@@ -30,13 +26,8 @@ export function Rings({ entries }: { entries: LegendEntries }) {
           role="img"
           aria-label="Wachstumsringe einer Anwendung"
         >
-          {/* Ticket 20/23. Two groups, halo first so the ink paints on top —
-              the marker chips' own treatment (an opaque ground behind the
-              colour) applied to strokes, because no ink passes 3:1 over an
-              arbitrary photograph. Same cx/cy/r and classes in both; the e2e
-              pins the pairing, which is what pays for stating it twice.
-              `nth-child` counts within a parent, so the grow animation is
-              untouched: both runs stay 1..8 and each pair shares one delay. */}
+          {/* Halo group first so the ink paints on top: no ink passes 3:1
+              over an arbitrary photograph. Keep both groups in sync. */}
           <g transform="translate(105 0)" className="ring-halo">
             <circle cx="150" cy="235" r="40" className="ring-thin" />
             <circle cx="153" cy="232" r="80" />

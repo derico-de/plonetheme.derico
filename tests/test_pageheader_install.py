@@ -63,7 +63,7 @@ class TestTheBlockRecord(InstallTestCase):
         assert record("css") == f"{STATIC_BASE}/blocks.css"
 
     def test_the_stylesheet_is_the_one_the_hero_shares(self):
-        """Lib mode emits ONE sheet per build (ticket 04 §5)."""
+        """Lib mode emits ONE sheet per build."""
         hero = "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.hero"
         assert record("css") == api.portal.get_registry_record(f"{hero}.css")
 

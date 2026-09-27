@@ -4,30 +4,22 @@
                      cta view/cta;
                      quiet view/quiet_link;
                      entries view/legend">
-  <!--! `.derico-hero`, never Aurora's `.block-derico-hero` wrapper stamp.
-       Measured (ticket 07): the wrapper is the full-bleed box on this page
-       but only the column box in the editing canvas, so painting the hero on
-       it clips the breakout in the editor. Both halves emit this same root,
-       and both then measure 1220 @220 at 1440 to the pixel. The wrapper stamp
-       stays free for derico.css §7's chrome-suppression rule, which wants it.
+  <!--! `.derico-hero`, never Aurora's `.block-derico-hero` wrapper stamp:
+       the wrapper is only the column box in the editing canvas.
 
        The element tree below matches Hero.tsx / HeroMedia.tsx / Rings.tsx
        element for element: one scope-wrapped blocks.css styles both surfaces,
        so a class renamed here is a rule that silently stops matching on the
        published page only.
 
-       Indentation is safe HERE and only here. The Plate editable computes
-       `white-space: pre-wrap`, which turns every newline between two elements
-       into a real line box — it inflated the rings figure by 76% when ticket
-       07 measured it — but the sheet states `white-space: normal` on
-       `.derico-hero`, and nothing in this template lands inside the
-       editable. -->
+       Indentation is safe here: the sheet resets the Plate editable's
+       `white-space: pre-wrap` on `.derico-hero`. -->
   <tal:media tal:condition="media">
     <tal:picture tal:condition="media/picture"
                  tal:replace="structure media/picture" />
     <!--! The no-`<picture>` fallback: an SVG upload, or an image with no
-         scales. Same element and same class as the real thing, so ticket 06's
-         `object-fit: cover` frames it identically. -->
+         scales. Same element and class, so `object-fit: cover` frames it
+         identically. -->
     <picture class="hero-media"
              aria-hidden="true"
              tal:condition="not:media/picture">
@@ -46,20 +38,15 @@
        aria-hidden="true"
        tal:condition="view/has_media"></div>
 
-  <!--! No `.shell` element: 06 §7 folded the mockup's shell formula into
-       `.home-hero__grid` over Clara's measure token, which is bit-identical
-       to the mockup's own site-max. (An ASCII double hyphen cannot appear in
-       an HTML comment, so custom properties go unnamed in this file.) -->
+  <!--! No `.shell` element: `.home-hero__grid` carries the shell formula.
+       (No double hyphens in HTML comments, so custom properties go unnamed.) -->
   <div class="home-hero__grid">
     <div>
       <p class="kicker"
          tal:condition="view/kicker"
          tal:content="view/kicker">kicker</p>
-      <!--! No `lang` attribute anywhere in this template, and no `lang` field
-           in the schema (ticket 15): `hyphens: auto` needs the page language,
-           which main_template already sets from `portal_state.language()`,
-           and a stamped `lang` here would override it with the wrong one on a
-           translated page. -->
+      <!--! No `lang` here: `hyphens: auto` needs the page language, which
+           main_template already sets. -->
       <h1 tal:condition="view/headline"
           tal:content="view/headline">headline</h1>
       <p class="lede"
@@ -85,27 +72,16 @@
          for them, no author-facing control, and the `is-now` highlight is the
          last ring by construction.
 
-         The legend is HTML beneath the SVG precisely so it does not scale
-         with the graphic — ticket 07 measured its captions at 15px on both
-         surfaces at both 1440 and 375, which is Clara's label floor exactly.
-         Fold the legend into the SVG and that floor goes. -->
+         The legend is HTML beneath the SVG so its captions don't scale with
+         the graphic and stay at Clara's 15px label floor. -->
     <figure class="rings-figure">
       <div class="rings-stage">
         <svg class="rings-disc"
              viewBox="0 0 680 470"
              role="img"
              aria-label="Wachstumsringe einer Anwendung">
-          <!--! Ticket 20/23. Two groups, halo first so the ink paints on top.
-               The halo is the marker chips' own treatment applied to strokes:
-               an opaque ground behind the colour, because no ink passes 3:1
-               over an arbitrary photograph and the shipped forest already
-               fails for 10.3 percent of the rings band. Same cx/cy/r and the
-               same per-circle classes in both groups; the e2e pins the pairing,
-               which is what pays for stating the geometry twice.
-
-               This does NOT disturb the grow animation: `nth-child` counts
-               within a parent, so both runs stay 1 to 8 and each pair shares
-               one delay. -->
+          <!--! Halo group first so the ink paints on top: no ink passes 3:1
+               over an arbitrary photograph. Keep both groups in sync. -->
           <g transform="translate(105 0)" class="ring-halo">
             <circle cx="150" cy="235" r="40" class="ring-thin" />
             <circle cx="153" cy="232" r="80" />

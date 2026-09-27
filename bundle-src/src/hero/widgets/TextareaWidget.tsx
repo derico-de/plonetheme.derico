@@ -1,14 +1,9 @@
 /**
  * `derico_textarea` — the lede's multi-line input.
  *
- * Ticket 02 left one question open for this ticket: bundle Aurora's
- * `QuantaTextAreaField` (it ships unregistered in `@plone/components`) or
- * render a plain element. **Plain element.** `@plone/components` is not a
- * promised module (contract §2.1), so bundling it would compile react-aria
- * and a second react-aria context into the block bundle to gain one field;
- * the styling gap it was meant to close is closed instead by the block's own
- * sheet, which reaches the sidebar because the sidebar lives inside the
- * `.aurora-editor` scope root.
+ * A plain element, not Aurora's `QuantaTextAreaField`: `@plone/components`
+ * is not a promised module (contract §2.1), and bundling it would pull in a
+ * second react-aria context for one field.
  *
  * Registered under a namespaced key, never the generic `textarea`:
  * `registerWidget` is a global, last-wins map, and whether Blicca should
