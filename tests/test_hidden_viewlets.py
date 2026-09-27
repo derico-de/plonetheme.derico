@@ -1,13 +1,4 @@
-"""Tests for upgrade step 1014 -> 1015: the rows and the lead image, hidden
-in their slots.
-
-plone.pageletlayout renders its elements in the stock viewlet managers now, so
-the three footer rows derico hides live in plone.portalfooter, and the content
-header's managers render on every page — plone.abovecontenttitle among them,
-where plone.app.contenttypes puts the lead image. The tests read the hidden
-set from a fresh install, a site that predates 1015, a rendered manager and an
-uninstall.
-"""
+"""The footer rows and the lead image, hidden in their slots."""
 
 import pathlib
 import re
@@ -24,7 +15,6 @@ from zope.interface import alsoProvides
 from plonetheme.derico.interfaces import IPlonethemeDericoLayer
 
 
-PROFILE = "plonetheme.derico.upgrades:1015"
 UNINSTALL = "plonetheme.derico:uninstall"
 SKIN = "Plone Default"
 FOOTER = "plone.portalfooter"
@@ -54,7 +44,7 @@ def _nodes(text):
     }
 
 
-class TestUpgrade1015:
+class TestHiddenViewlets:
     @pytest.fixture(autouse=True)
     def _setup(self, integration):
         self.portal = integration["portal"]
@@ -65,8 +55,7 @@ class TestUpgrade1015:
     def _hidden(self, manager=FOOTER):
         return self.storage.getHidden(manager, SKIN)
 
-    def _seed_a_1014_site(self):
-        """Rows and lead image showing: the hidden sets without our names."""
+    def _unhide_all(self):
         self.storage.setHidden(
             FOOTER, SKIN, tuple(n for n in self._hidden() if n not in ROWS)
         )
@@ -101,7 +90,7 @@ class TestUpgrade1015:
     def test_the_row_renders_when_it_is_not_hidden(self, viewlet, marker):
         """The negative: the test above measures the hiding, not an empty
         footer."""
-        self._seed_a_1014_site()
+        self._unhide_all()
         assert marker in self._render(FOOTER)
 
     def test_the_header_still_renders(self):
@@ -111,26 +100,6 @@ class TestUpgrade1015:
         for marker in ("element-logo", "element-globalnav", "element-searchbox"):
             assert marker in header
 
-    # ── the step ──────────────────────────────────────────────────────────
-
-    def test_the_upgrade_hides_rows_and_lead_image(self):
-        self._seed_a_1014_site()
-        self.setup_tool.runAllImportStepsFromProfile(f"profile-{PROFILE}")
-        assert set(ROWS) <= set(self._hidden())
-        assert LEAD_IMAGE in self._hidden(TITLE)
-
-    def test_re_running_the_upgrade_changes_nothing(self):
-        self.setup_tool.runAllImportStepsFromProfile(f"profile-{PROFILE}")
-        self.setup_tool.runAllImportStepsFromProfile(f"profile-{PROFILE}")
-        hidden = list(self._hidden())
-        for viewlet in ROWS:
-            assert hidden.count(viewlet) == 1
-
-    def test_the_profile_is_at_this_version(self):
-        """The newest step's test owns the exact version."""
-        (version,) = self.setup_tool.getLastVersionForProfile("plonetheme.derico:default")
-        assert int(version) == 1015
-
     # ── the mirror ────────────────────────────────────────────────────────
 
     def test_uninstall_shows_everything_again(self):
@@ -139,11 +108,6 @@ class TestUpgrade1015:
         assert LEAD_IMAGE not in self._hidden(TITLE)
 
     # ── the files that must agree ─────────────────────────────────────────
-
-    def test_the_upgrade_profile_carries_the_default_profile_s_nodes(self):
-        default = _nodes(_profile("profiles/default/viewlets.xml"))
-        assert _nodes(_profile("upgrades/1015/viewlets.xml")) == default
-        assert default == {FOOTER: sorted(ROWS, key=list(ROWS).index), TITLE: [LEAD_IMAGE]}
 
     def test_the_uninstall_profile_names_the_same_viewlets(self):
         assert _nodes(_profile("profiles/uninstall/viewlets.xml")) == _nodes(

@@ -32,39 +32,3 @@ msgstr ""
 #: ../configure.zcml:65
 msgid "Uninstalls plonetheme.derico"
 msgstr ""
-
-#: ../upgrades/1001.zcml:11
-msgid "plonetheme.derico: upgrade to 1001"
-msgstr ""
-
-#: ../upgrades/1002.zcml:11
-msgid "plonetheme.derico: upgrade to 1002"
-msgstr ""
-
-#: ../upgrades/1003.zcml:11
-msgid "plonetheme.derico: upgrade to 1003"
-msgstr ""
-
-#: ../upgrades/1004.zcml:11
-msgid "plonetheme.derico: upgrade to 1004"
-msgstr ""
-
-#: ../upgrades/1005.zcml:11
-msgid "plonetheme.derico: upgrade to 1005"
-msgstr ""
-
-#: ../upgrades/1006.zcml:11
-msgid "plonetheme.derico: upgrade to 1006"
-msgstr ""
-
-#: ../upgrades/1007.zcml:11
-msgid "plonetheme.derico: upgrade to 1007"
-msgstr ""
-
-#: ../upgrades/1008.zcml:11
-msgid "plonetheme.derico: upgrade to 1008"
-msgstr ""
-
-#: ../upgrades/1009.zcml:11
-msgid "plonetheme.derico: upgrade to 1009"
-msgstr ""

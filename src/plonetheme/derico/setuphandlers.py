@@ -69,45 +69,11 @@ HERO_VARIANTS = {
 
 @implementer(INonInstallable)
 class HiddenProfiles:
-    """Hidden profiles from the Plone add-ons control panel.
-
-    Both the panel and `GET /@addons` build their list the same way
-    (`ManageProductsView.marshall_addons`, `plone.restapi`'s `Addons`): every
-    EXTENSION profile is offered unless its own id is hidden, or its product
-    is. `plonetheme.derico.upgrades:1001` has to be an EXTENSION profile for
-    `genericsetup:upgradeDepends` to import it, so without this line the
-    add-ons control panel offers it — and applying an upgrade profile by hand
-    runs a migration out of order. Found on the sandbox site by hero ticket 19.
-
-    The product route (`getNonInstallableProducts`, which Clara also declares)
-    would hide it too, and would keep hiding it for upgrade profiles nobody
-    has written yet. It is deliberately NOT taken: it says the same thing a
-    second way, and the second way cannot be held to the per-profile line, so
-    `test_every_upgrade_profile_is_hidden` would go on passing over a
-    `HiddenProfiles` that had quietly stopped naming them. One answer, one
-    place; the enumeration in that test is what carries the next
-    `plonecli add upgrade_step`.
-    """
+    """Hide the uninstall and upgrade profiles from the add-ons control panel."""
 
     def getNonInstallableProfiles(self):
-        """Return list of profiles that should not be available for install."""
         return [
             "plonetheme.derico:uninstall",
-            "plonetheme.derico.upgrades:1001",
-            "plonetheme.derico.upgrades:1002",
-            "plonetheme.derico.upgrades:1003",
-            "plonetheme.derico.upgrades:1004",
-            "plonetheme.derico.upgrades:1005",
-            "plonetheme.derico.upgrades:1006",
-            "plonetheme.derico.upgrades:1007",
-            "plonetheme.derico.upgrades:1008",
-            "plonetheme.derico.upgrades:1009",
-            "plonetheme.derico.upgrades:1010",
-            "plonetheme.derico.upgrades:1011",
-            "plonetheme.derico.upgrades:1012",
-            "plonetheme.derico.upgrades:1013",
-            "plonetheme.derico.upgrades:1014",
-            "plonetheme.derico.upgrades:1015",
         ]
 
 

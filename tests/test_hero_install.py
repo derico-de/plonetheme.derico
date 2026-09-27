@@ -1,4 +1,4 @@
-"""Installing the Derico Hero: the record, the imaging, the gate, the upgrade.
+"""Installing the Derico Hero: the record, the imaging, and the gate.
 
 The renderer is only half the server half. The other half is packaging, and
 almost all of it fails SILENTLY when it is wrong: a `block_api` a notch too
@@ -306,47 +306,6 @@ class TestImaging(InstallTestCase):
         ensure_hero_variants()
 
         assert self._variants()["someone-elses"] == {"title": "Theirs", "sourceset": []}
-
-
-class TestTheUpgradeStep(InstallTestCase):
-    """Profile version 1001: the sites that already have derico at 1000.
-
-    Everything this step does is invisible on a fresh install, which is
-    exactly why it is easy to ship without. A site upgraded without it has
-    the block bundle on disk, no record pointing at it, no permission, and no
-    picture variants.
-    """
-
-    def test_the_hero_upgrade_is_no_longer_pending(self):
-        """The profile has moved well past 1001, so what is worth holding is
-        that the 1000→1001 step is not still waiting to run — not the literal
-        current version, which the newest upgrade's own tests pin."""
-        setup_tool = self.portal.portal_setup
-        version = setup_tool.getLastVersionForProfile("plonetheme.derico:default")
-        assert int(version[0]) >= 1001
-
-    def test_an_upgrade_step_from_1000_is_registered(self):
-        setup_tool = self.portal.portal_setup
-        steps = setup_tool.listUpgrades("plonetheme.derico:default", show_old=True)
-        assert steps, "no upgrade step is registered at all"
-        titles = str(steps)
-        assert "1001" in titles
-
-    def test_the_handler_is_idempotent(self):
-        """It runs import steps and an add-only handler; running it on an
-        already-current site must change nothing and raise nothing."""
-        from plonetheme.derico.upgrades.v1001 import upgrade
-
-        upgrade(self.portal.portal_setup)
-
-        assert self.status().loadable
-        assert NEW_SCALE in api.portal.get_registry_record("plone.allowed_sizes")
-        assert "hero-wide" in self._variants_after()
-
-    def _variants_after(self):
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(IImagingSchema, prefix="plone", check=False)
-        return dict(settings.picture_variants or {})
 
 
 class TestUninstall:

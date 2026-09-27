@@ -79,17 +79,6 @@ class TestFooterBundle:
             "profiles/uninstall/registry.xml does not remove the footer bundle"
         )
 
-    def test_upgrade_profile_carries_the_same_record(self):
-        """1012 adds the record to an existing site; it must be the record
-        the default profile installs, byte for byte in every value."""
-        default = (
-            css_tools.PACKAGE / "src/plonetheme/derico/profiles/default/registry.xml"
-        ).read_text()
-        upgrade = (
-            css_tools.PACKAGE / "src/plonetheme/derico/upgrades/1012/registry.xml"
-        ).read_text()
-        assert css_tools.bundle_record(default, BUNDLE) == css_tools.bundle_record(upgrade, BUNDLE)
-
 
 class TestFooterSheet:
     """The design values the sheet exists to state, pinned on the file."""

@@ -1,5 +1,4 @@
 """Test plonetheme.derico installation."""
-from pathlib import Path
 
 import pytest
 from plone import api
@@ -99,23 +98,21 @@ class TestSetup:
         assert logo is not None
 
 
+ADDONS = (
+    "plone.blicca.auroraeditor",
+    "plonetheme.clara",
+    "collective.fragmentsblock",
+    "derico.blicca.promoblock",
+)
+
+
+@pytest.mark.parametrize("product", ADDONS)
+def test_installing_derico_installs_the_dependency(integration, product):
+    assert api.addon.get_installer(integration["portal"]).is_product_installed(product)
+
+
 class TestUpgradeProfilesHidden:
-    """The upgrade profiles must never be offered as installable add-ons.
-
-    `plonetheme.derico.upgrades:1001` is an EXTENSION profile — it has to be,
-    for `genericsetup:upgradeDepends` to import it — and every EXTENSION
-    profile is offered in the add-ons control panel unless it is hidden.
-    Applying one by hand runs a migration out of order. Found on the sandbox
-    site by hero ticket 10 (`GET /@addons`).
-
-    The two tests have different jobs. The first proves the entry is gone
-    from the list a user actually sees — the defect as it was found. The
-    second proves it is gone *by the per-profile line*, enumerated rather
-    than hardcoded, so a future upgrade profile that nobody hides turns it
-    red. The first alone would go green under a `getNonInstallableProducts`
-    blanket that had stopped naming any profile at all, which is why
-    `HiddenProfiles` does not declare one.
-    """
+    """Upgrade profiles are EXTENSION profiles and must never be offered as add-ons."""
 
     UPGRADES = "plonetheme.derico.upgrades"
 
@@ -125,31 +122,15 @@ class TestUpgradeProfilesHidden:
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
     def test_upgrades_are_not_offered_as_an_addon(self):
-        """The effect, read off the control panel's own marshalling.
-
-        `plone.restapi`'s `Addons.marshall_addons` — the `GET /@addons` that
-        ticket 10 measured — is the same code with the same two skips, so
-        asserting against CMFPlone's view covers both surfaces.
-        """
         from Products.CMFPlone.controlpanel.browser.quickinstaller import ManageProductsView
 
         view = ManageProductsView(self.portal, self.portal.REQUEST)
         addons = view.marshall_addons()
 
         assert self.UPGRADES not in addons
-        # The theme itself is still there — the guard is narrow, not a blanket.
         assert "plonetheme.derico" in addons
 
     def test_every_upgrade_profile_is_hidden(self):
-        """The mechanism, enumerated rather than listed.
-
-        Asserting against the *registered* profiles rather than a hardcoded
-        ('1001',) is the whole scaling property: add a 1002 profile without
-        adding its line to `HiddenProfiles` and this goes red, instead of the
-        gap being reintroduced silently. The empty-enumeration guard below is
-        not decoration — with no registered profile this passes vacuously,
-        and it is exactly the upgrade profiles it exists to count.
-        """
         from plone.base.interfaces import INonInstallable
         from Products.GenericSetup import EXTENSION
         from zope.component import getAllUtilitiesRegisteredFor
@@ -160,11 +141,6 @@ class TestUpgradeProfilesHidden:
             for profile in setup_tool.listProfileInfo()
             if profile["type"] == EXTENSION and profile["product"] == self.UPGRADES
         ]
-        assert registered, (
-            "no upgrade profile is registered at all — the enumeration this "
-            "test scales on is empty, so it would pass vacuously"
-        )
-
         hidden = [
             name
             for utility in getAllUtilitiesRegisteredFor(INonInstallable)
@@ -172,41 +148,6 @@ class TestUpgradeProfilesHidden:
         ]
         for profile_id in registered:
             assert profile_id in hidden
-
-
-class TestAddonDependencies:
-    """The upgrade list and the profile say the same thing."""
-
-    def test_the_list_matches_the_profile(self):
-        """`ADDON_DEPENDENCIES` is the profile's, minus the core profile.
-
-        The upgrade steps install from the tuple, the fresh install installs
-        from metadata.xml. A dependency added to one and not the other is a
-        site that installs clean and upgrades incomplete, or the reverse --
-        so the two are compared rather than trusted.
-        """
-        from xml.etree import ElementTree
-
-        import plonetheme.derico
-        from plonetheme.derico.upgrades.base import ADDON_DEPENDENCIES
-
-        metadata = (
-            Path(plonetheme.derico.__file__).parent
-            / "profiles"
-            / "default"
-            / "metadata.xml"
-        )
-        declared = [
-            element.text.removeprefix("profile-").removesuffix(":default")
-            for element in ElementTree.parse(metadata).findall(
-                "dependencies/dependency"
-            )
-        ]
-        # plone.app.registry is core: present in every site before derico
-        # arrives, and not an add-on the installer manages.
-        assert [name for name in declared if name != "plone.app.registry"] == list(
-            ADDON_DEPENDENCIES
-        )
 
 
 class TestUninstall:

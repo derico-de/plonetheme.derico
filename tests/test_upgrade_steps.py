@@ -1,12 +1,10 @@
-"""Checks every upgrade step shares: registered, and its profile hidden."""
+"""Upgrade steps since the 1015 baseline are registered."""
 
 from pathlib import Path
 from xml.etree import ElementTree
 
 import pytest
 from plone import api
-
-from plonetheme.derico.setuphandlers import HiddenProfiles
 
 
 METADATA = (
@@ -18,8 +16,9 @@ METADATA = (
     / "default"
     / "metadata.xml"
 )
+BASELINE = 1015
 LATEST = int(ElementTree.parse(METADATA).findtext("version"))
-VERSIONS = range(1001, LATEST + 1)
+VERSIONS = range(BASELINE + 1, LATEST + 1)
 
 
 @pytest.fixture
@@ -32,12 +31,12 @@ def upgrades(integration):
     return {(step["ssource"], step["sdest"]) for step in flat}
 
 
+def test_the_profile_is_at_the_latest_version(integration):
+    setup_tool = api.portal.get_tool("portal_setup")
+    (version,) = setup_tool.getLastVersionForProfile("plonetheme.derico:default")
+    assert int(version) == LATEST
+
+
 @pytest.mark.parametrize("version", VERSIONS)
 def test_upgrade_step_registered(upgrades, version):
     assert (str(version - 1), str(version)) in upgrades
-
-
-@pytest.mark.parametrize("version", VERSIONS)
-def test_upgrade_profile_is_hidden(version):
-    profile = f"plonetheme.derico.upgrades:{version}"
-    assert profile in HiddenProfiles().getNonInstallableProfiles()
