@@ -1,38 +1,15 @@
-/* The Derico Page Header.
- *
- * Packaging wraps this whole file in
- *   @scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)
- *       to (.aurora-pattern-island)
- * so it styles the editing canvas, the editor's portals and the public page
- * from one source (contract §6.1).
- *
- * The mockup's `.page-hero` (site.css:652–668, 1450): kicker over the title
- * on the left, the description as the lede at the far right, bottom-aligned
- * once the header is 56rem wide, stacked below that. The same rules the
- * hero's sheet follows: every selector descends from `.derico-page-header`,
- * the component's own root, never from Aurora's wrapper stamp; the block
- * never sets `width`; class names are the mockup's; `--clara-*` is never
- * named — Clara's type tokens reach this file as the `--derico-*` aliases
- * derico.css §3 publishes, and Blicca's title tokens (`--aurora-title-*`,
- * aliased by derico.css §10 to the very values Clara's content header
- * reads) carry the frame and the size, so the header measures what the
- * tree's title row measured. */
+/* The Derico Page Header. Packaging wraps this file in `@scope (...) to
+ * (.aurora-pattern-island)`; selectors descend from `.derico-page-header`. */
 
 .derico-page-header {
-  /* The Plate editable computes `white-space: pre-wrap` and it inherits
-   * into everything inside it. Nothing here is contenteditable — the three
-   * controls are native textareas — so normalising costs nothing. */
+  /* The Plate editable's `pre-wrap` inherits in here; the controls are
+   * native textareas, so normalising is safe. */
   white-space: normal;
-  /* Clara's content-header frame, xl above and m below, as the title row
-   * had it (derico.css §10). Stated as the header's own padding: the
-   * wrapper's frame is Blicca's and reads `--aurora-space-*`, which the
-   * document nodes never carried. */
+  /* The header's own padding: the wrapper's frame reads `--aurora-space-*`. */
   padding-block: var(--aurora-title-space-above) var(--aurora-title-space-below);
-  /* A container query, not a media query: the header's box is the layout
-   * rung inside a viewport-minus-toolbar page, on both surfaces. */
+  /* Container, not media query: the header is viewport minus the toolbar. */
   container-type: inline-size;
-  /* The body type, stated from the public ladder so both surfaces agree
-   * (hero ticket 17/22): Blicca states its Tailwind stack on
+  /* Stated here so both surfaces agree: Blicca sets its own stack on
    * `.aurora-blocks-view` only. */
   font-family: var(--plone-font-body);
   line-height: var(--plone-leading-body);
@@ -44,10 +21,8 @@
   align-items: end;
 }
 
-/* Rung 1 of the wrap ladder (hero ticket 15): a grid item floors at
- * `min-content`, so without this a long title grows the cell to its longest
- * word. Rung 2 keeps an unfittable word visible; rung 3 is a labelled
- * enhancement that does nothing where the engine has no dictionary. */
+/* Grid items floor at `min-content`; without this a long title grows the
+ * cell to its longest word. */
 .derico-page-header .page-header__grid > * {
   min-width: 0;
 }
@@ -61,7 +36,6 @@
 
 /* ── copy ────────────────────────────────────────────────────────────────── */
 
-/* The mockup's `.page-context`: the copper italic display line. */
 .derico-page-header .page-context {
   margin: 0;
   color: var(--derico-copper-text);
@@ -70,11 +44,7 @@
   font-style: italic;
 }
 
-/* The mockup's `h1` (site.css:156) at the `.page-hero h1` step (:666). The
- * size is Blicca's title token, which derico.css §10 aliases to Clara's
- * heading step — the mockup's `--text-heading`, 56px at 1440 — so this h1
- * and the tree's title node measure the same. The kicker's `--plone-space-xs`
- * under it is the mockup's `.page-hero__grid` inner rhythm. */
+/* Blicca's title size token, so this h1 measures like the tree's title. */
 .derico-page-header h1 {
   max-width: 15ch;
   margin: 0;
@@ -89,7 +59,6 @@
   margin-block-start: var(--plone-space-xs);
 }
 
-/* The mockup's `.page-hero .lede` (:667): no margin, 48ch, soft ink. */
 .derico-page-header .lede {
   max-width: 48ch;
   margin: 0;
@@ -100,8 +69,6 @@
 
 /* ── the 56rem switch ────────────────────────────────────────────────────── */
 
-/* The mockup's `.page-hero__grid` at its 56rem media query (:1450): title
- * half the wider, the lede pushed to the far edge, both on the baseline. */
 @container (min-width: 56rem) {
   .derico-page-header .page-header__grid {
     grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.75fr);
@@ -111,11 +78,8 @@
 
 /* ── the canvas's inline controls ────────────────────────────────────────── */
 
-/* A textarea that IS the word it stands for: it inherits the font of the
- * heading, the kicker or the lede it sits in, paints no box of its own, and
- * grows with its text (`field-sizing: content`, with a layout-effect
- * fallback in InlineField.tsx). Only the canvas renders these; the published
- * page emits the words themselves. */
+/* A textarea styled as the text it edits; InlineField.tsx sizes it where
+ * `field-sizing` is unsupported. */
 .derico-page-header .page-header__input {
   display: block;
   width: 100%;

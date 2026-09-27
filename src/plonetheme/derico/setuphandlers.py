@@ -14,32 +14,12 @@ from zope.interface import implementer
 
 logger = logging.getLogger(__name__)
 
-#: The cloud-and-wordmark brand mark. Plone's site logo is a Bytes record
-#: holding `filenameb64:…;datab64:…`, not a resource URL, so the file has to be
-#: read in and encoded rather than pointed at from registry.xml.
+#: Plone stores the site logo as base64 bytes, not a resource URL.
 LOGO = "derico-logo.svg"
 
-#: The hero's two crops, as picture variants (hero ticket 05 §3).
-#:
-#: Two uploads and not one, because Plone's named scales give variants of ONE
-#: crop and never art direction — the wide and the portrait framing are
-#: different photographs of the same subject, not different sizes of one.
-#:
-#: `additionalScales` and `sizes` are both given EXPLICITLY. Omitted,
-#: `additionalScales` defaults to every other allowed scale, and `sizes`
-#: defaults to `(min-width: 576px) {target}px, (min-width: 768px) 600px,
-#: 98vw` — which is wrong for a block that is always the full viewport wide.
-#:
-#: `hideInEditor` on both: picture variants surface as a picker for images
-#: placed by hand in the richtext editor, where these two are meaningless.
-#: (Blicca's `fullwidth` does not set it, but `fullwidth` is plausibly useful
-#: to a hand-placed image; these are not.)
-#:
-#: The portrait `media` matches `HeroMedia.tsx`'s source query exactly. It is
-#: a VIEWPORT query while the hero's layout switch next door is a container
-#: query, deliberately: `<picture>` has no container-query form, and the
-#: mismatch costs at most a slightly-too-large image for a logged-in author
-#: whose canvas is narrower than the viewport by the toolbar.
+#: Two uploads because named scales cannot art-direct; `sizes` is explicit
+#: since the default assumes a non-full-width image. `media` must match
+#: HeroMedia.tsx (`<picture>` has no container-query form).
 HERO_VARIANTS = {
     "hero-wide": {
         "title": "Hero (wide)",
@@ -78,12 +58,7 @@ class HiddenProfiles:
 
 
 def set_site_logo():
-    """Point plone.site_logo at derico's brand mark.
-
-    Identity, not styling: the one part of the design that cannot be a token.
-    An existing logo is left alone, so re-running the profile on a live site
-    never clobbers an editor's upload.
-    """
+    """Set derico's brand mark as site logo unless one is already set."""
     if api.portal.get_registry_record("plone.site_logo", default=None):
         logger.info("plonetheme.derico: site logo already set, leaving it alone")
         return
@@ -96,19 +71,7 @@ def set_site_logo():
 
 
 def ensure_hero_variants():
-    """Add the hero's two picture variants, without touching anyone else's.
-
-    `plone.picture_variants` is a JSONField, and GenericSetup has no syntax
-    for one — Blicca hit the same wall and adds its `fullwidth` variant from a
-    setuphandler for exactly this reason. The companion half of ticket 05's
-    imaging setup, the `enormous` scale rung, IS a plain list and rides
-    registry.xml with `purge="false"`.
-
-    Add-only and idempotent, on Blicca's `ensure_fullwidth_variant` pattern: a
-    variant already present is left alone, so re-running the profile on a live
-    site never clobbers an administrator's edit, and no variant this theme did
-    not create is ever touched.
-    """
+    """Add the hero's picture variants (a JSONField GS cannot express), add-only."""
     registry = getUtility(IRegistry)
     settings = registry.forInterface(IImagingSchema, prefix="plone", check=False)
     variants = dict(settings.picture_variants or {})

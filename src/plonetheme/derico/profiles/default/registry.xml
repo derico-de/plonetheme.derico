@@ -1,24 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
 
-  <!-- derico's token layer: one bundle, almost all of it a `:root` token
-       override on top of Clara (see static/derico.css and
-       plonetheme.clara/docs/clara-theming-architecture.md §1.5). The one
-       exception is derico.css §7, which hides the page chrome above a brand
-       block — a block's own sheet is scope-wrapped and cannot reach <body>.
-
-       No Sass, no second Bootstrap compile, no template overrides. Clara
-       already ships the @layer declaration, Bootstrap, the layout primitives,
-       the Bootstrap token bridge and every component hook in its single
-       clara.min.css; this bundle only moves the values those rules read.
-
-       `depends` documents the intent and fixes load order. The cascade does
-       not actually rely on it: Clara declares its tokens inside
-       `@layer tokens`, derico.css is unlayered, and unlayered declarations
-       beat layered ones no matter which file the browser sees first.
-
-       No `expression`: Clara styles every Plone page (Diazo is off), so the
-       override has to reach every page too. -->
+  <!-- Unlayered token overrides on top of Clara; beats Clara's `@layer tokens`
+       regardless of load order. No `expression`: Clara styles every page. -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico">
     <value key="csscompilation">++resource++plonetheme.derico/derico.css</value>
@@ -28,67 +12,35 @@
     <value key="enabled">True</value>
   </records>
 
-  <!-- ── the brand blocks ──────────────────────────────────────────────────
-
-       One IAuroraBlockAddon record per block (contract §3.2, hero ticket 04
-       §1). Not one record listing every @type: `loadBlockAddons` calls
-       `install(config)` once per RECORD with no dedupe, so a single install()
-       registering every derico block would silently kill the per-block
-       `enabled` kill switch — the first record's install would re-register a
-       block the second record had disabled.
-
-       Nor a `plone.bundles` record. A bundle emits `<script src defer>`, not
-       `type="module"`, so the bundle's bare `react` / `platejs` imports would
-       miss the import map @@aurora-edit emits and a SECOND React would load;
-       the block then fails inside Plate. Same build workflow, different
-       record. -->
+  <!-- One record per block: `loadBlockAddons` calls install() once per record,
+       so a shared record would defeat the per-block `enabled` switch. Not a
+       plone.bundles record: that emits a classic script, missing the import
+       map, and loads a second React. -->
   <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
            prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.hero">
     <value key="bundle">++plone++plonetheme.derico.blocks/hero.js</value>
 
-    <!-- The FLOOR the block needs (React + jsx-runtime is 1.0 surface), not
-         the host's current version — declaring the host's would let a later
-         host bump strand this block, and a §2.4 mismatch is a fail-soft skip:
-         the block silently vanishes from the slash menu rather than erroring.
-         `tests/test_block_addon_lockstep.py` guards the ceiling.
-
-         This says nothing about the Python imports in browser/hero.py: §2.2
-         covers the JS facades alone. That surface is versioned by the
-         distribution, hence the `plone.blicca.auroraeditor>=1.0.0a2` floor in
-         pyproject.toml. Both signals ship; neither implies the other. -->
+    <!-- The floor the block needs, not the host's version: a mismatch silently
+         drops the block from the slash menu. -->
     <value key="block_api">1.0</value>
 
-    <!-- Lib mode emits ONE stylesheet per build, not per entry, so any brand
-         block whose sheet goes through bundle-src names this same file
-         (ticket 04 §5). The snippet block below is not one of them: its
-         styling is the theme's own snippets.css bundle. -->
+    <!-- Lib mode emits one stylesheet per build, shared by every block. -->
     <value key="css">++plone++plonetheme.derico.blocks/blocks.css</value>
 
     <value key="types">
       <element>derico-hero</element>
     </value>
 
-    <!-- The insert gate: a permission TITLE, not the ZCML id. Defined in
-         permissions.zcml, granted in rolemap.xml. Empty would mean
-         unrestricted. The bundle still loads for EVERYONE — an ordinary
-         editor opening a page that already has a hero sees the hero, not an
-         unknown-block placeholder. -->
+    <!-- A permission title, not the ZCML id. The bundle still loads for
+         everyone so existing heroes render for all editors. -->
     <value key="permission">plonetheme.derico: Insert Brand Block</value>
 
     <value key="enabled">True</value>
     <value key="weight">100</value>
   </records>
 
-  <!-- The Derico Page Header: kicker, title and description as one block,
-       the mockup's `.page-hero` on every inner page. Its own record and its
-       own bundle, like the hero (§3.2). The title and the description are
-       the page's own fields, bound on the canvas through the host's form
-       atom (contract §1.7); the block stores only the kicker.
-
-       No `permission`: unrestricted on purpose. The hero's gate names the
-       site administrator because a hero is the homepage; a page header is
-       how EVERY page opens, and the editor who writes the page inserts it.
-       Same shared `blocks.css` (ticket 04 §5). -->
+  <!-- No `permission` on purpose: every page opens with a header, and the
+       page's own editor inserts it. -->
   <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
            prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader">
     <value key="bundle">++plone++plonetheme.derico.blocks/pageheader.js</value>
@@ -101,27 +53,9 @@
     <value key="weight">110</value>
   </records>
 
-  <!-- derico as a FRAGMENT PROVIDER, not a block: this bundle publishes the
-       `snippets/` corpus into the shared registry as fragments for
-       collective.fragmentsblock's generic fragment block (see
-       bundle-src/src/fragments/, fragments.py, and the add-on's ADR 0001).
-
-       A record all the same, because a record is the ONLY way a bundle gets
-       loaded into the editor: `@@aurora-edit` gates on `enabled`, a
-       resolvable bundle and block-api compatibility, and never on `types`
-       (blockaddons.py evaluate()). Hence:
-
-       - `types` is EMPTY, honestly: the bundle registers no @type, so there
-         is nothing to lockstep against a server renderer, nothing to
-         override and nothing to gate. The one thing an empty list costs
-         (§7's slash-menu filter) is not applicable — the fragment BLOCK is
-         the add-on's record, and its `permission` is where insert-gating
-         for fragments belongs.
-       - No `permission` here for the same reason: withholding this record
-         would not withhold anything insertable, it would only empty the
-         picker for the user who is allowed to insert the block.
-       - No `css`. The fragments are the ornaments, styled by the theme's
-         own `snippets.css` bundle below, on both surfaces. -->
+  <!-- Fragment provider, not a block: a record is the only way a bundle loads
+       into the editor. No `types`, `permission` or `css`: the fragment block's
+       own record gates inserts and snippets.css styles the fragments. -->
   <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
            prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.fragments">
     <value key="bundle">++plone++plonetheme.derico.blocks/fragments.js</value>
@@ -131,14 +65,8 @@
     <value key="weight">120</value>
   </records>
 
-  <!-- The static snippets' stylesheet: a theme bundle, not a block-record
-       `css`. It styles the fragments under `snippets/` on both surfaces, so
-       the sheet itself carries the same hand-written `@scope` wrap the block
-       pipeline would have applied — see the header of static/snippets.css
-       for why. `depends` on the token layer because every value it paints
-       with is a derico token derico.css declares. (An ASCII double hyphen
-       cannot appear in an XML comment, so custom properties go unnamed in
-       this file.) -->
+  <!-- A theme bundle, not block-record `css`: the sheet carries its own
+       `@scope` wrap (see static/snippets.css). -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico-snippets">
     <value key="csscompilation">++resource++plonetheme.derico/snippets.css</value>
@@ -148,17 +76,8 @@
     <value key="enabled">True</value>
   </records>
 
-  <!-- The header's stylesheet AND script: the one bundle in this theme that
-       carries behaviour. header.css dresses Clara's header elements — logo,
-       navigation, search, the login link — into the design's bar, and holds
-       the component rules derico.css is guarded never to contain; header.js
-       is the search box's close gestures and focus handling, the same
-       sprinkle clara.js is for the mega menu. One record for both because
-       neither is useful alone: the script drives a control only the sheet
-       draws. `depends` on the token layer because every value the sheet
-       paints with is a derico token derico.css declares. (An ASCII double
-       hyphen cannot appear in an XML comment, so custom properties go
-       unnamed in this file.) -->
+  <!-- CSS and JS in one record: the script drives a control only the sheet
+       draws. -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico-header">
     <value key="csscompilation">++resource++plonetheme.derico/header.css</value>
@@ -169,14 +88,6 @@
     <value key="enabled">True</value>
   </records>
 
-  <!-- The footer's stylesheet: the footer-blocks element at the tail of
-       every page (collective.blicca.footerblocks), dressed as the design's
-       flat footer band. footer.css holds component rules derico.css is
-       guarded never to contain — the header's argument, made again for the
-       page's other end. `depends` on the token layer because every value
-       the sheet paints with is a derico token derico.css declares. (An
-       ASCII double hyphen cannot appear in an XML comment, so custom
-       properties go unnamed in this file.) -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico-footer">
     <value key="csscompilation">++resource++plonetheme.derico/footer.css</value>
@@ -186,15 +97,8 @@
     <value key="enabled">True</value>
   </records>
 
-  <!-- The print sheet: the design's whole-page print block, said in the
-       site's markup. One `@media print` at-rule and nothing outside it —
-       the bundle loads on every page with media="all", like every other
-       bundle here, so the at-rule is what keeps it off the screen. Component
-       rules again (an element hidden, a link underlined), hence a sheet of
-       its own rather than a line in derico.css. `depends` on the token
-       layer because every value the sheet paints with is a derico token
-       derico.css declares. (An ASCII double hyphen cannot appear in an XML
-       comment, so custom properties go unnamed in this file.) -->
+  <!-- Loads everywhere with media="all"; its single `@media print` keeps it
+       off screen. -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico-print">
     <value key="csscompilation">++resource++plonetheme.derico/print.css</value>
@@ -204,25 +108,9 @@
     <value key="enabled">True</value>
   </records>
 
-  <!-- ── the hero's top scale rung (hero ticket 05 §2/§4) ──────────────────
-
-       APPENDED, never replacing: stock Plone templates and other add-ons
-       hardcode `large`, `preview`, `mini`, `thumb`, `icon` by name, so
-       removing or resizing an existing rung breaks things well outside this
-       theme. `purge="false"` is what makes this a merge into the existing
-       record rather than a replacement of the whole ladder.
-
-       2600 because it covers a 2560 desktop exactly and leaves a retina
-       laptop at 0.90x; 2400 would be 0.94x on that 2560 desktop and 2880
-       costs +44% bytes on the LCP image. Named for size, continuing the
-       stock ladder's adjective pattern — NOT `hero`, which would claim a
-       site-wide name for one block's purpose and put a `hero` key in every
-       image's `image_scales` payload.
-
-       The other half of ticket 05's imaging setup — the two picture variants
-       — cannot come through here: `plone.picture_variants` is a JSONField and
-       GS has no syntax for it. It is applied by `ensure_hero_variants()` in
-       setuphandlers.py instead. -->
+  <!-- Appended (`purge="false"`), never replacing: other code hardcodes the
+       stock scale names. 2600 covers a 2560 desktop. Picture variants are a
+       JSONField GS cannot express; see ensure_hero_variants(). -->
   <record name="plone.allowed_sizes">
     <value purge="false">
       <element>enormous 2600:65536</element>

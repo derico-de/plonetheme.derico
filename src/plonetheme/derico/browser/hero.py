@@ -1,33 +1,4 @@
-"""The Derico Hero's public renderer (hero ticket 09).
-
-The server half of the brand block whose editor half lives in
-``bundle-src/src/hero/``. Dispatch is Blicca's and entirely generic:
-``BlockDispatchMixin.render_block_data`` looks up
-``@@aurora-block-<@type>`` on the content object and falls back to
-``@@aurora-block-default`` — so registering the view name in
-``configure.zcml`` is the whole of the wiring (contract §5.1).
-
-Three things this module deliberately does NOT do:
-
-- **It does not decide the markup.** ``Hero.tsx`` / ``HeroMedia.tsx`` /
-  ``Rings.tsx`` are the reference tree and ``hero.pt`` matches them element
-  for element and class for class. The stylesheet is shared — one
-  scope-wrapped ``blocks.css`` serving the editing canvas AND the public page
-  (contract §6.1) — so a class renamed on one side is a rule that silently
-  stops matching on the other.
-- **It does not decide the degradation.** ``data.ts`` holds the same table,
-  pinned there by ``degradation.test.tsx`` in 21 cases and here by
-  ``tests/test_hero_view.py``. Two implementations, one table; a change to
-  either is a change to both.
-- **It does not assume privilege.** The insert gate (ticket 03) is guidance,
-  not security: the block stays authorable through the API, so this renderer
-  treats whatever it is handed as ordinary untrusted data.
-
-It also emits no breakout of its own. ``defaultBlockWidth: 'full'`` in the
-bundle's ``install()`` makes the editor MATERIALISE ``blockWidth: "full"``
-onto the node, so Blicca's ``plate.py`` stamps ``has--block-width--full`` on
-the wrapper and the viewport bleed is already there (ticket 11).
-"""
+"""The Derico Hero's public renderer; markup must match ``bundle-src/src/hero/``."""
 
 from plone.blicca.auroraeditor.rendering import BaseBlockView
 from plone.blicca.auroraeditor.rendering import image_source
@@ -46,16 +17,8 @@ LEGEND_NOW_INDEX = LEGEND_LENGTH - 1
 WIDE_VARIANT = "hero-wide"
 PORTRAIT_VARIANT = "hero-portrait"
 
-#: Copied verbatim onto the ``<img>`` by ``create_picture_tag``.
-#:
-#: ``fetchpriority="high"`` plus ``lazy=False`` INSTEAD of a ``<head>``
-#: preload (ticket 05 §8): a head viewlet keyed off "the first block is a
-#: derico-hero" would couple the theme's head to block content and duplicate
-#: the image resolution, to buy the gap between head-parse and the first
-#: element of ``<main>``.
-#:
-#: ``alt=""`` and no alt field anywhere in the schema — the photograph is
-#: decorative in this design, and the whole ``<picture>`` is ``aria-hidden``.
+#: ``fetchpriority="high"`` instead of a head preload, which would couple the
+#: head to block content. The photograph is decorative, hence ``alt=""``.
 IMG_ATTRIBUTES = {"alt": "", "decoding": "async", "fetchpriority": "high"}
 
 
@@ -65,19 +28,7 @@ def text(value):
 
 
 def crop(value):
-    """The stored dict for an image reference, or ``None``.
-
-    Reference fields are written by ``derico_reference`` as a one-element list
-    of ``{"@id": …}`` (ticket 02), trimmed to the bare ``@id`` so renames
-    survive and no stale brain metadata is persisted. restapi then resolves
-    that ``@id`` to an absolute URL and injects ``image_scales`` alongside it
-    on the way out — the same enrichment on the editor's inlined
-    ``ISerializeToJson`` and on this view's transformer loop, which is what
-    contract §5.3 is about.
-
-    A value that never went through the widget may be a bare dict or a plain
-    string, and neither is worth throwing over.
-    """
+    """The stored dict for an image reference (list, dict or string), or ``None``."""
     first = value[0] if isinstance(value, list) and value else value
     if isinstance(first, str):
         return {"@id": first.strip()} if first.strip() else None
@@ -93,13 +44,7 @@ def reference(value):
 
 
 def link(label, href):
-    """``{"label", "href"}`` for a link, or ``None``.
-
-    Symmetric on purpose: a link renders only with BOTH a label and a target,
-    and never falls back to the target's Title. A fallback would make the
-    canvas fetch the target just to agree with this view, and the two surfaces
-    would still disagree for the moment between picking and reloading.
-    """
+    """``{"label", "href"}`` only when both are set; never falls back to the Title."""
     label_text = text(label)
     target = reference(href)
     if not (label_text and target):
@@ -110,13 +55,7 @@ def link(label, href):
 
 
 def legend(value):
-    """Exactly ``LEGEND_LENGTH`` entries — a short or absent list is padded.
-
-    A half-filled entry keeps its numeral and emits only the half that has
-    text; an entirely empty entry is a numeral and nothing else. The numerals
-    are derived from position and are not editable, and the ``is-now``
-    highlight is the last entry by construction.
-    """
+    """Exactly ``LEGEND_LENGTH`` entries; the last one is 'now'."""
     stored = value if isinstance(value, list) else []
     entries = []
     for index in range(LEGEND_LENGTH):
@@ -133,14 +72,7 @@ def legend(value):
 
 
 def _plain_image(item):
-    """The ``src`` for the no-``<picture>`` fallback, or ``""``.
-
-    ``image_source`` returns ``None`` to mean "do not build a ``<picture>``" —
-    no scales, no download URL, no base to hang it off, or an SVG upload,
-    where scaling vector art buys nothing. The reference still points at an
-    Image, so the original is served directly and ticket 06's
-    ``object-fit: cover`` frames it exactly as it frames every other crop.
-    """
+    """The original image URL for when `image_source` refuses a `<picture>`."""
     base = path_of(text((item or {}).get("@id")))
     return f"{base}/@@images/image" if base else ""
 
@@ -176,52 +108,13 @@ class DericoHeroView(BaseBlockView):
 
     @property
     def has_media(self):
-        """Whether to paint the wash over the hero's token ground.
-
-        Asked of the DATA and not of :attr:`picture`, mirroring ``Hero.tsx``:
-        a hero whose only crop is an SVG renders a plain ``<img>`` rather than
-        a ``<picture>``, and it still wants its wash. A hero with no
-        photograph at all must not get one — a gradient over the flat token
-        ground looks like a rendering fault.
-        """
+        """Asked of the data, not the picture: an SVG-only hero still wants its wash."""
         data = self.data or {}
         return bool(reference(data.get("image_wide")) or reference(data.get("image_portrait")))
 
     @property
     def media(self):
-        """What to paint behind the hero: ``{"picture", "src"}``, or ``None``.
-
-        One property and not two, because the fallback is defined by the
-        failure of the first: ``image_source`` refusing to build a
-        ``<picture>`` IS the condition for the plain ``<img>``, and splitting
-        that across two template expressions would run the whole derivation
-        twice to ask one question.
-
-        Exactly one of the two keys is ever filled.
-
-        Two uploads, one ``<picture>``, spliced (ticket 05 §6). Plone's named
-        scales give variants of ONE crop and never art direction, so the wide
-        and portrait framings stay two uploads; two separate ``<picture>``
-        elements toggled by CSS would download both. So the portrait's
-        ``<source>`` elements are spliced in FRONT of the wide picture's, and
-        the portrait's ``<img>`` discarded — a ``<picture>`` takes the first
-        source that matches, so portrait-then-wide reproduces the design's
-        56rem switch exactly, with the widths and ``sizes`` left declarative
-        in the registry.
-
-        This calls ``plone.namedfile``'s public ``Img2PictureTag`` directly,
-        not Blicca's ``picture_tag``, which is unpromised and could express
-        neither of the two things needed here: art direction across two
-        uploads, and ``lazy=False`` on what is the page's LCP image
-        (contract §5.2).
-
-        One crop only — either one — renders that crop at every breakpoint
-        through the wide sourceset, which carries no ``media``. The portrait
-        variant's own query would leave everything above 56rem with no
-        matching source and no ladder at all. ``object-fit: cover`` frames
-        whichever crop survived; the honest fix for a badly-framed hero is at
-        the upload, and a brand block offers the author no options.
-        """
+        """The spliced `<picture>` (portrait sources first), or a plain `src` fallback."""
         data = self.data or {}
         wide = crop(data.get("image_wide"))
         portrait = crop(data.get("image_portrait"))

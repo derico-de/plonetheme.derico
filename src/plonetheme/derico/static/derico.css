@@ -1,54 +1,19 @@
-/* plonetheme.derico — „Jahresringe" on Clara.
+/* plonetheme.derico — „Jahresringe" on Clara. The theme's token layer.
  *
- * THE THEME'S TOKEN LAYER. One later bundle, no Sass, no template overrides —
- * the customization contract Clara documents
- * (plonetheme.clara/docs/clara-theming-architecture.md §1.5), with one
- * deliberate exception: §7. A rule earns its place in this file only when
- * nothing else in the theme can reach the thing it styles. That is true of
- * exactly one thing — the page chrome AROUND a brand block. A block ships its
- * own stylesheet, but that sheet is scope-wrapped at packaging time and
- * `scope-wrap.ts` rewrites `body` to `:where(:scope)`, putting <body>
- * permanently out of its reach.
+ * Unlayered on purpose: Clara declares its tokens in `@layer tokens`, so every
+ * declaration here wins regardless of bundle order.
  *
- * Because this file is UNLAYERED and Clara declares its tokens inside
- * `@layer tokens`, every declaration here wins over Clara regardless of bundle
- * order: in the CSS cascade unlayered styles beat layered ones. The
- * `depends` key in registry.xml is therefore about load order for humans, not
- * about the cascade.
+ * A Clara token is overridden only when it carries Clara's identity (Plone
+ * blue, Klarsicht amber) or the design names a visibly different value
+ * (guarded by tests/test_override_minimality.py). The only non-token rules
+ * allowed here style the page AROUND a block, which the block's scope-wrapped
+ * sheet cannot reach.
  *
- * ── What is overridden, and why ────────────────────────────────────────────
- * The rule applied throughout (guarded by tests/test_override_minimality.py):
- * a Clara token is overridden ONLY when it carries Clara's own identity —
- * Plone blue or Klarsicht amber — or when the Jahresringe design names a
- * different, visibly different value. Everything Clara got right for us is
- * inherited untouched. Notably NOT overridden:
- *
- *   · the whole type scale — Clara's --clara-text-* / --plone-text-* steps are
- *     already bit-identical to the Jahresringe scale, down to the 15px label
- *     floor and the flat 1rem body
- *   · the fonts — both designs are Literata + Source Sans 3, self-hosted by
- *     Clara; derico ships no font files
- *   · --plone-measure (76rem), --plone-radius-* and the 3xs…l space steps —
- *     already identical
- *   · the error/danger family — the Jahresringe red oklch(0.45 0.18 28)
- *     resolves to #a2080c, which is Clara's --clara-error exactly
- *   · every layout primitive, every --bs-* bridge line, every component hook
- *
- * ── Colour authoring ───────────────────────────────────────────────────────
- * Values are authored in oklch(), matching the design source of record
- * (docs/design/derico.de/site/assets/site.css). Clara authors
- * sRGB because its Sass compile needs matching literals; derico has no Sass
- * build, so the perceptual coordinates ship as-is. The sRGB hex beside each
- * value is the measured conversion, and the contrast ratios in the comments
- * are measured, not derived — see DESIGN.md, "Measure, Don't Derive".
+ * Colours are oklch; the hex and contrast ratios beside them are measured.
  */
 
 :root {
-  /* ══ 1. The Jahresringe ladder — derico's own vocabulary ════════════════
-   * New declarations, not overrides. One cyan hue (OKLCH 215.55) anchored at
-   * the brand's exact #039fba, plus the copper complement. "Don't put a raw
-   * hex in a rule — --derico-brand is the only place the brand colour is
-   * written" (DESIGN.md §6). */
+  /* The Jahresringe ladder */
   --derico-brand:            oklch(0.64705 0.1142 215.55); /* #039fba — exact brand cyan: logo, rings, UI geometry */
   --derico-brand-text:       oklch(0.49 0.09 215.55);      /* #006d81 — links; 5.99:1 on ground, 4.64:1 on band-soft */
   --derico-brand-hover:      oklch(0.42 0.085 215.55);     /* #00586a — deep cyan step */
@@ -65,20 +30,14 @@
   --derico-rule:      oklch(0.84 0.025 215);      /* #b9cfd5 — hairlines */
   --derico-band-rule: oklch(0.58 0.055 215.55);   /* #53838f — structural rules; 4.19:1 on ground */
 
-  /* Copper is the present tense: the one CTA fill, the live edge. Fill and
-     text are separate steps so both clear their own bar (DESIGN.md §2,
-     "Orange Needs Separate Fill And Text Steps"). */
+  /* Copper fill and text are separate steps so each clears its own contrast bar. */
   --derico-copper:         oklch(0.57 0.18 50);   /* #c64c00 — CTA fill; 4.74:1 on ground, 3.38:1 on band */
   --derico-copper-hover:   oklch(0.52 0.18 50);   /* #b43b00 */
   --derico-copper-text:    oklch(0.49 0.18 55);   /* #a83500 — 6.62:1 on ground, 4.72:1 on band */
   --derico-on-copper:      oklch(0.99 0.004 50);  /* #fefbf9 — 4.60:1 on the copper fill */
   --derico-copper-surface: oklch(0.95 0.04 55);   /* #ffe8d6 — warning/notice tint on the copper hue */
 
-  /* The dark band's own steps: what the design sets on its exit section
-     (`.exit-section`, site.css:1234–1249), whose ground is the ladder's deep
-     petrol. Copper lightened until it clears ink-on-dark, the soft ink and
-     the rule of a light-on-dark section — all measured on --derico-brand-deep,
-     the "Dark" slot's ground (§8). */
+  /* Steps for light-on-dark sections, measured on --derico-brand-deep. */
   --derico-copper-light: oklch(0.82 0.13 65);      /* #feb263 — 5.95:1 on brand-deep */
   --derico-ground-soft:  oklch(0.93 0.018 215);    /* #dbebef — 8.67:1 on brand-deep */
   --derico-rule-light:   oklch(0.72 0.045 213);    /* #85adb5 — 4.37:1 on brand-deep */
@@ -87,10 +46,7 @@
   --derico-success:      oklch(0.39 0.10 155);     /* #00542c — 9.11:1 on ground */
   --derico-success-text: oklch(0.33 0.085 155);    /* #004221 — hover/active step */
 
-  /* ══ 2. Clara's ladder, re-pointed ═════════════════════════════════════
-   * Clara paints every rule it owns through these private tokens, so moving
-   * the ladder moves the whole theme — header, mega menu, footer, toolbar,
-   * content views, Bootstrap bridge — with no component rules here. */
+  /* Clara's ladder, re-pointed */
   --clara-brand:            var(--derico-brand);
   --clara-brand-text:       var(--derico-brand-text);
   --clara-brand-hover:      var(--derico-brand-hover);
@@ -107,110 +63,49 @@
   --clara-rule:      var(--derico-rule);
   --clara-band-rule: var(--derico-band-rule);
 
-  /* Clara's amber role IS the accent role — "the one CTA fill, published
-     state". Copper takes it over wholesale, which is why .clara-button, the
-     mega-menu accents, the footer link hover and the published-state marker
-     all turn copper without a single rule being restated here. */
+  /* Clara's amber role is the accent role; copper takes it over wholesale. */
   --clara-amber:       var(--derico-copper);
   --clara-amber-hover: var(--derico-copper-hover);
   --clara-amber-text:  var(--derico-copper-text);
-  /* Clara's amber is light enough to take an ink label; copper is not —
-     measured 3.63:1 for ink on copper, so the near-white label is required. */
+  /* Ink on copper is only 3.63:1, so the label must be near-white. */
   --clara-on-amber:    var(--derico-on-copper);
 
-  /* The warning family rides the same accent hue (Clara ties --clara-warning
-     to --clara-amber, which now resolves to copper). Its text/surface/on-fill
-     steps are pinned to Klarsicht ambers in Clara and must follow the hue. */
+  /* Clara pins these warning steps to amber literals; they must follow the hue. */
   --clara-warning-text:    var(--derico-copper-text);
   --clara-warning-surface: var(--derico-copper-surface);
   --clara-on-warning:      var(--derico-on-copper);
 
-  /* Info is brand-coloured by definition, so its tint has to leave Plone blue. */
   --clara-info-surface: var(--derico-info-surface);
 
-  /* The design names its own green; Plone renders status messages constantly,
-     so the difference from Clara's #2e7d52 is visible. Surface and border
-     steps compose fine with it and stay Clara's. */
   --clara-success:      var(--derico-success);
   --clara-success-text: var(--derico-success-text);
 
-  /* Jahresringe's footer sits flat on the page ground with a hairline, not on
-     a coloured band — the cyan band is spent on the contact block above it. */
   --clara-footer-ground: var(--derico-ground);
 
-  /* Klarsicht rings its amber pill with an ink hairline because amber is light
-     enough to need the edge. Copper is not: it clears 4.60:1 against the page
-     ground on its own, and the Jahresringe button spec draws no border. Set to
-     the fill rather than `transparent` so the border BOX survives — the pill
-     keeps its metrics and still has an edge in forced-colors mode. */
+  /* The fill, not `transparent`: keeps the border box and a forced-colors edge. */
   --clara-button-border-color: var(--derico-copper);
 
-  /* ══ 3. Clara's private type tokens, re-published for the theme's sheets ══
-   * These three carry no `--plone-*` equivalent (only --plone-text-s /
-   * --plone-text-xs alias the label step), so the theme's OTHER stylesheets —
-   * a brand block's, snippets.css — cannot reach them through the public
-   * ladder. They must not reach for the `--clara-*` name either: this file is
-   * the theme's ONE seam onto Clara — it already writes ~30 --clara-* tokens
-   * — so a Clara rename has to break one file, not every sheet as well.
-   * Aliases, never values: the scale itself stays Clara's, inherited
-   * untouched (see the header).
-   *
-   * The display step is deliberately NOT among them. The hero — the only
-   * block that sets a display-sized headline — states its own
-   * `clamp(2.4rem, 1.4rem + 5cqi, 5rem)` instead (hero ticket 15 §3), because
-   * the ramp has to be measured against the block's container and not against
-   * Clara's viewport-based scale. That left `--derico-text-display` published
-   * and read by nobody, which is dead weight: published, not hoarded.
-   *
-   * `--derico-text-heading` went the same way when the contact band did: it
-   * was published for that band's h2 and had no second reader, so retiring
-   * the band retired the alias. Re-add either the day a sheet reads it. */
+  /* Aliases for Clara type tokens with no --plone-* name, so other sheets
+   * never have to name a --clara-* token. */
   --derico-text-lede:    var(--clara-text-lede);
   --derico-text-label:   var(--clara-text-label);
   --derico-font-display: var(--clara-font-display);
 
-  /* ══ 4. --plone-* roles whose MEANING differs from Clara's mapping ══════
-   * Value-only differences are handled by the ladder above. These three are
-   * genuine semantic re-mappings, so they are stated at the contract level. */
-
-  /* Jahresringe hovers links into copper rather than into a deeper brand step
-     ("a:hover { color: var(--copper-text) }" in the design source). Clara maps
-     link-hover to --clara-brand-hover, which stays in use for --plone-color-
-     info-text and must not become copper. */
+  /* Link hover goes copper; --clara-brand-hover must stay cyan for info-text. */
   --plone-color-link-hover: var(--derico-copper-text);
 
-  /* Clara pins these two toolbar-chrome tokens to the literal Plone blue
-     #65addc rather than to a role, so the ladder cannot reach them. */
+  /* Clara pins these to literal Plone blue, out of the ladder's reach. */
   --plone-link-color-on-dark: var(--derico-brand-fill-hover);
   --plone-state-published:    var(--derico-brand-fill-hover);
 
-  /* ══ 5. Rhythm ═════════════════════════════════════════════════════════
-   * 3xs…l are already identical to the Jahresringe scale. Only the three
-   * section-rhythm steps are longer here — the band-to-band breathing room
-   * the design is built on. Clara's $spacers remap reads these at runtime, so
-   * any .p-5 / .mb-5 in third-party markup follows too. */
+  /* Rhythm: only the section steps differ from Clara. */
   --plone-space-xl:  clamp(3rem, 2.75rem + 1vw, 4rem);
   --plone-space-2xl: clamp(4.5rem, 3.7rem + 3vw, 7.5rem);
   --plone-space-3xl: clamp(6rem, 5rem + 4vw, 10rem);
-  /* The gap between two columns of an article layout — `--article-gap`,
-   * site.css:1154, the column gap of every `.article-layout`,
-   * `.sharing-grid`, `.checklist-layout` and `.exit-layout` grid. A value,
-   * not an alias: it is the one rhythm step the design states outside its
-   * space scale (6vw between 3rem and 6rem, where xl is 55–60px and 2xl
-   * 92–107px across the design's widths), and no Clara token means it.
-   * Read by §10, which hands it to Blicca as the grid column gutter. */
+  /* The design's column gap; it sits outside the space scale. */
   --derico-article-gap: clamp(3rem, 6vw, 6rem);
 
-  /* The page hero of every inner page (`.page-hero__grid`, site.css:1450):
-   * the title on the left, the description as the lede at the far right,
-   * the two bottom-aligned, the title's half the wider (0.9fr against
-   * 0.75fr, justified space-between).
-   * Clara's content header carries exactly that pair and lays it out from
-   * these tokens (architecture §1.7): two-up once the header is 56rem wide —
-   * the mockup's own switch — and stacked under it below that, with no
-   * breakpoint of our own. A blocks page prints the pair from its own tree
-   * instead (Blicca's title row, §10 aliases these same tokens for it); the
-   * start page has no title block at all, so the hero opens it. */
+  /* Page hero: title left, description right, two-up from 56rem. */
   --plone-contentheader-threshold: 56rem;
   --plone-contentheader-align: end;
   --plone-contentheader-justify: space-between;
@@ -218,15 +113,8 @@
   --plone-contentheader-description-grow: 0.75;
 }
 
-/* ══ 6. Dark mode ════════════════════════════════════════════════════════
- * Jahresringe is a light-only design (`color-scheme: light`), but Plone's
- * toolbar exposes a dark switch, and Clara's dark block re-declares the
- * identity roles with literal blues that the ladder above cannot reach.
- * These flips keep the hue consistent wherever dark chrome does appear;
- * the state greens and reds stay Clara's.
- *
- * KNOWN BASE ISSUE: Clara's dark mode is incomplete regardless of this block —
- * see README.md, "Findings against the base". */
+/* Dark mode: the design is light-only, but Clara's dark block re-declares the
+ * identity roles with literal blues the ladder cannot reach. */
 [data-bs-theme="dark"] {
   --plone-color-primary:        oklch(0.78 0.10 215.55);  /* #62c8e0 — 8.44:1 on Clara's dark ground */
   --plone-color-primary-hover:  oklch(0.85 0.075 215.55); /* #94dbed */
@@ -238,85 +126,19 @@
   --plone-color-info-border:    oklch(0.78 0.10 215.55);
   --plone-color-info-text:      oklch(0.92 0.045 215.55);
   --plone-color-info-surface:   oklch(0.28 0.05 215.55);  /* #002f38 */
-  /* the copper accent lifted onto a dark ground (the design's own
-     --hero-copper step, used where copper meets the petrol wash) */
   --clara-amber-text:           oklch(0.80 0.13 65);      /* #f7ab5d — 8.50:1 */
 }
 
-/* ══ 7. The page chrome above a brand block ══════════════════════════════
- * The one rule in this file that is not a token declaration, and the only
- * kind of rule that may ever join it: it styles the page AROUND a block,
- * which the block's own sheet cannot reach (see the header).
- *
- * Plone renders the breadcrumbs and the byline above the first block. The
- * Derico Hero opens the page with a full-bleed photograph and has to sit
- * flush under Clara's header hairline, exactly as the Jahresringe mockup
- * does — so when it is the FIRST block, that chrome goes. Mirrors Clara's
- * own `body:has(.clara-home)` treatment (_clara-components.scss §Homepage).
- * The content header is not listed: on a blocks page its two slots are
- * empty (plone.blicca.auroraeditor ADR 0017 — the tree renders the title
- * and the description from its own blocks) and Clara collapses the element;
- * a hero page simply has no title block, the author's call.
- *
- * No gap is closed by hand: every bit of vertical space above the first
- * block lives on these elements themselves (`.element-breadcrumbs`
- * padding-block-start), and Clara sets `--plone-layout-space: 0` on
- * `.plone-layout`, so removing them from the grid is the whole of it.
- * `.element-body` carries padding-block-END only and is deliberately left
- * alone — the hero opens the page, it does not close it.
- *
- * `.element-byline` is aspirational and `#section-byline` is the live hook;
- * both are listed because Clara lists both.
- *
- * PUBLIC VIEW ONLY. The selector keys on `.aurora-blocks-view`, which
- * `@@aurora-edit` does not emit, so the editing canvas keeps its chrome —
- * it is a working surface, where the title and breadcrumbs orient the
- * author. */
+/* A hero as first block sits flush under the header, so the chrome above it
+ * goes. Public view only: `@@aurora-edit` emits no `.aurora-blocks-view`. */
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-breadcrumbs,
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) .element-byline,
 body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-byline {
   display: none;
 }
 
-/* ══ 8. Aurora block backgrounds ═════════════════════════════════════════
- * A second publisher's token contract, which is why it sits apart from the
- * Clara ladder above rather than inside it. Blicca's `backgroundColor` style
- * field lets an author put a block on a NAMED palette slot — never on a
- * colour — and each slot reads an `--aurora-block-*` custom property with a
- * generic slate fallback baked in (BLICCA_BLOCK_BACKGROUNDS in
- * wrapper/src/editor/block-background.tsx, mirrored by BLOCK_BACKGROUND_VARS
- * in browser/rendering/plate.py). Unset, the slots paint that slate on both
- * surfaces; the theme owning the values is the whole point of the design.
- *
- * The two light slots are the Jahresringe cyan tints, quiet step and softer
- * step: "Grey" is the design's own `.section--soft` ground (--surface) and
- * "Accent" the mega-panel's (--band-soft). Deliberately NOT --band, the
- * committed cyan the design bands a section with: that one takes ink text
- * and quiet ink links by design, and a link on it measures 4.27:1 — below
- * AA. A slot in a picker has to hold whatever an author drops on it, links
- * included, so it gets the step the theme already clears links against
- * (test_color_contrast.py tests --plone-color-link on --clara-band-soft).
- * The strong band stays where the design puts it: on sections whose content
- * is the designer's, not the author's.
- *
- * `Dark` takes the ladder's deep petrol — the same step the toolbar sits on,
- * already measured at 10.63:1 for ground on it. `--aurora-block-fg-dark` is
- * the paired foreground the slot hands its whole subtree; Blicca sets
- * `color: inherit` at zero specificity under the dark slot, so a theme rule
- * that deliberately colours something still wins.
- *
- * The dark slot hands its subtree three more values, because the text
- * styles' inks and the list rules (§10, second half) are tuned for the page
- * ground and would vanish on the petrol: the accent a kicker, a byline and
- * a list marker take, the soft ink of a lede or a definition, and the rule
- * between a checklist's rows. They are the design's exit section, which is
- * exactly this — copper and ink lightened for a dark ground (the ladder's
- * `--derico-copper-light`, `--derico-ground-soft`, `--derico-rule-light`).
- *
- * Only these three slots exist to fill. A fourth would have to be added to
- * Blicca's palette first — a value this file invented would name a slot no
- * picker offers. `tests/test_aurora_block_backgrounds.py` holds the names
- * here against the ones Blicca publishes. */
+/* Aurora block backgrounds. Accent is band-soft, not band: links on band
+ * measure 4.27:1, below AA. */
 :root {
   --aurora-block-bg-grey:   var(--derico-surface);
   --aurora-block-bg-accent: var(--derico-band-soft);
@@ -327,140 +149,21 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-block-rule-dark:    var(--derico-rule-light);
 }
 
-/* ══ 9. The Promo block's theme seam ═════════════════════════════════════
- * A third publisher's token contract, and the same shape as §8, which is why
- * it sits apart from the Clara ladder rather than inside it. The block
- * (`derico.blicca.promoblock`) reads nineteen `--promo-*` properties and
- * DECLARES NONE of them anywhere: every default lives at its point of use as
- * `var(--promo-x, <literal>)` (its ADR 0002), so a theme opts in by SETTING
- * one and the value simply inherits in. That is also why these belong on
- * `:root` and never on `.promo` — a property set on the element would shadow
- * the inherited one and force exactly the specificity escalation the seam
- * exists to prevent.
- *
- * Six of the nineteen. The other thirteen keep the block's literal defaults,
- * on the rule this whole file runs on: a value is restated only where the
- * Jahresringe design names a different, visibly different one. The design
- * source of record decided each — docs/design/derico.de/site/assets/site.css,
- * read rather than eyeballed — and the promo is dressed the way that file
- * dresses a CARD (`.mega-intro h2`, `.manifesto-item h3`) and not the way it
- * dresses a section band (`.section-heading`, `.contact-band h2`). Two
- * properties were considered and declined; they are named, with the design
- * line that declined them, in tests/test_promo_seam.py.
- *
- * What the seam cannot reach, and what therefore does NOT become a rule here:
- * the block publishes no property for a font family, a weight or a leading
- * ("Not themeable, on purpose"), so the kicker is copper at the label step
- * but not the design's display italic, and the call to action is a copper
- * pill in the block's own metrics rather than `.clara-button`'s.
- *
- * tests/test_promo_seam.py reads the property names out of the block's own
- * built stylesheet, so a renamed or dropped property fails there instead of
- * silently painting nothing, and it fails any OTHER sheet in this package
- * that declares a `--promo-*` — the one thing review was carrying alone.
- */
+/* Promo block seam. On :root, never on .promo: the block reads these as
+ * inherited `var(--promo-x, <default>)`. */
 :root {
-  /* The eyebrow. The design's `.kicker` is copper-text, and the 15px label
-     floor is the theme's own (see the header). Its `--text-lede` SIZE is
-     deliberately not taken with it: the design's kicker stands over a hero or
-     a section heading, and at lede it would be the larger half of a card. */
   --promo-kicker-size:  var(--derico-text-label);
   --promo-kicker-color: var(--derico-copper-text);
 
-  /* Clara's title step, named directly rather than re-published as a
-     `--derico-text-*` alias first: §3's aliases exist for the sheets that may
-     NOT name a Clara token, and this file is the one that may. The design
-     puts every component heading on this step and reserves `--text-heading`
-     for page and section headings. The block's 1.75rem literal is this step's
-     MAXIMUM, so what the declaration buys is the ramp below 1440px. */
   --promo-title-size: var(--clara-text-title);
 
-  /* The copper call to action: the same three steps every other derico CTA
-     wears, so the promo's button cannot drift from `.clara-button`'s colour.
-     The pill is the design's (`.button { border-radius: var(--radius-pill) }`)
-     against the block's 0.375rem literal, and it reads `--plone-radius-pill`
-     because the radius scale is Clara's, inherited untouched. */
   --promo-cta-bg:       var(--derico-copper);
   --promo-cta-fg:       var(--derico-on-copper);
   --promo-cta-hover-bg: var(--derico-copper-hover);
   --promo-cta-radius:   var(--plone-radius-pill);
 }
 
-/* ══ 10. Blicca's reading rhythm and type, re-pointed ═════════════════════
- * Blicca's `blocks_view.css` dresses every block on both surfaces — the
- * published page and the editing canvas — from ONE scale of `--aurora-*`
- * tokens, declared at zero specificity on `:root` precisely so a theme's
- * plain `:root` rule wins. Same shape as §8 and §9: a publisher's token
- * contract, filled here with the theme's own steps. Aliases, never values:
- * the reading face is Clara's body face, the leadings are Clara's, and the
- * two heading steps are the ones the design puts on its component and
- * prose headings.
- *
- * Why every one of them, and what each buys:
- *
- *   · the face and the body leading — Blicca states Tailwind's preflight
- *     stack on the blocks view so that the page agrees with the canvas,
- *     which inherits that stack from the editor root. Left alone, every
- *     paragraph the author writes renders in the system sans while the
- *     chrome around it is Source Sans 3; the design's own `.manifesto-item
- *     p` and `.contact-band p` are Source Sans 3 at 1.65.
- *   · the h3 step is the design's component heading (`.manifesto-item h3`,
- *     `.mega-intro h2`: `--text-title`) — the heading that opens a grid cell
- *     or a card. The h2 step is the design's PROSE heading (`.prose h2`,
- *     1.65–2.45rem; Clara's 2xl step is that ramp within a hair), not its
- *     section heading: an Aurora h2 is also the section heading of an
- *     ordinary article, where Clara sets the page's h1 at 2.5rem, and the
- *     section step (up to 3.5rem) would outrank it. The section case is
- *     §11's.
- *   · the heading leadings — Clara sets h1–h3 at 1.12 and Blicca's own
- *     rules override it at 1.3/1.35, which is the only place on the site a
- *     Literata heading is set loose. `--plone-leading-tight` is Clara's
- *     display leading token.
- *   · the two frames — Blicca's 20px/40px block and bleed frames are
- *     reading-column metrics. On this design a banded block is a section,
- *     and a section breathes on the theme's own `l` and `xl` steps (§5).
- *     Both frames also pad a background band, which is how a band reaches
- *     the design's air without a rule of its own.
- *
- * `--aurora-space-continuation` is deliberately NOT set here: a paragraph
- * continuing a band wants no gap from its predecessor, which is Blicca's
- * default. It is set per block in §11. tests/test_aurora_rhythm.py holds
- * every name here against the ones Blicca's sheet declares.
- *
- * The text styles — the roles a paragraph can name (`textStyle`: kicker,
- * lede, statement, byline, term, muted; Blicca's docs/design/text-styles.md)
- * — are dressed by Blicca's sheet from five more tokens, and each is the
- * design's own step for that role, read off the mockup's rules:
- *
- *   · the display face is what the kicker (`.page-context`) and the aside's
- *     statement (`.article-aside > p:last-child`) are set in — Literata,
- *     Clara's `--clara-font-display`, which §3 already re-publishes;
- *   · the lede step is the design's `--text-lede`, the size of `.lede`,
- *     `.section-intro` and the aside statement alike; Clara's step is that
- *     ramp exactly;
- *   · the accent ink is copper-text, the colour of `.page-context` and
- *     `.article-byline` — reached as Clara's amber-text, which §2 turns
- *     copper, so a kicker and a link hover are the same ink by construction;
- *   · the soft ink is `--ink-soft`, what `.lede`, a scenario paragraph and a
- *     facts definition read in; the strong ink is `--brand-deep`, what a
- *     facts term (`.article-facts dt`) and a scenario's closing line are.
- *
- * The kicker's italic and the term's weight are Blicca's own shape and are
- * not restated: they are the mockup's shape too.
- *
- * The list styles (checklist, questions, sources) and the quote styles
- * (statement, display) take four more:
- *
- *   · the rule between a checklist's or the questions' rows is the design's
- *     hairline (`--rule`, `.sustainability-checklist li`) — Blicca's
- *     `--aurora-divider`, which its listings already draw with;
- *   · a quote's top rule is the structural rule (`--band-rule`, the
- *     `.article-thesis` and `.public-code-statement` border);
- *   · a quote as a statement is the design's thesis
- *     (`clamp(1.25rem, …, 1.75rem)`), which is Clara's title step within a
- *     hair; as a display line it is the public-code statement
- *     (`clamp(1.75rem, …, 3rem)`), the section-heading step.
- */
+/* Blicca's reading rhythm and type */
 :root {
   --aurora-content-font-family: var(--plone-font-body);
   --aurora-content-line-height: var(--plone-leading-body);
@@ -479,19 +182,8 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-quote-border:        var(--clara-band-rule);
   --aurora-quote-statement-size: var(--clara-text-title);
   --aurora-quote-display-size:   var(--clara-text-heading);
-  /* The title block's air and its row with the description block (Blicca's
-   * "the title" and "the title row", ADR 0017): the tree's title and
-   * description now stand where Clara's content header stood, so they read
-   * the very values §5 hands that element — two-up from the mockup's 56rem
-   * switch, bottom-aligned, the two on the element's own frame above and
-   * below (Clara: xl and m). Aliases of Clara's content-header tokens, so
-   * the page hero is stated once, in §5, for both markups. The size is the
-   * mockup's `.page-hero h1` (`--text-heading`, Clara's heading token), the
-   * step Clara gives only its content header's h1. The shares are
-   * the mockup's `minmax(0, 0.9fr) minmax(22rem, 0.75fr)` as fractions of
-   * the row (0.9 of 1.65 is 54%), literal because Blicca reads a share of
-   * the line where Clara reads a grow factor — the one place the two
-   * contracts do not meet on a name. */
+  /* Title row mirrors the content header tokens. The shares are literal because
+   * Blicca reads a share of the line (0.9 of 1.65 ≈ 54%), not a grow factor. */
   --aurora-title-size:           var(--clara-text-heading);
   --aurora-title-space-above:    var(--plone-space-xl);
   --aurora-title-space-below:    var(--plone-space-m);
@@ -500,80 +192,15 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-title-row-align:      var(--plone-contentheader-align);
   --aurora-title-row-title-share: 54%;
   --aurora-title-row-lede-share:  42%;
-  /* A pinned grid column (Blicca's `stickyColumn` setting) holds this far
-   * below the viewport top: the mockup's `.detail-aside` pins at `--space-l`
-   * (site.css:1452). Blicca reads it at the point of use with a 2rem
-   * fallback and declares it nowhere, like `--aurora-space-continued`. */
   --aurora-sticky-offset: var(--plone-space-l);
-  /* The gutter between two grid columns' text boxes is the design's article
-   * gap (§5): the mockup's `.sharing-grid` prose against its principles,
-   * the checklist's header against its two list columns. Blicca hands the
-   * gutter less its two 1rem insets to the flex row as a real gap, on the
-   * page and in the canvas alike, and the columns pay for it in proportion
-   * to their share. */
   --aurora-column-gutter: var(--derico-article-gap);
-  /* Blicca pads the published blocks view 24px each side so a
-   * layout-width block clamps to the same box as on the editing canvas,
-   * which keeps that gutter for its drag handles. On this design the
-   * page's column IS the shell: the mockup sets every section's text on
-   * the same left edge as the page hero's h1, and Clara's content header
-   * already stands on that edge. The gutter would set every block — and
-   * every grid — 24px inside the title above it. Zero, the one number in
-   * §10 that is not an alias: there is no step for "none", and Blicca
-   * itself hands the gutter back below 37.5rem for the same reason. */
+  /* Blocks align with the page title's left edge, not 24px inside it. */
   --aurora-view-gutter: 0px;
 }
 
-/* ══ 11. The frame around a block, per block ══════════════════════════════
- * The second kind of rule this file may carry, and the same kind as §7:
- * it addresses the page AROUND a block. Blicca stamps every block's
- * wrapper with its type (`.block-promo`), its width, its background slot
- * and its place in a background run, and pads that wrapper from the §10
- * tokens. A block's own sheet may not paint on the wrapper — it belongs to
- * the host, and it is a different box on the canvas than on the page
- * (hero ticket 07; promo rule 3) — and the tokens are read there, so the
- * only place a per-block frame can be stated is here, as a token scoped to
- * the wrapper. Every declaration in these rules is an `--aurora-*` token;
- * none of them paints. tests/test_override_minimality.py admits exactly
- * that shape and nothing wider.
- *
- * The Derico Hero paints its own ground edge to edge and is the page's
- * opening, so the host's bleed frame — 40px of page ground above and below
- * the photograph — is the one thing between it and the band beneath it in
- * the mockup. Zero, on the wrapper; the hero's own composition keeps its
- * padding inside the photograph.
- *
- * A heading that OPENS a band is the design's section heading
- * (`.section-heading`, `.contact-band h2`: `--text-heading`), the one case
- * §10 leaves out. Only the opener: an h2 that continues a band another block
- * started is a heading inside a section, and keeps the prose step.
- *
- * The Promo sharing a band with a neighbour is the design's contact band
- * standing next to another section on the same ground: the two want more
- * between them than a paragraph wants from a paragraph — the `xl` step, §5's
- * band-to-band breathing room — on both of the promo's inner edges. The
- * continuation gap Blicca zeroes is given back to it, and its counterpart at
- * the other end is raised off the run's `l`. The frame at the run's OUTER
- * edges is the band's, above: a promo does not need its own claim on it, and
- * a promo alone on a band is a one-block run that already gets it.
- *
- * A promo on NO band is the same reading with the ground left white: two of
- * them stand on one surface exactly as two same-slot promos do, so they get
- * the same `xl` step. Blicca dresses the block types it knows and an add-on
- * is in none of those lists, so an unbanded promo has no frame at all until
- * `--aurora-space-frame` names one. The token is read on the bare `.block`,
- * under every background rule: a banded promo keeps its band's frame and
- * nothing doubles, which is why this rule needs no `:not()`.
- */
-/* A background IS a section on this design, so a run of banded blocks opens
- * and closes on the section step rather than on the reading frame §10 gives
- * a table or a teaser. Blicca pads a band from `--aurora-space-block` (or
- * `--aurora-space-bleed` at full width) at BOTH ends of every block in the
- * run, which makes the band's outer frame and the gaps between its blocks
- * one number; the run's inner gaps are `--aurora-space-continued`, so they
- * stay on the §10 reading step while the frame moves to §5's `2xl` — the
- * exact step the mockup's `.section`, `.section--band` and `.contact-band`
- * are padded with. */
+/* Per-block frames: token-only rules on the block wrapper, which a block's own
+ * sheet may not paint on. */
+/* A background is a section: the band frame moves to 2xl, inner gaps stay l. */
 .block[class*="has--backgroundColor--"] {
   --aurora-space-block: var(--plone-space-2xl);
   --aurora-space-bleed: var(--plone-space-2xl);
@@ -594,19 +221,13 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-space-continued:    var(--plone-space-xl);
 }
 
+/* Read on the bare .block under the background rules, so a banded promo keeps
+ * its band's frame; no :not() needed. */
 .block-promo {
   --aurora-space-frame: var(--plone-space-xl);
 }
 
-/* A grid is a section on this design. Every two-column article layout in
- * the mockup — the essay's prose beside its aside, the sharing grid, the
- * checklist, the exit questions — is a `.section`, and an unbanded section
- * breathes on the `xl` step (`.sustainability-article .section`,
- * site.css:1160; the site's default `.section` is 2xl, the essay's is xl).
- * Blicca frames a grid on the reading step a table or a teaser gets, `l`,
- * which leaves two grids 22px closer than two of the mockup's sections.
- * A banded grid is untouched: the background rule above outranks this one
- * on specificity and keeps the band's 2xl. */
+/* The background rule above outranks this on specificity, keeping bands at 2xl. */
 .block-column_group {
   --aurora-space-block: var(--plone-space-xl);
 }

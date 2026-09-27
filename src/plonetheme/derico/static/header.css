@@ -1,82 +1,19 @@
-/* The header — logo, navigation, search, the login link — as the Jahresringe
- * design draws it (docs/design/derico.de/site/assets/site.css, "Header and
- * navigation"), on Clara's header elements.
+/* The header on Clara's hooks: logo, navigation and utilities on one row.
  *
- * The theme's rule is that derico.css stays a token sheet, and this is the
- * header's reason to be a sheet of its own (delivered as the
- * `plonetheme-derico-header` bundle, with header.js): the design's bar is a
- * COMPOSITION Clara's tokens cannot express. Clara stacks the logo row over a
- * full-bleed navigation bar and parks an always-open search form in the bar's
- * end lane; the design puts logo, navigation and utilities on ONE 6rem row,
- * centres the navigation in the viewport, and folds the search into a single
- * magnifier. Values are still tokens — every colour, step and face here is a
- * `--derico-*` or `--plone-*` name — but the rules are component rules, so
- * they live here and not in the token layer.
- *
- * What is restated and what is inherited: Clara's mega panel is already the
- * design's three-zone panel and is untouched, as are the nav's face, size
- * (`--clara-text-nav` IS the design's `--text-nav`) and weight. What moves is
- * the geometry: rows, lanes, the bar's hairline, the nav link's metrics and
- * the search. The mockup's classes are not available here, so the selectors
- * are Clara's contract hooks (`#portal-logo`, `.element-globalnav`,
- * `#portal-globalnav`, `.element-searchbox`, `.element-anontools`,
- * `.element-language`), which is what a theme on Clara is meant to
- * address.
- *
- * Unlayered on purpose, like derico.css: Clara's component rules sit in
- * `@layer components`, and an unlayered declaration beats a layered one
- * whatever its specificity, so nothing here has to out-specify Clara — every
- * selector is the plainest one that names its element.
- *
- * Two widths — of the LAYOUT, which is a query container (see the knobs
- * below); the toolbar rail makes that narrower than the viewport, and the
- * header wants the width it actually gets. The mockup switches at 70rem;
- * this sheet switches at 64rem, which is Clara's own desktop boundary (its
- * mega panel takes the wide three-track shape above 64rem) and the width a
- * 1024px laptop gives a header with no toolbar beside it. The 64–70rem band
- * pays for the narrower row in the lanes, not in the shape — see the band's
- * own note below.
- *
- *   · < 64rem, "narrow" — the design's compact header: logo, then the menu
- *     pill, the language switch and the magnifier at the bar's end. The
- *     search opens as a full row under the bar; the menu as Clara's
- *     accordion under that, with the login link as its last row. Clara's
- *     defaults collapse at 48rem, so this sheet carries the same mechanics
- *     through the remaining tablet band; otherwise 48–64rem would become an
- *     unapproved two-row desktop header.
- *   · ≥ 64rem, "wide" — the design's desktop header: one 6rem row, logo at
- *     the start, navigation centred in the LAYOUT (not in the content
- *     column: the bar spans `min(100% - 1rem, 90rem)` like the mockup's
- *     shell), login link, language switch and search at the end. What it
- *     costs the navigation to keep all three in one row, and where that is
- *     paid, is the 64–75rem note at the foot of this sheet.
+ * Unlayered, so it beats Clara's `@layer components` without out-specifying.
+ * Switches at 64rem of the LAYOUT (a query container), Clara's desktop
+ * boundary; below it the compact header with the accordion menu.
  */
 
-/* ── the sheet's own knobs ────────────────────────────────────────────────── */
+/* Knobs */
 .plone-layout {
-  /* A query container, so every switch below asks the width the header
-     ACTUALLY gets. The same reason the hero block gives in
-     static-blocks/blocks.css: `body` carries `padding-inline-start: 220px`
-     while the toolbar rail is expanded, so a logged-in editor's layout is
-     220px narrower than the viewport a media query reads. At a 1120px
-     viewport the bar has 900px — 56.25rem, a phone-sized header — and a
-     viewport query would hand it the desktop row anyway, wrapping the
-     navigation for exactly the person who is editing the page.
-     `container-type: inline-size` is safe on this element: its inline size
-     comes from the body's content box, never from its own contents, and the
-     mega panel already hangs from `.element-globalnav`, not from here. */
+  /* A container, not a media query: the expanded toolbar rail makes the
+     layout 220px narrower than the viewport. */
   container-name: derico-page;
   container-type: inline-size;
-  /* the bar's height, carried by the logo so the first row keeps it whether
-     a row opens beneath it or not */
   --derico-header-bar: 5.25rem;
-  /* the bar's inset from the viewport on the wide layout: the mockup's
-     `.header-shell { width: min(calc(100% - 1rem), 90rem) }` */
   --derico-header-edge: max(0.5rem, calc((100% - 90rem) / 2));
-  /* the lanes the navigation keeps clear on the wide layout: logo + gap at
-     the start, and at the end everything the utility zone holds — magnifier,
-     language switch, login link — counted rather than guessed at, so the one
-     number cannot drift from the three margins below that place them. */
+  /* The end lane is summed from the utilities it has to keep clear. */
   --derico-header-lane-start: 9.5rem;
   --derico-header-lane-end:
     calc(
@@ -84,38 +21,19 @@
       + var(--derico-header-lang)
       + var(--derico-header-login)
     );
-  /* the search toggle's square, read by the login link's offset too */
   --derico-header-toggle: 2.75rem;
-  /* The login link's width. "Anmelden" measures 66px in the label step's
-     face; 4.5rem is that with room for the wrap-free English "Log in" and a
-     rounding step. A reservation, like the lanes above — the link is a grid
-     item of its own and nothing can measure it in CSS. */
+  /* Reserved width for "Anmelden"/"Log in"; CSS cannot measure it. */
   --derico-header-login: 4.5rem;
-  /* What the language switch costs everything to its left: its own width
-     plus the gap before the magnifier. Zero by default — a site with one
-     language renders no switch at all (the pagelet's render() returns ""),
-     and a lane reserved for an absent element would move the login link for
-     nothing. The `:has()` below asks whether the element is there. */
+  /* 0 unless the language switch is rendered (see the :has() below). */
   --derico-header-lang: 0rem;
-  /* the bar opens the page at the viewport's top edge, as the design's
-     `.site-header` does; Clara pads the layout by a step first */
   padding-block-start: 0;
 }
-/* 4.5rem is what "DE / EN" measures in the label step's face with the
-   theme's `--plone-space-xs` on either side of the slash — 72px at 1440px,
-   against the mockup's 65px, the difference being that the design's own
-   `--space-xs` is a flat 12px where the theme's is fluid. A third language
-   pushes past it — at which point this number, and the tight band's budget
-   below, are what have to be re-measured. */
+/* 4.5rem fits "DE / EN"; re-measure if a third language is added. */
 .plone-layout:has(#portal-top > .element-language) {
   --derico-header-lang: calc(4.5rem + var(--plone-space-xs));
 }
 
-/* ── the bar's hairline ───────────────────────────────────────────────────
- * The design's `.site-header { border-bottom }`. `#portal-top` is a subgrid
- * whose later rows open beneath the bar (the narrow layout's menu and
- * search), so a pseudo grid item draws it along the first row's bottom
- * edge, full-bleed. Scoped to a header that has a logo. */
+/* Bar hairline: a pseudo grid item on row 1, since later rows open beneath it. */
 #portal-top:has(> .element-logo)::before {
   content: "";
   grid-row: 1;
@@ -126,9 +44,7 @@
   pointer-events: none;
 }
 
-/* ── logo ─────────────────────────────────────────────────────────────────
- * The mark carries the wordmark, so the site title next to it is redundant
- * in the design; it stays in the markup as the link's accessible name. */
+/* Logo: the site title stays only as the link's accessible name. */
 #portal-logo {
   grid-row: 1;
   align-self: center;
@@ -152,13 +68,11 @@
   border: 0;
 }
 
-/* ── login link (anonymous visitors) ─────────────────────────────────────
- * The design's utility voice — the language switch's — at the label step. */
+/* Login link */
 .element-anontools {
   grid-row: 1;
   align-self: center;
   justify-self: end;
-  /* the magnifier sits at the end; the link keeps to its left */
   margin-inline-end: calc(var(--derico-header-toggle) + var(--plone-space-xs));
   font-size: var(--derico-text-label);
 }
@@ -172,23 +86,8 @@
   text-decoration: underline;
 }
 
-/* ── language switch ──────────────────────────────────────────────────────
- * The design's `.utility-nav`: two codes and a slash, at the label step, in
- * the bar's end lane immediately before the magnifier — at EVERY width. The
- * mockup keeps it on the bar row when the navigation folds into the menu
- * pill (site.css, `.utility-nav { margin-inline-start: auto }` on a
- * `display: contents` `.header-utility`), so this sheet does too: the switch
- * never joins the accordion the way the login link does.
- *
- * The slash is a rule of this sheet and not a list item, unlike the mockup's
- * `<li aria-hidden="true">/</li>`: the markup is Clara's, the separator is
- * decoration, and a generated one cannot be selected, read aloud or
- * translated. It only ever appears BETWEEN codes, so a third language gets
- * two slashes and a single one gets none, with nothing to say about it here.
- *
- * Clara already gives this element its row, its lane and its two states
- * (theme/scss/_clara-language.scss); what is restated is the design's voice —
- * the label step, the ink pair, the slash, and the geometry of the bar. */
+/* Language switch: stays on the bar row at every width. The slash is
+ * generated so it is never selected, read aloud or translated. */
 .element-language {
   grid-row: 1;
   align-self: center;
@@ -203,7 +102,6 @@
   content: "/";
   margin-inline-end: var(--plone-space-xs);
   color: var(--derico-ink-soft);
-  /* the mockup's separator is prose-sized next to label-sized codes */
   font-size: var(--plone-text-base);
 }
 .element-language a {
@@ -216,22 +114,17 @@
   color: var(--derico-brand-text);
   text-decoration: underline;
 }
-/* The language you are in: full ink and an underline. Two signals, so the
-   marker survives a greyscale print and does not rest on colour alone —
-   which is also why the current language keeps its link and stays in the
-   row rather than dropping out of it. */
+/* Current language: ink AND underline, so it does not rest on colour alone. */
 .element-language .currentLanguage a {
   color: var(--derico-ink);
   text-decoration: underline;
 }
 
-/* ── navigation bar ─────────────────────────────────────────────────────── */
+/* Navigation bar */
 .element-globalnav {
-  /* the bar's hairline is the pseudo item's; the mega panel keeps its own */
   border-block: 0;
 }
 #portal-globalnav > .nav-item > .nav-link {
-  /* the design's current/open marker is the link step, not the brand cyan */
   border-block-end-color: transparent;
 }
 #portal-globalnav > .nav-item:has(> .opener:checked) > .nav-link,
@@ -240,18 +133,12 @@
   border-block-end-color: var(--derico-brand-text);
 }
 
-/* ── search ────────────────────────────────────────────────────────────────
- * One magnifier; the field grows out of it. The disclosure is the same
- * pure-CSS `.opener` checkbox the navigation uses (searchbox.pt), so the
- * search works with no script at all — header.js only adds focus and the
- * close gestures. */
+/* Search: a pure-CSS `.opener` checkbox disclosure; works without JS. */
 .element-searchbox {
   grid-row: 1;
   align-self: center;
   justify-self: end;
-  /* the opened form is positioned against this box on the two wider
-     layouts; no z-index of its own — it follows the navigation element in
-     the markup and so already paints above its lane */
+  /* No z-index: it follows the nav in DOM order and already paints above it. */
   position: relative;
   z-index: auto;
 }
@@ -332,28 +219,14 @@
   color: var(--derico-copper-text);
   background: transparent;
 }
-/* pat-livesearch's result list, in the design's voice: a hairlined sheet on
-   the page ground under the field, not the pattern's blue-glow card.
-   `.list-group` supplies the reset (no bullets, no padding) and the rows.
-
-   The PANEL is this sheet's job in full, not a re-dress. mockup's
-   livesearch.scss — the `position: absolute` the pattern is written around —
-   is compiled into Barceloneta's bundle and its own `import(...)` in
-   livesearch.js is commented out, so under Clara the pattern arrives with no
-   styles at all. Unpositioned, the list the pattern inserts AFTER the form
-   takes its natural place in the flow and pushes the page down by the height
-   of the results. #portal-searchbox is already `position: relative` for the
-   opened field, so the panel hangs from the same box. */
+/* pat-livesearch ships no styles under Clara, so the panel is positioned
+   here or it pushes the page down. */
 .element-searchbox .livesearch-results {
   position: absolute;
-  /* Clara's dropdown step, the layer this is: above the page, below the
-     toolbar and the modals. */
   z-index: var(--plone-z-dropdown);
   inset-inline: 0;
   inset-block-start: calc(100% + 0.25rem);
   min-inline-size: 0;
-  /* a long result list scrolls in its own sheet rather than running off the
-     bottom of the viewport */
   max-block-size: min(70vh, 32rem);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -363,32 +236,18 @@
   box-shadow: none;
   color: var(--derico-ink);
 }
-/* Closing the search takes the results with it. The list is the form's
-   SIBLING, not its child — the pattern inserts it next to the form — so the
-   rule that hides the form leaves the panel standing over the page. */
+/* The results are the form's sibling, so hiding the form does not hide them. */
 .element-searchbox > .opener:not(:checked) ~ .livesearch-results { display: none; }
 .element-searchbox .livesearch-results li { padding: var(--plone-space-2xs) var(--plone-space-s); }
-/* The row under the pointer and the row under the caret land on the same
-   step. The pattern marks the keyboard row with Bootstrap's `.active`,
-   which is a FILLED state — it carries a light `color` of its own that
-   would be unreadable once the ground is the design's quiet surface, so the
-   ink is restated here. (`.selected`, which this rule named before, is not
-   a class pat-livesearch has ever put on a row.) */
+/* `.active` carries a light Bootstrap colour; restate the ink. */
 .element-searchbox .livesearch-results li:hover,
 .element-searchbox .livesearch-results li.active {
   color: var(--derico-ink);
   background: var(--derico-surface);
 }
-/* The result thumbnail. The pattern's item template hands over a scaled
-   `<img>` with the scale's own width and height ATTRIBUTES on it — 200 by
-   300 for the site's default — and a `max-width: 100%` that narrows such an
-   image without touching its height, which stretches the row to the height
-   of a portrait photograph. A square thumbnail on the row's own step
-   instead, cropped rather than distorted. */
+/* The thumbnail's width/height attributes stretch the row; crop to a square. */
 .element-searchbox .livesearch-results .row { align-items: center; }
-/* `inline-size` as well as the flex shorthand: Bootstrap's `.row > *` sets
-   `width: 100%`, which a `flex-basis: auto` column then takes literally and
-   wraps onto its own line under the copy. */
+/* Bootstrap's `.row > * { width: 100% }` would wrap the column otherwise. */
 .element-searchbox .livesearch-results .col.img { flex: 0 0 auto; inline-size: auto; }
 .element-searchbox .livesearch-results .col.img img {
   inline-size: 3rem;
@@ -397,18 +256,13 @@
   border-radius: var(--plone-radius-s);
 }
 
-/* ── narrow: the mobile header ────────────────────────────────────────────
- * `display: contents` on the two elements whose children have to land on
- * different rows: the menu pill and the magnifier in the bar, the search
- * row, the navigation list and the login link stacked beneath it. Auto
- * placement goes by DOM order, which `order` re-sorts: negative steps keep
- * the header's rows ahead of everything the page puts after them. */
+/* Narrow: `display: contents` lets the children land on separate rows;
+ * negative `order` keeps the header rows ahead of the page content. */
 @container derico-page (max-width: 63.9375rem) {
   .element-globalnav,
   .element-searchbox { display: contents; }
 
-  /* Clara supplies these accordion mechanics through 48rem. Carry them to
-     this sheet's 64rem breakpoint instead of inventing a tablet-only header. */
+  /* Clara's accordion stops at 48rem; carry it up to 64rem. */
   .element-globalnav > .opener {
     display: block;
     position: absolute;
@@ -417,8 +271,6 @@
   }
   .element-globalnav > .opener:not(:checked) ~ #portal-globalnav { display: none; }
 
-  /* the menu pill, the design's `.menu-toggle`: the bar's end, before the
-     magnifier */
   .globalnav-toggle {
     grid-row: 1;
     grid-column: content-start / content-end;
@@ -441,8 +293,7 @@
     font-weight: 700;
     line-height: 1.2;
   }
-  /* the hamburger: two bars that each carry a third as a shadow, folding
-     into a cross when the menu is open */
+  /* two bars, each carrying a third as a shadow; fold into a cross */
   .globalnav-toggle::before,
   .globalnav-toggle::after {
     content: "";
@@ -475,24 +326,17 @@
     align-self: center;
     justify-self: end;
   }
-  /* the switch stays on the bar between the pill and the magnifier, as the
-     mockup keeps it; only the login link folds into the opened menu */
   .element-language {
     grid-column: content-start / content-end;
     margin-inline-end: calc(var(--derico-header-toggle) + var(--plone-space-xs));
   }
-  /* the search row: full width under the bar */
   .element-searchbox form {
     order: -3;
     grid-row: auto;
     grid-column: content-start / content-end;
     padding-block: 0 var(--plone-space-s);
   }
-  /* `display: contents` on the box leaves the panel with no positioned
-     ancestor to hang from — an absolute list here would resolve against the
-     page. On this layout it is a row of its own instead: the same order as
-     the form, so DOM order puts it directly beneath the field and above the
-     accordion, and the rows below move down for it. */
+  /* No positioned ancestor under `display: contents`: flow as a row instead. */
   .element-searchbox .livesearch-results {
     position: static;
     order: -3;
@@ -500,7 +344,6 @@
     grid-column: content-start / content-end;
     margin-block-end: var(--plone-space-s);
   }
-  /* the accordion, the design's `.primary-nav` rows */
   #portal-globalnav {
     order: -2;
     grid-row: auto;
@@ -530,21 +373,14 @@
   }
   #portal-globalnav .megamenu-links { grid-template-columns: 1fr; }
   #portal-globalnav .megamenu-proof { align-self: start; }
-  /* Clara puts the links in column 2 and the proof in column 1 between 48
-     and 64rem — its mid-width shape for a panel that is a wide absolute band
-     at those widths. Here that band is part of the mobile accordion all the
-     way to 64rem, so the PLACEMENT has to come along with the rest of the
-     accordion mechanics above. Left behind, it drops both zones into a
-     column the stacked panel never declared, and the panel grows an implicit
-     second track: two columns inside the phone menu, and the design's single
-     stacked column only below 48rem. */
+  /* Undo Clara's 48–64rem two-column placement, or the stacked panel grows
+     an implicit second track. */
   #portal-globalnav .megamenu-links,
   #portal-globalnav .megamenu-proof {
     grid-row: auto;
     grid-column: auto;
   }
   #portal-globalnav > .nav-item > .megamenu-backdrop { display: none; }
-  /* the login link closes the opened menu; hidden with it */
   .element-anontools {
     order: -1;
     grid-row: auto;
@@ -561,9 +397,7 @@
   .plone-layout:has(.element-globalnav > .opener:not(:checked)) .element-anontools { display: none; }
 }
 
-/* The reference gives up the menu word before the 8rem logo and the search
-   control have to squeeze. Its text remains the checkbox's accessible label;
-   only the painted word moves beyond the pill. */
+/* Hide the menu word visually; it stays the checkbox's accessible label. */
 @container derico-page (max-width: 29.99rem) {
   .globalnav-toggle {
     inline-size: var(--derico-header-toggle);
@@ -574,10 +408,9 @@
   }
 }
 
-/* ── wide: the design's single row ───────────────────────────────────────── */
+/* Wide: one row */
 @container derico-page (min-width: 64rem) {
-  /* the knobs a query sets go on the elements that read them: a container
-     query styles the container's DESCENDANTS, never the container */
+  /* A container query cannot style the container itself. */
   #portal-logo,
   .element-globalnav { --derico-header-bar: 6rem; }
 
@@ -586,20 +419,14 @@
   .element-language,
   .element-searchbox {
     grid-column: full-start / full-end;
-    /* above the navigation element, whose lanes they sit in */
     position: relative;
     z-index: 1;
   }
-  /* …except the search: a stacking context of its own would trap its
-     livesearch results beneath the mega panel's scrim */
+  /* A stacking context here would trap the results under the mega panel scrim. */
   .element-searchbox { z-index: auto; }
   #portal-logo { margin-inline-start: var(--derico-header-edge); }
   #portal-logo img { inline-size: 8.5rem; }
-  /* The end lane, read right to left: the magnifier on the edge, the switch
-     one gap in from it, the login link one switch further. Each offset is
-     the sum of what stands to its right, so adding or removing the switch
-     moves exactly what it should — and `--derico-header-lang` is 0 when
-     there is no switch, which collapses the chain back to what it was. */
+  /* Each end-lane offset sums everything to its right. */
   .element-searchbox { margin-inline-end: var(--derico-header-edge); }
   .element-language {
     margin-inline-end:
@@ -631,12 +458,7 @@
     align-items: center;
     gap: 0.5rem;
   }
-  /* the design's `.nav-link` metrics: a 3.5rem hit area, the underline
-     marker 3px, nudged 0.375rem down so the text sits on the bar's optical
-     centre with the marker beneath it. The fluid step is `cqi`, not `vw`:
-     the row's space is the layout's, so the padding that spends it has to
-     be too, or the toolbar buys the links 8px each out of a lane that never
-     grew. */
+  /* `cqi`, not `vw`: the padding must scale with the layout, not the viewport. */
   #portal-globalnav > .nav-item > .nav-link {
     min-block-size: 3.5rem;
     padding: 0.75rem clamp(0.35rem, 0.7cqi, 0.7rem) 0.35rem;
@@ -653,9 +475,6 @@
     height: 0.42rem;
   }
 
-  /* the field slides out to the start, over the login link and, on a tight
-     viewport, the end of the navigation — a transient overlay on the page
-     ground */
   .element-searchbox form {
     position: absolute;
     z-index: 1;
@@ -667,12 +486,7 @@
     background: var(--derico-ground);
   }
   .element-searchbox .searchButton { inset-inline-end: var(--plone-space-2xs); }
-  /* The panel goes with it. On this layout #portal-searchbox is the
-     magnifier and nothing more — the form slid out of it — so a panel with
-     the box's own edges would be 44px wide beside the field. It takes the
-     field's geometry instead: the same end edge, the same width, and a top
-     half the bar's control below the box's middle, which is where the
-     absolutely-centred form ends. */
+  /* The box is just the magnifier here; match the slid-out field instead. */
   .element-searchbox .livesearch-results {
     inset-inline: auto 100%;
     inline-size: min(22rem, 36cqi);
@@ -680,41 +494,8 @@
   }
 }
 
-/* ── 64–75rem: the same wide bar, on a layout that cannot afford it ────
- * The bar's shape does not change here; what the navigation spends does.
- *
- * The budget, measured rather than estimated — the design's five German
- * top-level labels, in Clara's nav face, on a 1024px layout: 768px. The row
- * has `layout - 2 * edge - lane-start - lane-end` for them, and the end lane
- * now holds three things instead of two (magnifier, language switch, login
- * link — 13.25rem together), which leaves 676px. The labels wrapped before
- * the switch was ever added, though: at the old flat 9.5rem lanes the row
- * had 744px, and "Kontakt" dropped to a second line the moment the site's
- * real navigation replaced the one-item test one. The lanes were never the
- * thing that was short.
- *
- * So the space comes out of the navigation itself, in two steps:
- *
- *   · 64–75rem — the link's fluid side padding and the row's gap go to a
- *     flat 0.25rem. Worth 32px at 1024px, and it is spending that was
- *     invisible anyway: the clamp's own floor is 0.35rem, so this is one
- *     sixth of a space step off each side of five links.
- *   · 64–70rem — the labels themselves step down to 17px, and the logo to
- *     7rem. Worth another 70px, and it brings the row to 653px against the
- *     680px it has. 17px is above the project's 15px type floor and is the
- *     only place in the theme where the nav's size is not Clara's
- *     `--clara-text-nav`; the header at these widths is derico's own
- *     invention (the mockup shows the COMPACT header below 70rem), so there
- *     is no design value being contradicted — only one being extended into
- *     a band the design never drew.
- *
- * Above 75rem nothing here applies and the mockup's own metrics are back.
- *
- * The mega panel is Clara's either way: at exactly 64rem its mid-width shape
- * still applies (that rule's upper bound is inclusive), so the panel is two
- * tracks for that one pixel and three from 64.0625rem up. Both shapes are
- * Clara's own and both fit; nothing here overrides them.
- */
+/* 64–75rem: the nav labels do not fit the wide row, so tighten the padding
+ * and, below 70rem, step the labels down to 17px and the logo to 7rem. */
 @container derico-page (min-width: 64rem) and (max-width: 74.9375rem) {
   #portal-globalnav { gap: 0.25rem; }
   #portal-globalnav > .nav-item > .nav-link { padding-inline: 0.25rem; }
@@ -729,10 +510,7 @@
   #portal-globalnav > .nav-item > .nav-link { font-size: 1.0625rem; }
 }
 
-/* ── motion ──────────────────────────────────────────────────────────────
- * Entrances only; exits are instant, as the mega panel's are. The field
- * wipes out of the magnifier on the wide layouts and settles down under the
- * bar on the narrow one; the glyphs and the hamburger fold. */
+/* Motion: entrances only; exits are instant. */
 @media (prefers-reduced-motion: no-preference) {
   .searchbox-toggle,
   .element-anontools a,

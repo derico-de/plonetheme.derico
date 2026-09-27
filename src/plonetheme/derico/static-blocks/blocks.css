@@ -1,85 +1,25 @@
 
 @keyframes derico-hero-settle { from { transform: translateY(0.75rem); } }
 @keyframes derico-hero-grow-ring { from { transform: scale(0.94); } }
-@scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view) to (.aurora-pattern-island) {/* The Derico Hero.
- *
- * Packaging wraps this whole file in
- *   @scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)
- *       to (.aurora-pattern-island)
- * so it styles the editing canvas, the editor's portals and the public page
- * from one source (contract §6.1). Three roots where the wrapper passes two:
- * a block's sheet has to reach the published page as well.
- *
- * Rules of the road, all of them measured rather than assumed (ticket 07):
- *
- * - Every selector descends from `.derico-hero`, the component's OWN root,
- *   never from Aurora's `.block-derico-hero` wrapper stamp. The wrapper is
- *   the full-bleed box on the view but only the column box in the canvas, so
- *   painting the hero on it clips the breakout in the editor.
- * - The hero never sets `width`. The breakout is Blicca's, on the wrapper
- *   (view) and the inner container (canvas), and `defaultBlockWidth: 'full'`
- *   is the whole of the wiring.
- * - Class names are the mockup's, so this sheet and
- *   `docs/design/derico.de/site/assets/site.css` stay diffable. Descent, not
- *   renaming, is what keeps `.kicker` and `.button` from colliding with the
- *   scope root's shared territory.
- * - `--clara-*` is never named here. The type tokens Clara keeps private
- *   reach this file as `--derico-*` aliases published by `derico.css` §3,
- *   which is the theme's one seam onto Clara. Three of them, not four: the
- *   display step is not aliased, because this block states its own headline
- *   ramp (ticket 15 §3) and no other block reads it.
- *//* ── the block ───────────────────────────────────────────────────────────── */.derico-hero {
-  /* 06 §2 — the hero's own composition, declared on the hero and not on the
-   * scope root every other add-on sheet shares. Promote to derico.css only
-   * when a second brand block actually wants the wash. */
+@scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view) to (.aurora-pattern-island) {/* The Derico Hero. Packaging wraps this file in `@scope (...) to
+ * (.aurora-pattern-island)`. Selectors descend from `.derico-hero`, never the
+ * `.block-derico-hero` wrapper: in the canvas that is only the column box. *//* ── the block ───────────────────────────────────────────────────────────── */.derico-hero {
   --derico-hero-ground: oklch(0.18 0.035 215);
   --derico-hero-wash-mobile: radial-gradient(ellipse 35% 81.9% at -9% 100%,
     oklch(0.18 0.04 215 / 0) 0%,
     oklch(0.18 0.04 215 / 0) 55%,
     oklch(0.18 0.04 215 / 0.75) 65%,
     oklch(0.18 0.04 215 / 0.75) 100%);
-  /* The shell's gutter and the inset it leaves, as tokens rather than as a
-   * formula written twice. `--derico-hero-inset` is the distance from the
-   * hero's edge to the copy's first pixel, and the scrim's left edge is stated
-   * IN it below: the darkening then lands exactly where the text lands, at
-   * every width, instead of at a percentage that only agrees with the text at
-   * the width it was tuned on. The `100%` inside resolves against the hero
-   * both times — the grid's containing block and the mask box are the same
-   * box, the hero having no inline padding. */
+  /* Distance from the hero's edge to the copy, so the scrim starts where the
+   * text does at every width. */
   --derico-hero-gutter: clamp(2rem, 6vw, 6rem);
   --derico-hero-inset: calc((100% - min(100% - var(--derico-hero-gutter),
     var(--plone-measure))) / 2);
-  /* The scrim, and the hero's ONE darkening value. It is what makes the copy
-   * legible over any photograph, and it is now set where that job ends rather
-   * than well past it.
-   *
-   * 0.7379 is the binding minimum, over a white photograph — the worst case,
-   * since a dark scrim composites lightest there — and it is set by the copper
-   * kicker at 4.5:1. (18 claimed that derivation for 0.926; it does not
-   * reproduce. 0.8965 is what the is-now CYAN needs, and the same ticket moved
-   * the cyan onto the opaque legend card, so nothing in the copy asks for it.)
-   * 0.75 clears the minimum by 0.012 — enough that rounding and a re-measured
-   * ink do not silently cross it, little enough that the photograph is still
-   * a photograph behind the words. The test derives the floor and asserts the
-   * guarantee, never this literal, so raising it stays free.
-   *
-   * One value, not two: at wide this covers everything from the copy's inset
-   * to the hero's right edge, and the second layer is switched off there. Two
-   * translucent layers meeting mid-hero is what produced the vertical seam
-   * through the trees at 50%. */
+  /* 0.75 clears the 0.7379 minimum the copper kicker needs for 4.5:1 over a
+   * white photograph. Tests assert the floor, not this literal. */
   --derico-hero-copy-scrim: oklch(0.18 0.04 215 / 0.75);
-  /* The legend's ground, and the one place this design trades a guarantee for
-   * a look. Ticket 18 made the card OPAQUE because the is-now cyan cannot be
-   * rescued translucently over an arbitrary photograph — it needs 0.983 over a
-   * white one. Translucent, the card's contrast therefore depends on the
-   * upload, and 0.6 is derived from THIS one: measured under the legend, the
-   * brightest backdrop behind the cyan title is #444d47, and the cyan clears
-   * 4.5:1 there from alpha 0.5702 up. 0.6 takes that with 0.03 in hand.
-   *
-   * Stated plainly because it is a real cost: a new hero photograph has to be
-   * re-measured. The structural alternative, if that ever bites, is the one
-   * the ring markers already use — an opaque chip under the is-now title. It
-   * is the ONLY binding ink here; copper and the subtitles pass at alpha 0. */
+  /* Derived from the current photograph (cyan clears 4.5:1 from 0.5702);
+   * a new hero image has to be re-measured. */
   --derico-hero-legend-ground: oklch(0.18 0.035 215 / 0.6);
   --derico-hero-ink: oklch(0.99 0.004 215);
   --derico-hero-ink-soft: oklch(0.93 0.018 215);
@@ -90,39 +30,19 @@
 
   position: relative;
   overflow: hidden;
-  /* 06 §8 — a container query, not a media query. The hero's box is
-   * `100vw − var(--aurora-full-bleed-offset)`, so at a 900px viewport with
-   * the toolbar out a viewport query fires at 896 while the hero is 680 and
-   * the second column's `minmax(24rem, …)` overflows — a real defect for
-   * exactly the logged-in administrator this block is built for. Measured:
-   * the canvas hero is 42.5rem there and correctly stays single-column. */
+  /* Container, not media query: the hero is viewport minus the toolbar. */
   container-type: inline-size;
-  /* Ticket 07, measured: `container-type: inline-size` computes
-   * `contain: none` and `position: relative; z-index: auto` is no stacking
-   * context either, so without this the `z-index: -2` media escapes to the
-   * ROOT stacking context and the hero's own opaque ground paints over it —
-   * the photograph vanishes on both surfaces and the result looks
-   * deliberate. 06 §8 dropped this on the theory that container-type brings
-   * `contain: layout`. It does not. */
+  /* container-type makes no stacking context; without this the z-index -2
+   * media escapes and the hero's ground paints over the photograph. */
   isolation: isolate;
-  /* The Plate editable computes `white-space: pre-wrap` and it inherits into
-   * everything rendered inside it, breaking the headline mid-token where the
-   * public view keeps it whole. Safe to normalise because every field is
-   * edited in the sidebar and nothing in here is contenteditable. Parity
-   * comes from STATING the value, not from which value. */
+  /* The Plate editable's `pre-wrap` inherits in here; nothing is editable
+   * inline, so normalise for canvas/view parity. */
   white-space: normal;
   padding-block: var(--plone-space-xl) var(--plone-space-l);
   color: var(--derico-hero-ink);
   background: var(--derico-hero-ground);
-  /* Ticket 17/22 — the hero's body type, stated from the PUBLIC token ladder.
-   * Clara's `:root` already carries the mockup's exact values here
-   * ("Source Sans 3", system-ui, sans-serif and 1.65), and 06 §3 permits a
-   * block sheet to speak `--plone-*`. Stating them on the component's own root
-   * fixes BOTH surfaces from one declaration, which is the whole reason this
-   * seam was chosen over a theme-layer rule: Blicca states its Tailwind stack
-   * on `.aurora-blocks-view` only, so a theme rule fixes the view and breaks
-   * canvas/view parity. The leading moves with the family — 1.6 -> 1.65 is the
-   * legend's entire 291-against-330 height gap that ticket 10 measured. */
+  /* Stated on the block so both surfaces agree: Blicca sets its own stack on
+   * `.aurora-blocks-view` only. */
   font-family: var(--plone-font-body);
   line-height: var(--plone-leading-body);
 }.derico-hero .hero-media,
@@ -135,77 +55,39 @@
   height: 100%;
   object-fit: cover;
   object-position: 50% 50%;
-}/* Single column only. Two columns the scrim covers the hero edge to edge and
- * this layer is switched off entirely (see the 56rem block); here it is the
- * composition below the copy band, carrying the same 0.75 the scrim does so
- * the hero reads as ONE darkness with a hole in it rather than as two washes.
- *
- * 21 §3 still holds: it is cut away from the copy so the scrim is the only
- * layer over the text. Two translucent layers stacked composite darker than
- * either, which is the solid copy panel this design avoids. Measured on the
- * design source: single column the copy occupies the top 4.1% to at most 45.5%
- * of the hero (widest at 320), so the cut clears it with 4.5 points to spare.
- * The stop is proportional because the copy's box is; the feather stays in rem
- * (06 §9) so the softness does not stretch with the viewport. */.derico-hero .hero-wash {
+}/* Single column only (off at 56rem). Cut away from the copy band at the same
+ * 50% the scrim stops at, so two translucent layers never stack on the text. */.derico-hero .hero-wash {
   z-index: -1;
   background: var(--derico-hero-wash-mobile);
   mask-image: linear-gradient(180deg,
     transparent 0 50%,
     black calc(50% + 5rem));
-}/* ── the contrast guarantee (18/21) ──────────────────────────────────────── *//* The scrim rides the HERO, `inset: 0`. At wide it is the hero's only
- * darkening layer, so "the scrim is the only layer over the copy" is true
- * because there is nothing else to stack with; single column the wash below is
- * cut away from the copy band at the same 50% stop this mask paints to, one
- * boundary used twice from opposite sides.
- *
- * It is NOT anchored to the copy column, which was the first attempt: a pseudo
- * inset -5.5rem past the copy box hangs 72px outside the hero at 320 (measured
- * — the hero reported 392 against a 320 client width), and the hero's
- * `overflow: hidden` clips it visually while still reporting the overflow that
- * ticket 15's guarantee is stated in terms of. Widening the guarantee to let a
- * decorative box through would have blinded it to a real headline overflow,
- * which is the defect it exists for. Anchored to the hero there is nothing to
- * hang over.
- *
- * The cost, stated: the plateau is a band rather than a box, so it darkens
- * above and below the text as well. At wide that is the whole hero minus the
- * gutter, which is the point — one backdrop, edge to edge. */.derico-hero::before {
+}/* ── the contrast guarantee ──────────────────────────────────────────────── *//* Anchored to the hero, not the copy column: a pseudo hanging past the copy
+ * box overflows the hero at 320px and trips the overflow guarantee. */.derico-hero::before {
   content: "";
   position: absolute;
   z-index: -1;
   inset: 0;
   pointer-events: none;
   background: var(--derico-hero-copy-scrim);
-  /* Single column: the copy is the top band. Two columns: the left one. The
-   * feather stays in rem so its softness does not stretch (06 §9); only the
-   * boundary is proportional, because only the boundary tracks the box. */
+  /* Proportional boundary, rem feather so the softness does not stretch. */
   mask-image: linear-gradient(180deg,
     black 0 50%,
     transparent calc(50% + 5rem));
-}/* 06 §7 — the mockup's `.shell` formula folded in, over `--plone-measure`
- * (76rem, bit-identical to the mockup's `--site-max`). No `.shell` element
- * and no new token. */.derico-hero .home-hero__grid {
+}/* The mockup's `.shell` formula over `--plone-measure`. */.derico-hero .home-hero__grid {
   position: relative;
   width: min(100% - var(--derico-hero-gutter), var(--plone-measure));
   margin-inline: auto;
   display: grid;
   gap: var(--plone-space-xl);
   align-items: center;
-}/* ── the wrap ladder (ticket 15) ─────────────────────────────────────────── *//* Rung 1, and THE guarantee. A grid or flex item floors at `min-content`, so
- * without this the copy cell grows to its longest word — measured at 320px
- * inside a 288px shell — and the hero's `overflow: hidden` clips it. Stated
- * once over every grid and flex item in the block rather than six times over
- * the elements that happen to overflow today, because the mechanism is
- * identical everywhere and a headline nobody has written yet is covered. */.derico-hero .home-hero__grid > *,
+}/* ── the wrap ladder ─────────────────────────────────────────────────────── *//* Grid/flex items floor at `min-content`; without this a long word grows the
+ * cell and the hero's `overflow: hidden` clips it. */.derico-hero .home-hero__grid > *,
 .derico-hero .action-row > *,
 .derico-hero .ring-legend > * {
   min-width: 0;
-}/* Rung 2. Keeps an unfittable word visible — and it measurably CANNOT stand
- * in for rung 1, because `overflow-wrap` does not feed intrinsic sizing.
- * Rung 3 is `hyphens`, a labelled enhancement: it turns that break into a
- * syllable break wherever the engine has a dictionary for the page language,
- * and silently does nothing where it does not. `lang` is inherited from
- * `main_template`; the block neither stamps it nor offers a field for it. */.derico-hero h1,
+}/* Keeps an unfittable word visible; cannot replace `min-width: 0` because
+ * `overflow-wrap` does not feed intrinsic sizing. */.derico-hero h1,
 .derico-hero .kicker,
 .derico-hero .lede,
 .derico-hero .ring-legend dt,
@@ -224,16 +106,8 @@
   margin-block-start: var(--plone-space-2xs);
   color: var(--derico-hero-ink);
   font-family: var(--derico-font-display);
-  /* Stated here, NOT as an override of `--derico-text-display`: that alias
-   * means "Clara's display size" and Clara's own consumers read it. This
-   * clamp is one design's voice.
-   *
-   * `cqi`, not `vw`: the hero is viewport-minus-toolbar for every logged-in
-   * user on BOTH surfaces (measured 1220 at a 1440 viewport on the public
-   * view too), so a `vw` ramp sizes the headline against a box the page does
-   * not have — which is the 320px clipping defect in miniature. The slope,
-   * not the floor, is what had to move: at 320 the old ramp returns its
-   * middle term, so lowering the floor changed nothing there. */
+  /* `cqi`, not `vw`: the hero is narrower than the viewport for logged-in
+   * users, and a `vw` ramp clips the headline at 320px. */
   font-size: clamp(2.4rem, 1.4rem + 5cqi, 5rem);
   letter-spacing: -0.02em;
 }.derico-hero .lede {
@@ -247,13 +121,8 @@
   align-items: center;
   gap: var(--plone-space-s);
   margin-block-start: var(--plone-space-l);
-}/* 06 §5 — the block owns its CTA. Clara's `.clara-button` lives in
- * `@layer components`, and `scope-wrap.ts` flattens `@layer` out of the
- * editor bundle: unlayered beats layered, so inside the canvas Aurora's
- * scoped preflight `button { background-color: transparent }` wins while on
- * the public view Clara wins — same markup, two appearances. And
- * `.clara-text-link` is `color: var(--clara-ink)`, invisible on this wash, so
- * it needed overriding regardless. */.derico-hero .button {
+}/* Own CTA instead of `.clara-button`: the editor bundle flattens `@layer`, so
+ * Aurora's preflight would win in the canvas and Clara on the view. */.derico-hero .button {
   min-height: 2.875rem;
   display: inline-flex;
   align-items: center;
@@ -290,27 +159,8 @@
 }.derico-hero .rings-disc .ring-thin { stroke-width: 1.5; }.derico-hero .rings-disc .ring-now {
   stroke: var(--derico-hero-ring-now);
   stroke-width: 4;
-}.derico-hero .rings-disc .ring-future { stroke-dasharray: 5 8; }/* Ticket 20/23 — the ring halo. No ink passes 3:1 over an arbitrary
- * photograph: copper (Y 0.5365) needs a backdrop at Y <= 0.1455 and its bright
- * side would need Y >= 1.71, which does not exist; the is-now cyan (Y 0.2836)
- * needs Y <= 0.0612 or Y >= 0.9508. And this is not hypothetical — the SHIPPED
- * forest already fails for 3.3 percent of the rings band in copper and 10.3
- * percent in cyan. `stroke-width` buys nothing (a ratio does not care how thick
- * the line is), so the remedy is an opaque halo: ground beats copper 10.43 and
- * cyan 5.93, and being opaque it makes the adjacency PHOTOGRAPH-INDEPENDENT,
- * which is why the value test needs no image at all.
- *
- * Ground is forced rather than chosen: the halo must be Y <= 0.0612 to serve
- * both inks, a light halo is 1.74 against copper, and a translucent one needs
- * alpha >= 0.78. So no new colour token — this names the same ground the legend
- * card reads.
- *
- * `w` is 2px per side (ticket 20 section 9): the marker chips' own `border: 2px`,
- * and enough that antialiasing on a curved stroke does not leave the effective
- * adjacent colour a blend of halo and photograph. Specificity already beats the
- * ink rules (four classes against three), so no `!important` and no reordering;
- * `fill: none` and `vector-effect: non-scaling-stroke` are inherited from the
- * rule above, which is what makes the halo hold at 375 as well as 1440. */.derico-hero .rings-disc .ring-halo circle { stroke: var(--derico-hero-ground); stroke-width: 6.5; }.derico-hero .rings-disc .ring-halo .ring-thin { stroke-width: 5.5; }.derico-hero .rings-disc .ring-halo .ring-now { stroke-width: 8; }.derico-hero .ring-markers {
+}.derico-hero .rings-disc .ring-future { stroke-dasharray: 5 8; }/* Opaque halo so the ring inks keep 3:1 over any photograph; 2px per side,
+ * matching the marker chips' border. Four classes beat the ink rules' three. */.derico-hero .rings-disc .ring-halo circle { stroke: var(--derico-hero-ground); stroke-width: 6.5; }.derico-hero .rings-disc .ring-halo .ring-thin { stroke-width: 5.5; }.derico-hero .rings-disc .ring-halo .ring-now { stroke-width: 8; }.derico-hero .ring-markers {
   position: absolute;
   inset: 0;
   padding: 0;
@@ -331,40 +181,14 @@
   font-weight: 700;
   line-height: 1;
   transform: translate(-50%, -50%);
-}.derico-hero .ring-markers li:nth-child(1) { left: 41.62%; top: 44.04%; }.derico-hero .ring-markers li:nth-child(2) { left: 50.44%; top: 31.28%; }.derico-hero .ring-markers li:nth-child(3) { left: 59.85%; top: 17.66%; }.derico-hero .ring-markers li:nth-child(4) { left: 67.65%; top: 6.38%; }.derico-hero .ring-markers .is-now { background: var(--derico-hero-ring-now); }/* The legend is HTML BENEATH the SVG precisely so it does not scale with the
- * graphic: ticket 07 measured captions at 15px on both surfaces at both 1440
- * and 375, which is Clara's label floor exactly. *//* 18 §2 — the legend card. Opaque, and forced rather than chosen: the is-now
- * cyan needs a wash alpha of 0.983 to clear 4.5:1 translucently, so nothing
- * short of a ground reaches it. On the ground every existing colour passes
- * with room (cyan 5.94, copper 10.47, ink-soft 15.26), which is why this
- * changes no colours. The card wraps the `<dl>` only — the rings disc keeps
- * floating on the photograph, and carries its own halo instead (ticket 20). */.derico-hero .ring-legend {
+}.derico-hero .ring-markers li:nth-child(1) { left: 41.62%; top: 44.04%; }.derico-hero .ring-markers li:nth-child(2) { left: 50.44%; top: 31.28%; }.derico-hero .ring-markers li:nth-child(3) { left: 59.85%; top: 17.66%; }.derico-hero .ring-markers li:nth-child(4) { left: 67.65%; top: 6.38%; }.derico-hero .ring-markers .is-now { background: var(--derico-hero-ring-now); }/* HTML beneath the SVG so the captions do not scale with the graphic. */.derico-hero .ring-legend {
   margin-block-start: var(--plone-space-s);
   padding: var(--plone-space-m);
-  /* Square. The rounded corner was what made this read as a CARD floating on
-   * the photograph; with the ground line under it and the ground fading out to
-   * the right, it is a band the picture runs into, and a radius on one end of
-   * a thing that dissolves at the other is a contradiction. */
   border-radius: 0;
-  /* Narrower than the disc above it. The legend inherited the figure's 34rem
-   * and spent the right of it on nothing: the longest label ends 256px in.
-   * 30rem holds the labels with 192px left to fade across, and the ragged
-   * right edge is now the fade rather than a box edge. `min()` so the narrow
-   * two-column range, where the column is already under 30rem, is untouched. */
+  /* `min()` leaves the narrow two-column range, already under 30rem, alone. */
   width: min(100%, 30rem);
-  /* The ground holds under the labels, then leaves. The plateau is 18rem and
-   * that is an ABSOLUTE length on purpose: the labels are the same strings at
-   * a fixed size at every width (`--derico-text-label` is not fluid), so the
-   * ink always ends the same distance from the card's left edge — measured,
-   * 256px for the longest German line, which is a share of the card that runs
-   * from 47% at 1440 to 66% at 900. A percentage stop would therefore cut
-   * INTO the copy at exactly the width where the card is tightest, while
-   * 18rem clears the longest line by 32px everywhere.
-   *
-   * The row rules run on past the fade, over the bare photograph. That is
-   * sound rather than lucky: measured on the shipped image they hold 5.33
-   * against the 3:1 a hairline needs, and they are the one legend element
-   * whose ink was never the binding case. */
+  /* Absolute 18rem plateau: the labels are fixed-size, so a percentage stop
+   * would cut into them where the card is narrowest. */
   background: linear-gradient(90deg,
     var(--derico-hero-legend-ground) 0 18rem,
     transparent 100%);
@@ -383,48 +207,13 @@
   color: var(--derico-hero-ink-soft);
   font-size: var(--derico-text-label);
 }.derico-hero .ring-legend b { color: var(--derico-hero-ring); }.derico-hero .ring-legend .is-now dt,
-.derico-hero .ring-legend .is-now b { color: var(--derico-hero-ring-now); }/* ── the 56rem switch (06 §8) ────────────────────────────────────────────── */@container (min-width: 56rem) {
-  /* Off. Two columns the hero carries one darkening layer and one value, so
-   * the backdrop behind the copy is the backdrop behind the rings and the
-   * legend — the same colour all the way to the right edge. What this used to
-   * paint was a SECOND wash at a different alpha, meeting the scrim mid-hero:
-   * two translucent values butted together produce a vertical seam through the
-   * photograph, and no feather hides it because the two sides never match. */
+.derico-hero .ring-legend .is-now b { color: var(--derico-hero-ring-now); }/* ── the 56rem switch ────────────────────────────────────────────────────── */@container (min-width: 56rem) {
+  /* One darkening layer at wide: two translucent washes meeting mid-hero
+   * leave a vertical seam. */
   .derico-hero .hero-wash { display: none; }
-  /* The hero's one darkening layer, and its one reveal.
-   *
-   * 21 painted this plateau from the hero's left EDGE, which is why the
-   * photograph was invisible on the left however bright the upload: the copy
-   * column is inset from that edge by the shell's gutter, and the scrim was
-   * covering the gutter too. Starting it at `--derico-hero-inset` instead
-   * hands that strip back to the photograph at full strength, top to bottom —
-   * no shape, no ellipse, just the plateau beginning where the text begins.
-   *
-   * The feather is a fraction of the inset rather than a length, because the
-   * inset is: it is 27px at 900 and 192px at 1600, so a 3rem feather that
-   * reads as "just before the text" at the design width would start off the
-   * left edge of the hero at 900 and leave no clear strip at all. At 0.45 the
-   * transition always occupies the outer 55% of whatever gutter there is.
-   *
-   * Horizontally there is no second stop: the plateau runs from the inset to
-   * the hero's right edge, so the rings and the legend sit on the same backdrop
-   * the copy does. That is what removed the seam at 50%.
-   *
-   * The second layer is the GROUND LINE, and it is the only place the plateau
-   * ends vertically. Below it the photograph carries no overlay at all — the
-   * forest floor is the brightest thing in the frame and the composition wants
-   * it whole, so the hero stands ON the ground rather than fading into it.
-   *
-   * 188deg, not 180: the line drops to the right, from 83% of the hero's height
-   * under the copy to 98% at the far edge. That is a geometric angle, so its
-   * slope shifts a little with the hero's aspect; measured at 896-1920 it stays
-   * between 4 and 8 degrees, which reads as the same line.
-   *
-   * The plateau's 78% is a FLOOR the action row sets, not a look: the row's
-   * bottom sits at 78.4% of the hero across that whole range, and its
-   * `quiet-link` is an ink the copy guarantee is stated for — white text with
-   * no backing of its own, legible only while the scrim is under it. Raising
-   * the stop is free; lowering it past the row is what the test catches. */
+  /* Scrim starts at the copy inset (feather = 45% of it, since the inset
+   * ranges 27-192px) and ends at a sloped ground line. 78% is a floor: the
+   * action row's white link sits above it and needs the scrim. */
   .derico-hero::before {
     mask-image:
       linear-gradient(90deg,
@@ -438,11 +227,8 @@
   .derico-hero .home-hero__grid {
     grid-template-columns: minmax(0, 1.02fr) minmax(24rem, 0.98fr);
   }
-}/* ── animations: public view only (06 §6) ────────────────────────────────── *//* `:scope.aurora-blocks-view`, not a bare `.aurora-blocks-view` descendant
- * selector: inside `@scope` the latter would look for a DESCENDANT carrying
- * the class. Written this way the rules are a deliberate one-surface seam, so
- * the copy does not re-settle and the rings do not re-grow on every keystroke
- * in the canvas. */@media (prefers-reduced-motion: no-preference) {
+}/* ── animations: public view only ────────────────────────────────────────── *//* `:scope.aurora-blocks-view`: a bare class would match a descendant inside
+ * `@scope`. Keeps the canvas from re-animating on every keystroke. */@media (prefers-reduced-motion: no-preference) {
   :scope.aurora-blocks-view .derico-hero h1,
   :scope.aurora-blocks-view .derico-hero .kicker,
   :scope.aurora-blocks-view .derico-hero .lede,
@@ -462,13 +248,8 @@
   :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(5) { animation-delay: 180ms; }
   :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(6) { animation-delay: 225ms; }
   :scope.aurora-blocks-view .derico-hero .rings-disc circle:nth-child(7) { animation-delay: 270ms; }
-}/* `scope-wrap.ts` hoists `@keyframes` out of the wrap, so these names are
- * global across the whole page — hence the prefix. *//* ── the editor's own chrome ─────────────────────────────────────────────── *//* The nag, and the three sidebar widgets. Both live OUTSIDE `.derico-hero`:
- * the nag so the block's palette cannot reach it, the widgets because the
- * sidebar is a portal into `#sidebar`, which the wrapper deliberately renders
- * inside the `.aurora-editor` scope root so add-on sheets can style it. The
- * scope LIMIT keeps all of this out of the content browser, which is a
- * `.aurora-pattern-island`. */.derico-hero-incomplete {
+}/* `scope-wrap.ts` hoists `@keyframes` out of the wrap: names are page-global. *//* ── the editor's own chrome ─────────────────────────────────────────────── *//* Outside `.derico-hero` on purpose: the sidebar is a portal into `#sidebar`
+ * inside the `.aurora-editor` scope root. */.derico-hero-incomplete {
   margin-block-start: var(--plone-space-2xs);
   color: var(--derico-ink-soft);
   font-size: var(--derico-text-label);
@@ -524,39 +305,16 @@
   float: inline-end;
   color: var(--derico-copper-text);
   font-weight: 700;
-}.derico-hero-widget__ring.is-now > span { color: var(--derico-brand-text); }/* The Derico Page Header.
- *
- * Packaging wraps this whole file in
- *   @scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)
- *       to (.aurora-pattern-island)
- * so it styles the editing canvas, the editor's portals and the public page
- * from one source (contract §6.1).
- *
- * The mockup's `.page-hero` (site.css:652–668, 1450): kicker over the title
- * on the left, the description as the lede at the far right, bottom-aligned
- * once the header is 56rem wide, stacked below that. The same rules the
- * hero's sheet follows: every selector descends from `.derico-page-header`,
- * the component's own root, never from Aurora's wrapper stamp; the block
- * never sets `width`; class names are the mockup's; `--clara-*` is never
- * named — Clara's type tokens reach this file as the `--derico-*` aliases
- * derico.css §3 publishes, and Blicca's title tokens (`--aurora-title-*`,
- * aliased by derico.css §10 to the very values Clara's content header
- * reads) carry the frame and the size, so the header measures what the
- * tree's title row measured. */.derico-page-header {
-  /* The Plate editable computes `white-space: pre-wrap` and it inherits
-   * into everything inside it. Nothing here is contenteditable — the three
-   * controls are native textareas — so normalising costs nothing. */
+}.derico-hero-widget__ring.is-now > span { color: var(--derico-brand-text); }/* The Derico Page Header. Packaging wraps this file in `@scope (...) to
+ * (.aurora-pattern-island)`; selectors descend from `.derico-page-header`. */.derico-page-header {
+  /* The Plate editable's `pre-wrap` inherits in here; the controls are
+   * native textareas, so normalising is safe. */
   white-space: normal;
-  /* Clara's content-header frame, xl above and m below, as the title row
-   * had it (derico.css §10). Stated as the header's own padding: the
-   * wrapper's frame is Blicca's and reads `--aurora-space-*`, which the
-   * document nodes never carried. */
+  /* The header's own padding: the wrapper's frame reads `--aurora-space-*`. */
   padding-block: var(--aurora-title-space-above) var(--aurora-title-space-below);
-  /* A container query, not a media query: the header's box is the layout
-   * rung inside a viewport-minus-toolbar page, on both surfaces. */
+  /* Container, not media query: the header is viewport minus the toolbar. */
   container-type: inline-size;
-  /* The body type, stated from the public ladder so both surfaces agree
-   * (hero ticket 17/22): Blicca states its Tailwind stack on
+  /* Stated here so both surfaces agree: Blicca sets its own stack on
    * `.aurora-blocks-view` only. */
   font-family: var(--plone-font-body);
   line-height: var(--plone-leading-body);
@@ -564,10 +322,8 @@
   display: grid;
   gap: var(--plone-space-m);
   align-items: end;
-}/* Rung 1 of the wrap ladder (hero ticket 15): a grid item floors at
- * `min-content`, so without this a long title grows the cell to its longest
- * word. Rung 2 keeps an unfittable word visible; rung 3 is a labelled
- * enhancement that does nothing where the engine has no dictionary. */.derico-page-header .page-header__grid > * {
+}/* Grid items floor at `min-content`; without this a long title grows the
+ * cell to its longest word. */.derico-page-header .page-header__grid > * {
   min-width: 0;
 }.derico-page-header h1,
 .derico-page-header .page-context,
@@ -575,17 +331,13 @@
   overflow-wrap: break-word;
   -webkit-hyphens: auto;
   hyphens: auto;
-}/* ── copy ────────────────────────────────────────────────────────────────── *//* The mockup's `.page-context`: the copper italic display line. */.derico-page-header .page-context {
+}/* ── copy ────────────────────────────────────────────────────────────────── */.derico-page-header .page-context {
   margin: 0;
   color: var(--derico-copper-text);
   font-family: var(--derico-font-display);
   font-size: var(--derico-text-lede);
   font-style: italic;
-}/* The mockup's `h1` (site.css:156) at the `.page-hero h1` step (:666). The
- * size is Blicca's title token, which derico.css §10 aliases to Clara's
- * heading step — the mockup's `--text-heading`, 56px at 1440 — so this h1
- * and the tree's title node measure the same. The kicker's `--plone-space-xs`
- * under it is the mockup's `.page-hero__grid` inner rhythm. */.derico-page-header h1 {
+}/* Blicca's title size token, so this h1 measures like the tree's title. */.derico-page-header h1 {
   max-width: 15ch;
   margin: 0;
   font-family: var(--derico-font-display);
@@ -596,23 +348,19 @@
   text-wrap: balance;
 }.derico-page-header .page-context + h1 {
   margin-block-start: var(--plone-space-xs);
-}/* The mockup's `.page-hero .lede` (:667): no margin, 48ch, soft ink. */.derico-page-header .lede {
+}.derico-page-header .lede {
   max-width: 48ch;
   margin: 0;
   color: var(--derico-ink-soft);
   font-size: var(--derico-text-lede);
   line-height: 1.5;
-}/* ── the 56rem switch ────────────────────────────────────────────────────── *//* The mockup's `.page-hero__grid` at its 56rem media query (:1450): title
- * half the wider, the lede pushed to the far edge, both on the baseline. */@container (min-width: 56rem) {
+}/* ── the 56rem switch ────────────────────────────────────────────────────── */@container (min-width: 56rem) {
   .derico-page-header .page-header__grid {
     grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.75fr);
     justify-content: space-between;
   }
-}/* ── the canvas's inline controls ────────────────────────────────────────── *//* A textarea that IS the word it stands for: it inherits the font of the
- * heading, the kicker or the lede it sits in, paints no box of its own, and
- * grows with its text (`field-sizing: content`, with a layout-effect
- * fallback in InlineField.tsx). Only the canvas renders these; the published
- * page emits the words themselves. */.derico-page-header .page-header__input {
+}/* ── the canvas's inline controls ────────────────────────────────────────── *//* A textarea styled as the text it edits; InlineField.tsx sizes it where
+ * `field-sizing` is unsupported. */.derico-page-header .page-header__input {
   display: block;
   width: 100%;
   box-sizing: border-box;
