@@ -1,0 +1,14 @@
+{
+  "name": "plonetheme-derico",
+  "private": true,
+  "packageManager": "pnpm@11.22.0",
+  "scripts": {
+    "build": "pnpm --filter plonetheme-derico-blocks build",
+    "typecheck": "pnpm --filter plonetheme-derico-blocks typecheck",
+    "test": "pnpm --filter plonetheme-derico-blocks test",
+    "e2e": "pnpm --filter @derico/hero-e2e e2e",
+    "e2e:view": "pnpm --filter @derico/hero-e2e e2e:view",
+    "e2e:print": "pnpm --filter @derico/hero-e2e e2e:print",
+    "e2e:editor": "pnpm --filter @derico/hero-e2e e2e:editor"
+  }
+}

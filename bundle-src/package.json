@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "description": "Editor-side bundles for plonetheme.derico's brand blocks (Aurora block add-on contract).",
   "type": "module",
-  "packageManager": "pnpm@11.22.0",
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit",

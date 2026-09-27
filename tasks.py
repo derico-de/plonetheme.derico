@@ -136,8 +136,8 @@ def build_blocks(c):
             "PATH. Install it with `corepack enable`, or see bundle-src/README.md.",
             code=1,
         )
-    c.run("pnpm --dir bundle-src install")
-    c.run("pnpm --dir bundle-src build")
+    c.run("pnpm install")
+    c.run("pnpm build")
 
 
 @task
@@ -149,8 +149,8 @@ def test_blocks(c):
             "PATH. Install it with `corepack enable`, or see bundle-src/README.md.",
             code=1,
         )
-    c.run("pnpm --dir bundle-src typecheck")
-    c.run("pnpm --dir bundle-src test")
+    c.run("pnpm typecheck")
+    c.run("pnpm test")
 
 
 @task

@@ -22,16 +22,21 @@ delete it again; set `DERICO_E2E_KEEP=1` to leave it on the site to look at.
 - For `hero-editor.e2e.js` only: the mockup `bundle-plone` (pat-auroraeditor,
   pat-contentbrowser) reachable from the edit page, either as the committed
   bundle or from a dev server. `hero-view.e2e.js` never loads the editor.
-- A Chromium `playwright-core` can launch: either `npx playwright-core install
-  chromium` once, or point `DERICO_E2E_CHROMIUM` at an existing executable.
+- A Chromium `playwright-core` can launch: either
+  `pnpm --filter @derico/hero-e2e exec playwright-core install chromium` once,
+  or point `DERICO_E2E_CHROMIUM` at an existing executable.
 
 ## Running
+
+From the repository root (one pnpm workspace with `bundle-src/`):
 
 ```sh
 pnpm install
 DERICO_E2E_BASE=http://127.0.0.1:8081/Plone \
-DERICO_E2E_CHROMIUM=/usr/bin/chromium pnpm run e2e
+DERICO_E2E_CHROMIUM=/usr/bin/chromium pnpm e2e
 ```
+
+`pnpm e2e:view`, `pnpm e2e:print` and `pnpm e2e:editor` run one script each.
 
 Environment (all optional): `DERICO_E2E_BASE` (default
 `http://127.0.0.1:8081/Plone`), `DERICO_E2E_USER` / `DERICO_E2E_PASSWORD`
@@ -60,14 +65,3 @@ the two shots disagree on are pixels a glyph covered, and the second shot says
 what it covered. Reported per element: the worst ratio, the median, and the
 share of the glyph's own area below the threshold — which is what separates a
 speckle of bright forest under one letter from a line nobody can read.
-
-## Known gaps this suite reports rather than asserts
-
-Both are open tickets, and both are printed as `note` lines on every run:
-
-- **ticket 17** — the hero's body font and leading fall through to Blicca's
-  `.aurora-blocks-view` defaults instead of the theme's own.
-- **ticket 18** — the ring legend's `is-now` row misses WCAG AA over the
-  brightest part of the photograph, and at 375 the numerals go with it. The
-  design source fails the same way. The exceptions in the test are named one
-  by one, so a *new* contrast failure anywhere else still fails the run.

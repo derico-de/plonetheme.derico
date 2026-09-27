@@ -6,7 +6,9 @@ settings:
 
 importers:
 
-  .:
+  .: {}
+
+  bundle-src:
     devDependencies:
       '@plone/helpers':
         specifier: 2.0.0-alpha.7
@@ -56,6 +58,12 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@22.20.1)(jiti@1.21.7)(jsdom@26.1.0)(lightningcss@1.33.0)(yaml@2.9.0)
+
+  e2e:
+    devDependencies:
+      playwright-core:
+        specifier: ^1.49.0
+        version: 1.62.1
 
 packages:
 
@@ -1005,6 +1013,11 @@ packages:
   pirates@4.0.7:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
+
+  playwright-core@1.62.1:
+    resolution: {integrity: sha512-wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   postcss@8.5.26:
     resolution: {integrity: sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==}
@@ -2030,6 +2043,8 @@ snapshots:
   picomatch@4.0.7: {}
 
   pirates@4.0.7: {}
+
+  playwright-core@1.62.1: {}
 
   postcss@8.5.26:
     dependencies:
