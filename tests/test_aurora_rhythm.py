@@ -240,8 +240,20 @@ def test_every_alias_points_at_a_token_clara_or_the_scale_defines():
 
 
 # --------------------------------------------------------------------------
-# The frames: the hero flush, the band heading, the promo's section air
+# The frames: the hero flush, the band heading, the band's edges and run gap
 # --------------------------------------------------------------------------
+
+def _px(step, viewport, props):
+    """A `clamp(<rem>, <rem> + <vw>, <rem>)` step in px at a viewport width."""
+    value = css_tools.resolve(step, props)
+    found = re.fullmatch(
+        r"clamp\(\s*([\d.]+)rem\s*,\s*([\d.]+)rem\s*\+\s*([\d.]+)vw\s*,\s*([\d.]+)rem\s*\)",
+        value,
+    )
+    assert found, f"{step} resolves to {value!r}"
+    low, base, fluid, high = (float(n) for n in found.groups())
+    return min(max(low * 16, base * 16 + fluid * viewport / 100), high * 16)
+
 
 def _frame(selector_fragment):
     for selector, tokens in _frame_rules():
@@ -274,21 +286,36 @@ def test_a_grid_is_framed_on_the_section_step():
     }
 
 
-def test_a_background_run_opens_and_closes_on_the_section_step():
-    """A band is a section, so it is framed like one.
+def test_a_colour_change_is_tighter_than_a_same_colour_run():
+    """The colour edge separates two bands; inside a run only space does.
 
-    Blicca pads every block in a run from the same frame at both ends, which
-    makes the band's outer air and the gaps between its blocks one number.
-    The frame moves to the section step and the run's inner gaps are pinned
-    back to the reading step, so the band opens and closes on 2xl and
-    still breathes on l inside.
+    So a band opens and closes on xl, and the gap after a block that shares
+    its successor's background is 3xl — wider than the two xl edges either
+    side of a colour change.
     """
     tokens = _frame('.block[class*="has--backgroundColor--"]')
     assert tokens == {
-        "--aurora-space-block": "var(--plone-space-2xl)",
-        "--aurora-space-bleed": "var(--plone-space-2xl)",
-        "--aurora-space-continued": "var(--plone-space-l)",
+        "--aurora-space-block": "var(--plone-space-xl)",
+        "--aurora-space-bleed": "var(--plone-space-xl)",
+        "--aurora-space-continued": "var(--plone-space-3xl)",
     }
+
+
+@needs_clara
+def test_the_run_gap_is_never_narrower_than_a_colour_change():
+    props = css_tools.declarations(CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS)
+    props.update(_derico_root())
+    for viewport in range(320, 2561, 20):
+        edges = 2 * _px("--plone-space-xl", viewport, props)
+        gap = _px("--plone-space-3xl", viewport, props)
+        assert gap >= edges, f"at {viewport}px: run gap {gap} < colour change {edges}"
+
+
+def test_a_heading_in_a_run_binds_to_what_follows_it():
+    for level in ("h2", "h3", "h4"):
+        assert _frame(f".block-{level}.is-background-continued") == {
+            "--aurora-space-continued": "var(--plone-space-l)"
+        }
 
 
 @needs_blicca
@@ -316,34 +343,10 @@ def test_blicca_reads_the_inner_gap_at_its_point_of_use():
     ) in sheet, "a full-bleed run's inner gap no longer falls back to bleed"
 
 
-def test_a_promo_sharing_a_band_breathes_on_the_xl_step_both_sides():
-    """The user-facing claim: same background -> big space, both sides.
-
-    Both of the promo's INNER edges — the gap to the block above it in the
-    run (`continuation`) and the gap to the one below (`continued`). The
-    run's outer frame is the band's, and is asserted separately.
-    """
-    tokens = _frame(".block-promo.is-background-continuation")
-    assert tokens == {
-        "--aurora-space-continuation": "var(--plone-space-xl)",
-        "--aurora-space-continued": "var(--plone-space-xl)",
-    }
-    selector = next(s for s, _ in _frame_rules() if ".block-promo" in s)
-    assert ".block-promo.is-background-continued" in selector, (
-        "the first promo of a same-background pair must get the step too, "
-        "or the pair is asymmetric"
-    )
-
-
-@needs_clara
-def test_the_shared_band_step_is_at_least_three_rem():
-    """The floor the spec named: 3rem top and bottom."""
-    props = css_tools.declarations(CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS)
-    props.update(_derico_root())
-    value = css_tools.resolve("--plone-space-xl", props)
-    assert value is not None
-    floor = re.match(r"clamp\(\s*([\d.]+)rem", value)
-    assert floor and float(floor.group(1)) >= 3, value
+def test_a_promo_in_a_run_takes_the_band_s_gap():
+    """No promo-specific run tokens: the band rule already opens the gap."""
+    promo_run = [s for s, _ in _frame_rules() if ".block-promo.is-background" in s]
+    assert not promo_run, promo_run
 
 
 def test_an_unbanded_promo_gets_the_same_step_from_the_frame_token():

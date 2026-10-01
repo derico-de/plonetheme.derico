@@ -43,6 +43,10 @@
     --aurora-space-bleed: var(--plone-space-m);
   }
 
+  .aurora-blocks-view .block[class*="has--backgroundColor--"] {
+    --aurora-space-continued: var(--plone-space-m);
+  }
+
   .element-contentheader {
     padding-block: var(--plone-space-m);
   }

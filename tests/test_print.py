@@ -187,6 +187,10 @@ class TestPrintSheet:
             assert _values_for(selector, "--aurora-space-block") == ["var(--plone-space-m)"]
             assert _values_for(selector, "--aurora-space-bleed") == ["var(--plone-space-m)"]
 
+    def test_a_background_run_closes_up_on_paper(self):
+        """Paper drops the colour, so a run's gap has nothing to outweigh."""
+        assert _values_for(SECTION, "--aurora-space-continued") == ["var(--plone-space-m)"]
+
     def test_the_content_header_closes_up_on_paper(self):
         """The `.page-hero` half of the same rule: an inner page's hero is
         its title and lede, the content header here."""

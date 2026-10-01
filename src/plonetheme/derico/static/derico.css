@@ -184,11 +184,12 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
 
 /* Per-block frames: token-only rules on the block wrapper, which a block's own
  * sheet may not paint on. */
-/* A background is a section: the band frame moves to 2xl, inner gaps stay l. */
+/* A colour change already separates two bands, so a band's edges stay at xl.
+ * Inside a same-colour run only space does, so the gap opens to 3xl. */
 .block[class*="has--backgroundColor--"] {
-  --aurora-space-block: var(--plone-space-2xl);
-  --aurora-space-bleed: var(--plone-space-2xl);
-  --aurora-space-continued: var(--plone-space-l);
+  --aurora-space-block: var(--plone-space-xl);
+  --aurora-space-bleed: var(--plone-space-xl);
+  --aurora-space-continued: var(--plone-space-3xl);
 }
 
 .block-derico-hero {
@@ -199,10 +200,11 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-h2-size: var(--clara-text-heading);
 }
 
-.block-promo.is-background-continuation,
-.block-promo.is-background-continued {
-  --aurora-space-continuation: var(--plone-space-xl);
-  --aurora-space-continued:    var(--plone-space-xl);
+/* A heading binds to what follows it, even inside a run. */
+.block-h2.is-background-continued,
+.block-h3.is-background-continued,
+.block-h4.is-background-continued {
+  --aurora-space-continued: var(--plone-space-l);
 }
 
 /* Read on the bare .block under the background rules, so a banded promo keeps
