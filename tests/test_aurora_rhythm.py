@@ -311,9 +311,9 @@ def test_the_run_gap_is_never_narrower_than_a_colour_change():
         assert gap >= edges, f"at {viewport}px: run gap {gap} < colour change {edges}"
 
 
-def test_a_heading_in_a_run_binds_to_what_follows_it():
-    for level in ("h2", "h3", "h4"):
-        assert _frame(f".block-{level}.is-background-continued") == {
+def test_text_in_a_run_reads_as_one_passage():
+    for block in ("h2", "h3", "h4", "p", "ul", "ol"):
+        assert _frame(f".block-{block}.is-background-continued") == {
             "--aurora-space-continued": "var(--plone-space-l)"
         }
 

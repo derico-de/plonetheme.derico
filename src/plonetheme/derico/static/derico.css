@@ -200,10 +200,13 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-h2-size: var(--clara-text-heading);
 }
 
-/* A heading binds to what follows it, even inside a run. */
+/* Text in a run reads as one passage; a heading binds to what follows it. */
 .block-h2.is-background-continued,
 .block-h3.is-background-continued,
-.block-h4.is-background-continued {
+.block-h4.is-background-continued,
+.block-p.is-background-continued,
+.block-ul.is-background-continued,
+.block-ol.is-background-continued {
   --aurora-space-continued: var(--plone-space-l);
 }
 
