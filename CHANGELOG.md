@@ -18,7 +18,7 @@
 - The footer band gets the design's type.
 - The header gets the design's language switch.
 - Banded blocks are padded like the design's sections.
-- Same-colour blocks stand 3xl apart; a colour change frames each band on xl. Text in a run keeps l.
+- Same-colour blocks stand 3xl apart; a colour change frames each band on xl. Text in a run keeps l, now from Blicca's passage gap.
 - The wordmark uses the brand cyan `#039fba`; the Accent slot follows it.
 - The hero's full bleed is checked in the editor canvas too.
 - German live-search summary reads „Gefunden: N Treffer".

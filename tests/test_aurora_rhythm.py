@@ -290,8 +290,8 @@ def test_a_colour_change_is_tighter_than_a_same_colour_run():
     """The colour edge separates two bands; inside a run only space does.
 
     So a band opens and closes on xl, and the gap after a block that shares
-    its successor's background is 3xl — wider than the two xl edges either
-    side of a colour change.
+    its successor's background is 3xl. Blicca's default would be two xl
+    edges; derico's 3xl is wider than that.
     """
     tokens = _frame('.block[class*="has--backgroundColor--"]')
     assert tokens == {
@@ -311,36 +311,40 @@ def test_the_run_gap_is_never_narrower_than_a_colour_change():
         assert gap >= edges, f"at {viewport}px: run gap {gap} < colour change {edges}"
 
 
-def test_text_in_a_run_reads_as_one_passage():
-    for block in ("h2", "h3", "h4", "p", "ul", "ol"):
-        assert _frame(f".block-{block}.is-background-continued") == {
-            "--aurora-space-continued": "var(--plone-space-l)"
-        }
+def test_the_theme_leaves_text_in_a_run_to_blicca():
+    """Blicca keeps text in a run on its passage gap; derico sets none."""
+    text_rules = [s for s, _ in _frame_rules() if ".is-background-continued" in s]
+    assert not text_rules, text_rules
+    assert all("--aurora-space-passage" not in tokens for _, tokens in _frame_rules())
+
+
+def test_text_in_a_run_keeps_the_l_reading_gap():
+    """Blicca's passage gap is the root frame, which derico sets to l."""
+    assert _derico_root()["--aurora-space-block"] == "var(--plone-space-l)"
 
 
 @needs_blicca
-def test_blicca_reads_the_inner_gap_at_its_point_of_use():
-    """The reason `--aurora-space-continued` is not on Blicca's root.
+def test_blicca_reads_the_run_gaps_at_their_points_of_use():
+    """Why the band rule above reaches the right blocks.
 
-    Declared on `:where(:root)` with a `var(--aurora-space-block)` default it
-    would resolve against the ROOT's frame and inherit that number down, so
-    the rule above would raise the band's frame and leave its inner gaps at
-    the old value — the whole point of the token, silently lost. It only
-    works read at the point of use, with the frame as the fallback.
+    `--aurora-space-continued` is not declared on Blicca's root: there it
+    would resolve against the ROOT's frame and ignore the band's. It is read
+    at the point of use, falling back to two of the block's own frames, and
+    text never reads it. The passage gap is the opposite case, declared on the
+    root on purpose so text keeps the root's l while its band is on xl.
     """
     sheet = re.sub(r"\s+", "", _blicca_sheet())
     assert "--aurora-space-continued:" not in sheet, (
         "blocks_view.css now DECLARES --aurora-space-continued; a root "
         "declaration cannot fall back to a frame the block scopes itself"
     )
-    assert (
-        "padding-block-end:var(--aurora-space-continued,"
-        "var(--aurora-space-block))"
-    ) in sheet, "the run's inner gap no longer falls back to the block frame"
-    assert (
-        "padding-block-end:var(--aurora-space-continued,"
-        "var(--aurora-space-bleed))"
-    ) in sheet, "a full-bleed run's inner gap no longer falls back to bleed"
+    for frame in ("--aurora-space-block", "--aurora-space-bleed"):
+        assert (
+            "padding-block-end:var(--aurora-space-continued,"
+            f"calc(2*var({frame})))"
+        ) in sheet, f"a run's gap no longer falls back to two {frame} frames"
+    assert "--aurora-space-passage:var(--aurora-space-block)" in sheet
+    assert "padding-block-end:var(--aurora-space-passage)" in sheet
 
 
 def test_a_promo_in_a_run_takes_the_band_s_gap():

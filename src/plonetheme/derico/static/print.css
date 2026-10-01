@@ -45,6 +45,7 @@
 
   .aurora-blocks-view .block[class*="has--backgroundColor--"] {
     --aurora-space-continued: var(--plone-space-m);
+    --aurora-space-passage: var(--plone-space-m);
   }
 
   .element-contentheader {

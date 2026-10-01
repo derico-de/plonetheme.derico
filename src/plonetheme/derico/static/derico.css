@@ -185,7 +185,8 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
 /* Per-block frames: token-only rules on the block wrapper, which a block's own
  * sheet may not paint on. */
 /* A colour change already separates two bands, so a band's edges stay at xl.
- * Inside a same-colour run only space does, so the gap opens to 3xl. */
+ * Inside a same-colour run only space does, so the gap opens to 3xl; text in a
+ * run keeps Blicca's passage gap, the root's l. */
 .block[class*="has--backgroundColor--"] {
   --aurora-space-block: var(--plone-space-xl);
   --aurora-space-bleed: var(--plone-space-xl);
@@ -198,16 +199,6 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
 
 .block-h2[class*="has--backgroundColor--"]:not(.is-background-continuation) {
   --aurora-h2-size: var(--clara-text-heading);
-}
-
-/* Text in a run reads as one passage; a heading binds to what follows it. */
-.block-h2.is-background-continued,
-.block-h3.is-background-continued,
-.block-h4.is-background-continued,
-.block-p.is-background-continued,
-.block-ul.is-background-continued,
-.block-ol.is-background-continued {
-  --aurora-space-continued: var(--plone-space-l);
 }
 
 /* Read on the bare .block under the background rules, so a banded promo keeps
