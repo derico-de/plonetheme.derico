@@ -6,11 +6,14 @@ on:
   pull_request:
     branches: [main, master]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      BLICCA_TOKEN: ${{ secrets.BLICCA_TOKEN }}
+      BLICCA_SSH_KEY: ${{ secrets.BLICCA_SSH_KEY }}
     strategy:
       fail-fast: false
       matrix:
@@ -35,15 +38,14 @@ jobs:
       # does not load, and its profile cannot be applied. It is also where the
       # lockstep guards get their upstream from.
       #
-      # The repository is PRIVATE, so this needs a token with read access
-      # (to it and to any other private sibling below). Missing token = red
-      # job, deliberately: a named failure beats a green run over an
-      # uninstallable package.
-      - name: Require the sibling checkout token
-        if: env.BLICCA_TOKEN == ''
+      # The repository is PRIVATE, so use a read-only deploy key scoped to
+      # it, not a personal access token. Missing key = red job, deliberately:
+      # a named failure beats a green run over an uninstallable package.
+      - name: Require the host checkout key
+        if: env.BLICCA_SSH_KEY == ''
         working-directory: .
         run: |
-          echo "::error::BLICCA_TOKEN is not set. plonetheme.derico depends on"
+          echo "::error::BLICCA_SSH_KEY is not set. plonetheme.derico depends on"
           echo "::error::plone.blicca.auroraeditor, which is private and not on"
           echo "::error::PyPI, so neither the install nor the tests can run."
           exit 1
@@ -53,7 +55,6 @@ jobs:
         with:
           repository: MrTango/plonetheme.clara
           ref: main
-          token: ${{ env.BLICCA_TOKEN }}
           path: plonetheme.clara
 
       - name: Check out plone.pageletlayout
@@ -61,7 +62,6 @@ jobs:
         with:
           repository: MrTango/plone.pageletlayout
           ref: main
-          token: ${{ env.BLICCA_TOKEN }}
           path: plone.pageletlayout
 
       - name: Check out plone.app.viewletmanager
@@ -81,9 +81,8 @@ jobs:
       - name: Check out derico.blicca.promoblock
         uses: actions/checkout@v4
         with:
-          repository: MrTango/derico.blicca.promoblock
+          repository: derico-de/derico.blicca.promoblock
           ref: main
-          token: ${{ env.BLICCA_TOKEN }}
           path: derico.blicca.promoblock
 
       - name: Check out plone.blicca.auroraeditor
@@ -91,7 +90,8 @@ jobs:
         with:
           repository: derico-de/plone.blicca.auroraeditor
           ref: main
-          token: ${{ env.BLICCA_TOKEN }}
+          ssh-key: ${{ env.BLICCA_SSH_KEY }}
+          persist-credentials: false
           path: plone.blicca.auroraeditor
 
       - name: Check out plone.namedfile
