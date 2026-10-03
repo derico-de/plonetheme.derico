@@ -2618,6 +2618,7 @@ dependencies = [
     { name = "plone-restapi" },
     { name = "plone-volto" },
     { name = "products-cmfplone" },
+    { name = "requests" },
     { name = "setuptools" },
 ]
 
@@ -2632,6 +2633,9 @@ requires-dist = [
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "plone-volto" },
     { name = "products-cmfplone" },
+    { name = "pytest", marker = "extra == 'test'" },
+    { name = "pytest-plone", marker = "extra == 'test'", specifier = ">=0.5.0" },
+    { name = "requests" },
     { name = "setuptools" },
 ]
 provides-extras = ["test"]
