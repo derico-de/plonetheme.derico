@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+
+  <!-- plone.base's avif-support branch added avif_mode, avif_quality and
+       avif_speed to IImagingSchema. Re-registering the interface adds the
+       three records with their defaults and keeps the values of the
+       existing imaging records. Plone's own upgrade step for this is
+       registered for 6.3.0a1, which a 6.2 site never reaches. -->
+  <records interface="plone.base.interfaces.controlpanel.IImagingSchema"
+           prefix="plone" />
+
+</registry>

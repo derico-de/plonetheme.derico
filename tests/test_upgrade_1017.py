@@ -24,16 +24,16 @@ class TestUpgrade1017:
         self.setup_tool.setLastVersionForProfile(PROFILE, "1016")
 
     def test_turns_the_search_on_demand_on(self):
-        self.setup_tool.upgradeProfile(PROFILE)
+        self.setup_tool.upgradeProfile(PROFILE, dest="1017")
         assert api.portal.get_registry_record(RECORD) is True
 
     def test_drops_header_js_from_the_bundle(self):
-        self.setup_tool.upgradeProfile(PROFILE)
+        self.setup_tool.upgradeProfile(PROFILE, dest="1017")
         assert not api.portal.get_registry_record(f"{BUNDLE}.jscompilation")
 
     def test_keeps_the_rest_of_the_bundle(self):
         api.portal.set_registry_record(f"{BUNDLE}.enabled", False)
-        self.setup_tool.upgradeProfile(PROFILE)
+        self.setup_tool.upgradeProfile(PROFILE, dest="1017")
         assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is False
         assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
             "++resource++plonetheme.derico/header.css"
@@ -41,9 +41,9 @@ class TestUpgrade1017:
 
     def test_leaves_the_other_registry_records_alone(self):
         api.portal.set_registry_record("plone.navigation_depth", 5)
-        self.setup_tool.upgradeProfile(PROFILE)
+        self.setup_tool.upgradeProfile(PROFILE, dest="1017")
         assert api.portal.get_registry_record("plone.navigation_depth") == 5
 
     def test_reaches_the_profile_version(self):
-        self.setup_tool.upgradeProfile(PROFILE)
+        self.setup_tool.upgradeProfile(PROFILE, dest="1017")
         assert self.setup_tool.getLastVersionForProfile(PROFILE) == ("1017",)
