@@ -55,6 +55,7 @@ class HiddenProfiles:
         return [
             "plonetheme.derico:uninstall",
             "plonetheme.derico.upgrades:1017",
+            "plonetheme.derico.upgrades:1018",
         ]
 
 
