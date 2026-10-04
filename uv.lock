@@ -631,23 +631,15 @@ wheels = [
 [[package]]
 name = "derico-blicca-promoblock"
 version = "1.0.0a1"
-source = { editable = "../derico.blicca.promoblock" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "plone" },
     { name = "plone-blicca-auroraeditor" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "plone", specifier = ">=6.0" },
-    { name = "plone-app-testing", marker = "extra == 'test'" },
-    { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
-    { name = "plone-testing", marker = "extra == 'test'" },
-    { name = "pytest", marker = "extra == 'test'" },
-    { name = "pytest-cov", marker = "extra == 'test'" },
-    { name = "pytest-plone", marker = "extra == 'test'", specifier = ">=0.5.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/b6/7e/941fa9228f1d6fb38e4d067eb667237e68a8f24803efa6f4210300655cc7/derico_blicca_promoblock-1.0.0a1.tar.gz", hash = "sha256:65038813f0ffdc546b04127644b2dbfa981adc88c1305ce14e1626781ea2a8f8", size = 768902, upload-time = "2026-10-04T13:45:45.323Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/5e/bd8c6a290f8d43d0037868cbd2562383f0a4969a553aa305eb75eeae262b/derico_blicca_promoblock-1.0.0a1-py3-none-any.whl", hash = "sha256:746725d9143f7718da9bfe9e4d4f6b2eb86510457ae2ddec6c8818d721673c50", size = 113340, upload-time = "2026-10-04T13:45:43.341Z" },
 ]
-provides-extras = ["test"]
 
 [[package]]
 name = "diazo"
@@ -2993,7 +2985,7 @@ requires-dist = [
     { name = "plone-memoize" },
     { name = "plone-protect" },
     { name = "plone-rfc822", specifier = ">=2.0.0" },
-    { name = "plone-scale", extras = ["storage"], specifier = ">=4.2.0" },
+    { name = "plone-scale", extras = ["storage"], specifier = ">=5.2.0.dev0" },
     { name = "plone-schemaeditor" },
     { name = "plone-supermodel" },
     { name = "plone-testing", marker = "extra == 'test'" },
@@ -3259,7 +3251,7 @@ wheels = [
 
 [[package]]
 name = "plone-scale"
-version = "5.1.1.dev0"
+version = "5.2.0.dev0"
 source = { editable = "../plone.scale" }
 dependencies = [
     { name = "lxml" },
@@ -3601,7 +3593,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "collective-fragmentsblock", editable = "../collective.fragmentsblock" },
-    { name = "derico-blicca-promoblock", editable = "../derico.blicca.promoblock" },
+    { name = "derico-blicca-promoblock", specifier = ">=1.0.0a1" },
     { name = "paste" },
     { name = "plone", specifier = ">=6.2" },
     { name = "plone-app-caching", marker = "extra == 'test'" },

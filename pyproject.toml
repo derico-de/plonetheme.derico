@@ -156,8 +156,9 @@ constraint-dependencies = ["Products.CMFPlone==6.2.1"]
 "plone.pageletlayout" = { path = "../plone.pageletlayout", editable = true }
 "plone.app.viewletmanager" = { path = "../plone.app.viewletmanager", editable = true }
 # Not on PyPI: the derico.de project's checkouts, linked into the workspace.
+# derico.blicca.promoblock is released there, so it has no entry: uv.lock
+# pins the release.
 "collective.fragmentsblock" = { path = "../collective.fragmentsblock", editable = true }
-"derico.blicca.promoblock" = { path = "../derico.blicca.promoblock", editable = true }
 "plone.blicca.auroraeditor" = { path = "../plone.blicca.auroraeditor", editable = true }
 # The AVIF support the hero's <picture> relies on, unreleased.
 "plone.namedfile" = { path = "../plone.namedfile", editable = true }
