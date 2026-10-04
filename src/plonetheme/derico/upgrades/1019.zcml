@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1019"
+      title="plonetheme.derico: upgrade to 1019"
+      directory="1019"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1018"
+      destination="1019"
+      profile="plonetheme.derico:default">
+
+    <genericsetup:upgradeStep
+        title="Drop the fragments editor bundle record"
+        description="The fragment block fetches the snippets from the server; the record that loaded derico&#39;s fragments bundle into the editor is retired."
+        handler=".v1019.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1019"
+        import_profile="plonetheme.derico.upgrades:1019"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

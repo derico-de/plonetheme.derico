@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- The snippets reach the editor through `collective.fragmentsblock`'s `@fragments` service. The `fragments` editor bundle, its record and the lockstep tests are gone; `snippets/` is registered with one `fragments:folder` line and each snippet names itself in a first-line `<!-- title: … -->` comment (upgrade step 1019).
 - Squash the upgrade steps 1001–1015 into the 1015 baseline; upgrades start again at 1016.
 - Remove the empty `catalog.xml` scaffold (upgrade step 1016, a no-op).
 - Use Clara's on-demand search; drop the searchbox override and `header.js` (upgrade step 1017).

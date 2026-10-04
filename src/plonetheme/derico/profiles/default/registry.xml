@@ -53,18 +53,6 @@
     <value key="weight">110</value>
   </records>
 
-  <!-- Fragment provider, not a block: a record is the only way a bundle loads
-       into the editor. No `types`, `permission` or `css`: the fragment block's
-       own record gates inserts and snippets.css styles the fragments. -->
-  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
-           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.fragments">
-    <value key="bundle">++plone++plonetheme.derico.blocks/fragments.js</value>
-    <value key="block_api">1.0</value>
-    <value key="types"/>
-    <value key="enabled">True</value>
-    <value key="weight">120</value>
-  </records>
-
   <!-- A theme bundle, not block-record `css`: the sheet carries its own
        `@scope` wrap (see static/snippets.css). -->
   <records interface="plone.base.interfaces.IBundleRegistry"

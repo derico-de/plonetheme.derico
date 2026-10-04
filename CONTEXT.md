@@ -76,11 +76,13 @@ lede, two calls to action, and the rings figure with its four-entry legend.
 _Avoid_: hero banner, homepage block, the hero
 
 **Fragment** (`collective.fragmentsblock`):
-Markup an add-on ships as a file, registered under an id and a title and
+Markup an add-on ships as a file, titled by its first-line comment and
 dropped into a page by the generic fragment block. derico is that add-on's
-first provider: the ornaments under `snippets/` are its fragments, served to
-classic rendering by `fragments.py` and published into the editor's registry
-by the `fragments` bundle. Since profile 1004 this is the ONLY way an
+first provider: the ornaments under `snippets/` are its fragments, registered
+with one `fragments:folder` line in `configure.zcml`. The server renders from
+the folder and the editor fetches the same files through the block's
+`@fragments` service; since profile 1019 no `fragments` editor bundle and no
+record of it exist any more. Since profile 1004 this is the ONLY way an
 ornament reaches a page — the Derico Snippet brand block that used to
 deliver them was retired, its stored nodes converted.
 _Avoid_: fragment as a synonym for "part of a page" in this repo's prose; it

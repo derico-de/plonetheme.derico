@@ -1,7 +1,8 @@
 /**
  * The brand blocks' editor bundles (block add-on contract §1.2): one entry,
- * bundle and record each for `hero`, `pageheader` and `fragments` (ornaments
- * only, no css).
+ * bundle and record each for `hero` and `pageheader`. The snippets reach the
+ * editor through collective.fragmentsblock's own @fragments service and need
+ * no bundle from here.
  *
  * Output goes to `src/plonetheme/derico/static-blocks/`, a second static
  * directory registered as `++plone++plonetheme.derico.blocks` and reserved
@@ -52,11 +53,6 @@ export default defineConfig({
       entry: {
         hero: path.resolve(here, 'src/hero/index.tsx'),
         pageheader: path.resolve(here, 'src/pageheader/index.tsx'),
-        // Not a block: it registers the ornament corpus as fragments for
-        // collective.fragmentsblock's generic block, so its record declares
-        // no `types`. Its own entry, because install() runs once per RECORD
-        // and a shared bundle would break the per-record `enabled` switch.
-        fragments: path.resolve(here, 'src/fragments/index.tsx'),
       },
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,

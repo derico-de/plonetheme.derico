@@ -33,9 +33,6 @@
   <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
            prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader"
            remove="true" />
-  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
-           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.fragments"
-           remove="true" />
 
   <!-- Deliberately asymmetric: the `enormous` scale and the `hero-*` picture
        variants are kept (like Blicca's `fullwidth`), since content elsewhere

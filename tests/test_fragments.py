@@ -1,25 +1,23 @@
 """derico as a fragment provider for ``collective.fragmentsblock``.
 
-The corpus under ``snippets/`` has two readers: the ``IFragmentsProvider``
-utility in ``fragments.py``, which serves classic rendering, and the
-``fragments`` bundle, which publishes the same files into ``@plone/registry``
-for the editor. Since profile 1004 they are the only readers — the Derico
-Snippet brand block that used to render them was retired in favour of
-``collective.fragmentsblock``'s generic fragment block.
-
-What is worth testing is exactly the seam: that the utility is registered
-and resolves the shipped corpus, that the ids the editor half publishes are
-the ids the server can resolve (a mismatch renders on the canvas and
-vanishes when published), and that a page carrying a ``fragment`` block
-comes out with the ornament's own markup. How a fragment looks is the
-mockup's business: it is the design's own markup, restated by
-``static/snippets.css``.
+The corpus under ``snippets/`` is registered with one ``fragments:folder``
+line in ``configure.zcml``. The server renders from the folder, and the
+editor fetches the same files through the block's ``@fragments`` service
+(collective.fragmentsblock, ADR 0002), so nothing editor-side ships from
+this package. What is worth testing is the seam: the utility is registered
+under the expected name over the shipped directory, every snippet carries
+the title the picker shows, the service lists exactly the corpus, and a
+page carrying a ``fragment`` block comes out with the ornament's own
+markup. How a fragment looks is the mockup's business: it is the design's
+own markup, restated by ``static/snippets.css``.
 """
 
-import re
 from pathlib import Path
 
 import pytest
+from collective.fragmentsblock.fragments import derived_title
+from collective.fragmentsblock.fragments import FragmentsFolder
+from collective.fragmentsblock.fragments import records
 from collective.fragmentsblock.interfaces import IFragmentsProvider
 from plone import api
 from plone.app.testing import setRoles
@@ -32,77 +30,70 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
 
-from plonetheme.derico.fragments import FRAGMENTS_DIR
 from plonetheme.derico.interfaces import IPlonethemeDericoLayer
 from plonetheme.derico.testing import INTEGRATION_TESTING
 
 
-HERE = Path(__file__).resolve().parent
-PACKAGE = HERE.parent
-EDITOR_ENTRY = PACKAGE / "bundle-src" / "src" / "fragments" / "index.tsx"
+PACKAGE = Path(__file__).resolve().parent.parent
+SNIPPETS_DIR = PACKAGE / "src" / "plonetheme" / "derico" / "snippets"
 
 PROVIDER_NAME = "plonetheme.derico"
 
-#: `{ id: 'balkenlage', title: '…', html: balkenlage },`
-_RECORD_RE = re.compile(r"\{\s*id:\s*'([^']+)',\s*title:\s*'((?:[^'\\]|\\.)*)'")
-
-
-def editor_records():
-    """The (id, title) pairs the editor bundle publishes.
-
-    Read out of the source rather than imported: the seam under test is
-    that two languages agree about one corpus, and a Node round-trip in a
-    Python suite would only move the question.
-    """
-    source = EDITOR_ENTRY.read_text(encoding="utf-8")
-    return [
-        (fragment_id, title.replace("\\'", "'"))
-        for fragment_id, title in _RECORD_RE.findall(source)
-    ]
+#: What the picker shows per snippet: each file's first-line title comment.
+TITLES = {
+    "balkenlage": "Balkenlage (Trenner)",
+    "service-frame": "Ständerwerk (Rahmen)",
+}
 
 
 class TestProviderRegistration:
-    """The utility half, no site needed."""
-
     layer = INTEGRATION_TESTING
 
-    def test_provider_is_registered_under_the_package_name(self):
+    def test_registered_under_the_package_name_over_the_snippets_folder(self):
         provider = getUtility(IFragmentsProvider, name=PROVIDER_NAME)
-        assert provider is not None
+        assert isinstance(provider, FragmentsFolder)
+        assert provider.directory == SNIPPETS_DIR
 
-    def test_provider_serves_the_shipped_corpus(self):
+    def test_serves_the_shipped_corpus(self):
         provider = getUtility(IFragmentsProvider, name=PROVIDER_NAME)
-        for path in FRAGMENTS_DIR.glob("*.html"):
+        for path in SNIPPETS_DIR.glob("*.html"):
             assert provider.get(path.stem) == path.read_text(encoding="utf-8")
 
     def test_unknown_fragment_is_none(self):
         provider = getUtility(IFragmentsProvider, name=PROVIDER_NAME)
         assert provider.get("no-such-fragment") is None
 
-    def test_the_corpus_is_the_shipped_directory(self):
-        # the ornaments keep their historical home; only the block changed
-        assert FRAGMENTS_DIR == PACKAGE / "src" / "plonetheme" / "derico" / "snippets"
-        assert sorted(p.name for p in FRAGMENTS_DIR.glob("*.html"))
 
-
-class TestCorpusLockstep:
-    """The editor bundle's map against the files the server resolves."""
+class TestTheCorpus:
+    """Every ornament the directory holds, titled for the picker."""
 
     layer = INTEGRATION_TESTING
 
-    def test_editor_publishes_every_shipped_fragment(self):
-        assert sorted(id_ for id_, _ in editor_records()) == sorted(
-            path.stem for path in FRAGMENTS_DIR.glob("*.html")
-        )
+    def test_the_corpus_is_the_shipped_directory(self):
+        assert sorted(path.stem for path in SNIPPETS_DIR.glob("*.html")) == sorted(TITLES)
 
-    def test_editor_ids_are_resolvable_by_the_server(self):
+    def test_every_snippet_carries_its_title(self):
         provider = getUtility(IFragmentsProvider, name=PROVIDER_NAME)
-        for fragment_id, _title in editor_records():
-            assert provider.get(fragment_id) is not None, fragment_id
+        assert {record["id"]: record["title"] for record in provider.records()} == TITLES
 
-    def test_editor_titles_are_not_empty(self):
-        for fragment_id, title in editor_records():
-            assert title.strip(), fragment_id
+    def test_titles_are_the_design_s_names_not_the_fallback(self):
+        # Without its comment line a snippet would show up as a name derived
+        # from the file ("Service frame"), not the design's German one.
+        for fragment_id, title in TITLES.items():
+            assert title != derived_title(fragment_id), fragment_id
+
+
+class TestWhatTheEditorFetches:
+    """``records()``: what the ``@fragments`` service hands the block before its first render."""
+
+    layer = INTEGRATION_TESTING
+
+    def test_lists_the_corpus_with_titles_and_markup(self, integration):
+        items = records()
+        assert {item["id"]: item["title"] for item in items} == TITLES
+        for item in items:
+            source = (SNIPPETS_DIR / f"{item['id']}.html").read_text(encoding="utf-8")
+            assert item["html"] == source
 
 
 class TestFragmentBlockRendering:
@@ -123,38 +114,32 @@ class TestFragmentBlockRendering:
 
     def _render(self, value):
         alsoProvides(self.page, IBlocks)
-        self.page.blocks = {
-            SOMERSAULT_BLOCK_ID: {"@type": SOMERSAULT_BLOCK_TYPE, "value": value}
-        }
+        self.page.blocks = {SOMERSAULT_BLOCK_ID: {"@type": SOMERSAULT_BLOCK_TYPE, "value": value}}
         self.page.blocks_layout = {"items": [SOMERSAULT_BLOCK_ID]}
         view = getMultiAdapter((self.page, self.request), name="aurora-blocks-view")
         return view.render()
 
     def test_fragment_block_renders_the_ornament(self):
-        html = self._render(
-            [
-                {
-                    "type": "ploneBlock",
-                    "@type": "fragment",
-                    "children": [{"text": ""}],
-                    "fragment": "balkenlage",
-                }
-            ]
-        )
-        source = (FRAGMENTS_DIR / "balkenlage.html").read_text(encoding="utf-8")
+        html = self._render([
+            {
+                "type": "ploneBlock",
+                "@type": "fragment",
+                "children": [{"text": ""}],
+                "fragment": "balkenlage",
+            }
+        ])
+        source = (SNIPPETS_DIR / "balkenlage.html").read_text(encoding="utf-8")
         # the ornament's own root class, injected verbatim
         assert 'class="block-fragment"' in html
         assert source.strip() in html
 
     def test_unknown_fragment_leaves_no_visible_trace(self):
-        html = self._render(
-            [
-                {
-                    "type": "ploneBlock",
-                    "@type": "fragment",
-                    "children": [{"text": ""}],
-                    "fragment": "no-such-fragment",
-                }
-            ]
-        )
+        html = self._render([
+            {
+                "type": "ploneBlock",
+                "@type": "fragment",
+                "children": [{"text": ""}],
+                "fragment": "no-such-fragment",
+            }
+        ])
         assert "block-fragment-unresolved" in html

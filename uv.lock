@@ -456,6 +456,7 @@ source = { editable = "../collective.fragmentsblock" }
 dependencies = [
     { name = "plone" },
     { name = "plone-blicca-auroraeditor" },
+    { name = "plone-restapi" },
 ]
 
 [package.metadata]
@@ -463,6 +464,7 @@ requires-dist = [
     { name = "plone", specifier = ">=6.0" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
     { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
+    { name = "plone-restapi" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'" },
@@ -2601,7 +2603,7 @@ wheels = [
 
 [[package]]
 name = "plone-blicca-auroraeditor"
-version = "1.0.0a2"
+version = "1.0.0a3"
 source = { editable = "../plone.blicca.auroraeditor" }
 dependencies = [
     { name = "plone-api" },

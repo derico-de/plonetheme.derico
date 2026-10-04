@@ -1,13 +1,11 @@
-"""Installing the fragment provider: the record that loads its bundle.
+"""Nothing of derico's loads into the editor for the snippets any more.
 
-The provider's own registration is a global utility (``test_fragments.py``);
-what the profile adds is the record that makes ``@@aurora-edit`` load the
-bundle publishing that corpus into the editor's registry. The record is
-unusual in one way worth pinning: it declares NO ``types``, because it
-registers no block. Nothing in Blicca's discovery gates on ``types``, and
-the assertions below are that verdict rather than raw values — a record
-that silently stops being loadable costs the picker its entries with no
-error anywhere.
+Up to profile 1018 a block add-on record loaded ``fragments.js`` — one
+``?raw`` import per snippet — into the editor, because a record is the only
+way a bundle loads at all. Since ``collective.fragmentsblock`` lists every
+provider's fragments itself (``@fragments``, its ADR 0002) the record, the
+bundle and the rebuild they implied are gone (upgrade step 1019). What
+stays is the stylesheet bundle that styles the ornaments on both surfaces.
 """
 
 from pathlib import Path
@@ -26,21 +24,15 @@ from plonetheme.derico.interfaces import IPlonethemeDericoLayer
 from plonetheme.derico.testing import INTEGRATION_TESTING
 
 
-RECORD = "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.fragments"
-ADDON_NAME = "plonetheme.derico.fragments"
-STATIC_BASE = "++plone++plonetheme.derico.blocks"
+#: Retired in profile 1019; collective.fragmentsblock fetches the corpus.
+RETIRED_FRAGMENTS_RECORD = "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.fragments"
+#: Retired in profile 1004; the fragment block renders the ornaments now.
+RETIRED_SNIPPET_RECORD = "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.snippet"
 
 CSS_BUNDLE = "plone.bundles/plonetheme-derico-snippets"
-STATIC_DIR = (
-    Path(__file__).resolve().parent.parent / "src" / "plonetheme" / "derico" / "static"
-)
-
-#: Retired in profile 1004; the fragment block renders the ornaments now.
-RETIRED_RECORD = "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.snippet"
-
-
-def record(name, default=None):
-    return api.portal.get_registry_record(f"{RECORD}.{name}", default=default)
+PACKAGE_DIR = Path(__file__).resolve().parent.parent / "src" / "plonetheme" / "derico"
+STATIC_DIR = PACKAGE_DIR / "static"
+BLOCKS_DIR = PACKAGE_DIR / "static-blocks"
 
 
 def bundle(name, default=None):
@@ -61,88 +53,27 @@ class InstallTestCase:
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         login(self.portal, TEST_USER_NAME)
 
-    def status(self):
-        found = [
-            status
-            for status in blockaddons.evaluate(self.portal)
-            if status.name == ADDON_NAME
-        ]
-        assert found, "the fragments record is not discovered as a block add-on"
-        return found[0]
 
+class TestTheRetiredRecords(InstallTestCase):
+    """Neither bundle derico once loaded for the ornaments exists any more."""
 
-class TestTheFragmentsRecord(InstallTestCase):
-    def test_the_record_is_loadable(self):
-        """Every filter gate passed: enabled, resolvable, compatible."""
-        status = self.status()
-        assert status.loadable, f"the bundle would be skipped: {status.skip_reason}"
+    @pytest.mark.parametrize("record", [RETIRED_FRAGMENTS_RECORD, RETIRED_SNIPPET_RECORD])
+    def test_the_profile_registers_no_record(self, record):
+        assert api.portal.get_registry_record(f"{record}.bundle", default=None) is None
+        assert api.portal.get_registry_record(f"{record}.enabled", default=None) is None
 
-    def test_the_bundle_url_resolves(self):
-        assert self.status().bundle_url
-
-    def test_the_bundle_is_served_from_the_block_directory(self):
-        assert record("bundle") == f"{STATIC_BASE}/fragments.js"
-
-    def test_the_record_declares_no_block_types(self):
-        """The record's whole point: a bundle, no block.
-
-        An @type appearing here would claim a server renderer this package
-        does not ship — the fragment block's renderer belongs to
-        collective.fragmentsblock — and would be reported as a lockstep gap.
-        """
-        assert list(record("types") or []) == []
-
-    def test_the_record_declares_no_stylesheet(self):
-        # the ornaments are styled by the theme's own snippets.css bundle
-        assert not record("css")
-
-    def test_the_record_declares_the_block_api_floor(self):
-        assert record("block_api") == "1.0"
-
-    def test_the_record_is_enabled(self):
-        assert record("enabled") is True
-
-    def test_the_record_gates_nothing(self):
-        """No `permission`, deliberately.
-
-        Withholding this record would not withhold anything insertable; it
-        would only empty the picker for the user allowed to insert the
-        block. Insert-gating for fragments belongs to the fragment block's
-        own record, in collective.fragmentsblock.
-        """
-        assert not record("permission")
-        assert ADDON_NAME not in blockaddons.restricted_block_types(self.portal)
-
-    def test_it_introduces_no_server_renderer_gap(self):
-        """Contract §5.5: a typeless record cannot open one."""
-        gaps = blockaddons.lockstep_gaps(
-            self.portal, self.request, blockaddons.evaluate(self.portal)
-        )
-        assert [gap for gap in gaps if gap["addon"] == ADDON_NAME] == []
-
-
-class TestTheRetiredSnippetRecord(InstallTestCase):
-    """Profile 1004 removed the Derico Snippet block."""
-
-    def test_the_record_is_gone(self):
-        assert (
-            api.portal.get_registry_record(f"{RETIRED_RECORD}.bundle", default=None)
-            is None
-        )
-
-    def test_it_is_not_discovered_as_a_block_addon(self):
+    def test_nothing_of_derico_is_discovered_for_the_ornaments(self):
         names = [status.name for status in blockaddons.evaluate(self.portal)]
+        assert "plonetheme.derico.fragments" not in names
         assert "plonetheme.derico.snippet" not in names
 
-    def test_its_bundle_no_longer_ships(self):
-        blocks_dir = (
-            Path(__file__).resolve().parent.parent
-            / "src"
-            / "plonetheme"
-            / "derico"
-            / "static-blocks"
-        )
-        assert not (blocks_dir / "snippet.js").exists()
+    @pytest.mark.parametrize("filename", ["fragments.js", "snippet.js"])
+    def test_the_bundle_no_longer_ships(self, filename):
+        assert not (BLOCKS_DIR / filename).exists()
+
+    def test_the_uninstall_profile_names_no_fragments_record(self):
+        uninstall = (PACKAGE_DIR / "profiles" / "uninstall" / "registry.xml").read_text()
+        assert "plonetheme.derico.fragments" not in uninstall
 
 
 class TestTheStylesheetBundle(InstallTestCase):
@@ -174,20 +105,10 @@ class TestTheStylesheetBundle(InstallTestCase):
         donut limit (contract §6.1).
         """
         sheet = (STATIC_DIR / "snippets.css").read_text()
-        assert (
-            "@scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)"
-            in sheet
-        )
+        assert "@scope (.aurora-editor, .aurora-editor-portal, .aurora-blocks-view)" in sheet
         assert "to (.aurora-pattern-island)" in sheet
 
     def test_the_sheet_speaks_only_derico_tokens(self):
         """The seam rule the block sheets follow, applied to this one."""
         sheet = (STATIC_DIR / "snippets.css").read_text()
         assert "--clara-" not in sheet
-
-
-class TestUninstall(InstallTestCase):
-    def test_the_record_is_removed(self):
-        api.addon.get_installer(self.portal).uninstall_product("plonetheme.derico")
-        assert record("bundle", default=None) is None
-        assert record("enabled", default=None) is None
