@@ -265,8 +265,7 @@
   margin-block-end: var(--plone-space-2xs);
   font-size: var(--derico-text-label);
   font-weight: 600;
-}.derico-hero-widget textarea,
-.derico-hero-widget input[type='text'] {
+}.derico-hero-widget input[type='text'] {
   width: 100%;
   padding: 0.5rem 0.65rem;
   border: 1px solid var(--derico-rule);
@@ -275,7 +274,7 @@
   color: var(--derico-ink);
   font: inherit;
   font-size: var(--derico-text-label);
-}.derico-hero-widget textarea { resize: vertical; }.derico-hero-widget__description {
+}.derico-hero-widget__description {
   margin-block-start: var(--plone-space-2xs);
   color: var(--derico-ink-soft);
   font-size: var(--derico-text-label);

@@ -8,9 +8,9 @@
  * keeps a fifth ring a template change, not a data migration.
  *
  * Writes the WHOLE four-element array on every keystroke. Uncontrolled inputs
- * over a ref, for the same reason as the textarea: cmsui hands widgets a
- * `defaultValue` and re-renders the form on each change, and a controlled
- * input in that loop loses the caret on every character.
+ * over a ref: cmsui hands widgets a `defaultValue` and re-renders the form on
+ * each change, and a controlled input in that loop loses the caret on every
+ * character.
  */
 import { useCallback, useRef } from 'react';
 

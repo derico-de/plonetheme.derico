@@ -90,12 +90,16 @@ describe('install()', () => {
     expect(Object.keys(definition).sort()).toEqual([
       'derico_reference',
       'derico_ring_legend',
-      'derico_textarea',
     ]);
     // `registerWidget` is a global, last-wins map shared with every add-on.
     for (const generic of ['textarea', 'legend', 'reference']) {
       expect(definition).not.toHaveProperty(generic);
     }
+  });
+
+  test("gives the lede the editor's textarea rather than one of its own", () => {
+    const schema = install(makeConfig()).blocks.blocksConfig[HERO_BLOCK_TYPE].blockSchema;
+    expect(schema.properties.lede.widget).toBe('textarea');
   });
 
   test('still registers the block when the host exposes no widget registry', () => {

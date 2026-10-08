@@ -16,7 +16,6 @@ import HeroView from './HeroView';
 import HeroSchema, { HERO_BLOCK_TYPE } from './schema';
 import DericoReferenceWidget from './widgets/ReferenceWidget';
 import DericoRingLegendWidget from './widgets/RingLegendWidget';
-import DericoTextareaWidget from './widgets/TextareaWidget';
 
 type WidgetRegistry = {
   registerWidget: (registration: {
@@ -37,7 +36,6 @@ export default function installDericoHero<T extends BlocksConfig>(
   registry.registerWidget?.({
     key: 'widget',
     definition: {
-      derico_textarea: DericoTextareaWidget,
       derico_ring_legend: DericoRingLegendWidget,
       derico_reference: DericoReferenceWidget,
     },

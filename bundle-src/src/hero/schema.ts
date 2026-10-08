@@ -72,8 +72,8 @@ export const HeroSchema = {
   properties: {
     kicker: { title: 'Kicker' },
     headline: { title: 'Headline' },
-    // Namespaced: `registerWidget` is a global last-wins map.
-    lede: { title: 'Lede', widget: 'derico_textarea' },
+    // The editor's own multi-line field.
+    lede: { title: 'Lede', widget: 'textarea' },
 
     cta_label: { title: 'Primary call to action' },
     cta_href: contentPick('Primary target'),

@@ -576,7 +576,7 @@ var HeroSchema = {
 		headline: { title: "Headline" },
 		lede: {
 			title: "Lede",
-			widget: "derico_textarea"
+			widget: "textarea"
 		},
 		cta_label: { title: "Primary call to action" },
 		cta_href: contentPick("Primary target"),
@@ -676,9 +676,9 @@ function DericoReferenceWidget(props) {
 * keeps a fifth ring a template change, not a data migration.
 *
 * Writes the WHOLE four-element array on every keystroke. Uncontrolled inputs
-* over a ref, for the same reason as the textarea: cmsui hands widgets a
-* `defaultValue` and re-renders the form on each change, and a controlled
-* input in that loop loses the caret on every character.
+* over a ref: cmsui hands widgets a `defaultValue` and re-renders the form on
+* each change, and a controlled input in that loop loses the caret on every
+* character.
 */
 function DericoRingLegendWidget(props) {
 	const { onChange } = props;
@@ -732,39 +732,11 @@ function DericoRingLegendWidget(props) {
 	});
 }
 //#endregion
-//#region src/hero/widgets/TextareaWidget.tsx
-function DericoTextareaWidget(props) {
-	const initial = props.value ?? props.defaultValue ?? "";
-	const fieldId = props.id ?? props.name;
-	return /* @__PURE__ */ jsxs("div", {
-		className: "derico-hero-widget",
-		children: [
-			props.label ? /* @__PURE__ */ jsx("label", {
-				htmlFor: fieldId,
-				children: props.label
-			}) : null,
-			/* @__PURE__ */ jsx("textarea", {
-				id: fieldId,
-				name: props.name,
-				rows: 4,
-				defaultValue: typeof initial === "string" ? initial : "",
-				placeholder: props.placeholder,
-				onChange: (event) => props.onChange?.(event.target.value)
-			}),
-			props.description ? /* @__PURE__ */ jsx("p", {
-				className: "derico-hero-widget__description",
-				children: props.description
-			}) : null
-		]
-	});
-}
-//#endregion
 //#region src/hero/index.tsx
 function installDericoHero(config) {
 	config.registerWidget?.({
 		key: "widget",
 		definition: {
-			derico_textarea: DericoTextareaWidget,
 			derico_ring_legend: DericoRingLegendWidget,
 			derico_reference: DericoReferenceWidget
 		}

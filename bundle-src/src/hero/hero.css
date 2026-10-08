@@ -357,7 +357,6 @@
   font-size: var(--derico-text-label);
   font-weight: 600;
 }
-.derico-hero-widget textarea,
 .derico-hero-widget input[type='text'] {
   width: 100%;
   padding: 0.5rem 0.65rem;
@@ -368,7 +367,6 @@
   font: inherit;
   font-size: var(--derico-text-label);
 }
-.derico-hero-widget textarea { resize: vertical; }
 .derico-hero-widget__description {
   margin-block-start: var(--plone-space-2xs);
   color: var(--derico-ink-soft);
