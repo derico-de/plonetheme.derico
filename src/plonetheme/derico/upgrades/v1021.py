@@ -1,15 +1,21 @@
 """Drop the retired block_api field."""
-import logging
 
-from .base import reload_gs_profile
+from plone.registry.interfaces import IRegistry
+from zope.component import getUtility
 
-logger = logging.getLogger(__name__)
+
+#: The theme's own block add-on records. Deleting the field directly (no
+#: profile import): setting it in registry.xml would raise KeyError once
+#: block_api has left IAuroraBlockAddon (ADR 0024, plone.blicca.auroraeditor).
+RECORDS = (
+    "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.hero.block_api",
+    "plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader.block_api",
+)
 
 
 def upgrade(context):
-    """block_api is retired (ADR 0024 in plone.blicca.auroraeditor); delete the theme's own orphan block_api records if any are left.
-
-    Upgrade from profile version 1020 to 1021.
-    """
-    logger.info("Running upgrade step: Drop the retired block_api field")
-    reload_gs_profile(context)
+    """Delete the theme's own orphan block_api records, if any are left."""
+    registry = getUtility(IRegistry)
+    for name in RECORDS:
+        if name in registry.records:
+            del registry.records[name]

@@ -26,9 +26,7 @@ class TestUpgrade1020:
         self.setup_tool.setLastVersionForProfile(PROFILE, "1019")
 
     def test_leaves_the_block_records_alone(self):
-        before = {
-            name: api.portal.get_registry_record(f"{PREFIX}/{name}.bundle") for name in NAMES
-        }
+        before = {name: api.portal.get_registry_record(f"{PREFIX}/{name}.bundle") for name in NAMES}
         self.setup_tool.upgradeProfile(PROFILE, dest="1020")
         for name in NAMES:
             assert api.portal.get_registry_record(f"{PREFIX}/{name}.bundle") == before[name]
