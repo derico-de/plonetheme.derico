@@ -21,11 +21,6 @@
         handler=".v1021.upgrade"
         />
 
-    <genericsetup:upgradeDepends
-        title="Apply profile version 1021"
-        import_profile="plonetheme.derico.upgrades:1021"
-        />
-
   </genericsetup:upgradeSteps>
 
 </configure>
