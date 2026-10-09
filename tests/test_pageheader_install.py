@@ -76,7 +76,7 @@ class TestTheBlockRecord(InstallTestCase):
         assert tuple(record("types")) == (BLOCK_TYPE,)
 
     def test_the_record_declares_the_block_api_floor(self):
-        assert record("block_api") == "1.0"
+        assert record("block_api") == "2.0"
 
     def test_the_record_is_enabled(self):
         assert record("enabled") is True

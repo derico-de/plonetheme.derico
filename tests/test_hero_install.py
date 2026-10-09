@@ -144,7 +144,7 @@ class TestTheBlockRecord(InstallTestCase):
         and a mismatch is a fail-soft skip. `test_block_addon_lockstep.py`
         guards the other end: that the floor never exceeds what the host has.
         """
-        assert record("block_api") == "1.0"
+        assert record("block_api") == "2.0"
 
     def test_the_record_is_enabled(self):
         assert record("enabled") is True

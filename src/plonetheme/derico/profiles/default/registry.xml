@@ -22,7 +22,7 @@
 
     <!-- The floor the block needs, not the host's version: a mismatch silently
          drops the block from the slash menu. -->
-    <value key="block_api">1.0</value>
+    <value key="block_api">2.0</value>
 
     <!-- Lib mode emits one stylesheet per build, shared by every block. -->
     <value key="css">++plone++plonetheme.derico.blocks/blocks.css</value>
@@ -44,7 +44,7 @@
   <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
            prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader">
     <value key="bundle">++plone++plonetheme.derico.blocks/pageheader.js</value>
-    <value key="block_api">1.0</value>
+    <value key="block_api">2.0</value>
     <value key="css">++plone++plonetheme.derico.blocks/blocks.css</value>
     <value key="types">
       <element>derico-page-header</element>

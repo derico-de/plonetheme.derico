@@ -73,32 +73,41 @@ def test_the_vendored_scope_wrap_still_matches_upstream():
 
 @needs_blicca
 def test_the_declared_block_api_floor_is_one_the_host_provides():
-    """Declare the floor, not the host's version; exceeding it makes the block vanish."""
+    """Declare the floor, not the host's version; a mismatch makes the block vanish.
+
+    Compatible iff same major and host minor >= declared minor (contract §2.3),
+    for every record.
+    """
     stamp = BLICCA / "src" / "plone" / "blicca" / "auroraeditor" / "static" / "block-api.json"
     assert stamp.is_file(), f"the host's block-api stamp is missing: {stamp}"
     host = json.loads(stamp.read_text())["blockApi"]
 
-    declared = _declared_block_api()
-    if declared is None:
+    declared = _declared_block_apis()
+    if not declared:
         pytest.skip(
             "no block record declares a block_api yet — the record lands with "
             "the server half"
         )
 
-    assert _version(declared) <= _version(host), (
-        f"the record declares block_api {declared} but the host provides "
-        f"{host}; the block would fail-soft and vanish from the slash menu"
-    )
+    for floor in declared:
+        assert _compatible(floor, host), (
+            f"a record declares block_api {floor} but the host provides "
+            f"{host}; the block would fail-soft and vanish from the slash menu"
+        )
 
 
-def _declared_block_api():
+def _declared_block_apis():
     if not REGISTRY.is_file():
-        return None
-    found = re.search(
+        return []
+    return re.findall(
         r"""block_api["']?\s*[">]*\s*([0-9]+\.[0-9]+)""",
         REGISTRY.read_text(),
     )
-    return found.group(1) if found else None
+
+
+def _compatible(declared, host):
+    (major, minor), (host_major, host_minor) = _version(declared), _version(host)
+    return major == host_major and minor <= host_minor
 
 
 def _version(value):

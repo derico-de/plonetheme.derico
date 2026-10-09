@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Declare block-API 2.0 for the Plate 53 editor (upgrade step 1020). The bundles need no rebuild: they import none of the `platejs` names 2.0 removed. The lockstep test now checks every record for a compatible major, not only that the floor is below the host's version.
 - The hero's lede uses the editor's `textarea` widget; the theme's own `derico_textarea` is gone.
 - The snippets reach the editor through `collective.fragmentsblock`'s `@fragments` service. The `fragments` editor bundle, its record and the lockstep tests are gone; `snippets/` is registered with one `fragments:folder` line and each snippet names itself in a first-line `<!-- title: … -->` comment (upgrade step 1019).
 - Squash the upgrade steps 1001–1015 into the 1015 baseline; upgrades start again at 1016.
