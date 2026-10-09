@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Drop the retired `block_api` field from the hero and page header records (ADR 0024 in `plone.blicca.auroraeditor`: block add-ons are checked by the names their bundles import). Upgrade step 1021 deletes the orphan records if a site still holds them; floor `plone.blicca.auroraeditor>=1.0.0a4`. The lockstep test now checks the bundles against the host's name check instead of a `block_api` floor.
 - Declare block-API 2.0 for the Plate 53 editor (upgrade step 1020). The bundles need no rebuild: they import none of the `platejs` names 2.0 removed. The lockstep test now checks every record for a compatible major, not only that the floor is below the host's version.
 - The hero's lede uses the editor's `textarea` widget; the theme's own `derico_textarea` is gone.
 - The snippets reach the editor through `collective.fragmentsblock`'s `@fragments` service. The `fragments` editor bundle, its record and the lockstep tests are gone; `snippets/` is registered with one `fragments:folder` line and each snippet names itself in a first-line `<!-- title: … -->` comment (upgrade step 1019).

@@ -75,8 +75,9 @@ class TestTheBlockRecord(InstallTestCase):
     def test_the_record_declares_the_block_type(self):
         assert tuple(record("types")) == (BLOCK_TYPE,)
 
-    def test_the_record_declares_the_block_api_floor(self):
-        assert record("block_api") == "2.0"
+    def test_the_record_declares_no_block_api(self):
+        """block_api is retired (ADR 0024 in plone.blicca.auroraeditor)."""
+        assert record("block_api", default=None) is None
 
     def test_the_record_is_enabled(self):
         assert record("enabled") is True

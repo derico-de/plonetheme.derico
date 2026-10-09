@@ -1,12 +1,11 @@
 """Installing the Derico Hero: the record, the imaging, and the gate.
 
 The renderer is only half the server half. The other half is packaging, and
-almost all of it fails SILENTLY when it is wrong: a `block_api` a notch too
-high, a bundle path that does not resolve, a `types` list that does not match
-the `@type` the bundle registers — every one of those is a fail-soft skip
-(contract §2.4/§5.5), and the symptom is a block that is simply not in the
-slash menu. Nothing raises, nothing logs at render time, and the author
-reports "the hero is gone".
+almost all of it fails SILENTLY when it is wrong: a bundle path that does not
+resolve, a `types` list that does not match the `@type` the bundle registers
+— every one of those is a fail-soft skip (contract §2.4/§5.5), and the
+symptom is a block that is simply not in the slash menu. Nothing raises,
+nothing logs at render time, and the author reports "the hero is gone".
 
 So the assertions here are mostly Blicca's own verdicts rather than the
 record's raw values: `evaluate()` is what @@aurora-edit runs, and a record
@@ -73,7 +72,7 @@ class TestTheHost(InstallTestCase):
         assert installer.is_product_installed("plone.blicca.auroraeditor")
 
     def test_the_theme_declares_a_python_floor_on_it(self):
-        """`block_api` versions the JS facades alone (contract §2.2/§5.2).
+        """Block add-ons are checked by the names they import, not a record field (ADR 0024).
 
         `browser/hero.py` imports `image_source` and `path_of` from
         `plone.blicca.auroraeditor.rendering`, and no record field says
@@ -137,14 +136,11 @@ class TestTheBlockRecord(InstallTestCase):
         """`types` is diagnostics AND the insert gate, never dispatch."""
         assert tuple(record("types")) == (BLOCK_TYPE,)
 
-    def test_the_record_declares_the_block_api_floor(self):
-        """The FLOOR the block needs, not the host's current version.
-
-        Declaring the host's would let a later host bump strand the block,
-        and a mismatch is a fail-soft skip. `test_block_addon_lockstep.py`
-        guards the other end: that the floor never exceeds what the host has.
-        """
-        assert record("block_api") == "2.0"
+    def test_the_record_declares_no_block_api(self):
+        """block_api is retired (ADR 0024 in plone.blicca.auroraeditor): the
+        editor checks a block add-on by the names its bundle imports, not a
+        declared counter."""
+        assert record("block_api", default=None) is None
 
     def test_the_record_is_enabled(self):
         assert record("enabled") is True
