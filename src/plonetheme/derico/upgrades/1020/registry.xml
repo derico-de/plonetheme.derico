@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
 
-  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
-           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.hero">
-    <value key="block_api">2.0</value>
-  </records>
-
-  <records interface="plone.blicca.auroraeditor.interfaces.IAuroraBlockAddon"
-           prefix="plone.blicca.auroraeditor.blockaddons/plonetheme.derico.pageheader">
-    <value key="block_api">2.0</value>
-  </records>
+  <!-- block_api retired (ADR 0024 in plone.blicca.auroraeditor): this step
+       set it on both records, and setting it would now raise KeyError on
+       import, so there is nothing left for it to do. -->
 
 </registry>

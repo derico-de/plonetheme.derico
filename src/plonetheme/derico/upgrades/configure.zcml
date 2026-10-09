@@ -13,4 +13,6 @@
 
   <include file="1020.zcml" />
 
+  <include file="1021.zcml" />
+
 </configure>

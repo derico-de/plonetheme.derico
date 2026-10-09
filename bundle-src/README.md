@@ -70,7 +70,7 @@ you get a block that compiles and then breaks in the browser.
 
 There is deliberately **no third lockstep guard** for this: wrong types produce
 a compile error or a visibly broken block, not the silent failure that earned
-the vendored plugin and `block_api` theirs.
+the vendored plugin its own.
 
 ## No ESLint, no Prettier, no Biome
 
