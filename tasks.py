@@ -1,4 +1,5 @@
 """Invoke tasks for plonetheme.derico."""
+
 import shutil
 
 from invoke import Exit
@@ -41,11 +42,7 @@ def test(c, verbose=False):
 @task
 def create_instance(c, name="instance", port=8080):
     """Create a new Zope instance using the zope_instance template."""
-    cmd = (
-        f"copier copy --trust --defaults "
-        f"--data instance_name={name} "
-        f"--data port={port} "
-    )
+    cmd = f"copier copy --trust --defaults " f"--data instance_name={name} " f"--data port={port} "
     cmd += "~/.copier-templates/plone-copier-templates/zope_instance ."
     c.run(cmd)
 
@@ -79,11 +76,7 @@ def reconfigure(c, target="instance", name="instance"):
         return
     config = RECONFIGURE_TARGETS[target]
     answers_file = config["answers_file"].format(name=name)
-    cmd = (
-        f"copier recopy --trust --overwrite "
-        f"-a {answers_file} "
-        f"{config['template']} ."
-    )
+    cmd = f"copier recopy --trust --overwrite " f"-a {answers_file} " f"{config['template']} ."
     c.run(cmd, pty=True)
 
 
@@ -93,7 +86,7 @@ def create_site(c, site_id="Plone", instance="instance"):
     import os
     import tempfile
 
-    script = '''
+    script = """
 from Testing.makerequest import makerequest
 import transaction
 app = makerequest(app)
@@ -112,7 +105,7 @@ site_api.create(
 )
 transaction.commit()
 print("Created site: SITE_ID")
-'''.replace("SITE_ID", site_id)
+""".replace("SITE_ID", site_id)
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write(script)
         script_path = f.name

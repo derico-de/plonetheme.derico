@@ -44,7 +44,6 @@ def _po_catalog():
 
 
 class TestTheCatalogOnDisk:
-
     def test_the_source_catalog_is_where_the_theme_keeps_its_translations(self):
         """`.mo` is a build artifact here — the instance compiles it at
         startup (`zope_i18n_compile_mo_files`, the same setting the test
@@ -86,9 +85,9 @@ class TestTheCatalogWins:
             "Plone's own German widgets catalog is not registered here, so "
             "this test proves nothing about order any more"
         )
-        assert str(catalogs[0]).startswith(str(LOCALES) + os.sep), (
-            f"this package's catalog is not first: {catalogs}"
-        )
+        assert str(catalogs[0]).startswith(
+            str(LOCALES) + os.sep
+        ), f"this package's catalog is not first: {catalogs}"
 
     def test_the_summary_line_translates_to_ours(self, integration):
         i18n.prefer_this_packages_catalogs()

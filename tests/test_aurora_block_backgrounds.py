@@ -44,9 +44,7 @@ def _derico_light():
 
 def _effective():
     """Clara's tokens as derico leaves them, so a var() chain resolves."""
-    props = css_tools.declarations(
-        CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS
-    )
+    props = css_tools.declarations(CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS)
     props.update(_derico_light())
     return props
 
@@ -64,12 +62,11 @@ def _blicca_hooks():
 # The names: exactly the hooks Blicca reads, no more and no fewer
 # --------------------------------------------------------------------------
 
+
 @needs_blicca
 def test_the_theme_fills_every_hook_blicca_reads():
     """An unfilled hook falls back to Blicca's generic slate, silently."""
-    declared = {
-        name for name in _derico_light() if name.startswith("--aurora-block-")
-    }
+    declared = {name for name in _derico_light() if name.startswith("--aurora-block-")}
     missing = sorted(_blicca_hooks() - declared)
     assert not missing, (
         f"derico.css leaves {missing} unset, so those slots paint Blicca's "
@@ -80,9 +77,7 @@ def test_the_theme_fills_every_hook_blicca_reads():
 @needs_blicca
 def test_the_theme_invents_no_hook_blicca_does_not_read():
     """A name Blicca never reads is a value nothing in the picker can choose."""
-    declared = {
-        name for name in _derico_light() if name.startswith("--aurora-block-")
-    }
+    declared = {name for name in _derico_light() if name.startswith("--aurora-block-")}
     unknown = sorted(declared - _blicca_hooks())
     assert not unknown, (
         f"derico.css declares {unknown}, which Blicca's palette never reads — "
@@ -113,15 +108,13 @@ EXPECTED_ALIASES = {
 
 
 @pytest.mark.parametrize(("hook", "target"), sorted(EXPECTED_ALIASES.items()))
-def test_each_slot_aliases_a_ladder_step_rather_than_restating_a_value(
-    hook, target
-):
+def test_each_slot_aliases_a_ladder_step_rather_than_restating_a_value(hook, target):
     """A literal here would fork the brand palette where nobody looks."""
     light = _derico_light()
     assert hook in light, f"derico.css does not declare {hook}"
-    assert re.fullmatch(rf"var\(\s*{re.escape(target)}\s*\)", light[hook]), (
-        f"{hook} must alias {target} verbatim; it declares {light[hook]!r}"
-    )
+    assert re.fullmatch(
+        rf"var\(\s*{re.escape(target)}\s*\)", light[hook]
+    ), f"{hook} must alias {target} verbatim; it declares {light[hook]!r}"
 
 
 # --------------------------------------------------------------------------
@@ -167,8 +160,7 @@ def test_slot_contrast(foreground, background, minimum):
     assert bg, f"{background} does not resolve to a colour"
     ratio = css_tools.contrast(fg, bg)
     assert ratio >= minimum, (
-        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, "
-        f"needs {minimum}:1"
+        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, " f"needs {minimum}:1"
     )
 
 

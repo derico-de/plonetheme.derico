@@ -42,9 +42,7 @@ needs_block_sheets = css_tools.needs_block_sheets
 #: to `:where(:scope)`. Matched structurally rather than as a literal string,
 #: so reformatting the sheet does not break the guard while any OTHER
 #: component rule still does.
-CHROME_PREFIX = (
-    "body:has(.aurora-blocks-view > .block:first-child.block-derico-hero)"
-)
+CHROME_PREFIX = "body:has(.aurora-blocks-view > .block:first-child.block-derico-hero)"
 CHROME_TARGETS = {
     ".element-breadcrumbs",
     ".element-byline",
@@ -71,9 +69,7 @@ _WRAPPER_STAMP = (
     r"|:not\(\.is-background-(?:continuation|continued)\)"
     r")"
 )
-FRAME_SELECTOR = re.compile(
-    rf"^(?:\.block-[\w-]+{_WRAPPER_STAMP}*|\.block{_WRAPPER_STAMP}+)$"
-)
+FRAME_SELECTOR = re.compile(rf"^(?:\.block-[\w-]+{_WRAPPER_STAMP}*|\.block{_WRAPPER_STAMP}+)$")
 
 #: Tokens `derico.css` publishes FOR the brand-block sheets rather than using
 #: itself: Clara's private type tokens, re-exported under a `--derico-*` name
@@ -107,30 +103,23 @@ def _is_chrome_suppression(selector):
     if not parts or any(not part for part in parts):
         return False
     return all(
-        part.startswith(CHROME_PREFIX)
-        and part[len(CHROME_PREFIX) :].strip() in CHROME_TARGETS
+        part.startswith(CHROME_PREFIX) and part[len(CHROME_PREFIX) :].strip() in CHROME_TARGETS
         for part in parts
     )
 
 
 def _block_sheet_text():
-    return "\n".join(
-        css_tools.strip_comments(path.read_text()) for path in BLOCK_SHEETS
-    )
+    return "\n".join(css_tools.strip_comments(path.read_text()) for path in BLOCK_SHEETS)
 
 
 def _theme_sheet_text():
-    return "\n".join(
-        css_tools.strip_comments(path.read_text()) for path in THEME_SHEETS
-    )
+    return "\n".join(css_tools.strip_comments(path.read_text()) for path in THEME_SHEETS)
 
 
 def _stylesheet_corpus():
     """Every stylesheet this package ships: the token layer, the theme's own
     sheets for its own markup, and the brand blocks' built sheets."""
-    return "\n".join(
-        [css_tools.strip_comments(DERICO), _theme_sheet_text(), _block_sheet_text()]
-    )
+    return "\n".join([css_tools.strip_comments(DERICO), _theme_sheet_text(), _block_sheet_text()])
 
 
 def _derico_light():
@@ -152,6 +141,7 @@ def _effective_light():
 # 1. Shape: a token sheet, and nothing else
 # --------------------------------------------------------------------------
 
+
 def _is_frame_rule(selector):
     """True for a frame rule: every comma-part a bare wrapper-stamp compound."""
     parts = [part.strip() for part in selector.split(",")]
@@ -166,9 +156,7 @@ def test_sheet_declares_only_root_level_selectors():
     block's own scope-wrapped sheet is structurally unable to reach. Every
     other rule is still a gap in Clara's token contract.
     """
-    selectors = {
-        _normalise(selector) for selector, _ in css_tools._blocks(DERICO)
-    }
+    selectors = {_normalise(selector) for selector, _ in css_tools._blocks(DERICO)}
     allowed = {":root"}
     offenders = sorted(
         selector
@@ -208,9 +196,9 @@ def test_sheet_declares_nothing_but_custom_properties():
                 )
             continue
         for declaration in declarations:
-            assert declaration.startswith("--"), (
-                f"non-token declaration in derico.css: {declaration!r}"
-            )
+            assert declaration.startswith(
+                "--"
+            ), f"non-token declaration in derico.css: {declaration!r}"
 
 
 def test_the_chrome_rule_is_present_and_stays_narrow():
@@ -233,13 +221,9 @@ def test_the_chrome_rule_is_present_and_stays_narrow():
         "down the page leaves the breadcrumbs and title alone"
     )
     matched = [
-        selector
-        for selector, _ in css_tools._blocks(DERICO)
-        if _is_chrome_suppression(selector)
+        selector for selector, _ in css_tools._blocks(DERICO) if _is_chrome_suppression(selector)
     ]
-    assert len(matched) == 1, (
-        f"expected exactly one chrome-suppression rule, found {len(matched)}"
-    )
+    assert len(matched) == 1, f"expected exactly one chrome-suppression rule, found {len(matched)}"
 
 
 def test_sheet_ships_no_second_stylesheet_machinery():
@@ -252,6 +236,7 @@ def test_sheet_ships_no_second_stylesheet_machinery():
 # --------------------------------------------------------------------------
 # 2. Every override lands on something real
 # --------------------------------------------------------------------------
+
 
 @needs_clara
 def test_every_override_targets_a_token_clara_defines():
@@ -269,12 +254,9 @@ def test_every_override_targets_a_token_clara_defines():
     unknown = [
         name
         for name in _derico_light()
-        if not name.startswith(("--derico-", "--aurora-", "--promo-"))
-        and name not in clara
+        if not name.startswith(("--derico-", "--aurora-", "--promo-")) and name not in clara
     ]
-    assert not unknown, (
-        f"derico.css overrides tokens Clara does not define: {sorted(unknown)}"
-    )
+    assert not unknown, f"derico.css overrides tokens Clara does not define: {sorted(unknown)}"
 
 
 def test_every_derico_token_is_used():
@@ -288,9 +270,7 @@ def test_every_derico_token_is_used():
     first block is built, which the block sheets' absence makes possible.
     """
     corpus = _stylesheet_corpus()
-    declared = {
-        name for name in _derico_light() if name.startswith("--derico-")
-    }
+    declared = {name for name in _derico_light() if name.startswith("--derico-")}
     for name in sorted(declared - PUBLISHED_TO_BLOCK_SHEETS):
         references = len(re.findall(rf"var\(\s*{re.escape(name)}\b", corpus))
         assert references >= 1, f"{name} is declared but never used"
@@ -306,8 +286,7 @@ def test_published_aliases_are_aliases_of_claras_own_tokens():
     light = _derico_light()
     for name in sorted(PUBLISHED_ALIASES):
         assert name in light, (
-            f"{name} is published for the block sheets but derico.css does "
-            "not declare it"
+            f"{name} is published for the block sheets but derico.css does " "not declare it"
         )
         assert re.fullmatch(r"var\(\s*--clara-[\w-]+\s*\)", light[name]), (
             f"{name} must alias a --clara-* token verbatim, not restate a "
@@ -325,9 +304,8 @@ def test_published_aliases_still_point_at_something_clara_defines():
         target = re.findall(r"--clara-[\w-]+", light.get(name, ""))
         if not target or target[0] not in clara:
             missing.append(f"{name} -> {target[0] if target else '?'}")
-    assert not missing, (
-        "these aliases point at tokens Clara no longer defines: "
-        + ", ".join(missing)
+    assert not missing, "these aliases point at tokens Clara no longer defines: " + ", ".join(
+        missing
     )
 
 
@@ -361,6 +339,7 @@ def test_no_other_sheet_names_a_clara_token():
 # --------------------------------------------------------------------------
 # 3. Nothing is overridden that did not need overriding
 # --------------------------------------------------------------------------
+
 
 @needs_clara
 def test_no_override_restates_claras_own_value():
@@ -463,6 +442,7 @@ def test_error_family_needs_no_override():
 # 4. Nothing that DID need overriding was missed
 # --------------------------------------------------------------------------
 
+
 @needs_clara
 def test_no_plone_blue_survives_in_the_token_layer():
     """Every token derico's site resolves to must be off Clara's blue ladder.
@@ -494,9 +474,8 @@ def test_no_plone_blue_survives_in_the_token_layer():
         value = css_tools.to_hex(css_tools.resolve(name, effective))
         if value in klarsicht_blues:
             leaked[name] = value
-    assert not leaked, (
-        "Clara's blue ladder still reaches these roles: "
-        + ", ".join(f"{k}={v}" for k, v in sorted(leaked.items()))
+    assert not leaked, "Clara's blue ladder still reaches these roles: " + ", ".join(
+        f"{k}={v}" for k, v in sorted(leaked.items())
     )
 
 
@@ -507,8 +486,7 @@ def test_accent_role_is_copper_everywhere():
     copper_text = css_tools.oklch_to_hex(0.49, 0.18, 55)
     assert css_tools.to_hex(css_tools.resolve("--plone-color-accent", effective)) == copper
     assert (
-        css_tools.to_hex(css_tools.resolve("--plone-color-accent-strong", effective))
-        == copper_text
+        css_tools.to_hex(css_tools.resolve("--plone-color-accent-strong", effective)) == copper_text
     )
     # Clara's amber hooks are what its components actually paint with
     assert css_tools.to_hex(css_tools.resolve("--clara-amber", effective)) == copper
@@ -525,9 +503,7 @@ def test_cta_outline_is_the_copper_fill_not_klarsichts_ink():
     is the fill, so no outline reads.
     """
     effective = _effective_light()
-    outline = css_tools.to_hex(
-        css_tools.resolve("--clara-button-border-color", effective)
-    )
+    outline = css_tools.to_hex(css_tools.resolve("--clara-button-border-color", effective))
     fill = css_tools.to_hex(css_tools.resolve("--clara-amber", effective))
     ink = css_tools.to_hex(css_tools.resolve("--clara-ink", effective))
     assert outline == fill, "the CTA outline must vanish into the copper fill"
@@ -537,9 +513,7 @@ def test_cta_outline_is_the_copper_fill_not_klarsichts_ink():
 @needs_clara
 def test_primary_role_is_the_exact_brand_cyan():
     effective = _effective_light()
-    assert css_tools.to_hex(
-        css_tools.resolve("--plone-color-primary", effective)
-    ) == "#039fba"
+    assert css_tools.to_hex(css_tools.resolve("--plone-color-primary", effective)) == "#039fba"
 
 
 # --------------------------------------------------------------------------
@@ -605,9 +579,9 @@ def test_compile_time_blue_is_overridden_by_the_token_bridge(selector, prop):
         "blue — Clara's bridge lost the rebind, and no token override can "
         "reach it. Fix plonetheme.clara/theme/scss/_clara-bridge.scss."
     )
-    assert "var(--plone-" in value, (
-        f"{selector} {{{prop}: {value}}} is a literal; it must read a token"
-    )
+    assert (
+        "var(--plone-" in value
+    ), f"{selector} {{{prop}: {value}}} is a literal; it must read a token"
 
 
 @needs_clara

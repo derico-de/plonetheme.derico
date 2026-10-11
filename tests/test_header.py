@@ -194,9 +194,10 @@ class TestLivesearchPanel:
 
     def test_the_narrow_layout_puts_it_back_in_the_flow(self):
         """`display: contents` on the box leaves nothing to hang from."""
-        assert any("position: static" in body for body in self._bodies(
-            ".element-searchbox .livesearch-results"
-        )), "the narrow header must place the panel as a row of its own"
+        assert any(
+            "position: static" in body
+            for body in self._bodies(".element-searchbox .livesearch-results")
+        ), "the narrow header must place the panel as a row of its own"
 
     @pytest.mark.skipif(
         css_tools.clara_bundle_path() is None,
@@ -229,9 +230,9 @@ class TestLanguageSwitch:
         ]
 
     def test_the_sheet_dresses_the_element(self):
-        assert self._bodies(".element-language"), (
-            "the header sheet no longer dresses the language switch"
-        )
+        assert self._bodies(
+            ".element-language"
+        ), "the header sheet no longer dresses the language switch"
 
     def test_the_slash_is_drawn_not_written(self):
         """The mockup ships `<li aria-hidden="true">/</li>`; Clara's markup
@@ -255,9 +256,9 @@ class TestLanguageSwitch:
         the switch stands in it. Stated as a sum of the three widths rather
         than as one measured number, so the lane and the margins that place
         the three elements cannot drift apart."""
-        lane = css_tools.declarations(
-            HEADER_CSS.read_text(), [".plone-layout"]
-        )["--derico-header-lane-end"]
+        lane = css_tools.declarations(HEADER_CSS.read_text(), [".plone-layout"])[
+            "--derico-header-lane-end"
+        ]
         for knob in (
             "--derico-header-toggle",
             "--derico-header-lang",
@@ -272,9 +273,9 @@ class TestLanguageSwitch:
         text = css_tools.strip_comments(HEADER_CSS.read_text())
         base = css_tools.declarations(HEADER_CSS.read_text(), [".plone-layout"])
         assert base["--derico-header-lang"] == "0rem"
-        assert ".plone-layout:has(#portal-top > .element-language)" in text, (
-            "nothing asks whether the switch is actually there"
-        )
+        assert (
+            ".plone-layout:has(#portal-top > .element-language)" in text
+        ), "nothing asks whether the switch is actually there"
 
     def test_the_narrow_bar_keeps_the_switch(self):
         """The mockup keeps `DE / EN` on the bar row at every width — only

@@ -91,9 +91,9 @@ class TestPrintBundle:
         bundle requesting a stylesheet the site no longer ships."""
         uninstall = css_tools.PACKAGE / "src/plonetheme/derico/profiles/uninstall/registry.xml"
         text = uninstall.read_text()
-        assert re.search(rf'prefix="{re.escape(BUNDLE)}"\s+remove="true"', text), (
-            "profiles/uninstall/registry.xml does not remove the print bundle"
-        )
+        assert re.search(
+            rf'prefix="{re.escape(BUNDLE)}"\s+remove="true"', text
+        ), "profiles/uninstall/registry.xml does not remove the print bundle"
 
 
 class TestPrintSheet:
@@ -111,9 +111,9 @@ class TestPrintSheet:
                 depth += 1
             elif char == "}":
                 depth -= 1
-                assert depth > 0 or position == len(text) - 1, (
-                    "a rule sits outside the @media print block"
-                )
+                assert (
+                    depth > 0 or position == len(text) - 1
+                ), "a rule sits outside the @media print block"
         assert depth == 0
 
     def test_the_chrome_goes(self):

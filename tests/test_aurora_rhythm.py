@@ -37,9 +37,7 @@ needs_clara = pytest.mark.skipif(
 
 
 def _blicca_sheet():
-    return (
-        Path(blicca_plate.__file__).parent / "static" / "blocks_view.css"
-    ).read_text()
+    return (Path(blicca_plate.__file__).parent / "static" / "blocks_view.css").read_text()
 
 
 def _blicca_tokens():
@@ -53,11 +51,7 @@ def _blicca_tokens():
     that reads it. Read is as good as declared for this test's purpose: the
     question is whether derico's value reaches anything.
     """
-    declared = set(
-        css_tools.declarations(
-            _blicca_sheet(), (":where(:root)", ":root", "body")
-        )
-    )
+    declared = set(css_tools.declarations(_blicca_sheet(), (":where(:root)", ":root", "body")))
     read = set(re.findall(r"var\(\s*(--aurora-[\w-]+)", _blicca_sheet()))
     return declared | read
 
@@ -85,7 +79,8 @@ def _frame_rules():
 
 def _rhythm_tokens_derico_sets():
     root = {
-        name for name in _derico_root()
+        name
+        for name in _derico_root()
         if name.startswith("--aurora-") and not name.startswith("--aurora-block-")
     }
     for _, tokens in _frame_rules():
@@ -97,13 +92,12 @@ def _rhythm_tokens_derico_sets():
 # The names: every token derico sets is one Blicca declares
 # --------------------------------------------------------------------------
 
+
 @needs_blicca
 def test_every_rhythm_token_the_theme_sets_is_one_blicca_declares():
     """A name Blicca never declares is a value nothing reads."""
     unknown = sorted(_rhythm_tokens_derico_sets() - _blicca_tokens())
-    assert not unknown, (
-        f"derico.css sets {unknown}, which blocks_view.css does not declare"
-    )
+    assert not unknown, f"derico.css sets {unknown}, which blocks_view.css does not declare"
 
 
 @needs_blicca
@@ -131,9 +125,7 @@ def test_the_run_markers_the_frame_rules_key_on_are_blicca_s():
     source = Path(blicca_plate.__file__).read_text()
     for selector, _ in _frame_rules():
         for marker in re.findall(r"is-background-[\w-]+", selector):
-            assert marker in source, (
-                f"{selector!r} keys on {marker!r}, which plate.py never stamps"
-            )
+            assert marker in source, f"{selector!r} keys on {marker!r}, which plate.py never stamps"
 
 
 # --------------------------------------------------------------------------
@@ -197,14 +189,12 @@ EXPECTED_LITERALS = {
 
 
 @pytest.mark.parametrize(("token", "target"), sorted(EXPECTED_ALIASES.items()))
-def test_each_root_token_aliases_a_step_rather_than_restating_a_value(
-    token, target
-):
+def test_each_root_token_aliases_a_step_rather_than_restating_a_value(token, target):
     root = _derico_root()
     assert token in root, f"derico.css does not declare {token} on :root"
-    assert re.fullmatch(rf"var\(\s*{re.escape(target)}\s*\)", root[token]), (
-        f"{token} must alias {target} verbatim; it declares {root[token]!r}"
-    )
+    assert re.fullmatch(
+        rf"var\(\s*{re.escape(target)}\s*\)", root[token]
+    ), f"{token} must alias {target} verbatim; it declares {root[token]!r}"
 
 
 @pytest.mark.parametrize(("token", "value"), sorted(EXPECTED_LITERALS.items()))
@@ -217,13 +207,13 @@ def test_the_view_gutter_is_handed_back_to_the_theme(token, value):
 def test_the_root_sets_no_rhythm_token_beyond_the_expected_ones():
     """A new token here is a new design claim; name it above."""
     root = {
-        name for name in _derico_root()
+        name
+        for name in _derico_root()
         if name.startswith("--aurora-") and not name.startswith("--aurora-block-")
     }
     expected = set(EXPECTED_ALIASES) | set(EXPECTED_LITERALS)
     assert root == expected, (
-        f"unexpected: {sorted(root - expected)}, "
-        f"missing: {sorted(expected - root)}"
+        f"unexpected: {sorted(root - expected)}, " f"missing: {sorted(expected - root)}"
     )
 
 
@@ -233,15 +223,14 @@ def test_every_alias_points_at_a_token_clara_or_the_scale_defines():
     value nothing resolves."""
     clara = css_tools.declarations(CLARA_PATH.read_text(), css_tools.ROOT_SELECTORS)
     own = {name for name in _derico_root() if name.startswith("--derico-")}
-    missing = sorted(
-        t for t in EXPECTED_ALIASES.values() if t not in clara and t not in own
-    )
+    missing = sorted(t for t in EXPECTED_ALIASES.values() if t not in clara and t not in own)
     assert not missing, f"neither Clara nor derico.css defines {missing}"
 
 
 # --------------------------------------------------------------------------
 # The frames: the hero flush, the band heading, the band's edges and run gap
 # --------------------------------------------------------------------------
+
 
 def _px(step, viewport, props):
     """A `clamp(<rem>, <rem> + <vw>, <rem>)` step in px at a viewport width."""
@@ -268,12 +257,10 @@ def test_the_hero_wrapper_carries_no_bleed_frame():
 
 
 def test_a_heading_that_opens_a_band_is_the_section_step():
-    tokens = _frame(".block-h2[class*=\"has--backgroundColor--\"]")
+    tokens = _frame('.block-h2[class*="has--backgroundColor--"]')
     assert tokens == {"--aurora-h2-size": "var(--clara-text-heading)"}
     # ...and only the OPENER: a continuation heading keeps the prose step
-    selector = next(
-        s for s, _ in _frame_rules() if ".block-h2" in s
-    )
+    selector = next(s for s, _ in _frame_rules() if ".block-h2" in s)
     assert ":not(.is-background-continuation)" in selector
 
 
@@ -281,9 +268,7 @@ def test_a_grid_is_framed_on_the_section_step():
     """Every article grid in the mockup is a `.section`, padded on `xl`
     (`.sustainability-article .section`); Blicca frames a grid on the
     reading step. Unbanded only: the background rule outranks this one."""
-    assert _frame(".block-column_group") == {
-        "--aurora-space-block": "var(--plone-space-xl)"
-    }
+    assert _frame(".block-column_group") == {"--aurora-space-block": "var(--plone-space-xl)"}
 
 
 def test_a_colour_change_is_tighter_than_a_same_colour_run():
@@ -340,8 +325,7 @@ def test_blicca_reads_the_run_gaps_at_their_points_of_use():
     )
     for frame in ("--aurora-space-block", "--aurora-space-bleed"):
         assert (
-            "padding-block-end:var(--aurora-space-continued,"
-            f"calc(2*var({frame})))"
+            "padding-block-end:var(--aurora-space-continued," f"calc(2*var({frame})))"
         ) in sheet, f"a run's gap no longer falls back to two {frame} frames"
     assert "--aurora-space-passage:var(--aurora-space-block)" in sheet
     assert "padding-block-end:var(--aurora-space-passage)" in sheet
@@ -364,9 +348,9 @@ def test_an_unbanded_promo_gets_the_same_step_from_the_frame_token():
     """
     bare = [tokens for selector, tokens in _frame_rules() if selector == ".block-promo"]
     assert bare, "no frame rule keys on a bare `.block-promo`"
-    assert bare == [{"--aurora-space-frame": "var(--plone-space-xl)"}], (
-        "the bare .block-promo rule must carry the frame and nothing else"
-    )
+    assert bare == [
+        {"--aurora-space-frame": "var(--plone-space-xl)"}
+    ], "the bare .block-promo rule must carry the frame and nothing else"
 
 
 @needs_blicca

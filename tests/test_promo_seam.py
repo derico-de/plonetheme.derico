@@ -50,11 +50,7 @@ def _effective():
 
 def _declared():
     """Every `--promo-*` property derico.css sets on :root."""
-    return {
-        name: value
-        for name, value in _derico_light().items()
-        if name.startswith("--promo-")
-    }
+    return {name: value for name, value in _derico_light().items() if name.startswith("--promo-")}
 
 
 def _block_hooks():
@@ -70,6 +66,7 @@ def _block_hooks():
 # --------------------------------------------------------------------------
 # 1. The names, and where they are allowed to be declared
 # --------------------------------------------------------------------------
+
 
 @needs_promo_block
 def test_every_property_the_theme_sets_is_one_the_block_reads():
@@ -102,11 +99,7 @@ def test_only_the_token_layer_declares_a_promo_property():
     leaked = {}
     for path in css_tools.theme_stylesheets() + css_tools.block_stylesheets():
         names = sorted(
-            set(
-                re.findall(
-                    r"(--promo-[\w-]+)\s*:", css_tools.strip_comments(path.read_text())
-                )
-            )
+            set(re.findall(r"(--promo-[\w-]+)\s*:", css_tools.strip_comments(path.read_text())))
         )
         if names:
             leaked[path.name] = names
@@ -160,15 +153,13 @@ EXPECTED_ALIASES = {
 
 
 @pytest.mark.parametrize(("prop", "target"), sorted(EXPECTED_ALIASES.items()))
-def test_each_property_aliases_a_ladder_step_rather_than_restating_a_value(
-    prop, target
-):
+def test_each_property_aliases_a_ladder_step_rather_than_restating_a_value(prop, target):
     """A literal here would fork the brand palette where nobody looks."""
     declared = _declared()
     assert prop in declared, f"derico.css does not declare {prop}"
-    assert re.fullmatch(rf"var\(\s*{re.escape(target)}\s*\)", declared[prop]), (
-        f"{prop} must alias {target} verbatim; it declares {declared[prop]!r}"
-    )
+    assert re.fullmatch(
+        rf"var\(\s*{re.escape(target)}\s*\)", declared[prop]
+    ), f"{prop} must alias {target} verbatim; it declares {declared[prop]!r}"
 
 
 @needs_clara
@@ -253,8 +244,7 @@ def test_promo_contrast(foreground, background, minimum):
     assert bg, f"{background} does not resolve to a colour"
     ratio = css_tools.contrast(fg, bg)
     assert ratio >= minimum, (
-        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, "
-        f"needs {minimum}:1"
+        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, " f"needs {minimum}:1"
     )
 
 

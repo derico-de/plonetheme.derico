@@ -197,16 +197,10 @@ class TestOnThePage(PageHeaderTestCase):
             {"type": "title", "children": [{"text": "Nachhaltige Softwareentwicklung"}]},
             {"type": "description", "children": [{"text": "Offene Software."}]},
         )
-        assert [h.get_text() for h in soup.find_all("h1")] == [
-            "Nachhaltige Softwareentwicklung"
-        ]
-        assert soup.find(class_="documentFirstHeading").find_parent(
-            class_="derico-page-header"
-        )
+        assert [h.get_text() for h in soup.find_all("h1")] == ["Nachhaltige Softwareentwicklung"]
+        assert soup.find(class_="documentFirstHeading").find_parent(class_="derico-page-header")
         assert len(soup.find_all(class_="documentDescription")) == 1
-        assert soup.find(class_="documentDescription").find_parent(
-            class_="derico-page-header"
-        )
+        assert soup.find(class_="documentDescription").find_parent(class_="derico-page-header")
 
     def test_the_wrapper_carries_the_stamp_the_sheet_leaves_free(self):
         soup = self.page({"@type": BLOCK_TYPE, "blockWidth": "layout"})

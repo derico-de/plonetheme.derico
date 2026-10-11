@@ -6,6 +6,7 @@ plone.app.locales translates BOTH halves as "gefunden", so the German search
 panel reads "gefunden 7 gefunden". Shipping the catalog is only half of it —
 see below for the other half.
 """
+
 import os
 
 from zope.component import getUtilitiesFor

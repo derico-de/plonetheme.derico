@@ -75,9 +75,9 @@ class TestFooterBundle:
         bundle requesting a stylesheet the site no longer ships."""
         uninstall = css_tools.PACKAGE / "src/plonetheme/derico/profiles/uninstall/registry.xml"
         text = uninstall.read_text()
-        assert re.search(rf'prefix="{re.escape(BUNDLE)}"\s+remove="true"', text), (
-            "profiles/uninstall/registry.xml does not remove the footer bundle"
-        )
+        assert re.search(
+            rf'prefix="{re.escape(BUNDLE)}"\s+remove="true"', text
+        ), "profiles/uninstall/registry.xml does not remove the footer bundle"
 
 
 class TestFooterSheet:

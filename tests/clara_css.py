@@ -81,6 +81,7 @@ def clara_bundle_path():
 # CSS parsing
 # --------------------------------------------------------------------------
 
+
 def strip_comments(css):
     return re.sub(r"/\*.*?\*/", "", css, flags=re.DOTALL)
 
@@ -99,9 +100,7 @@ def _blocks(css):
             return
         selector = css[index:brace].strip().strip("}").strip()
         selector = selector.rsplit("}", 1)[-1].strip()
-        if selector.startswith(
-            ("@layer", "@media", "@supports", "@scope", "@container")
-        ):
+        if selector.startswith(("@layer", "@media", "@supports", "@scope", "@container")):
             # descend into the at-rule body; the hero's wide breakpoint lives
             # in `@container`, so skipping it would hide half the sheet.
             index = brace + 1
@@ -221,9 +220,7 @@ def to_hex(value):
         return value
     if re.fullmatch(r"#[0-9a-f]{3}", value):
         return "#" + "".join(channel * 2 for channel in value[1:])
-    match = re.fullmatch(
-        r"oklch\(\s*([\d.]+)%?\s+([\d.]+)\s+([\d.]+)\s*\)", value
-    )
+    match = re.fullmatch(r"oklch\(\s*([\d.]+)%?\s+([\d.]+)\s+([\d.]+)\s*\)", value)
     if match:
         lightness = float(match.group(1))
         if "%" in value.split()[0]:

@@ -507,9 +507,9 @@ class TestMarkupParity(HeroTestCase):
             "the halo and the ink have drifted apart; the per-circle class has "
             "to match too, or `.ring-now`'s heavier stroke gets the default halo"
         )
-        assert halo.get("transform") == ink.get("transform"), (
-            "both groups carry the translate, or the halo sits 105 units left"
-        )
+        assert halo.get("transform") == ink.get(
+            "transform"
+        ), "both groups carry the translate, or the halo sits 105 units left"
 
     def test_the_template_ships_none_of_its_own_commentary(self):
         """Chameleon's hidden comments; the reasoning is not the visitor's."""
@@ -574,9 +574,9 @@ class TestDerivedDataIsSuppliedByStockRestapi(HeroTestCase):
             block.update(new_block)
 
         crop = stored["0"]["image_wide"][0]
-        assert "image_scales" not in crop, (
-            "derived data is being persisted; a stale ladder would outlive the image it describes"
-        )
+        assert (
+            "image_scales" not in crop
+        ), "derived data is being persisted; a stale ladder would outlive the image it describes"
         assert crop["@id"] == f"../resolveuid/{item.UID()}", (
             "the reference is not being stored uid-first; a rename would "
             "break the hero's photograph"

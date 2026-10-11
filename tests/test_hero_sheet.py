@@ -29,8 +29,7 @@ def _declares(property_name, value=None):
     return {
         selector
         for selector, properties in _style_rules()
-        if property_name in properties
-        and (value is None or properties[property_name] == value)
+        if property_name in properties and (value is None or properties[property_name] == value)
     }
 
 
@@ -47,9 +46,7 @@ def _values_for(selector, property_name):
 def test_no_rule_paints_on_auroras_wrapper_stamp():
     """The wrapper is full-bleed publicly but column-width in the canvas; paint the root."""
     offenders = sorted(
-        selector
-        for selector, _ in _style_rules()
-        if "block-derico-hero" in selector
+        selector for selector, _ in _style_rules() if "block-derico-hero" in selector
     )
     assert not offenders, (
         "a block sheet may not paint on Aurora's wrapper stamp — the hero "
@@ -104,9 +101,7 @@ def test_rung_two_breaks_a_word_that_cannot_fit():
         ".ring-legend dd",
         ".action-row > *",
     ):
-        assert f"{ROOT} {selector}" in breaking, (
-            f"{selector} does not break an unfittable word"
-        )
+        assert f"{ROOT} {selector}" in breaking, f"{selector} does not break an unfittable word"
 
 
 @needs_block_sheets
@@ -115,22 +110,18 @@ def test_rung_three_ramps_the_headline_against_its_container():
     ramps = _values_for(f"{ROOT} h1", "font-size")
     assert ramps, "the headline declares no font-size at all"
     for ramp in ramps:
-        assert ramp.startswith("clamp("), (
-            f"the headline must ramp, and it declares {ramp!r}"
-        )
+        assert ramp.startswith("clamp("), f"the headline must ramp, and it declares {ramp!r}"
         assert "cqi" in ramp, f"the ramp must be container-relative: {ramp!r}"
-        assert "vw" not in ramp, (
-            f"a `vw` ramp sizes against a box the page does not have: {ramp!r}"
-        )
+        assert "vw" not in ramp, f"a `vw` ramp sizes against a box the page does not have: {ramp!r}"
 
 
 @needs_block_sheets
 def test_rung_three_states_the_clamp_rather_than_redefining_the_alias():
     """`--derico-text-display` belongs to the type layer; the hero states its clamp locally."""
     for selector, properties in _style_rules():
-        assert "--derico-text-display" not in properties, (
-            f"{selector} redefines an alias that belongs to the type layer"
-        )
+        assert (
+            "--derico-text-display" not in properties
+        ), f"{selector} redefines an alias that belongs to the type layer"
 
 
 @needs_block_sheets
@@ -169,8 +160,7 @@ def test_the_hero_takes_its_body_type_from_the_public_ladder():
         ("line-height", "var(--plone-leading-body)"),
     ):
         assert token in _values_for(ROOT, prop), (
-            f"the hero must name {token}; it declares "
-            f"{_values_for(ROOT, prop) or 'nothing'}"
+            f"the hero must name {token}; it declares " f"{_values_for(ROOT, prop) or 'nothing'}"
         )
 
 
@@ -253,12 +243,10 @@ def test_the_legend_holds_its_ground_under_every_label():
     grounds = _values_for(f"{ROOT} .ring-legend", "background")
     assert len(grounds) == 1, f"the legend states {len(grounds)} backgrounds"
     ground = re.sub(r"\s+", " ", grounds[0])
-    assert ground.startswith("linear-gradient(90deg,"), (
-        f"the legend's ground must fade across the card, not down it: {ground!r}"
-    )
-    plateau = re.search(
-        r"var\(--derico-hero-legend-ground\)\s+0\s+([\d.]+)rem", ground
-    )
+    assert ground.startswith(
+        "linear-gradient(90deg,"
+    ), f"the legend's ground must fade across the card, not down it: {ground!r}"
+    plateau = re.search(r"var\(--derico-hero-legend-ground\)\s+0\s+([\d.]+)rem", ground)
     assert plateau, (
         "the first stop must be the legend ground itself — the value the "
         f"contrast guarantee is computed for — held for a stated length: {ground!r}"
@@ -268,9 +256,9 @@ def test_the_legend_holds_its_ground_under_every_label():
         f"{LEGEND_INK_REACH_REM}rem the labels reach — the is-now cyan would "
         "be back on the bare photograph, which is the one place it cannot go"
     )
-    assert ground.rstrip(")").endswith("transparent 100%"), (
-        f"the ground must reach nothing at the card's right edge: {ground!r}"
-    )
+    assert ground.rstrip(")").endswith(
+        "transparent 100%"
+    ), f"the ground must reach nothing at the card's right edge: {ground!r}"
 
 
 @needs_block_sheets
@@ -306,9 +294,7 @@ def test_the_legend_has_no_rounded_corner():
     and the fade are the same decision seen from two ends; keeping one without
     the other leaves a rounded corner on a shape with no other edge."""
     radii = _values_for(f"{ROOT} .ring-legend", "border-radius")
-    assert radii == ["0"], (
-        f"the legend must be square; it declares {radii or 'nothing'}"
-    )
+    assert radii == ["0"], f"the legend must be square; it declares {radii or 'nothing'}"
 
 
 @needs_block_sheets
@@ -322,8 +308,7 @@ def test_the_scrim_cannot_hang_outside_the_hero():
     assert scrims, "nothing paints the copy scrim at all"
     for selector in scrims:
         assert selector == f"{ROOT}::before", (
-            "the scrim must ride the hero root, where `inset: 0` cannot "
-            f"overflow it: {selector}"
+            "the scrim must ride the hero root, where `inset: 0` cannot " f"overflow it: {selector}"
         )
     assert _values_for(f"{ROOT}::before", "inset") == ["0"], (
         "the scrim must be inset: 0 — any negative inset is scrollable "
@@ -347,11 +332,7 @@ def test_the_wide_hero_darkens_with_one_layer_that_reaches_its_right_edge():
         "the wash must be off at wide; two darkening layers is what puts a "
         "seam down the middle of the photograph"
     )
-    wide = [
-        mask
-        for mask in _values_for(f"{ROOT}::before", "mask-image")
-        if "90deg" in mask
-    ]
+    wide = [mask for mask in _values_for(f"{ROOT}::before", "mask-image") if "90deg" in mask]
     assert len(wide) == 1, f"expected one wide scrim mask, found {len(wide)}"
     assert "50%" not in wide[0], (
         "the wide plateau must run to the hero's right edge, not stop at the "
@@ -378,11 +359,7 @@ def test_the_ground_line_ends_the_plateau_below_the_action_row():
     to the photograph. And its plateau has to clear the action row, or the last
     line of the copy loses the backing the contrast guarantee assumes.
     """
-    wide = [
-        mask
-        for mask in _values_for(f"{ROOT}::before", "mask-image")
-        if "90deg" in mask
-    ]
+    wide = [mask for mask in _values_for(f"{ROOT}::before", "mask-image") if "90deg" in mask]
     assert len(wide) == 1, f"expected one wide scrim mask, found {len(wide)}"
     assert _values_for(f"{ROOT}::before", "mask-composite") == ["intersect"], (
         "the ground line must be intersected with the column mask; any other "
@@ -390,13 +367,10 @@ def test_the_ground_line_ends_the_plateau_below_the_action_row():
     )
 
     angles = re.findall(r"linear-gradient\(\s*(\d+)deg", wide[0])
-    assert len(angles) == 2, (
-        f"the wide scrim is the column mask and the ground line: {wide[0]!r}"
-    )
+    assert len(angles) == 2, f"the wide scrim is the column mask and the ground line: {wide[0]!r}"
     ground = wide[0][wide[0].index("linear-gradient(" + angles[1] + "deg") :]
     assert 180 < int(angles[1]) < 200, (
-        f"the ground line runs across the hero, dropping to the right; "
-        f"{angles[1]}deg does not"
+        f"the ground line runs across the hero, dropping to the right; " f"{angles[1]}deg does not"
     )
 
     plateau = re.search(r"black\s+0\s+([\d.]+)%", ground)
@@ -413,17 +387,16 @@ def test_the_wash_is_cut_away_from_the_copy_where_it_is_still_painted():
     """Single column, the scrim is the only layer over the copy; stacking two would darken it."""
     masks = _values_for(f"{ROOT} .hero-wash", "mask-image")
     assert len(masks) == 1, (
-        "the wash is painted at one breakpoint and so states one mask; found "
-        f"{len(masks)}"
+        "the wash is painted at one breakpoint and so states one mask; found " f"{len(masks)}"
     )
     assert "180deg" in masks[0], f"the cut is across the copy BAND: {masks[0]!r}"
     assert "transparent 0 50%" in masks[0], (
         "the wash must be cut to fully transparent across the copy, not "
         f"merely softened over it: {masks[0]!r}"
     )
-    assert "black calc(50% + 5rem)" in masks[0], (
-        f"the wash does not feather back on off the same stop: {masks[0]!r}"
-    )
+    assert (
+        "black calc(50% + 5rem)" in masks[0]
+    ), f"the wash does not feather back on off the same stop: {masks[0]!r}"
 
 
 @needs_block_sheets
@@ -461,11 +434,7 @@ def test_the_scrim_starts_where_the_copy_starts_and_not_at_the_heros_edge():
     So both readings of `--derico-hero-inset` are asserted here: that the mask
     states it, and that the grid's own width is the formula it is derived from.
     """
-    wide = [
-        mask
-        for mask in _values_for(f"{ROOT}::before", "mask-image")
-        if "90deg" in mask
-    ]
+    wide = [mask for mask in _values_for(f"{ROOT}::before", "mask-image") if "90deg" in mask]
     assert len(wide) == 1, f"expected one wide scrim mask, found {len(wide)}"
     assert "black var(--derico-hero-inset)" in wide[0], (
         "the scrim's plateau must begin at the copy's own inset, not at a "
@@ -476,5 +445,3 @@ def test_the_scrim_starts_where_the_copy_starts_and_not_at_the_heros_edge():
         "the shell's width must read the same gutter token the inset is "
         f"derived from, or the two can drift; it declares {widths or 'nothing'}"
     )
-
-

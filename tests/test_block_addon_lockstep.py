@@ -4,6 +4,7 @@ name check that replaced the `block_api` counter (ADR 0024 in the editor).
 Both groups skip when the Blicca checkout is missing; CI checks it out (needs
 `BLICCA_TOKEN`).
 """
+
 from pathlib import Path
 
 import pytest

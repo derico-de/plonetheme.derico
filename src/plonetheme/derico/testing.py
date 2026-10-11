@@ -1,4 +1,5 @@
 """Testing setup for plonetheme.derico."""
+
 import os
 
 import collective.fragmentsblock

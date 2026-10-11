@@ -56,9 +56,7 @@ class TestHiddenViewlets:
         return self.storage.getHidden(manager, SKIN)
 
     def _unhide_all(self):
-        self.storage.setHidden(
-            FOOTER, SKIN, tuple(n for n in self._hidden() if n not in ROWS)
-        )
+        self.storage.setHidden(FOOTER, SKIN, tuple(n for n in self._hidden() if n not in ROWS))
         self.storage.setHidden(
             TITLE, SKIN, tuple(n for n in self._hidden(TITLE) if n != LEAD_IMAGE)
         )
@@ -67,9 +65,7 @@ class TestHiddenViewlets:
         request = self.portal.REQUEST
         alsoProvides(request, IPlonethemeDericoLayer)
         view = self.portal.restrictedTraverse("@@plone")
-        provider = getMultiAdapter(
-            (self.portal, request, view), IContentProvider, name=manager
-        )
+        provider = getMultiAdapter((self.portal, request, view), IContentProvider, name=manager)
         provider.update()
         return provider.render()
 
@@ -94,9 +90,7 @@ class TestHiddenViewlets:
         assert marker in self._render(FOOTER)
 
     def test_the_header_still_renders(self):
-        header = self._render("plone.portalheader") + self._render(
-            "plone.mainnavigation"
-        )
+        header = self._render("plone.portalheader") + self._render("plone.mainnavigation")
         for marker in ("element-logo", "element-globalnav", "element-searchbox"):
             assert marker in header
 

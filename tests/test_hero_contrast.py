@@ -34,9 +34,7 @@ WHITE = "#ffffff"
 
 def _properties():
     """Every custom property in play, block sheets layered over the theme."""
-    props = css_tools.declarations(
-        css_tools.DERICO_CSS.read_text(), css_tools.ROOT_SELECTORS
-    )
+    props = css_tools.declarations(css_tools.DERICO_CSS.read_text(), css_tools.ROOT_SELECTORS)
     for path in BLOCK_SHEETS:
         for _selector, body in css_tools.rules(path.read_text()):
             for name, value in re.findall(r"(--[\w-]+)\s*:\s*([^;{}]+)", body):
@@ -95,8 +93,7 @@ def _check(pairs, backdrop, label):
         ratio = css_tools.contrast(ink, backdrop)
         if ratio < minimum:
             failures.append(
-                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {backdrop}, "
-                f"needs {minimum}:1"
+                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {backdrop}, " f"needs {minimum}:1"
             )
     assert not failures, f"{label} does not carry its ink:\n  " + "\n  ".join(failures)
 
@@ -152,12 +149,9 @@ def test_the_legend_ground_carries_every_colour_the_legend_wears():
         ratio = css_tools.contrast(ink, under)
         if ratio < minimum:
             failures.append(
-                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {under}, "
-                f"needs {minimum}:1"
+                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {under}, " f"needs {minimum}:1"
             )
-    assert not failures, "the legend ground does not carry its ink:\n  " + "\n  ".join(
-        failures
-    )
+    assert not failures, "the legend ground does not carry its ink:\n  " + "\n  ".join(failures)
 
 
 @needs_block_sheets
@@ -195,8 +189,7 @@ def test_the_legend_ground_would_go_red_if_it_were_made_more_transparent():
     )
     thinned = floor - 0.01
     assert any(
-        css_tools.contrast(_colour(ink, props), _over(hex_base, thinned, backdrop))
-        < minimum
+        css_tools.contrast(_colour(ink, props), _over(hex_base, thinned, backdrop)) < minimum
         for ink, minimum, _role, backdrop, on_ground in LEGEND_INK
         if on_ground
     ), "thinning past the floor changes nothing, so this test guards nothing"
@@ -286,9 +279,7 @@ def test_the_scrim_would_go_red_if_it_were_softened():
                 low = middle
         floor = max(floor, high)
 
-    assert 0.0 < floor < 1.0, (
-        "the floor is degenerate, so the guarantee above is vacuous"
-    )
+    assert 0.0 < floor < 1.0, "the floor is degenerate, so the guarantee above is vacuous"
     assert alpha >= floor, (
         f"the plateau is {alpha}, below the {floor:.4f} its own inks need over "
         "a white photograph"
@@ -336,9 +327,6 @@ def test_the_marker_chips_carry_their_own_backdrop():
         ratio = css_tools.contrast(ink, ground)
         if ratio < minimum:
             failures.append(
-                f"{role} ({ink_name} on {ground_name}) is {ratio:.2f}:1, "
-                f"needs {minimum}:1"
+                f"{role} ({ink_name} on {ground_name}) is {ratio:.2f}:1, " f"needs {minimum}:1"
             )
-    assert not failures, "the marker chips do not carry their ink:\n  " + "\n  ".join(
-        failures
-    )
+    assert not failures, "the marker chips do not carry their ink:\n  " + "\n  ".join(failures)

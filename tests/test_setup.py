@@ -46,9 +46,7 @@ class TestSetup:
         from plone.resource.interfaces import IResourceDirectory
         from zope.component import getUtility
 
-        directory = getUtility(
-            IResourceDirectory, name="++plone++plonetheme.derico.blocks"
-        )
+        directory = getUtility(IResourceDirectory, name="++plone++plonetheme.derico.blocks")
         assert "hero.js" in directory.listDirectory()
         assert "blocks.css" in directory.listDirectory()
 
@@ -66,16 +64,11 @@ class TestSetup:
         have to know that to understand the stack.
         """
         assert api.portal.get_registry_record(f"{BUNDLE}.depends") == "plonetheme-clara"
-        assert (
-            api.portal.get_registry_record("plone.bundles/plonetheme-clara.enabled")
-            is True
-        )
+        assert api.portal.get_registry_record("plone.bundles/plonetheme-clara.enabled") is True
 
     def test_ships_no_second_javascript_or_stylesheet(self):
         """One override sheet: no forked Bootstrap, no second behaviour bundle."""
-        assert not api.portal.get_registry_record(
-            f"{BUNDLE}.jscompilation", default=""
-        )
+        assert not api.portal.get_registry_record(f"{BUNDLE}.jscompilation", default="")
 
     def test_site_logo_is_the_derico_mark(self):
         from plone.formwidget.namedfile.converter import b64decode_file
@@ -88,13 +81,9 @@ class TestSetup:
 
     def test_static_resources_are_traversable(self):
         """The bundle URL has to resolve, or the whole theme silently vanishes."""
-        css = self.portal.restrictedTraverse(
-            "++resource++plonetheme.derico/derico.css"
-        )
+        css = self.portal.restrictedTraverse("++resource++plonetheme.derico/derico.css")
         assert css is not None
-        logo = self.portal.restrictedTraverse(
-            "++resource++plonetheme.derico/derico-logo.svg"
-        )
+        logo = self.portal.restrictedTraverse("++resource++plonetheme.derico/derico-logo.svg")
         assert logo is not None
 
 
@@ -172,7 +161,4 @@ class TestUninstall:
     def test_bundle_records_removed(self):
         """No orphaned bundle: derico.css must stop loading after uninstall."""
         assert api.portal.get_registry_record(f"{BUNDLE}.enabled", default=None) is None
-        assert (
-            api.portal.get_registry_record(f"{BUNDLE}.csscompilation", default=None)
-            is None
-        )
+        assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation", default=None) is None
