@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Require `derico.blicca.promoblock>=1.0.0a3`: 1.0.0a1 and 1.0.0a2 still register the `block_api` record that `plone.blicca.auroraeditor` 1.0.0a4 no longer has a field for, and the install fails.
 - The hero, print and editor e2e checks accept AVIF picture sources, the page header bundle loading with the hero's, and Footer Blocks replacing the stock footer.
 - pre-commit leaves build output, scaffold metadata and the design site's generated pages, fonts and images alone; the code is ruff-formatted.
 - Drop the retired `block_api` field from the hero and page header records (ADR 0024 in `plone.blicca.auroraeditor`: block add-ons are checked by the names their bundles import). Upgrade step 1021 deletes the orphan records if a site still holds them; floor `plone.blicca.auroraeditor>=1.0.0a4`. The lockstep test now checks the bundles against the host's name check instead of a `block_api` floor.

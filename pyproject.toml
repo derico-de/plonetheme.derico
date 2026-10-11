@@ -48,7 +48,7 @@ dependencies = [
     # The Promo block. Not an import, unlike the fragment block above:
     # derico declares it so installing the theme installs the block its
     # pages are authored with, and metadata.xml carries the profile half.
-    "derico.blicca.promoblock>=1.0.0a1",
+    "derico.blicca.promoblock>=1.0.0a3",
     "plone.classicui",
     "Paste",
 ]

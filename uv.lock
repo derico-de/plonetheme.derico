@@ -632,15 +632,15 @@ wheels = [
 
 [[package]]
 name = "derico-blicca-promoblock"
-version = "1.0.0a1"
+version = "1.0.0a3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "plone" },
     { name = "plone-blicca-auroraeditor" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b6/7e/941fa9228f1d6fb38e4d067eb667237e68a8f24803efa6f4210300655cc7/derico_blicca_promoblock-1.0.0a1.tar.gz", hash = "sha256:65038813f0ffdc546b04127644b2dbfa981adc88c1305ce14e1626781ea2a8f8", size = 768902, upload-time = "2026-10-04T13:45:45.323Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/43/8632b2be5dfb1c07a97ce56c8433575ee7025e9f54a15e5ac6f01cd90416/derico_blicca_promoblock-1.0.0a3.tar.gz", hash = "sha256:1de5a3184cc1e507188a6caa0fbd7579eaed53921818437d2d19bd5b9913f399", size = 769951, upload-time = "2026-10-10T09:56:37.351Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/64/5e/bd8c6a290f8d43d0037868cbd2562383f0a4969a553aa305eb75eeae262b/derico_blicca_promoblock-1.0.0a1-py3-none-any.whl", hash = "sha256:746725d9143f7718da9bfe9e4d4f6b2eb86510457ae2ddec6c8818d721673c50", size = 113340, upload-time = "2026-10-04T13:45:43.341Z" },
+    { url = "https://files.pythonhosted.org/packages/05/bb/8be17d333629e6b994b9cbf8af21eb6a69d2d6267e4c432a307d3543d5f6/derico_blicca_promoblock-1.0.0a3-py3-none-any.whl", hash = "sha256:2360374d1b21df95b42c382ce41bbd1e1807ca373c0f204447ed244fb0c08ae6", size = 117226, upload-time = "2026-10-10T09:56:35.293Z" },
 ]
 
 [[package]]
@@ -3597,7 +3597,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "collective-fragmentsblock", editable = "../collective.fragmentsblock" },
-    { name = "derico-blicca-promoblock", specifier = ">=1.0.0a1" },
+    { name = "derico-blicca-promoblock", specifier = ">=1.0.0a3" },
     { name = "paste" },
     { name = "plone", specifier = ">=6.2" },
     { name = "plone-app-caching", marker = "extra == 'test'" },
