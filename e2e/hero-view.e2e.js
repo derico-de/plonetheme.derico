@@ -204,11 +204,13 @@ const near = (a, b, tolerance = 1) =>
         check(!!picture, 'the hero renders a <picture>');
         if (picture) {
           check(picture.ariaHidden === 'true', 'the photograph is aria-hidden (it is decorative)');
+          const crops = picture.sources.map((source) => source.media);
+          const wideStart = crops.indexOf(null);
           check(
-            picture.sources.length === 2 &&
-              picture.sources[0].media === '(max-width: 55.99rem)' &&
-              picture.sources[1].media === null,
-            `portrait sources come first, wide second: ${JSON.stringify(picture.sources.map((source) => source.media))}`,
+            wideStart > 0 &&
+              crops.slice(0, wideStart).every((media) => media === '(max-width: 55.99rem)') &&
+              crops.slice(wideStart).every((media) => media === null),
+            `portrait sources come first, wide second (including AVIF alternatives): ${JSON.stringify(crops)}`,
           );
           check(
             picture.sources.every((source) => source.sizes === '100vw'),

@@ -383,8 +383,8 @@ function heroGeometry(page) {
     /* -- one React ---------------------------------------------------- */
     const resources = await blockResources(page);
     check(
-      resources.length > 0 && resources.every((name) => /^(hero\.js|blocks\.css)$/.test(name)),
-      `the block ships only its entry and its sheet: ${JSON.stringify(resources)}`,
+      resources.length > 0 && resources.every((name) => /^(hero\.js|pageheader\.js|blocks\.css)$/.test(name)),
+      `the theme blocks share the host React and ship only entries and their sheet: ${JSON.stringify(resources)}`,
     );
     const importMap = await page.evaluate(() => {
       const script = document.querySelector('script[type="importmap"]');
@@ -398,7 +398,7 @@ function heroGeometry(page) {
     /* -- author every field ------------------------------------------- */
     await fill(page, 'input[name="kicker"]', AUTHORED_KICKER);
     await fill(page, 'input[name="headline"]', COPY.headline);
-    await fill(page, 'textarea#lede', COPY.lede);
+    await fill(page, 'textarea[name="lede"]', COPY.lede);
     await fill(page, 'input[name="cta_label"]', COPY.cta_label);
     await fill(page, 'input[name="link_label"]', COPY.link_label);
     await openFieldset(page, 'Ring legend');

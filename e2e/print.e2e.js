@@ -144,8 +144,8 @@ const style = (page, selector, property, pseudo = null) =>
     for (const width of [1440, 794]) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ media: 'print' });
-      /* Every one of these is on every page of the site, so `null` — the
-       * element absent — is a failure, not a pass. */
+      /* Footer Blocks can replace the stock portal footer. The other
+       * chrome elements must exist so missing markup cannot mask a leak. */
       for (const element of [
         '.element-logo',
         '.element-globalnav',
@@ -154,7 +154,8 @@ const style = (page, selector, property, pseudo = null) =>
         '.element-footerblocks',
       ]) {
         const display = await style(page, element, 'display');
-        check(display === 'none', `in print at ${width}px ${element} is gone (${display})`);
+        const replacedFooter = element === '.element-portalfooter' && display === null;
+        check(display === 'none' || replacedFooter, `in print at ${width}px ${element} is gone (${display})`);
       }
     }
     check(
