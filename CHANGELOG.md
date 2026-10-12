@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Depend on the Reference List block (`collective.blicca.referencelist>=1.0.0a3`): installing derico installs it, and upgrade step 1022 installs it on existing sites.
 - Require `collective.fragmentsblock>=1.0.0a4` from PyPI instead of the checkout: earlier releases still register the `block_api` record that `plone.blicca.auroraeditor` 1.0.0a4 no longer has a field for.
 - Require `derico.blicca.promoblock>=1.0.0a3`: 1.0.0a1 and 1.0.0a2 still register the `block_api` record that `plone.blicca.auroraeditor` 1.0.0a4 no longer has a field for, and the install fails.
 - The hero, print and editor e2e checks accept AVIF picture sources, the page header bundle loading with the hero's, and Footer Blocks replacing the stock footer.

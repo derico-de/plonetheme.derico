@@ -92,6 +92,7 @@ ADDONS = (
     "plonetheme.clara",
     "collective.fragmentsblock",
     "derico.blicca.promoblock",
+    "collective.blicca.referencelist",
 )
 
 

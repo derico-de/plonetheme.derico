@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <version>1021</version>
+  <version>1022</version>
   <dependencies>
     <dependency>profile-plone.app.registry:default</dependency>
     <!-- A Python dependency does not install a profile; without it the
@@ -12,5 +12,7 @@
     <dependency>profile-collective.fragmentsblock:default</dependency>
     <!-- The Promo block authored on derico's pages. -->
     <dependency>profile-derico.blicca.promoblock:default</dependency>
+    <!-- The Reference List block authored on derico's pages. -->
+    <dependency>profile-collective.blicca.referencelist:default</dependency>
   </dependencies>
 </metadata>

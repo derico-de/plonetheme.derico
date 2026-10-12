@@ -450,6 +450,20 @@ wheels = [
 ]
 
 [[package]]
+name = "collective-blicca-referencelist"
+version = "1.0.0a4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "plone" },
+    { name = "plone-blicca-auroraeditor" },
+    { name = "plone-restapi" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/a7/406c54014f81b2d6499a1c455e0b11b0bde0403b2b18bd3b04c7389f7c8c/collective_blicca_referencelist-1.0.0a4.tar.gz", hash = "sha256:fb4482254dc921dae39cdee9a3ed158ffad983562137e6c33888b417c15c4864", size = 405947, upload-time = "2026-10-12T12:55:18.258Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/44/a2/761cf7c7d99f764eb37bdb6bc1820bfa56996c1bda9d8675b0e5e568515d/collective_blicca_referencelist-1.0.0a4-py3-none-any.whl", hash = "sha256:17f5d49dbf9b4f9173ee9aa2daa347a1fdf66c1543b64750b518e8d177b7a5e1", size = 71284, upload-time = "2026-10-12T12:55:16.439Z" },
+]
+
+[[package]]
 name = "collective-fragmentsblock"
 version = "1.0.0a4"
 source = { registry = "https://pypi.org/simple" }
@@ -3557,6 +3571,7 @@ name = "plonetheme-derico"
 version = "1.0.0a1"
 source = { editable = "." }
 dependencies = [
+    { name = "collective-blicca-referencelist" },
     { name = "collective-fragmentsblock" },
     { name = "derico-blicca-promoblock" },
     { name = "paste" },
@@ -3587,6 +3602,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "collective-blicca-referencelist", specifier = ">=1.0.0a3" },
     { name = "collective-fragmentsblock", specifier = ">=1.0.0a4" },
     { name = "derico-blicca-promoblock", specifier = ">=1.0.0a3" },
     { name = "paste" },

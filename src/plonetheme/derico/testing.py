@@ -2,6 +2,7 @@
 
 import os
 
+import collective.blicca.referencelist
 import collective.fragmentsblock
 import plone.app.caching
 import plone.app.theming
@@ -49,6 +50,7 @@ class PlonethemeDericoLayer(PloneSandboxLayer):
         # The Promo block, for the same reason: derico's profile depends
         # on `profile-derico.blicca.promoblock:default`.
         self.loadZCML(package=derico.blicca.promoblock)
+        self.loadZCML(package=collective.blicca.referencelist)
         self.loadZCML(package=plonetheme.derico)
 
     def setUpPloneSite(self, portal):
