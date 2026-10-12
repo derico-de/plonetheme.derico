@@ -44,7 +44,7 @@ dependencies = [
     # an import in configure.zcml, not an optional integration: the ZCML fails
     # to load without it. The profile dependency in metadata.xml is the other
     # half — a Python dependency installs no profile.
-    "collective.fragmentsblock>=1.0.0a1",
+    "collective.fragmentsblock>=1.0.0a4",
     # The Promo block. Not an import, unlike the fragment block above:
     # derico declares it so installing the theme installs the block its
     # pages are authored with, and metadata.xml carries the profile half.
@@ -157,10 +157,9 @@ constraint-dependencies = ["Products.CMFPlone==6.2.1"]
 "plonetheme.clara" = { path = "../plonetheme.clara", editable = true }
 "plone.pageletlayout" = { path = "../plone.pageletlayout", editable = true }
 "plone.app.viewletmanager" = { path = "../plone.app.viewletmanager", editable = true }
-# Not on PyPI: the derico.de project's checkouts, linked into the workspace.
-# derico.blicca.promoblock is released there, so it has no entry: uv.lock
-# pins the release.
-"collective.fragmentsblock" = { path = "../collective.fragmentsblock", editable = true }
+# Not on PyPI: the derico.de project's checkout, linked into the workspace.
+# collective.fragmentsblock and derico.blicca.promoblock are released, so they
+# have no entry: uv.lock pins the release.
 "plone.blicca.auroraeditor" = { path = "../plone.blicca.auroraeditor", editable = true }
 # The AVIF support the hero's <picture> relies on, unreleased.
 "plone.namedfile" = { path = "../plone.namedfile", editable = true }

@@ -451,26 +451,17 @@ wheels = [
 
 [[package]]
 name = "collective-fragmentsblock"
-version = "1.0.0a4.dev0"
-source = { editable = "../collective.fragmentsblock" }
+version = "1.0.0a4"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "plone" },
     { name = "plone-blicca-auroraeditor" },
     { name = "plone-restapi" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "plone", specifier = ">=6.0" },
-    { name = "plone-app-testing", marker = "extra == 'test'" },
-    { name = "plone-blicca-auroraeditor", editable = "../plone.blicca.auroraeditor" },
-    { name = "plone-restapi" },
-    { name = "plone-testing", marker = "extra == 'test'" },
-    { name = "pytest", marker = "extra == 'test'" },
-    { name = "pytest-cov", marker = "extra == 'test'" },
-    { name = "pytest-plone", marker = "extra == 'test'", specifier = ">=0.5.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/d7/8f/712b38b555cd48969a746745d3e9b5309732ac349bac86e4830e4c66d562/collective_fragmentsblock-1.0.0a4.tar.gz", hash = "sha256:3ffe82d7d825bb44b4eb65cd1a402a4d342789b380f898a1d461ac28b1329018", size = 312833, upload-time = "2026-10-12T12:57:23.186Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cd/ea/2ecf8a21dae4cbfc164c5a6dd5776d6b84654d25c075ab01d9bf7088157b/collective_fragmentsblock-1.0.0a4-py3-none-any.whl", hash = "sha256:259de86c3df18e8e4499f173594c889fba0bc42c34ccbc603115a22b82a659fd", size = 52448, upload-time = "2026-10-12T12:57:21.32Z" },
 ]
-provides-extras = ["test"]
 
 [[package]]
 name = "collective-monkeypatcher"
@@ -3596,7 +3587,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "collective-fragmentsblock", editable = "../collective.fragmentsblock" },
+    { name = "collective-fragmentsblock", specifier = ">=1.0.0a4" },
     { name = "derico-blicca-promoblock", specifier = ">=1.0.0a3" },
     { name = "paste" },
     { name = "plone", specifier = ">=6.2" },
