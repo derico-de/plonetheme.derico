@@ -20,47 +20,10 @@ from plonetheme.derico.interfaces import IPlonethemeDericoLayer
 from . import clara_css as css_tools
 
 
-BUNDLE = "plone.bundles/plonetheme-derico-header"
 PROVIDER = "plone.pageletlayout.searchbox"
 
 HEADER_CSS = css_tools.STATIC / "header.css"
 RECORD = "plonetheme.clara.search_on_demand"
-
-
-class TestHeaderBundle:
-    """One record, two files, both served."""
-
-    @pytest.fixture(autouse=True)
-    def _setup(self, integration):
-        self.portal = integration["portal"]
-
-    def test_bundle_registered_and_enabled(self):
-        assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is True
-        assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
-            "++resource++plonetheme.derico/header.css"
-        )
-
-    def test_bundle_ships_no_script(self):
-        """Clara's clara.js drives the search now."""
-        assert not api.portal.get_registry_record(f"{BUNDLE}.jscompilation")
-        assert not (css_tools.STATIC / "header.js").exists()
-
-    def test_bundle_loads_after_the_token_layer(self):
-        """Every value the sheet paints with is a token derico.css declares."""
-        assert api.portal.get_registry_record(f"{BUNDLE}.depends") == "plonetheme-derico"
-
-    def test_stylesheet_is_traversable(self):
-        """A record pointing at a missing file is a 404 on every page."""
-        assert self.portal.restrictedTraverse("++resource++plonetheme.derico/header.css")
-
-    def test_uninstall_profile_removes_the_record(self):
-        """The mirror of the default profile, so uninstall leaves no orphan
-        bundle requesting a stylesheet the site no longer ships."""
-        uninstall = css_tools.PACKAGE / "src/plonetheme/derico/profiles/uninstall/registry.xml"
-        text = uninstall.read_text()
-        assert re.search(
-            rf'prefix="{re.escape(BUNDLE)}"\s+remove="true"', text
-        ), "profiles/uninstall/registry.xml does not remove the header bundle"
 
 
 class TestOnDemandSearch:

@@ -3,26 +3,17 @@
 `collective.blicca.footerblocks` renders the authored footer blocks inside
 `<footer class="element-footerblocks">` at the tail of every page, and the
 theme dresses that element the way the Jahresringe mockup dresses its
-`.site-footer`. Two things ship it — the footer
-bundle (registry.xml: footer.css) and the sheet itself — and each is checked
-from the side that would fail silently without it: the record the page
-reads, the resource it points at, and the handful of design values the sheet
-exists to state.
+`.site-footer`. The sheet ships inside the theme sheet
+(test_theme_sheet.py); this file pins the handful of design values it exists
+to state.
 
 Looks are not asserted here. The stylesheet's contract with Clara — that it
 names no `--clara-*` token and reads only tokens derico.css declares — is
 test_override_minimality.py's, which globs every sheet under static/.
 """
 
-import re
-
-import pytest
-from plone import api
-
 from . import clara_css as css_tools
 
-
-BUNDLE = "plone.bundles/plonetheme-derico-footer"
 
 FOOTER_CSS = css_tools.STATIC / "footer.css"
 
@@ -46,38 +37,6 @@ def _style_rules():
 
 def _values_for(selector, property_name):
     return css_tools.values_for(FOOTER_CSS.read_text(), selector, property_name)
-
-
-class TestFooterBundle:
-    """One record, one file, served."""
-
-    @pytest.fixture(autouse=True)
-    def _setup(self, integration):
-        self.portal = integration["portal"]
-
-    def test_bundle_registered_and_enabled(self):
-        assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is True
-        assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
-            "++resource++plonetheme.derico/footer.css"
-        )
-
-    def test_bundle_loads_after_the_token_layer(self):
-        """Every value the sheet paints with is a token derico.css declares."""
-        assert api.portal.get_registry_record(f"{BUNDLE}.depends") == "plonetheme-derico"
-
-    def test_static_resource_is_traversable(self):
-        """A record pointing at a missing file is a 404 on every page."""
-        resource = self.portal.restrictedTraverse("++resource++plonetheme.derico/footer.css")
-        assert resource is not None
-
-    def test_uninstall_profile_removes_the_record(self):
-        """The mirror of the default profile, so uninstall leaves no orphan
-        bundle requesting a stylesheet the site no longer ships."""
-        uninstall = css_tools.PACKAGE / "src/plonetheme/derico/profiles/uninstall/registry.xml"
-        text = uninstall.read_text()
-        assert re.search(
-            rf'prefix="{re.escape(BUNDLE)}"\s+remove="true"', text
-        ), "profiles/uninstall/registry.xml does not remove the footer bundle"
 
 
 class TestFooterSheet:

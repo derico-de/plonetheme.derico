@@ -1,7 +1,8 @@
 # `bundle-src` — the brand blocks' editor half
 
 This workspace builds the JavaScript that Aurora loads in the editing canvas,
-and the stylesheet both the canvas and the published page use. Its output is
+the stylesheet both the canvas and the published page use, and the theme
+sheet (`build-plugins/theme-sheet.ts`). Its output is
 committed, so **installing this theme never requires Node**: a site
 administrator installs the Python package and gets working blocks.
 
@@ -22,13 +23,15 @@ pnpm test
 
 **pnpm, never npm.** The one lockfile is the root `pnpm-lock.yaml`.
 
-## Rebuild whenever you touch `src/`
+## Rebuild whenever you touch `src/` or a theme sheet
 
-The build writes to `../src/plonetheme/derico/static-blocks/`, and those
-artifacts are **committed**. Nothing rebuilds them at install time, so a source
-edit without a rebuild ships stale JavaScript to every site. CI runs
-`git diff --exit-code` over that directory for exactly this reason —
-if it fails, you forgot to rebuild.
+The build writes to `../src/plonetheme/derico/static-blocks/` and
+`../src/plonetheme/derico/static/derico.min.css`, and those artifacts are
+**committed**. Nothing rebuilds them at install time, so a source
+edit without a rebuild ships stale JavaScript or CSS to every site. CI runs
+`git diff --exit-code` over them for exactly this reason, and
+`theme-sheet.test.ts` fails on a stale theme sheet: if either fails, you
+forgot to rebuild.
 
 Sourcemaps are committed too: an admin who never builds this still deserves a
 debuggable artifact.
@@ -36,7 +39,8 @@ debuggable artifact.
 ## Two directories, one of them not yours
 
 - `src/plonetheme/derico/static/` — hand-written, served as
-  `++plone++plonetheme.derico`. `derico.css` lives here.
+  `++resource++plonetheme.derico`. `derico.css` lives here, beside the one
+  build output, `derico.min.css` and its map.
 - `src/plonetheme/derico/static-blocks/` — served as
   `++plone++plonetheme.derico.blocks`, and reserved **entirely** for build
   output. `emptyOutDir` wipes it on every build, so **a hand-written file

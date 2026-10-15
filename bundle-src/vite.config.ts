@@ -8,11 +8,15 @@
  * directory registered as `++plone++plonetheme.derico.blocks` and reserved
  * ENTIRELY for build output — `emptyOutDir` wipes it on every build, so a
  * hand-written file placed there is deleted without warning.
+ *
+ * The same build also writes the theme sheet, `static/derico.min.css`
+ * (build-plugins/theme-sheet.ts).
  */
 import path from 'node:path';
 import { defineConfig } from 'vite';
 
 import { scopeWrap } from './build-plugins/scope-wrap.ts';
+import { themeSheet } from './build-plugins/theme-sheet.ts';
 import {
   PROMISED_MODULES,
   promisedExternalsOnly,
@@ -47,6 +51,7 @@ export default defineConfig({
       enforce: 'post' as const,
     },
     promisedExternalsOnly(),
+    themeSheet(),
   ],
   build: {
     lib: {

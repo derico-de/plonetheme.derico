@@ -22,6 +22,14 @@ the theme can reach the thing it styles: a brand block's own stylesheet is
 scope-wrapped and so can never touch the page around the block.
 _Avoid_: skin, override sheet, tokens-only layer
 
+**Theme sheet**:
+`static/derico.min.css`, the one stylesheet a page loads for the theme: the
+token layer and the hand-written sheets beside it (snippets, header, footer,
+print), minified in cascade order by `bundle-src`'s build and committed.
+Edit the sources, never this file.
+_Avoid_: bundle (that is the registry record that loads it), derico.css (the
+token layer alone)
+
 **Rings figure**:
 The Jahresringe signature graphic: a disc of concentric circles with numbered
 markers, standing for one solution growing with its client's needs over time.
@@ -92,7 +100,8 @@ is a registered thing with an id. Also avoid "Derico Snippet" for the block
 **Static snippet** (the ornaments):
 A finished markup fragment from the design with nothing to author — one HTML
 file in `snippets/`, injected verbatim, styled by the theme's own
-`snippets.css` bundle rather than through the block pipeline. The Balkenlage
+`snippets.css` (part of the theme sheet) rather than through the block
+pipeline. The Balkenlage
 and the Ständerwerk are the two that exist. The directory keeps its name;
 what the add-on calls a fragment is what this theme has always called a
 snippet.

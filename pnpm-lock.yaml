@@ -40,6 +40,9 @@ importers:
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
+      lightningcss:
+        specifier: 1.33.0
+        version: 1.33.0
       postcss:
         specifier: ^8.5.3
         version: 8.5.26

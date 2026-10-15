@@ -1,6 +1,6 @@
 # Keep committed build output and scaffold metadata byte-for-byte reproducible,
 # the design site's generated pages, fonts and images included.
-exclude: '^(\.copier-answers.*\.ya?ml$|src/.*/static-blocks/|src/.*/upgrades/[^/]+/metadata\.txt$|docs/design/[^/]+/site/(.+\.html|assets/(fonts|images)/.+)$)'
+exclude: '^(\.copier-answers.*\.ya?ml$|src/.*/static-blocks/|src/.*/static/derico\.min\.css(\.map)?$|src/.*/upgrades/[^/]+/metadata\.txt$|docs/design/[^/]+/site/(.+\.html|assets/(fonts|images)/.+)$)'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0

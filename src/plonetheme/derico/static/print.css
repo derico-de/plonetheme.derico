@@ -1,5 +1,5 @@
-/* Print sheet. Everything stays inside ONE `@media print`: the bundle loads
- * with media="all" (tests/test_print.py). */
+/* Print sheet. Everything stays inside ONE `@media print`: it ships inside
+ * the theme sheet, which loads for every medium (tests/test_print.py). */
 
 @media print {
   /* Chrome */

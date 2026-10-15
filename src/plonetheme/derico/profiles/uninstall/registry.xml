@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
 
-  <!-- Remove the bundle records registered by the default profile, so no
-       orphaned bundle keeps loading a stylesheet after uninstall. One node
-       per bundle, and that is not redundancy: `remove` expands to one
-       `<value purge>` per field of the named interface under the given
-       prefix, so a prefix removes exactly its own record and never a longer
-       one that happens to start with the same characters. -->
+  <!-- Remove the bundle record registered by the default profile, so no
+       orphaned bundle keeps loading a stylesheet after uninstall. `remove`
+       expands to one `<value purge>` per field of the named interface under
+       the given prefix, so a prefix removes exactly its own record and never
+       a longer one that happens to start with the same characters. -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico"
-           remove="true" />
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-snippets"
-           remove="true" />
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-header"
-           remove="true" />
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-footer"
-           remove="true" />
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-print"
            remove="true" />
 
   <!-- Same for the block records: an orphaned IAuroraBlockAddon record would

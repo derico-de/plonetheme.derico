@@ -60,6 +60,7 @@ class HiddenProfiles:
             "plonetheme.derico.upgrades:1020",
             "plonetheme.derico.upgrades:1021",
             "plonetheme.derico.upgrades:1022",
+            "plonetheme.derico.upgrades:1023",
         ]
 
 

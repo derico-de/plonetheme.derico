@@ -6,8 +6,9 @@
  * Blicca's Dark slot carrying an external link and an internal one. Four
  * things only a rendering can answer:
  *
- * - the sheet does not leak to the screen — the bundle loads with
- *   `media="all"`, so the header is visible on screen and gone in print;
+ * - the sheet does not leak to the screen — it ships inside the theme
+ *   sheet, which loads for every medium, so the header is visible on screen
+ *   and gone in print;
  * - the hero's action row loses to the theme in print, although the block's
  *   own scoped sheet places it (specificity, not load order — see the
  *   sheet's header);

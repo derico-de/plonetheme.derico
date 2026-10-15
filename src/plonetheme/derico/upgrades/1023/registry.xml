@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico">
+    <value key="csscompilation">++resource++plonetheme.derico/derico.min.css</value>
+  </records>
+
+  <!-- Their sheets ship inside derico.min.css now. -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-snippets"
+           remove="true" />
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-header"
+           remove="true" />
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-footer"
+           remove="true" />
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-derico-print"
+           remove="true" />
+
+</registry>

@@ -132,8 +132,8 @@ jobs:
       - name: Run ruff
         run: uvx ruff check .
 
-  # `static-blocks/` is committed build output; the final diff fails when a
-  # source edit was not rebuilt.
+  # `static-blocks/` and the theme sheet are committed build output; the
+  # final diff fails when a source edit was not rebuilt.
   blocks:
     runs-on: ubuntu-latest
     steps:
@@ -162,4 +162,8 @@ jobs:
         run: pnpm build
 
       - name: Committed artifacts match their source
-        run: git diff --exit-code -- src/plonetheme/derico/static-blocks/
+        run: >-
+          git diff --exit-code --
+          src/plonetheme/derico/static-blocks/
+          src/plonetheme/derico/static/derico.min.css
+          src/plonetheme/derico/static/derico.min.css.map

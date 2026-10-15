@@ -29,19 +29,26 @@ HERE = Path(__file__).resolve().parent
 PACKAGE = HERE.parent
 STATIC = PACKAGE / "src" / "plonetheme" / "derico" / "static"
 DERICO_CSS = STATIC / "derico.css"
+#: Build output of every hand-written sheet; see test_theme_sheet.py.
+THEME_SHEET = STATIC / "derico.min.css"
 BLOCK_STATIC = PACKAGE / "src" / "plonetheme" / "derico" / "static-blocks"
+
+
+def hand_written_sheets():
+    """Every sheet under `static/` except the build output."""
+    return sorted(path for path in STATIC.glob("*.css") if path != THEME_SHEET)
 
 
 def theme_stylesheets():
     """The theme's hand-written sheets other than the token layer.
 
-    `snippets.css` today: derico's own markup, delivered as its own bundle
+    `snippets.css` today: derico's own markup, kept out of derico.css
     precisely because derico.css is guarded to stay a token sheet. Globbed
     rather than listed, so the next one joins the corpus by existing — a sheet
     outside it could name a `--clara-*` token or read a token nothing else
     reads, and both guards would go on passing.
     """
-    return sorted(path for path in STATIC.glob("*.css") if path != DERICO_CSS)
+    return [path for path in hand_written_sheets() if path != DERICO_CSS]
 
 
 def block_stylesheets():

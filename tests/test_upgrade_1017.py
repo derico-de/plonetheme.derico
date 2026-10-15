@@ -4,6 +4,9 @@ import pytest
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
+from plone.base.interfaces import IBundleRegistry
+from plone.registry.interfaces import IRegistry
+from zope.component import getUtility
 
 
 PROFILE = "plonetheme.derico:default"
@@ -18,6 +21,11 @@ class TestUpgrade1017:
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.setup_tool = self.portal.portal_setup
         api.portal.set_registry_record(RECORD, False)
+        # Retired in 1023; the 1016 site still has it.
+        getUtility(IRegistry).registerInterface(IBundleRegistry, prefix=BUNDLE)
+        api.portal.set_registry_record(
+            f"{BUNDLE}.csscompilation", "++resource++plonetheme.derico/header.css"
+        )
         api.portal.set_registry_record(
             f"{BUNDLE}.jscompilation", "++resource++plonetheme.derico/header.js"
         )

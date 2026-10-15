@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
 
-  <!-- Unlayered token overrides on top of Clara; beats Clara's `@layer tokens`
+  <!-- The theme sheet: every hand-written sheet in static/, built into one
+       file by bundle-src (one render-blocking request, print rules
+       included). Unlayered, so its tokens beat Clara's `@layer tokens`
        regardless of load order. No `expression`: Clara styles every page. -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-derico">
-    <value key="csscompilation">++resource++plonetheme.derico/derico.css</value>
+    <value key="csscompilation">++resource++plonetheme.derico/derico.min.css</value>
     <value key="depends">plonetheme-clara</value>
     <value key="load_defer">True</value>
     <value key="expression"></value>
@@ -46,46 +48,6 @@
     </value>
     <value key="enabled">True</value>
     <value key="weight">110</value>
-  </records>
-
-  <!-- A theme bundle, not block-record `css`: the sheet carries its own
-       `@scope` wrap (see static/snippets.css). -->
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-snippets">
-    <value key="csscompilation">++resource++plonetheme.derico/snippets.css</value>
-    <value key="depends">plonetheme-derico</value>
-    <value key="load_defer">True</value>
-    <value key="expression"></value>
-    <value key="enabled">True</value>
-  </records>
-
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-header">
-    <value key="csscompilation">++resource++plonetheme.derico/header.css</value>
-    <value key="depends">plonetheme-derico</value>
-    <value key="load_defer">True</value>
-    <value key="expression"></value>
-    <value key="enabled">True</value>
-  </records>
-
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-footer">
-    <value key="csscompilation">++resource++plonetheme.derico/footer.css</value>
-    <value key="depends">plonetheme-derico</value>
-    <value key="load_defer">True</value>
-    <value key="expression"></value>
-    <value key="enabled">True</value>
-  </records>
-
-  <!-- Loads everywhere with media="all"; its single `@media print` keeps it
-       off screen. -->
-  <records interface="plone.base.interfaces.IBundleRegistry"
-           prefix="plone.bundles/plonetheme-derico-print">
-    <value key="csscompilation">++resource++plonetheme.derico/print.css</value>
-    <value key="depends">plonetheme-derico</value>
-    <value key="load_defer">True</value>
-    <value key="expression"></value>
-    <value key="enabled">True</value>
   </records>
 
   <!-- The header's search is Clara's toggle; header.css styles it. -->

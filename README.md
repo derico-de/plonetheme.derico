@@ -173,11 +173,21 @@ takes whatever an author drops on it, so it gets the step links already
 clear. `tests/test_aurora_block_backgrounds.py` states that as a
 measurement, and fails the day the link step darkens enough to revisit it.
 
+## The theme sheet
+
+A page loads the whole theme as one stylesheet, `static/derico.min.css`,
+through one bundle, `plonetheme-derico` (profile version 1023). It is build
+output: `pnpm build` minifies the hand-written sheets into it with Lightning
+CSS, in cascade order (`derico.css`, `snippets.css`, `header.css`,
+`footer.css`, `print.css`), and writes a source map that points DevTools
+back at them. Like the block bundles it is committed, so edit the sources
+and rebuild; `bundle-src`'s test fails while the committed sheet is stale.
+
 ## The header
 
 The one part of the theme that is neither a token nor a block. Clara's header
-elements carry the design's bar through `static/header.css`, the
-`plonetheme-derico-header` bundle.
+elements carry the design's bar through `static/header.css`, part of the
+theme sheet.
 
 It is a separate sheet for the reason `derico.css` is guarded to stay a token
 sheet: the design's bar is a **composition**, not a set of values. Clara stacks
@@ -244,9 +254,8 @@ theme gets its stock footer back.
 ### The band
 
 The authored footer is `collective.blicca.footerblocks`'s
-`<footer class="element-footerblocks">`, and `static/footer.css` — one
-bundle, `plonetheme-derico-footer`, profile version 1012 — dresses it as the
-mockup's `.site-footer`: a paragraph or list on the footer's flat ground is
+`<footer class="element-footerblocks">`, and `static/footer.css`, part of
+the theme sheet, dresses it as the mockup's `.site-footer`: a paragraph or list on the footer's flat ground is
 ink-soft at the label step, a list is the design's `.footer-links` row (no
 bullets, wrapping, `xs`/`m` gaps), and every footer link is a 2.75rem touch
 target in the same quiet ink, hovering copper. That is all the sheet says,
@@ -263,16 +272,16 @@ show. Pinned by `tests/test_footer.py`.
 
 ## Printing
 
-The mockup's `@media print` block, as `static/print.css` — one bundle,
-`plonetheme-derico-print`, profile version 1013. On paper the header, the
+The mockup's `@media print` block, as `static/print.css`, the last part of
+the theme sheet. On paper the header, the
 breadcrumbs and the footer go, and with them the hero's two buttons and the
 Promo's actions; the page prints ink on ground, and so does a block on the
 Dark slot, since a browser drops backgrounds when it prints; a banded block's
 frame comes down to the `m` step; links print in the running ink, underlined,
 with their address after them — internal ones too, because Plone writes every
-link absolute. The whole sheet is one `@media print` at-rule: the bundle
-loads with `media="all"` like every other, so the at-rule is what keeps it
-off the screen.
+link absolute. The whole sheet is one `@media print` at-rule: the theme
+sheet loads for every medium (a bundle has no `media` key), so the at-rule
+is what keeps it off the screen, and it costs no request of its own.
 
 Clara's own print block already hides the navigation, the search, the login
 link and the language switch — but in a layer, and this theme's header.css

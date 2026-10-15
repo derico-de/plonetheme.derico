@@ -53,7 +53,7 @@ class TestSetup:
     def test_bundle_registered_and_enabled(self):
         assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is True
         assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
-            "++resource++plonetheme.derico/derico.css"
+            "++resource++plonetheme.derico/derico.min.css"
         )
 
     def test_bundle_loads_after_clara(self):
@@ -81,7 +81,7 @@ class TestSetup:
 
     def test_static_resources_are_traversable(self):
         """The bundle URL has to resolve, or the whole theme silently vanishes."""
-        css = self.portal.restrictedTraverse("++resource++plonetheme.derico/derico.css")
+        css = self.portal.restrictedTraverse("++resource++plonetheme.derico/derico.min.css")
         assert css is not None
         logo = self.portal.restrictedTraverse("++resource++plonetheme.derico/derico-logo.svg")
         assert logo is not None

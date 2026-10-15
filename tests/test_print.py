@@ -5,10 +5,8 @@ The Jahresringe mockup ships one whole-page print block
 the calls to action go, the page prints ink on ground, a section's frame
 closes up, links print underlined in the running ink with their address
 beside them. `static/print.css` is that block said in the site's own
-markup. Two things ship it — the print bundle (registry.xml: print.css) and
-the sheet itself — and each is checked from the side that would fail
-silently without it: the record the page reads, the resource it points at,
-and the design values the sheet exists to state.
+markup. It ships as the last part of the theme sheet (test_theme_sheet.py);
+this file pins the design values it exists to state.
 
 Looks are not asserted here. The stylesheet's contract with Clara — that it
 names no `--clara-*` token and reads only tokens derico.css declares — is
@@ -17,13 +15,8 @@ test_override_minimality.py's, which globs every sheet under static/.
 
 import re
 
-import pytest
-from plone import api
-
 from . import clara_css as css_tools
 
-
-BUNDLE = "plone.bundles/plonetheme-derico-print"
 
 PRINT_CSS = css_tools.STATIC / "print.css"
 
@@ -64,45 +57,13 @@ def _values_for(selector, property_name):
     return css_tools.values_for(PRINT_CSS.read_text(), selector, property_name)
 
 
-class TestPrintBundle:
-    """One record, one file, served."""
-
-    @pytest.fixture(autouse=True)
-    def _setup(self, integration):
-        self.portal = integration["portal"]
-
-    def test_bundle_registered_and_enabled(self):
-        assert api.portal.get_registry_record(f"{BUNDLE}.enabled") is True
-        assert api.portal.get_registry_record(f"{BUNDLE}.csscompilation") == (
-            "++resource++plonetheme.derico/print.css"
-        )
-
-    def test_bundle_loads_after_the_token_layer(self):
-        """Every value the sheet paints with is a token derico.css declares."""
-        assert api.portal.get_registry_record(f"{BUNDLE}.depends") == "plonetheme-derico"
-
-    def test_static_resource_is_traversable(self):
-        """A record pointing at a missing file is a 404 on every page."""
-        resource = self.portal.restrictedTraverse("++resource++plonetheme.derico/print.css")
-        assert resource is not None
-
-    def test_uninstall_profile_removes_the_record(self):
-        """The mirror of the default profile, so uninstall leaves no orphan
-        bundle requesting a stylesheet the site no longer ships."""
-        uninstall = css_tools.PACKAGE / "src/plonetheme/derico/profiles/uninstall/registry.xml"
-        text = uninstall.read_text()
-        assert re.search(
-            rf'prefix="{re.escape(BUNDLE)}"\s+remove="true"', text
-        ), "profiles/uninstall/registry.xml does not remove the print bundle"
-
-
 class TestPrintSheet:
     """The design values the sheet exists to state, pinned on the file."""
 
     def test_the_whole_sheet_is_one_print_block(self):
-        """Nothing here may reach the screen: the sheet loads on every page
-        with `media="all"`, so a rule outside `@media print` would hide the
-        header for everyone. One at-rule, opened first and closed last."""
+        """Nothing here may reach the screen: the theme sheet it ships in
+        loads on every screen, so a rule outside `@media print` would hide
+        the header for everyone. One at-rule, opened first and closed last."""
         text = _sheet().strip()
         assert re.match(r"@media\s+print\s*\{", text), "the sheet must open with @media print"
         depth = 0

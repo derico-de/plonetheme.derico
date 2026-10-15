@@ -43,9 +43,9 @@ Lighthouse estimates approximately 1.98 MiB removable across the two promo PNGs.
 
 The report includes 15 stylesheet requests, approximately 67 KiB of potential CSS minification savings and a 2.77-second render-blocking opportunity, primarily affecting FCP.
 
-- [ ] Enable production CSS minification while preserving readable sources and source maps. `bundle-src/vite.config.ts` currently explicitly sets `minify: false`.
-- [ ] Ensure standalone theme stylesheets also have a minified delivery path, not just the block bundle.
-- [ ] Serve `print.css` with `media="print"`; `src/plonetheme/derico/profiles/default/registry.xml` currently documents delivery with `media="all"`.
+- [ ] Enable production CSS minification while preserving readable sources and source maps. `bundle-src/vite.config.ts` currently explicitly sets `minify: false`. The theme sheet is done (`derico.min.css` + map, profile 1023); the block bundle is not.
+- [x] Ensure standalone theme stylesheets also have a minified delivery path, not just the block bundle. `pnpm build` minifies the five sheets into `static/derico.min.css`, one bundle (profile 1023).
+- [x] Serve `print.css` with `media="print"`; `src/plonetheme/derico/profiles/default/registry.xml` currently documents delivery with `media="all"`. Not possible as written (`IBundleRegistry` has no `media` key); folded into `derico.min.css` instead, so it costs no request of its own.
 - [ ] Review page-specific bundle loading and omit assets only where their components are genuinely absent.
 - [ ] Preserve cascade layers, `@scope`, shared public/editor styles and dependency ordering when changing the build or loading strategy.
 - [ ] Verify the report's “100% unused” findings for Aurora and Derico block CSS before removing anything. These sheets style the rendered blocks; coverage or scoped-CSS handling needs investigation.
