@@ -146,8 +146,14 @@ def rules(css):
 
 
 def normalise_selector(selector):
-    """One selector, whitespace-collapsed, for comparing against a literal."""
+    """One selector, whitespace-collapsed, combinators spaced, for comparing against a literal."""
+    selector = re.sub(r"\s*([>+~])\s*(?![^(\[]*[)\]])", r" \1 ", selector)
     return re.sub(r"\s+", " ", selector).strip()
+
+
+def normalise_value(value):
+    """One declaration value, comma-spaced as in the sources, for comparing against a literal."""
+    return re.sub(r"\s*,\s*", ", ", value.strip())
 
 
 BLOCK_SHEETS = block_stylesheets()
@@ -279,7 +285,7 @@ def style_rules(css):
     """
     for selector, body in rules(css):
         properties = {
-            name.strip(): value.strip()
+            name.strip(): normalise_value(value)
             for name, value in re.findall(r"([-\w]+)\s*:\s*([^;{}]+)", body)
         }
         for part in split_selector_list(selector):
