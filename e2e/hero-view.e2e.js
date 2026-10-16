@@ -27,6 +27,7 @@ const {
   MOCKUP,
   PLONE,
   contrastReport,
+  legendRow,
   measure,
   pictureOf,
   serveStatic,
@@ -172,6 +173,28 @@ const near = (a, b, tolerance = 1) =>
         near(plone.parts.marker.width, 28) && near(plone.parts.marker.height, 28),
         `the ring markers stay 28px (${plone.parts.marker.width}x${plone.parts.marker.height})`,
       );
+
+      /* -- the legend rows ---------------------------------------------- */
+      /* The numeral lives inside the `dt`; the row still reads as a numeral
+       * column beside the title, with the caption under the title. */
+      await page.goto(mockupUrl, { waitUntil: 'networkidle' });
+      const designRow = await legendRow(page, MOCKUP);
+      await page.goto(heroUrl, { waitUntil: 'networkidle' });
+      const ploneRow = await legendRow(page, PLONE);
+      for (const [surface, row] of [['page', ploneRow], ['mockup', designRow]]) {
+        check(!!row, `the ${surface} renders a legend row`);
+        if (!row) continue;
+        const middle = (box) => (box.top + box.bottom) / 2;
+        check(
+          near(middle(row.numeral), middle(row.title)) && row.numeral.left < row.title.left,
+          `${surface}: the numeral sits on the title's line, left of it (${JSON.stringify(row.numeral)} vs ${JSON.stringify(row.title)})`,
+        );
+        check(
+          near(row.caption.left, row.title.left) && row.caption.top >= row.title.bottom - 1,
+          `${surface}: the caption sits under the title (${JSON.stringify(row.caption)})`,
+        );
+      }
+      if (ploneRow) check(!ploneRow.emptyCaptionShows, 'an empty caption takes no room');
 
       /* -- the body type ---------------------------------------------- */
       /* Blicca's `.aurora-blocks-view` Tailwind stack would win without the

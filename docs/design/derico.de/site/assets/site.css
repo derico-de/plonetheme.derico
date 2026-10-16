@@ -618,7 +618,7 @@ a:hover { color: var(--copper-text); }
 
 .ring-legend { margin-block-start: var(--space-s); }
 .ring-legend > div { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); gap: var(--space-xs); padding-block: var(--space-xs); border-top: 1px solid var(--rule); }
-.ring-legend dt { font-weight: 700; }
+.ring-legend dt { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; font-weight: 700; }
 .ring-legend dd { grid-column: 2; margin: -0.35rem 0 0; color: var(--ink-soft); font-size: var(--text-label); }
 .ring-legend b { color: var(--copper-text); }
 .ring-legend .is-now dt { color: var(--copper-text); }

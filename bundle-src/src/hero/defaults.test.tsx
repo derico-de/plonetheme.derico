@@ -70,7 +70,8 @@ describe('the seed says what the mockup says', () => {
   test('the ring legend, all four rows in order', () => {
     const rows = Array.from(hero.querySelectorAll('.ring-legend > div')).map(
       (row) => ({
-        title: said(row as HTMLElement, 'dt'),
+        // The `<dt>` opens with its numeral.
+        title: said(row as HTMLElement, 'dt')?.replace(/^\d+ /, ''),
         subtitle: said(row as HTMLElement, 'dd'),
       }),
     );

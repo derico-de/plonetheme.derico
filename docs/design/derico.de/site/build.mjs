@@ -837,7 +837,7 @@ function rings(lang) {
       </svg>
       <ol class="ring-markers" aria-hidden="true"><li>1</li><li>2</li><li>3</li><li class="is-now">4</li></ol>
     </div>
-    <dl class="ring-legend">${labels.map(([title, text], index) => `<div${index === 3 ? ' class="is-now"' : ""}><b>${index + 1}</b><dt>${title}</dt><dd>${text}</dd></div>`).join("")}</dl>
+    <dl class="ring-legend">${labels.map(([title, text], index) => `<div${index === 3 ? ' class="is-now"' : ""}><dt><b>${index + 1}</b> ${title}</dt><dd>${text}</dd></div>`).join("")}</dl>
   </figure>`;
 }
 

@@ -10,7 +10,9 @@
  * The legend is HTML beneath the SVG so its captions don't scale with the
  * graphic and stay at Clara's 15px label floor.
  *
- * An empty entry still renders its numeral and rule.
+ * Every row is one `dt` (numeral and title) and one `dd`, filled or not, so a
+ * half-filled entry is still a valid `<dl>` group. An empty entry still renders
+ * its numeral and rule.
  */
 import { LEGEND_NOW_INDEX } from './data';
 
@@ -60,9 +62,10 @@ export function Rings({ entries }: { entries: LegendEntries }) {
       <dl className="ring-legend">
         {entries.map((entry, index) => (
           <div key={index} className={index === LEGEND_NOW_INDEX ? 'is-now' : undefined}>
-            <b>{index + 1}</b>
-            {entry.title ? <dt>{entry.title}</dt> : null}
-            {entry.subtitle ? <dd>{entry.subtitle}</dd> : null}
+            <dt>
+              <b>{index + 1}</b> {entry.title}
+            </dt>
+            <dd>{entry.subtitle}</dd>
           </div>
         ))}
       </dl>

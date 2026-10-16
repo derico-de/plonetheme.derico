@@ -70,7 +70,9 @@ function legend(value) {
 * The legend is HTML beneath the SVG so its captions don't scale with the
 * graphic and stay at Clara's 15px label floor.
 *
-* An empty entry still renders its numeral and rule.
+* Every row is one `dt` (numeral and title) and one `dd`, filled or not, so a
+* half-filled entry is still a valid `<dl>` group. An empty entry still renders
+* its numeral and rule.
 */
 function Rings({ entries }) {
 	return /* @__PURE__ */ jsxs("figure", {
@@ -195,11 +197,11 @@ function Rings({ entries }) {
 			className: "ring-legend",
 			children: entries.map((entry, index) => /* @__PURE__ */ jsxs("div", {
 				className: index === 3 ? "is-now" : void 0,
-				children: [
+				children: [/* @__PURE__ */ jsxs("dt", { children: [
 					/* @__PURE__ */ jsx("b", { children: index + 1 }),
-					entry.title ? /* @__PURE__ */ jsx("dt", { children: entry.title }) : null,
-					entry.subtitle ? /* @__PURE__ */ jsx("dd", { children: entry.subtitle }) : null
-				]
+					" ",
+					entry.title
+				] }), /* @__PURE__ */ jsx("dd", { children: entry.subtitle })]
 			}, index))
 		})]
 	});

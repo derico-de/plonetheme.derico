@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- The hero's ring legend is a valid `<dl>`: each row is one `dt` (numeral and title) and one `dd`, also when half filled. Fixes axe `definition-list`; the legend looks the same.
 - Load the theme as one minified stylesheet, `derico.min.css`, built from the five hand-written sheets: one render-blocking request instead of five, and the print rules no longer cost a request of their own (upgrade step 1023).
 - Depend on the Reference List block (`collective.blicca.referencelist>=1.0.0a3`): installing derico installs it, and upgrade step 1022 installs it on existing sites.
 - Require `collective.fragmentsblock>=1.0.0a4` from PyPI instead of the checkout: earlier releases still register the `block_api` record that `plone.blicca.auroraeditor` 1.0.0a4 no longer has a field for.

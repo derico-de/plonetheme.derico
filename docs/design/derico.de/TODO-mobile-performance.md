@@ -73,8 +73,8 @@ This is secondary to images and CSS: Total Blocking Time is already 0 ms.
 
 ## 6. Improve accessibility, SEO and layout robustness
 
-- [ ] Fix invalid `dl.ring-legend` markup in `src/plonetheme/derico/browser/templates/hero.pt`: move standalone numbering inside `<dt>` or use a semantic ordered list. Preserve valid structure for partially filled entries.
-- [ ] Apply the matching semantic change to the editor component and update relevant tests/styles.
+- [x] Fix invalid `dl.ring-legend` markup in `src/plonetheme/derico/browser/templates/hero.pt`: move standalone numbering inside `<dt>` or use a semantic ordered list. Preserve valid structure for partially filled entries.
+- [x] Apply the matching semantic change to the editor component and update relevant tests/styles.
 - [ ] Add the missing page meta description and verify it appears in rendered HTML.
 - [ ] Give the header logo explicit dimensions/aspect ratio. This is a minor cleanup; CLS already passes comfortably.
 

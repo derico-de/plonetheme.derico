@@ -264,7 +264,12 @@
   padding-block: var(--plone-space-2xs);
   border-top: 1px solid var(--derico-hero-rule);
 }
+/* The numeral sits inside the `dt` (a `<dl>` group allows nothing else); the
+ * subgrid keeps it in the row's first column. */
 .derico-hero .ring-legend dt {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
   font-weight: 700;
   color: var(--derico-hero-ring);
 }
@@ -274,6 +279,7 @@
   color: var(--derico-hero-ink-soft);
   font-size: var(--derico-text-label);
 }
+.derico-hero .ring-legend dd:empty { display: none; }
 .derico-hero .ring-legend b { color: var(--derico-hero-ring); }
 .derico-hero .ring-legend .is-now dt,
 .derico-hero .ring-legend .is-now b { color: var(--derico-hero-ring-now); }

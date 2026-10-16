@@ -198,7 +198,11 @@
   gap: var(--plone-space-2xs);
   padding-block: var(--plone-space-2xs);
   border-top: 1px solid var(--derico-hero-rule);
-}.derico-hero .ring-legend dt {
+}/* The numeral sits inside the `dt` (a `<dl>` group allows nothing else); the
+ * subgrid keeps it in the row's first column. */.derico-hero .ring-legend dt {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
   font-weight: 700;
   color: var(--derico-hero-ring);
 }.derico-hero .ring-legend dd {
@@ -206,7 +210,7 @@
   margin: -0.35rem 0 0;
   color: var(--derico-hero-ink-soft);
   font-size: var(--derico-text-label);
-}.derico-hero .ring-legend b { color: var(--derico-hero-ring); }.derico-hero .ring-legend .is-now dt,
+}.derico-hero .ring-legend dd:empty { display: none; }.derico-hero .ring-legend b { color: var(--derico-hero-ring); }.derico-hero .ring-legend .is-now dt,
 .derico-hero .ring-legend .is-now b { color: var(--derico-hero-ring-now); }/* ── the 56rem switch ────────────────────────────────────────────────────── */@container (min-width: 56rem) {
   /* One darkening layer at wide: two translucent washes meeting mid-hero
    * leave a vertical seam. */

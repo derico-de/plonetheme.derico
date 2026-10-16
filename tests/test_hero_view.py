@@ -47,6 +47,11 @@ def original_sources(root):
     return [s for s in root.find_all("source") if s.get("type") is None]
 
 
+def legend_title(row):
+    """The `<dt>`'s text without its numeral."""
+    return "".join(row.dt.find_all(string=True, recursive=False)).strip()
+
+
 class HeroTestCase:
     """A hero rendered on a real content object, on the theme's layer."""
 
@@ -140,9 +145,9 @@ class TestEmptyHero(HeroTestCase):
     def test_an_empty_hero_still_renders_four_numbered_rings(self):
         """The rings are template. They do not wait for content."""
         rows = self.hero({}).select(".ring-legend > div")
-        assert [row.b.get_text() for row in rows] == ["1", "2", "3", "4"]
-        assert all(row.find("dt") is None for row in rows)
-        assert all(row.find("dd") is None for row in rows)
+        assert [row.dt.b.get_text() for row in rows] == ["1", "2", "3", "4"]
+        assert all(legend_title(row) == "" for row in rows)
+        assert all(row.dd.get_text() == "" for row in rows)
 
     def test_a_hero_of_None_renders(self):
         """`self.data` is `None` until the dispatcher stamps it."""
@@ -237,17 +242,36 @@ class TestLegend(HeroTestCase):
     def test_a_short_list_is_padded_to_four(self):
         rows = self._rows([{"title": "Prototyp"}])
         assert len(rows) == 4
-        assert rows[0].dt.get_text() == "Prototyp"
-        assert rows[1].find("dt") is None
+        assert legend_title(rows[0]) == "Prototyp"
+        assert legend_title(rows[1]) == ""
 
     def test_a_long_list_is_truncated_to_four(self):
         rows = self._rows([{"title": str(n)} for n in range(9)])
         assert len(rows) == 4
-        assert [row.dt.get_text() for row in rows] == ["0", "1", "2", "3"]
+        assert [legend_title(row) for row in rows] == ["0", "1", "2", "3"]
 
     def test_the_numerals_come_from_position_not_content(self):
         rows = self._rows([{"title": "z"}, {"title": "y"}])
-        assert [row.b.get_text() for row in rows] == ["1", "2", "3", "4"]
+        assert [row.dt.b.get_text() for row in rows] == ["1", "2", "3", "4"]
+
+    @pytest.mark.parametrize(
+        "entry",
+        [
+            {"title": "Prototyp", "subtitle": "in Wochen bedienbar"},
+            {"title": "Prototyp"},
+            {"subtitle": "in Wochen bedienbar"},
+            {},
+        ],
+    )
+    def test_every_row_is_one_term_and_one_description(self, entry):
+        """A `<dl>` group holds `dt` then `dd` and nothing else (axe `definition-list`)."""
+        for row in self._rows([entry]):
+            assert [child.name for child in row.find_all(recursive=False)] == ["dt", "dd"]
+
+    def test_the_numeral_and_title_are_read_apart(self):
+        """Without the space a screen reader says "1schneller Prototyp"."""
+        rows = self._rows([{"title": "schneller Prototyp"}])
+        assert rows[0].dt.get_text() == "1 schneller Prototyp"
 
     def test_only_the_last_ring_is_marked_now(self):
         rows = self._rows([])
@@ -261,8 +285,8 @@ class TestLegend(HeroTestCase):
 
     def test_a_half_filled_entry_keeps_its_numeral(self):
         rows = self._rows([{"subtitle": "in Wochen bedienbar"}])
-        assert rows[0].b.get_text() == "1"
-        assert rows[0].find("dt") is None
+        assert rows[0].dt.b.get_text() == "1"
+        assert legend_title(rows[0]) == ""
         assert rows[0].dd.get_text() == "in Wochen bedienbar"
 
     def test_a_non_list_legend_degrades_to_four_empty_rows(self):
@@ -270,7 +294,7 @@ class TestLegend(HeroTestCase):
 
     def test_a_non_dict_entry_degrades_to_an_empty_row(self):
         rows = self._rows(["nonsense", None])
-        assert rows[0].find("dt") is None and rows[0].b.get_text() == "1"
+        assert legend_title(rows[0]) == "" and rows[0].dt.b.get_text() == "1"
 
 
 class TestPhotograph(HeroTestCase):

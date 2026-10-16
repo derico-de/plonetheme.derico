@@ -109,17 +109,14 @@
               tal:content="entry/number">1</li>
         </ol>
       </div>
-      <!--! Always exactly four rows, padded or truncated. A half-filled entry
-           keeps its numeral and emits only the half that has text; an
-           entirely empty entry is a numeral and nothing else. -->
+      <!--! Always exactly four rows, padded or truncated, each one `dt` and
+           one `dd` so a half-filled entry is still a valid group. The
+           numeral lives in the `dt`; an empty `dd` is hidden by the sheet. -->
       <dl class="ring-legend">
         <div tal:repeat="entry entries"
              tal:attributes="class python: 'is-now' if entry['is_now'] else None">
-          <b tal:content="entry/number">1</b>
-          <dt tal:condition="entry/title"
-              tal:content="entry/title">title</dt>
-          <dd tal:condition="entry/subtitle"
-              tal:content="entry/subtitle">subtitle</dd>
+          <dt><b tal:content="entry/number">1</b> <tal:title content="entry/title">title</tal:title></dt>
+          <dd tal:content="entry/subtitle">subtitle</dd>
         </div>
       </dl>
     </figure>

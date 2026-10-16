@@ -167,6 +167,43 @@ async function pictureOf(page, surface) {
 }
 
 /**
+ * Where the first legend row puts its numeral, title text and caption,
+ * relative to the row. The title is read off its text nodes, since the
+ * numeral shares the `dt` with it. `emptyCaptionShows` empties that row's
+ * caption and asks whether it still takes up room.
+ */
+async function legendRow(page, surface) {
+  return page.evaluate((map) => {
+    const row = document.querySelector(`${map.hero} ${map.legend} > div`);
+    if (!row) return null;
+    const origin = row.getBoundingClientRect();
+    const at = (rect) => ({
+      left: Math.round((rect.left - origin.left) * 10) / 10,
+      top: Math.round((rect.top - origin.top) * 10) / 10,
+      bottom: Math.round((rect.bottom - origin.top) * 10) / 10,
+    });
+    const term = row.querySelector('dt');
+    const caption = row.querySelector('dd');
+    const range = document.createRange();
+    const text = [...term.childNodes].find(
+      (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim(),
+    );
+    range.selectNodeContents(text);
+    const geometry = {
+      height: Math.round(origin.height * 10) / 10,
+      numeral: at(term.querySelector('b').getBoundingClientRect()),
+      title: at(range.getClientRects()[0]),
+      caption: at(caption.getBoundingClientRect()),
+    };
+    const said = caption.textContent;
+    caption.textContent = '';
+    geometry.emptyCaptionShows = caption.getClientRects().length > 0;
+    caption.textContent = said;
+    return geometry;
+  }, selectors(surface));
+}
+
+/**
  * Worst-case WCAG contrast for every text element in the hero, against the
  * composited pixels behind it.
  *
@@ -415,6 +452,7 @@ module.exports = {
   PARTS,
   PLONE,
   contrastReport,
+  legendRow,
   measure,
   pictureOf,
   selectors,

@@ -9,8 +9,8 @@
  * | both crops set                 | art direction, portrait under 55.99rem |
  * | one crop only                  | that image at every breakpoint         |
  * | no crop at all                 | no <picture>, no wash                  |
- * | legend entry half-filled       | numeral always; only the half with text|
- * | legend entry entirely empty    | numeral only                           |
+ * | legend entry half-filled       | numeral always; the other half empty   |
+ * | legend entry entirely empty    | numeral, empty title and caption       |
  */
 import { render } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
@@ -149,6 +149,13 @@ describe('the two crops', () => {
 describe('the ring legend', () => {
   const entries = (hero: HTMLElement) =>
     Array.from(hero.querySelectorAll('.ring-legend > div'));
+  /** The `<dt>`'s own text, without its numeral. */
+  const title = (row: Element) =>
+    Array.from(row.querySelector('dt')!.childNodes)
+      .filter((node) => node.nodeType === Node.TEXT_NODE)
+      .map((node) => node.textContent)
+      .join('')
+      .trim();
 
   test('always exactly four rows, whatever is stored', () => {
     for (const stored of [undefined, [], [{ title: 'one' }]]) {
@@ -158,7 +165,7 @@ describe('the ring legend', () => {
 
   test('the numerals are position, never content', () => {
     const hero = draw({ ...full, legend: [] });
-    expect(entries(hero).map((row) => row.querySelector('b')!.textContent)).toEqual(
+    expect(entries(hero).map((row) => row.querySelector('dt > b')!.textContent)).toEqual(
       ['1', '2', '3', '4'],
     );
     // …and the markers over the disc agree with them.
@@ -169,23 +176,40 @@ describe('the ring legend', () => {
     ).toEqual(['1', '2', '3', '4']);
   });
 
-  test('a half-filled entry keeps its numeral and emits only the filled half', () => {
+  // A `<dl>` group holds `dt` then `dd` and nothing else (axe `definition-list`).
+  test.each([
+    { title: 'schneller Prototyp', subtitle: 'in Wochen bedienbar' },
+    { title: 'schneller Prototyp' },
+    { subtitle: 'in Wochen bedienbar' },
+    {},
+  ])('every row is one term and one description: %o', (entry) => {
+    for (const row of entries(draw({ ...full, legend: [entry] }))) {
+      expect(Array.from(row.children).map((child) => child.tagName)).toEqual(['DT', 'DD']);
+    }
+  });
+
+  test('the numeral and the title are read apart', () => {
+    const [row] = entries(draw(full));
+    expect(row.querySelector('dt')!.textContent).toBe('1 schneller Prototyp');
+  });
+
+  test('a half-filled entry keeps its numeral and leaves the other half empty', () => {
     const hero = draw({
       ...full,
       legend: [{ title: 'schneller Prototyp' }, {}, {}, { subtitle: 'nur Bildtext' }],
     });
     const [first, , , fourth] = entries(hero);
-    expect(first.querySelector('dt')!.textContent).toBe('schneller Prototyp');
-    expect(first.querySelector('dd')).toBeNull();
-    expect(fourth.querySelector('dt')).toBeNull();
+    expect(title(first)).toBe('schneller Prototyp');
+    expect(first.querySelector('dd')!.textContent).toBe('');
+    expect(fourth.querySelector('dt > b')!.textContent).toBe('4');
+    expect(title(fourth)).toBe('');
     expect(fourth.querySelector('dd')!.textContent).toBe('nur Bildtext');
   });
 
   test('an entirely empty entry is a numeral and nothing else', () => {
     const [row] = entries(draw({ ...full, legend: [] }));
-    expect(row.querySelector('b')!.textContent).toBe('1');
-    expect(row.querySelector('dt')).toBeNull();
-    expect(row.querySelector('dd')).toBeNull();
+    expect(row.querySelector('dt')!.textContent!.trim()).toBe('1');
+    expect(row.querySelector('dd')!.textContent).toBe('');
   });
 
   test('the last ring is the one marked "now"', () => {
