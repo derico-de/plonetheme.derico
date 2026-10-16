@@ -14,7 +14,7 @@
  * (build-plugins/clara-sheet.ts).
  */
 import path from 'node:path';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 
 import { scopeWrap } from './build-plugins/scope-wrap.ts';
 import { claraSheet } from './build-plugins/clara-sheet.ts';
@@ -26,11 +26,34 @@ import {
 
 const here = import.meta.dirname;
 
+// Vite tags each stylesheet with a `/*$vite$:1*/` hash marker and strips it
+// from the bundle in `vite:css-post`; the lib-mode blocks.css that same hook
+// emits is not in the bundle yet, so its marker would ship.
+function stripHashMarker(): Plugin {
+  return {
+    name: 'derico-strip-hash-marker',
+    apply: 'build',
+    enforce: 'post',
+    generateBundle(_outputOptions, bundle) {
+      for (const output of Object.values(bundle)) {
+        if (output.type === 'asset' && output.fileName.endsWith('.css')) {
+          output.source = String(output.source).replace(/\/\*\$vite\$:\d+\*\//g, '');
+        }
+      }
+    },
+  };
+}
+
 export default defineConfig({
   // Lib mode defaults to the classic transform, which needs a global React
   // and crashes at render time without one. The contract mandates the
   // automatic runtime, resolved through the page import map.
-  esbuild: { jsx: 'automatic' },
+  esbuild: {
+    jsx: 'automatic',
+    // Read by the esbuild CSS minifier too: it strips comments and
+    // whitespace, and every value ships as written.
+    minifySyntax: false,
+  },
   plugins: [
     // `enforce: 'post'`, added here rather than in the vendored plugin: in
     // LIB mode Vite emits the single `cssFileName` asset from `vite:css-post`,
@@ -52,6 +75,7 @@ export default defineConfig({
       }),
       enforce: 'post' as const,
     },
+    stripHashMarker(),
     promisedExternalsOnly(),
     themeSheet(),
     claraSheet(),
@@ -76,6 +100,9 @@ export default defineConfig({
     emptyOutDir: true,
     target: 'es2022',
     minify: false,
+    // The blocks view links blocks.css itself, outside Plone's resource
+    // registry, so this build is the only place it gets minified.
+    cssMinify: 'esbuild',
     // The delivery story is that an admin with no Node installs this and
     // never builds it; an undebuggable artifact is a real cost.
     sourcemap: true,

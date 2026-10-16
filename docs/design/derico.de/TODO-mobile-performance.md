@@ -43,7 +43,7 @@ Lighthouse estimates approximately 1.98 MiB removable across the two promo PNGs.
 
 The report includes 15 stylesheet requests, approximately 67 KiB of potential CSS minification savings and a 2.77-second render-blocking opportunity, primarily affecting FCP.
 
-- [ ] Enable production CSS minification while preserving readable sources and source maps. `bundle-src/vite.config.ts` currently explicitly sets `minify: false`. The theme sheet is done (`derico.min.css` + map, profile 1023); the block bundle is not.
+- [x] Enable production CSS minification while preserving readable sources and source maps. The theme sheet is done (`derico.min.css` + map, profile 1023). The block bundle's `blocks.css` is minified by its build (`cssMinify`, comments and whitespace only), and so are the block add-ons' sheets; the JS keeps `minify: false`.
 - [x] Ensure standalone theme stylesheets also have a minified delivery path, not just the block bundle. `pnpm build` minifies the five sheets into `static/derico.min.css`, one bundle (profile 1023).
 - [x] Serve `print.css` with `media="print"`; `src/plonetheme/derico/profiles/default/registry.xml` currently documents delivery with `media="all"`. Not possible as written (`IBundleRegistry` has no `media` key); folded into `derico.min.css` instead, so it costs no request of its own.
 - [ ] Review page-specific bundle loading and omit assets only where their components are genuinely absent.

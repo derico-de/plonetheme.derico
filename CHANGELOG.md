@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Ship the brand blocks' `static-blocks/blocks.css` minified: the blocks view links it outside Plone's resource registry, so nothing minified it on the way to the page. The build strips comments and whitespace and writes every value as authored; 11 KB instead of 19 KB, 2.6 KB instead of 4.8 KB gzipped. The JS bundles stay readable.
 - Load derico's own compile of Clara, `static/clara.min.css`: Clara's sheet without dark mode and without the Bootstrap parts no derico page uses (carousel, toasts, tooltip, offcanvas, placeholders, most breakpoint utility variants, unused utility families). 202 KB instead of 293 KB, 32 KB instead of 40 KB gzipped. `pnpm build` compiles it from the sibling plonetheme.clara checkout; upgrade step 1024 points the `plonetheme-clara` bundle at it.
 - The hero's ring legend is a valid `<dl>`: each row is one `dt` (numeral and title) and one `dd`, also when half filled. Fixes axe `definition-list`; the legend looks the same.
 - Load the theme as one minified stylesheet, `derico.min.css`, built from the five hand-written sheets: one render-blocking request instead of five, and the print rules no longer cost a request of their own (upgrade step 1023).
