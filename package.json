@@ -9,6 +9,7 @@
     "e2e": "pnpm --filter @derico/hero-e2e e2e",
     "e2e:view": "pnpm --filter @derico/hero-e2e e2e:view",
     "e2e:print": "pnpm --filter @derico/hero-e2e e2e:print",
-    "e2e:editor": "pnpm --filter @derico/hero-e2e e2e:editor"
+    "e2e:editor": "pnpm --filter @derico/hero-e2e e2e:editor",
+    "e2e:clara": "pnpm --filter @derico/hero-e2e e2e:clara"
   }
 }

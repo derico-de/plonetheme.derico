@@ -31,12 +31,14 @@ STATIC = PACKAGE / "src" / "plonetheme" / "derico" / "static"
 DERICO_CSS = STATIC / "derico.css"
 #: Build output of every hand-written sheet; see test_theme_sheet.py.
 THEME_SHEET = STATIC / "derico.min.css"
+#: Build output from Clara's Sass sources; see test_clara_sheet.py.
+CLARA_SHEET = STATIC / "clara.min.css"
 BLOCK_STATIC = PACKAGE / "src" / "plonetheme" / "derico" / "static-blocks"
 
 
 def hand_written_sheets():
     """Every sheet under `static/` except the build output."""
-    return sorted(path for path in STATIC.glob("*.css") if path != THEME_SHEET)
+    return sorted(path for path in STATIC.glob("*.css") if path not in (THEME_SHEET, CLARA_SHEET))
 
 
 def theme_stylesheets():

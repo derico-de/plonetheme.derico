@@ -1,0 +1,32 @@
+// derico's compile of Clara: plonetheme.clara's theme/scss/clara.scss, the same
+// partials in the same order, minus what no derico page uses. Clara itself
+// ships Bootstrap complete; derico knows its pages and drops the rest.
+// `clara-sheet.test.ts` keeps this list in step with Clara's.
+//
+// Served from ++resource++plonetheme.derico, so the fonts are reached back in
+// Clara's own resource directory.
+$clara-font-base: "../++resource++plonetheme.clara/";
+
+@import "clara-color-mode";
+// derico pins every page to light (browser/colormode.py): no dark rule can
+// apply, so none is compiled.
+@mixin clara-dark {
+  @if false {
+    @content;
+  }
+}
+@import "clara-layers";
+@import "clara-tokens-defaults";
+@import "clara-brand";
+@import "derico-bootstrap";
+@import "clara-primitives";
+@import "clara-bridge";
+@import "clara-components";
+@import "clara-states";
+@import "clara-content";
+@import "clara-controlpanel";
+@import "clara-megamenu";
+@import "clara-subnav";
+@import "clara-language";
+@import "clara-search";
+@import "clara-toolbar";

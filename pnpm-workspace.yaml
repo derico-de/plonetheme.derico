@@ -5,3 +5,5 @@ packages:
 # installs its platform binary and `vite build` dies on a missing binary.
 allowBuilds:
   esbuild: true
+  # Sass's optional `sass --watch` helper; the Clara sheet compiles once per build.
+  '@parcel/watcher': false

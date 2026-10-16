@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1024"
+      title="plonetheme.derico: upgrade to 1024"
+      directory="1024"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1023"
+      destination="1024"
+      profile="plonetheme.derico:default">
+
+    <genericsetup:upgradeDepends
+        title="Load derico's compile of Clara"
+        description="Point the plonetheme-clara bundle at static/clara.min.css, Clara's stylesheet without the Bootstrap parts derico never uses."
+        import_profile="plonetheme.derico.upgrades:1024"
+        import_steps="plone.app.registry"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

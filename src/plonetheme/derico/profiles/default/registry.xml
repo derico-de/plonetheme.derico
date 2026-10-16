@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
 
+  <!-- Clara's bundle loads derico's compile of Clara (the Clara sheet):
+       Clara's stylesheet without the Bootstrap parts derico never uses, built
+       by bundle-src. Clara's profile, imported first as a dependency, sets
+       the rest of the record. -->
+  <record name="plone.bundles/plonetheme-clara.csscompilation">
+    <value>++resource++plonetheme.derico/clara.min.css</value>
+  </record>
+
   <!-- The theme sheet: every hand-written sheet in static/, built into one
        file by bundle-src (one render-blocking request, print rules
        included). Unlayered, so its tokens beat Clara's `@layer tokens`

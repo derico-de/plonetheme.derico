@@ -41,8 +41,8 @@ def test_the_page_links_one_theme_sheet(functional):
         for link in soup.select("link[rel=stylesheet]")
         if "/++resource++plonetheme.derico/" in link["href"]
     ]
-    assert len(sheets) == 1, sheets
-    assert sheets[0].endswith("/derico.min.css")
+    names = [href.rsplit("/", 1)[1] for href in sheets]
+    assert names == ["clara.min.css", "derico.min.css"], "Clara's compile, then the theme sheet"
 
 
 class TestComposition:

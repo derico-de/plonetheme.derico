@@ -132,12 +132,25 @@ jobs:
       - name: Run ruff
         run: uvx ruff check .
 
-  # `static-blocks/` and the theme sheet are committed build output; the
-  # final diff fails when a source edit was not rebuilt.
+  # `static-blocks/`, the theme sheet and the Clara sheet are committed build
+  # output; the final diff fails when a source edit was not rebuilt. The
+  # Clara sheet compiles plonetheme.clara's Sass sources from "../".
   blocks:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plonetheme.derico
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: plonetheme.derico
+
+      - name: Check out plonetheme.clara
+        uses: actions/checkout@v4
+        with:
+          repository: MrTango/plonetheme.clara
+          ref: main
+          path: plonetheme.clara
 
       - name: Enable corepack
         run: corepack enable
@@ -145,9 +158,9 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
+          node-version-file: plonetheme.derico/.nvmrc
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: plonetheme.derico/pnpm-lock.yaml
 
       - name: Install
         run: pnpm install --frozen-lockfile
@@ -167,3 +180,4 @@ jobs:
           src/plonetheme/derico/static-blocks/
           src/plonetheme/derico/static/derico.min.css
           src/plonetheme/derico/static/derico.min.css.map
+          src/plonetheme/derico/static/clara.min.css

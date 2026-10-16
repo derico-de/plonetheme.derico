@@ -9,6 +9,7 @@ design source, and does the print sheet do on paper what it says?
 | `hero-editor.e2e.js` | insert, author, save, reload, the insert gate, one React, `<html lang>`, no clipping at 320/375 | yes |
 | `hero-view.e2e.js` | the published page measured against `docs/design/derico.de/site`, at 1440 / 900 / 375 / 320 | no |
 | `print.e2e.js` | the print sheet under print emulation: chrome and action row gone, no leak to the screen, the Dark slot ink on ground, links underlined with their address | no |
+| `clara-sheet.e2e.js` | derico's compile of Clara styles every element of nine public and admin pages exactly as Clara's own sheet does, at 1440 / 375, OS in dark mode | no |
 
 They build their own fixture over `plone.restapi` (`hero-fixture.js`) and
 delete it again; set `DERICO_E2E_KEEP=1` to leave it on the site to look at.
@@ -36,7 +37,8 @@ DERICO_E2E_BASE=http://127.0.0.1:8081/Plone \
 DERICO_E2E_CHROMIUM=/usr/bin/chromium pnpm e2e
 ```
 
-`pnpm e2e:view`, `pnpm e2e:print` and `pnpm e2e:editor` run one script each.
+`pnpm e2e:view`, `pnpm e2e:print`, `pnpm e2e:editor` and `pnpm e2e:clara` run one
+script each.
 
 Environment (all optional): `DERICO_E2E_BASE` (default
 `http://127.0.0.1:8081/Plone`), `DERICO_E2E_USER` / `DERICO_E2E_PASSWORD`

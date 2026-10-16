@@ -10,12 +10,14 @@
  * hand-written file placed there is deleted without warning.
  *
  * The same build also writes the theme sheet, `static/derico.min.css`
- * (build-plugins/theme-sheet.ts).
+ * (build-plugins/theme-sheet.ts), and the Clara sheet, `static/clara.min.css`
+ * (build-plugins/clara-sheet.ts).
  */
 import path from 'node:path';
 import { defineConfig } from 'vite';
 
 import { scopeWrap } from './build-plugins/scope-wrap.ts';
+import { claraSheet } from './build-plugins/clara-sheet.ts';
 import { themeSheet } from './build-plugins/theme-sheet.ts';
 import {
   PROMISED_MODULES,
@@ -52,6 +54,7 @@ export default defineConfig({
     },
     promisedExternalsOnly(),
     themeSheet(),
+    claraSheet(),
   ],
   build: {
     lib: {

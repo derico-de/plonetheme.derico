@@ -30,6 +30,14 @@ Edit the sources, never this file.
 _Avoid_: bundle (that is the registry record that loads it), derico.css (the
 token layer alone)
 
+**Clara sheet**:
+`static/clara.min.css`, derico's compile of plonetheme.clara's stylesheet: Clara's
+Sass sources without the Bootstrap parts and dark mode no derico page uses,
+built by `bundle-src` and loaded through Clara's own `plonetheme-clara`
+bundle. Edit `bundle-src/clara-sheet/`, never this file.
+_Avoid_: Clara bundle (that is the registry record), lean bundle (Clara's
+planned Bootstrap-free bundle)
+
 **Rings figure**:
 The Jahresringe signature graphic: a disc of concentric circles with numbered
 markers, standing for one solution growing with its client's needs over time.

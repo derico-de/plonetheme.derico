@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+
+  <record name="plone.bundles/plonetheme-clara.csscompilation">
+    <value>++resource++plonetheme.derico/clara.min.css</value>
+  </record>
+
+</registry>

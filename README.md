@@ -183,6 +183,27 @@ CSS, in cascade order (`derico.css`, `snippets.css`, `header.css`,
 back at them. Like the block bundles it is committed, so edit the sources
 and rebuild; `bundle-src`'s test fails while the committed sheet is stale.
 
+## The Clara sheet
+
+Clara ships Bootstrap complete, because it is a base theme. derico loads its
+own compile of Clara instead, `static/clara.min.css`, through Clara's
+`plonetheme-clara` bundle (profile version 1024; uninstalling derico points
+the bundle back at Clara's own sheet). `pnpm build` compiles it from
+plonetheme.clara's Sass sources in the sibling checkout, `../plonetheme.clara`,
+with `bundle-src/clara-sheet/`: Clara's partials in Clara's order, and a
+Bootstrap layer without what no derico page uses:
+
+- dark mode, since derico pins every page to light;
+- the carousel, toasts, tooltip, offcanvas and placeholder components;
+- breakpoint variants of every utility but `display`, and the utility
+  families nothing uses.
+
+That is 202 KB instead of 293 KB, 32 KB instead of 40 KB gzipped. What "used"
+means was found by searching Plone, mockup and every add-on installed with
+derico for each Bootstrap class; `e2e/clara-sheet.e2e.js` checks that public
+and admin pages style the same as under Clara's own sheet. A newly installed
+add-on that relies on a dropped part needs it added back.
+
 ## The header
 
 The one part of the theme that is neither a token nor a block. Clara's header

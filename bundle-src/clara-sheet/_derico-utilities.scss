@@ -1,0 +1,22 @@
+// Imported inside `@layer bootstrap`, between Bootstrap's utilities map and its
+// API: its own partial, so these assignments reach the global `$utilities`
+// the API reads. `map` comes from _derico-bootstrap.scss's `@use`.
+
+// Breakpoint variants only for display (`.d-md-none`); no other is used.
+@each $key, $utility in $utilities {
+  @if map.get($utility, responsive) == true and $key != "display" {
+    $utilities: map.merge($utilities, ($key: map.merge($utility, (responsive: false))));
+  }
+}
+// Utility families nothing uses.
+$utilities: map.remove(
+  $utilities,
+  "align-content", "bg-opacity", "border-opacity", "column-gap", "focus-ring",
+  "font-family", "font-style", "gradient", "line-height", "link-offset",
+  "link-opacity", "link-underline", "link-underline-opacity", "max-height",
+  "max-width", "min-viewport-height", "min-viewport-width", "object-fit",
+  "pointer-events", "rounded-bottom", "rounded-end", "rounded-start",
+  "rounded-top", "row-gap", "subtle-background-color", "text-color",
+  "text-opacity", "text-transform", "translate-middle", "user-select",
+  "viewport-height", "viewport-width"
+);
