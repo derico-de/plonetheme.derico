@@ -93,11 +93,17 @@ class TestHeaderSheet:
             ".element-searchbox",
             ".searchbox-toggle",
             ".element-language",
+            ".shop-mini-cart",
         )
         for selector, _ in css_tools.rules(HEADER_CSS.read_text()):
             for part in selector.split(","):
                 part = css_tools.normalise_selector(part)
                 assert part.startswith(roots), f"{part!r} reaches outside the header"
+
+    def test_the_cart_knob_is_zero_unless_the_viewlet_renders(self):
+        text = css_tools.strip_comments(HEADER_CSS.read_text())
+        assert re.search(r"--derico-header-cart:\s*0rem;", text)
+        assert ".plone-layout:has(#portal-top > .shop-mini-cart)" in text
 
     def test_the_closed_form_stays_hidden(self):
         """Unlayered, any `display` here beats Clara's closed state; only the
@@ -224,6 +230,7 @@ class TestLanguageSwitch:
         ]
         for knob in (
             "--derico-header-toggle",
+            "--derico-header-cart",
             "--derico-header-lang",
             "--derico-header-login",
         ):
@@ -240,14 +247,16 @@ class TestLanguageSwitch:
             ".plone-layout:has(#portal-top > .element-language)" in text
         ), "nothing asks whether the switch is actually there"
 
-    def test_the_narrow_bar_keeps_the_switch(self):
-        """The mockup keeps `DE / EN` on the bar row at every width — only
-        the login link folds into the opened menu. The menu pill has to clear
-        both the magnifier and the switch to leave room for it."""
+    def test_the_narrow_bar_folds_the_switch_into_the_menu(self):
+        """Below 64rem the switch stands in the opened menu with the login
+        link, and the menu pill clears the cart instead of the switch."""
         pill = self._bodies(".globalnav-toggle")
         assert pill, "the narrow header has lost its menu pill"
-        clearing = [body for body in pill if "--derico-header-lang" in body]
-        assert clearing, (
-            "the menu pill does not clear the language switch; on the narrow "
-            "bar the two would sit on top of each other"
+        assert any("--derico-header-cart" in body for body in pill)
+        assert not any("--derico-header-lang" in body for body in pill), (
+            "the pill still clears a switch that is no longer on the narrow bar"
+        )
+        text = css_tools.strip_comments(HEADER_CSS.read_text())
+        assert ":is(.element-anontools, .element-language)" in text, (
+            "the folded switch is not hidden while the menu is closed"
         )

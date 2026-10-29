@@ -8,7 +8,8 @@
     "e2e:view": "node hero-view.e2e.js",
     "e2e:print": "node print.e2e.js",
     "e2e:editor": "node hero-editor.e2e.js",
-    "e2e:clara": "node clara-sheet.e2e.js"
+    "e2e:clara": "node clara-sheet.e2e.js",
+    "e2e:header": "node header-minicart.e2e.js"
   },
   "devDependencies": {
     "playwright-core": "^1.49.0"
