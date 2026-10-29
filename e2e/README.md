@@ -44,7 +44,7 @@ script each.
 Environment (all optional): `DERICO_E2E_BASE` (default
 `http://127.0.0.1:8081/Plone`), `DERICO_E2E_USER` / `DERICO_E2E_PASSWORD`
 (default `admin`/`admin`), `DERICO_E2E_CHROMIUM`, `DERICO_E2E_PAGE_TYPE`,
-`DERICO_E2E_KEEP`; `header-minicart.e2e.js` also needs `derico.blicca.shopblocks`
+`DERICO_E2E_KEEP`; `pnpm e2e:header` stays out of `pnpm e2e` because it also needs `derico.blicca.shopblocks`
 installed and `DERICO_E2E_LANG` (default `de`), the language folder it builds its Shop in. Each also accepts its `AURORA_E2E_*` spelling, so a shell
 already set up for the Blicca suite works unchanged.
 

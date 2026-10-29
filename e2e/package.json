@@ -4,7 +4,7 @@
   "private": true,
   "description": "Browser e2e checks for the theme: the Derico Hero, the print sheet and the Clara sheet (see README.md).",
   "scripts": {
-    "e2e": "pnpm run e2e:view && pnpm run e2e:print && pnpm run e2e:editor && pnpm run e2e:clara && pnpm run e2e:header",
+    "e2e": "pnpm run e2e:view && pnpm run e2e:print && pnpm run e2e:editor && pnpm run e2e:clara",
     "e2e:view": "node hero-view.e2e.js",
     "e2e:print": "node print.e2e.js",
     "e2e:editor": "node hero-editor.e2e.js",
