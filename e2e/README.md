@@ -10,6 +10,7 @@ design source, and does the print sheet do on paper what it says?
 | `hero-view.e2e.js` | the published page measured against `docs/design/derico.de/site`, at 1440 / 900 / 375 / 320 | no |
 | `print.e2e.js` | the print sheet under print emulation: chrome and action row gone, no leak to the screen, the Dark slot ink on ground, links underlined with their address | no |
 | `clara-sheet.e2e.js` | derico's compile of Clara styles every element of nine public and admin pages exactly as Clara's own sheet does, at 1440 / 375, OS in dark mode | no |
+| `header-minicart.e2e.js` | the header fits the shop's mini-cart at 1400 / 1024 / 768 / 390, anonymous and logged in, with and without a badge: no overlap, the search toggle's size, a copper badge, the language switch in the opened menu below 64rem | no |
 
 They build their own fixture over `plone.restapi` (`hero-fixture.js`) and
 delete it again; set `DERICO_E2E_KEEP=1` to leave it on the site to look at.
@@ -37,13 +38,14 @@ DERICO_E2E_BASE=http://127.0.0.1:8081/Plone \
 DERICO_E2E_CHROMIUM=/usr/bin/chromium pnpm e2e
 ```
 
-`pnpm e2e:view`, `pnpm e2e:print`, `pnpm e2e:editor` and `pnpm e2e:clara` run one
+`pnpm e2e:view`, `pnpm e2e:print`, `pnpm e2e:editor`, `pnpm e2e:clara` and `pnpm e2e:header` run one
 script each.
 
 Environment (all optional): `DERICO_E2E_BASE` (default
 `http://127.0.0.1:8081/Plone`), `DERICO_E2E_USER` / `DERICO_E2E_PASSWORD`
 (default `admin`/`admin`), `DERICO_E2E_CHROMIUM`, `DERICO_E2E_PAGE_TYPE`,
-`DERICO_E2E_KEEP`. Each also accepts its `AURORA_E2E_*` spelling, so a shell
+`DERICO_E2E_KEEP`; `header-minicart.e2e.js` also needs `derico.blicca.shopblocks`
+installed and `DERICO_E2E_LANG` (default `de`), the language folder it builds its Shop in. Each also accepts its `AURORA_E2E_*` spelling, so a shell
 already set up for the Blicca suite works unchanged.
 
 ## How the view test compares
