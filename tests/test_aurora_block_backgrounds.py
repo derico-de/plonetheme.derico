@@ -8,13 +8,14 @@ unfilled slot silently paints Blicca's generic slate, a slot filled under a
 name Blicca never publishes silently paints nothing at all. These tests are
 where it fails instead.
 
-Blicca's half is read from the package rather than restated: `plate.py`'s
-BLOCK_BACKGROUND_VARS is the server renderer's own table, so a renamed or
-added slot shows up here as a failure rather than as a picker entry that
-does not paint.
+Blicca's half is read from the package rather than restated:
+`blocks_view.css` is the sheet that styles the built-in slots on both surfaces,
+so a renamed or added slot shows up here as a failure rather than as a picker
+entry that does not paint.
 """
 
 import re
+from pathlib import Path
 
 import pytest
 
@@ -24,12 +25,12 @@ from . import clara_css as css_tools
 DERICO = css_tools.DERICO_CSS.read_text()
 
 try:
-    from plone.blicca.auroraeditor.browser.rendering import plate as blicca_plate
+    import plone.blicca.auroraeditor as blicca
 except ImportError:  # pragma: no cover - the theme's floor makes this unlikely
-    blicca_plate = None
+    blicca = None
 
 needs_blicca = pytest.mark.skipif(
-    blicca_plate is None, reason="plone.blicca.auroraeditor is not importable"
+    blicca is None, reason="plone.blicca.auroraeditor is not importable"
 )
 
 CLARA_PATH = css_tools.clara_bundle_path()
@@ -51,11 +52,9 @@ def _effective():
 
 def _blicca_hooks():
     """Every `--aurora-block-*` name Blicca's palette actually reads."""
-    hooks = set()
-    for declarations in blicca_plate.BLOCK_BACKGROUND_VARS.values():
-        for value in declarations.values():
-            hooks.update(re.findall(r"--aurora-block-[\w-]+", value))
-    return hooks
+    sheet = Path(blicca.__file__).parent / "browser/rendering/static/blocks_view.css"
+    rules = re.findall(r"\.has--backgroundColor--[\w-]+\s*\{[^}]*\}", sheet.read_text())
+    return set(re.findall(r"--aurora-block-[\w-]+", "".join(rules)))
 
 
 # --------------------------------------------------------------------------
@@ -81,7 +80,7 @@ def test_the_theme_invents_no_hook_blicca_does_not_read():
     unknown = sorted(declared - _blicca_hooks())
     assert not unknown, (
         f"derico.css declares {unknown}, which Blicca's palette never reads — "
-        "a fourth slot has to be added to BLICCA_BLOCK_BACKGROUNDS first"
+        "a fourth slot has to be registered in Blicca's block_backgrounds first"
     )
 
 
