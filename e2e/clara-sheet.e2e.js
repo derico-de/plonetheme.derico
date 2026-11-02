@@ -8,6 +8,10 @@
  * recorded again. Clara's sheet is a superset, so nothing may move. A
  * difference is a rule the compile dropped that the page uses.
  *
+ * The first record is taken after swapping in a copy of the compile: a swap
+ * lays the page out again, which alone moves used values (the zoomed edit
+ * canvas's margin), so both records have to come after one.
+ *
  * At 1440 and 375 (every breakpoint variant is on at one and off at the
  * other) and with a dark OS preference, so a page that misses the light pin
  * shows up too.
@@ -72,17 +76,24 @@ async function compareWithClaraOwnSheet(page) {
 
       const link = document.querySelector('link[data-bundle="plonetheme-clara"]');
       if (!link || !link.href.endsWith(compile)) return { error: `no ${compile} link` };
+
+      const swapTo = async (current, href) => {
+        const sheet = current.cloneNode();
+        sheet.href = href;
+        await new Promise((resolve, reject) => {
+          sheet.onload = resolve;
+          sheet.onerror = () => reject(new Error(`${sheet.href} did not load`));
+          current.after(sheet);
+        });
+        current.disabled = true;
+        await settle();
+        return sheet;
+      };
+
+      const compileCopy = await swapTo(link, `${link.href}?copy`);
       const before = snapshot();
 
-      const own = link.cloneNode();
-      own.href = link.href.replace(compile, claraOwn);
-      await new Promise((resolve, reject) => {
-        own.onload = resolve;
-        own.onerror = () => reject(new Error(`${own.href} did not load`));
-        link.after(own);
-      });
-      link.disabled = true;
-      await settle();
+      await swapTo(compileCopy, link.href.replace(compile, claraOwn));
       const after = snapshot();
 
       const label = (element) =>
