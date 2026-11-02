@@ -12,9 +12,9 @@
  * - the hero's action row loses to the theme in print, although the block's
  *   own scoped sheet places it (specificity, not load order — see the
  *   sheet's header);
- * - the Dark slot prints ink on ground: the wrapper's inline
- *   `var(--aurora-block-fg-dark)` resolves through the re-pointed token on
- *   `.aurora-blocks-view`;
+ * - the Dark slot prints ink on ground: the `.has--backgroundColor--dark`
+ *   wrapper's `var(--aurora-block-fg-dark)` resolves through the re-pointed
+ *   token on `.aurora-blocks-view`;
  * - a link prints in the running ink, underlined, with its address after it.
  *
  * Browsed ANONYMOUSLY, like hero-view.e2e.js: the toolbar is Clara's chrome
