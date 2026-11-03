@@ -16,14 +16,16 @@
       profile="plonetheme.derico:default">
 
     <genericsetup:upgradeStep
-        title="Register the copper block background"
-        description="A custom upgrade step"
+        title="Run Blicca's pending upgrades"
+        description="Blicca's upgrade 1006 creates the block_backgrounds record the next step writes to."
         handler=".v1025.upgrade"
         />
 
     <genericsetup:upgradeDepends
-        title="Apply profile version 1025"
+        title="Register the copper block background"
+        description="Offer copper next to Blicca's grey, accent and dark in the block_backgrounds record."
         import_profile="plonetheme.derico.upgrades:1025"
+        import_steps="plone.app.registry"
         />
 
   </genericsetup:upgradeSteps>

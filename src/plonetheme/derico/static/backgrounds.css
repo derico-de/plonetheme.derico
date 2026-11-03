@@ -1,0 +1,44 @@
+/* The copper background, registered in registry.xml. Every ink on it is the
+ * foreground: 4.60:1, where copper-text and ground-soft both fail. */
+.has--backgroundColor--copper {
+  --block-background: var(--derico-copper);
+  --block-foreground: var(--derico-on-copper);
+  --aurora-text-accent-color: var(--block-foreground);
+  --aurora-text-soft-color:   var(--block-foreground);
+  --aurora-text-strong-color: var(--block-foreground);
+  --aurora-divider:           var(--block-foreground);
+  --aurora-quote-border:      var(--block-foreground);
+}
+
+/* Headlines and links, as Blicca does for its Dark slot; `:where()` leaves a
+ * deliberate colour winning. Skips the placeholder and its content browser,
+ * which paint their own light ground. */
+:is(.aurora-blocks-view, [data-slate-editor])
+  .block.has--backgroundColor--copper
+  :where(
+    :not(
+      .placeholder,
+      .placeholder *,
+      .content-browser-position-wrapper,
+      .content-browser-position-wrapper *
+    )
+  ) {
+  color: inherit;
+}
+
+/* A canvas link is `.slate-a.text-primary`, and Bootstrap's layered
+ * `.text-primary { color: ... !important }` outranks any rule here. Only the
+ * token it reads is left to re-point: --derico-on-copper in rgb. */
+.has--backgroundColor--copper .slate-a {
+  --bs-primary-rgb: 254, 251, 249;
+  text-decoration-color: currentColor;
+}
+
+/* A copper CTA would melt into the band. Its label inherits the foreground
+ * from the rule above, so the fill turns ink rather than near-white. */
+.block.has--backgroundColor--copper .promo .promo-cta-button {
+  background: var(--derico-ink);
+}
+.block.has--backgroundColor--copper .promo .promo-cta-button:hover {
+  background: var(--derico-brand-deep);
+}

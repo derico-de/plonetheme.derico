@@ -35,6 +35,12 @@
     --aurora-block-fg-dark: var(--derico-ink);
   }
 
+  /* The same for copper; its text tokens all follow --block-foreground. */
+  .aurora-blocks-view .has--backgroundColor--copper {
+    --block-background: var(--derico-ground);
+    --block-foreground: var(--derico-ink);
+  }
+
   /* Close up section frames. Declared twice to match both places Blicca's
      tokens are set (`:root` and the banded wrapper). */
   .aurora-blocks-view,

@@ -58,6 +58,29 @@
     <value key="weight">110</value>
   </records>
 
+  <!-- Blicca's three and copper. The record is replaced as a whole, so the
+       built-in ones are listed too; derico.css styles copper. -->
+  <record name="plone.blicca.auroraeditor.block_backgrounds">
+    <value>
+      <element>
+        <element>grey</element>
+        <element>Grey</element>
+      </element>
+      <element>
+        <element>accent</element>
+        <element>Accent</element>
+      </element>
+      <element>
+        <element>dark</element>
+        <element>Dark</element>
+      </element>
+      <element>
+        <element>copper</element>
+        <element>Copper</element>
+      </element>
+    </value>
+  </record>
+
   <!-- The header's search is Clara's toggle; header.css styles it. -->
   <record name="plonetheme.clara.search_on_demand">
     <value>True</value>

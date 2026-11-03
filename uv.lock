@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.13'",
@@ -2608,7 +2608,7 @@ wheels = [
 
 [[package]]
 name = "plone-blicca-auroraeditor"
-version = "1.0.0a4"
+version = "1.0.0a6"
 source = { editable = "../plone.blicca.auroraeditor" }
 dependencies = [
     { name = "plone-api" },

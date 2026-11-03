@@ -1716,7 +1716,7 @@ a:hover { color: var(--copper-text); }
 .sg-width--default { width: 72%; background: var(--ground); }
 .sg-width--narrow { width: 54%; border-color: var(--copper); background: var(--ground); color: var(--copper-text); }
 
-/* Backgrounds: the four slots, in a run */
+/* Backgrounds: the five slots, in a run */
 .sg-bands { display: grid; margin-block-start: var(--space-m); }
 .sg-band { padding: var(--space-l); }
 .sg-band > * + * { margin-block-start: var(--space-xs); }
@@ -1730,9 +1730,17 @@ a:hover { color: var(--copper-text); }
   --sg-soft: var(--hero-ink-soft);
   --sg-strong: var(--hero-ink);
   --sg-rule: var(--hero-rule);
-  border-radius: 0 0 var(--radius) var(--radius);
   color: var(--hero-ink);
   background: var(--brand-deep);
+}
+.sg-band--copper {
+  --sg-accent: var(--on-copper);
+  --sg-soft: var(--on-copper);
+  --sg-strong: var(--on-copper);
+  --sg-rule: var(--on-copper);
+  border-radius: 0 0 var(--radius) var(--radius);
+  color: var(--on-copper);
+  background: var(--copper);
 }
 .sg-band .sg-h3 { max-width: var(--measure); }
 .sg-band .sg-list--questions { max-width: var(--measure); }

@@ -9,6 +9,8 @@ from plonetheme.derico.interfaces import IPlonethemeDericoLayer
 
 
 BUNDLE = "plone.bundles/plonetheme-derico"
+BACKGROUNDS = "plone.blicca.auroraeditor.block_backgrounds"
+BUILT_IN_BACKGROUNDS = [("grey", "Grey"), ("accent", "Accent"), ("dark", "Dark")]
 
 
 class TestSetup:
@@ -69,6 +71,12 @@ class TestSetup:
     def test_ships_no_second_javascript_or_stylesheet(self):
         """One override sheet: no forked Bootstrap, no second behaviour bundle."""
         assert not api.portal.get_registry_record(f"{BUNDLE}.jscompilation", default="")
+
+    def test_offers_copper_after_the_built_in_backgrounds(self):
+        assert api.portal.get_registry_record(BACKGROUNDS) == [
+            *BUILT_IN_BACKGROUNDS,
+            ("copper", "Copper"),
+        ]
 
     def test_site_logo_is_the_derico_mark(self):
         from plone.formwidget.namedfile.converter import b64decode_file
@@ -158,6 +166,10 @@ class TestUninstall:
         from plone.browserlayer import utils
 
         assert IPlonethemeDericoLayer not in utils.registered_layers()
+
+    def test_copper_is_no_longer_offered(self):
+        """Without derico.css nothing would paint it."""
+        assert api.portal.get_registry_record(BACKGROUNDS) == BUILT_IN_BACKGROUNDS
 
     def test_bundle_records_removed(self):
         """No orphaned bundle: derico.css must stop loading after uninstall."""

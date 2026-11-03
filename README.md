@@ -173,13 +173,25 @@ takes whatever an author drops on it, so it gets the step links already
 clear. `tests/test_aurora_block_backgrounds.py` states that as a
 measurement, and fails the day the link step darkens enough to revisit it.
 
+The theme adds a fourth background of its own, **Copper**. `registry.xml`
+registers it in Blicca's `block_backgrounds` record, and `backgrounds.css`
+styles it on `.has--backgroundColor--copper`, with no `--aurora-block-*` hook:
+
+| background | value | measured |
+|---|---|---|
+| Copper | `--derico-copper` `#c64c00`, foreground `--derico-on-copper` | 4.60:1 |
+
+Every text token on it is that foreground, since `--derico-copper-text` and
+`--derico-ground-soft` both fail there. A Promo CTA's label inherits it too,
+so its fill turns ink, and in print the block is ink on ground.
+
 ## The theme sheet
 
 A page loads the whole theme as one stylesheet, `static/derico.min.css`,
 through one bundle, `plonetheme-derico` (profile version 1023). It is build
 output: `pnpm build` minifies the hand-written sheets into it with Lightning
-CSS, in cascade order (`derico.css`, `snippets.css`, `header.css`,
-`footer.css`, `print.css`), and writes a source map that points DevTools
+CSS, in cascade order (`derico.css`, `backgrounds.css`, `snippets.css`,
+`header.css`, `footer.css`, `print.css`), and writes a source map that points DevTools
 back at them. Like the block bundles it is committed, so edit the sources
 and rebuild; `bundle-src`'s test fails while the committed sheet is stale.
 

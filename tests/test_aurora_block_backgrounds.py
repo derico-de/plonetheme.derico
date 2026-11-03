@@ -180,3 +180,56 @@ def test_the_committed_band_is_not_offered_as_a_slot():
         "a link now clears AA on the committed band; the accent slot could "
         "carry the design's full-strength cyan after all"
     )
+
+
+# --------------------------------------------------------------------------
+# Copper: registered by the theme, styled by the theme
+# --------------------------------------------------------------------------
+
+COPPER = ".has--backgroundColor--copper"
+BACKGROUNDS_CSS = (css_tools.STATIC / "backgrounds.css").read_text()
+
+#: (foreground, background, minimum) on the copper band. The Promo CTA's label
+#: inherits the foreground, so it is measured on the CTA's own fills.
+COPPER_PAIRS = [
+    ("--block-foreground", "--block-background", 4.5),
+    ("--aurora-text-accent-color", "--block-background", 4.5),
+    ("--aurora-text-soft-color", "--block-background", 4.5),
+    ("--aurora-text-strong-color", "--block-background", 4.5),
+    ("--aurora-divider", "--block-background", 3.0),
+    ("--aurora-quote-border", "--block-background", 3.0),
+    ("--derico-ink", "--block-background", 3.0),
+    ("--block-foreground", "--derico-ink", 4.5),
+    ("--block-foreground", "--derico-brand-deep", 4.5),
+]
+
+
+def _copper():
+    return css_tools.declarations(BACKGROUNDS_CSS, [COPPER])
+
+
+def test_copper_paints_the_brand_copper():
+    declared = _copper()
+    assert declared["--block-background"] == "var(--derico-copper)"
+    assert declared["--block-foreground"] == "var(--derico-on-copper)"
+
+
+@needs_clara
+def test_copper_canvas_link_token_is_the_foreground():
+    link = css_tools.declarations(BACKGROUNDS_CSS, [f"{COPPER} .slate-a"])
+    red, green, blue = (int(part) for part in link["--bs-primary-rgb"].split(","))
+    props = {**_effective(), **_copper()}
+    foreground = css_tools.to_hex(css_tools.resolve("--block-foreground", props))
+    assert f"#{red:02x}{green:02x}{blue:02x}" == foreground.lower()
+
+
+@needs_clara
+@pytest.mark.parametrize(("foreground", "background", "minimum"), COPPER_PAIRS)
+def test_copper_contrast(foreground, background, minimum):
+    props = {**_effective(), **_copper()}
+    fg = css_tools.to_hex(css_tools.resolve(foreground, props))
+    bg = css_tools.to_hex(css_tools.resolve(background, props))
+    ratio = css_tools.contrast(fg, bg)
+    assert ratio >= minimum, (
+        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, needs {minimum}:1"
+    )

@@ -26,6 +26,24 @@
     <value>++resource++plonetheme.clara/clara.min.css</value>
   </record>
 
+  <!-- Blicca stays installed: nothing styles copper without derico.css. -->
+  <record name="plone.blicca.auroraeditor.block_backgrounds">
+    <value>
+      <element>
+        <element>grey</element>
+        <element>Grey</element>
+      </element>
+      <element>
+        <element>accent</element>
+        <element>Accent</element>
+      </element>
+      <element>
+        <element>dark</element>
+        <element>Dark</element>
+      </element>
+    </value>
+  </record>
+
   <!-- Deliberately asymmetric: the `enormous` scale and the `hero-*` picture
        variants are kept (like Blicca's `fullwidth`), since content elsewhere
        may reference them. -->

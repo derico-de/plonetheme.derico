@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+
+  <record name="plone.blicca.auroraeditor.block_backgrounds">
+    <value>
+      <element>
+        <element>grey</element>
+        <element>Grey</element>
+      </element>
+      <element>
+        <element>accent</element>
+        <element>Accent</element>
+      </element>
+      <element>
+        <element>dark</element>
+        <element>Dark</element>
+      </element>
+      <element>
+        <element>copper</element>
+        <element>Copper</element>
+      </element>
+    </value>
+  </record>
+
+</registry>

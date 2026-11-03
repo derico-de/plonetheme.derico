@@ -19,6 +19,7 @@ export const THEME_SHEET = 'derico.min.css';
  * layer opens; print closes, so a print rule wins every tie with the screen. */
 const SOURCES = [
   'derico.css',
+  'backgrounds.css',
   'snippets.css',
   'header.css',
   'footer.css',

@@ -37,8 +37,9 @@ dependencies = [
     # The floor is where `image_source` / `path_of` arrived, and where the
     # editor checks block add-ons by the names their bundles import instead
     # of a `block_api` counter (ADR 0024) — an older editor would read the
-    # missing declaration as incompatible.
-    "plone.blicca.auroraeditor>=1.0.0a4",
+    # missing declaration as incompatible. a6 is where the block_backgrounds
+    # record arrived, which registry.xml sets.
+    "plone.blicca.auroraeditor>=1.0.0a6",
     # The generic fragment block. derico is a fragment PROVIDER (fragments.py
     # registers `snippets/` as a named IFragmentsProvider utility), so this is
     # an import in configure.zcml, not an optional integration: the ZCML fails
