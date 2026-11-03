@@ -72,10 +72,12 @@ class TestSetup:
         """One override sheet: no forked Bootstrap, no second behaviour bundle."""
         assert not api.portal.get_registry_record(f"{BUNDLE}.jscompilation", default="")
 
-    def test_offers_copper_after_the_built_in_backgrounds(self):
+    def test_offers_copper_second(self):
         assert api.portal.get_registry_record(BACKGROUNDS) == [
-            *BUILT_IN_BACKGROUNDS,
+            ("grey", "Grey"),
             ("copper", "Copper"),
+            ("accent", "Accent"),
+            ("dark", "Dark"),
         ]
 
     def test_site_logo_is_the_derico_mark(self):

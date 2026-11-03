@@ -12,10 +12,10 @@
  *   header, highlight, kbd) turns a darker copper, so that ink still reads;
  * - the Promo CTA inverts the band, and a hovered link thickens its underline;
  * - it prints ink on ground, like the Dark slot;
- * - the sidebar's Background select offers Copper after the built-ins.
+ * - the sidebar's Background select offers Copper second, after Grey.
  *
  * Prerequisites and environment: as hero-view.e2e.js (a running Plone with
- * plonetheme.derico at profile version 1025+, plone.restapi and
+ * plonetheme.derico at profile version 1026+, plone.restapi and
  * derico.blicca.promoblock), and the mockup editor bundle for the canvas.
  *
  * Run: node copper-background.e2e.js
@@ -41,7 +41,7 @@ const EXECUTABLE = process.env.DERICO_E2E_CHROMIUM || process.env.AURORA_E2E_CHR
 
 const COPPER_PAGE_ID = 'copper-page';
 const BAND = '.block.has--backgroundColor--copper';
-const OFFERED = 'none=None,grey=Grey,accent=Accent,dark=Dark,copper=Copper';
+const OFFERED = 'none=None,grey=Grey,copper=Copper,accent=Accent,dark=Dark';
 
 const failures = [];
 function check(condition, message) {
