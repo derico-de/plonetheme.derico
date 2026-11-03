@@ -21,4 +21,6 @@
 
   <include file="1024.zcml" />
 
+  <include file="1025.zcml" />
+
 </configure>

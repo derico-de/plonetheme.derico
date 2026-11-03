@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.derico">
+
+  <genericsetup:registerProfile
+      name="1025"
+      title="plonetheme.derico: upgrade to 1025"
+      directory="1025"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1024"
+      destination="1025"
+      profile="plonetheme.derico:default">
+
+    <genericsetup:upgradeStep
+        title="Register the copper block background"
+        description="A custom upgrade step"
+        handler=".v1025.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1025"
+        import_profile="plonetheme.derico.upgrades:1025"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>
