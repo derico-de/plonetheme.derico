@@ -37,6 +37,8 @@
 
   /* The same for copper; its text tokens all follow --block-foreground. */
   .aurora-blocks-view .has--backgroundColor--copper {
+    --copper-inset: var(--derico-ground);
+    --copper-rule: var(--derico-ink);
     --block-background: var(--derico-ground);
     --block-foreground: var(--derico-ink);
   }

@@ -1554,7 +1554,7 @@ const styleguideCopy = {
         { title: "Kupfer", note: "Der Akzent. Fläche und Text sind zwei Stufen, damit beide lesbar bleiben.", swatches: [
           ["Copper", "copper", "#c64c00", "Schaltflächen, Hintergrund „Copper“."],
           ["Copper hover", "copper-hover", "#b43b00", "Schaltfläche unter dem Zeiger."],
-          ["Copper text", "copper-text", "#a83500", "Aurora „Accent“: Kicker, Byline, Haken, Zähler, Link-Hover."],
+          ["Copper text", "copper-text", "#a83500", "Aurora „Accent“: Kicker, Byline, Haken, Zähler, Link-Hover. Einschübe auf Copper."],
           ["On copper", "on-copper", "#fefbf9", "Schrift auf Kupfer."],
         ] },
         { title: "Auf dunklem Grund", note: "Der Hintergrund „Dark“ tauscht die Tinten automatisch aus, damit Kicker und Zähler auf Petrol lesbar bleiben.", dark: true, swatches: [
@@ -1583,7 +1583,7 @@ const styleguideCopy = {
         { name: "grey", label: "Grey", text: "Surface. Ein ruhiger Abschnitt, etwa eine Übersicht unter dem Kapitel." },
         { name: "accent", label: "Accent", text: "Band soft. Ein Abschnitt, der Aufmerksamkeit verdient." },
         { name: "dark", label: "Dark", text: "Brand deep. Das Schlusskapitel. Text wird hell, Kicker und Zähler wechseln auf Copper light." },
-        { name: "copper", label: "Copper", text: "Ein Abschnitt, der heraussticht. Aller Text wird hell, Schaltflächen werden dunkel." },
+        { name: "copper", label: "Copper", text: "Ein Abschnitt, der heraussticht. Aller Text wird hell, Code und Hinweise liegen auf dunklerem Kupfer, Schaltflächen kehren sich um." },
       ],
       darkSample: { kicker: "Zum Mitnehmen", heading: "Drei Fragen vor dem nächsten Projekt", lede: "Wer sie beantworten kann, hat die Weichen gestellt.", questions: ["Wer kann die Anwendung in fünf Jahren weiterentwickeln?", "Welche Daten müssen exportierbar bleiben?"] },
       lightSample: { kicker: "Übersicht", heading: "Drei erprobte Grundlagen", lede: "Wir wählen Frameworks nach Prozess, Organisation und Lebensdauer der Anwendung." },
@@ -1718,7 +1718,7 @@ const styleguideCopy = {
         { title: "Copper", note: "The accent. Fill and text are two steps so both stay readable.", swatches: [
           ["Copper", "copper", "#c64c00", "Buttons, background “Copper”."],
           ["Copper hover", "copper-hover", "#b43b00", "A button under the pointer."],
-          ["Copper text", "copper-text", "#a83500", "Aurora “Accent”: Kicker, Byline, check marks, counters, link hover."],
+          ["Copper text", "copper-text", "#a83500", "Aurora “Accent”: Kicker, Byline, check marks, counters, link hover. Insets on Copper."],
           ["On copper", "on-copper", "#fefbf9", "Type on copper."],
         ] },
         { title: "On dark ground", note: "The “Dark” background swaps the inks automatically so kickers and counters stay readable on petrol.", dark: true, swatches: [
@@ -1747,7 +1747,7 @@ const styleguideCopy = {
         { name: "grey", label: "Grey", text: "Surface. A quiet section, such as an overview under a chapter." },
         { name: "accent", label: "Accent", text: "Band soft. A section that deserves attention." },
         { name: "dark", label: "Dark", text: "Brand deep. The closing chapter. Text turns light; kickers and counters switch to Copper light." },
-        { name: "copper", label: "Copper", text: "A section that stands out. All text turns light; buttons turn dark." },
+        { name: "copper", label: "Copper", text: "A section that stands out. All text turns light; code and callouts sit on a darker copper; buttons invert." },
       ],
       darkSample: { kicker: "Take-away", heading: "Three questions before the next project", lede: "Whoever can answer them has set the course.", questions: ["Who can develop the application in five years?", "Which data must stay exportable?"] },
       lightSample: { kicker: "Overview", heading: "Three proven foundations", lede: "We choose frameworks by process, organisation and the lifespan of the application." },

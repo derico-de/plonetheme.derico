@@ -189,18 +189,22 @@ def test_the_committed_band_is_not_offered_as_a_slot():
 COPPER = ".has--backgroundColor--copper"
 BACKGROUNDS_CSS = (css_tools.STATIC / "backgrounds.css").read_text()
 
-#: (foreground, background, minimum) on the copper band. The Promo CTA's label
-#: inherits the foreground, so it is measured on the CTA's own fills.
+#: (foreground, background, minimum) on the copper band. Blicca's light insets go
+#: darker here, so the one ink is measured on them too; the Promo CTA inverts.
 COPPER_PAIRS = [
     ("--block-foreground", "--block-background", 4.5),
     ("--aurora-text-accent-color", "--block-background", 4.5),
     ("--aurora-text-soft-color", "--block-background", 4.5),
     ("--aurora-text-strong-color", "--block-background", 4.5),
+    ("--block-foreground", "--aurora-code-background", 4.5),
+    ("--block-foreground", "--aurora-callout-background", 4.5),
+    ("--block-foreground", "--aurora-table-header-background", 4.5),
     ("--aurora-divider", "--block-background", 3.0),
     ("--aurora-quote-border", "--block-background", 3.0),
-    ("--derico-ink", "--block-background", 3.0),
-    ("--block-foreground", "--derico-ink", 4.5),
-    ("--block-foreground", "--derico-brand-deep", 4.5),
+    ("--aurora-table-border", "--block-background", 3.0),
+    ("--aurora-toggle-chevron", "--block-background", 3.0),
+    ("--derico-copper-text", "--block-foreground", 4.5),
+    ("--derico-copper-text", "--derico-copper-surface", 4.5),
 ]
 
 
@@ -212,6 +216,17 @@ def test_copper_paints_the_brand_copper():
     declared = _copper()
     assert declared["--block-background"] == "var(--derico-copper)"
     assert declared["--block-foreground"] == "var(--derico-on-copper)"
+
+
+def test_copper_cta_inverts_the_band():
+    button = ".block.has--backgroundColor--copper .promo .promo-cta-button"
+    assert css_tools.values_for(BACKGROUNDS_CSS, button, "color") == ["var(--derico-copper-text)"]
+    assert css_tools.values_for(BACKGROUNDS_CSS, button, "background") == [
+        "var(--block-foreground)"
+    ]
+    assert css_tools.values_for(BACKGROUNDS_CSS, f"{button}:hover", "background") == [
+        "var(--derico-copper-surface)"
+    ]
 
 
 @needs_clara

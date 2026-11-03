@@ -182,8 +182,11 @@ styles it on `.has--backgroundColor--copper`, with no `--aurora-block-*` hook:
 | Copper | `--derico-copper` `#c64c00`, foreground `--derico-on-copper` | 4.60:1 |
 
 Every text token on it is that foreground, since `--derico-copper-text` and
-`--derico-ground-soft` both fail there. A Promo CTA's label inherits it too,
-so its fill turns ink, and in print the block is ink on ground.
+`--derico-ground-soft` both fail there. What Blicca and its canvas paint a light
+ground behind (code, callout, table header, highlight, kbd) goes darker instead,
+to `--derico-copper-text`, so the same ink reads there at 6.42:1. Rules step back
+to `--derico-copper-surface` (4.01:1). A Promo CTA inverts the band: near-white
+fill, `--derico-copper-text` label. In print the block is ink on ground.
 
 ## The theme sheet
 

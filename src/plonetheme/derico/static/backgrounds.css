@@ -1,18 +1,27 @@
-/* The copper background, registered in registry.xml. Every ink on it is the
- * foreground: 4.60:1, where copper-text and ground-soft both fail. */
+/* The copper background, registered in registry.xml. All text is one ink, the
+ * foreground (4.60:1, where copper-text and ground-soft both fail). What Blicca
+ * paints a light ground behind goes darker instead, so that ink holds there too
+ * (6.42:1), and the rules step back from the text (4.01:1). */
 .has--backgroundColor--copper {
+  --copper-inset: var(--derico-copper-text);
+  --copper-rule: var(--derico-copper-surface);
   --block-background: var(--derico-copper);
   --block-foreground: var(--derico-on-copper);
   --aurora-text-accent-color: var(--block-foreground);
   --aurora-text-soft-color:   var(--block-foreground);
   --aurora-text-strong-color: var(--block-foreground);
-  --aurora-divider:           var(--block-foreground);
-  --aurora-quote-border:      var(--block-foreground);
+  --aurora-toggle-chevron:    var(--block-foreground);
+  --aurora-divider:           var(--copper-rule);
+  --aurora-quote-border:      var(--copper-rule);
+  --aurora-table-border:      var(--copper-rule);
+  --aurora-code-background:         var(--copper-inset);
+  --aurora-callout-background:      var(--copper-inset);
+  --aurora-table-header-background: var(--copper-inset);
 }
 
 /* Headlines and links, as Blicca does for its Dark slot; `:where()` leaves a
- * deliberate colour winning. Skips the placeholder and its content browser,
- * which paint their own light ground. */
+ * deliberate colour winning. Skips the placeholder and its content browser, and
+ * the canvas's action discs, which paint their own light ground. */
 :is(.aurora-blocks-view, [data-slate-editor])
   .block.has--backgroundColor--copper
   :where(
@@ -20,7 +29,9 @@
       .placeholder,
       .placeholder *,
       .content-browser-position-wrapper,
-      .content-browser-position-wrapper *
+      .content-browser-position-wrapper *,
+      button.bg-background,
+      button.bg-background *
     )
   ) {
   color: inherit;
@@ -34,11 +45,37 @@
   text-decoration-color: currentColor;
 }
 
-/* A copper CTA would melt into the band. Its label inherits the foreground
- * from the rule above, so the fill turns ink rather than near-white. */
+/* A link keeps its colour under the pointer: there is no second ink to turn to. */
+.block.has--backgroundColor--copper a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Inline marks, each with a light ground of its own from Bootstrap or the canvas. */
+.block.has--backgroundColor--copper :is(mark, kbd, :not(pre) > code) {
+  padding-inline: 0.3em;
+  --bs-border-color: transparent; /* Bootstrap's .border is !important. */
+  background-color: var(--copper-inset);
+  border-radius: 0.25em;
+}
+
+/* The canvas paints these with its own utilities, not with Blicca's tokens. */
+[data-slate-editor] .block-callout.has--backgroundColor--copper > .block-inner-container,
+[data-slate-editor] .has--backgroundColor--copper :has(> pre),
+[data-slate-editor] .has--backgroundColor--copper th {
+  background-color: var(--copper-inset);
+}
+[data-slate-editor] .has--backgroundColor--copper td {
+  background-color: transparent;
+}
+[data-slate-editor] .has--backgroundColor--copper :is(.slate-td, .slate-th) {
+  --border: var(--copper-rule);
+}
+
+/* A copper CTA would melt into the band, so the button inverts it. */
 .block.has--backgroundColor--copper .promo .promo-cta-button {
-  background: var(--derico-ink);
+  color: var(--derico-copper-text);
+  background: var(--block-foreground);
 }
 .block.has--backgroundColor--copper .promo .promo-cta-button:hover {
-  background: var(--derico-brand-deep);
+  background: var(--derico-copper-surface);
 }
