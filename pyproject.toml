@@ -3,7 +3,7 @@ name = "plonetheme.derico"
 version = "1.0.0a1"
 description = "Jahresringe — the derico.de brand as a token layer on plonetheme.clara"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = {text = "GPL-2.0-or-later"}
 authors = [
     {name = "Maik Derstappen", email = "md@derico.de"}
@@ -17,7 +17,6 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
@@ -119,7 +118,7 @@ source = ["plonetheme.derico"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = [
