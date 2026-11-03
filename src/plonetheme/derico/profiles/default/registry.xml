@@ -67,16 +67,16 @@
         <element>Grey</element>
       </element>
       <element>
+        <element>copper</element>
+        <element>Copper</element>
+      </element>
+      <element>
         <element>accent</element>
         <element>Accent</element>
       </element>
       <element>
         <element>dark</element>
         <element>Dark</element>
-      </element>
-      <element>
-        <element>copper</element>
-        <element>Copper</element>
       </element>
     </value>
   </record>

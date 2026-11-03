@@ -174,8 +174,9 @@ clear. `tests/test_aurora_block_backgrounds.py` states that as a
 measurement, and fails the day the link step darkens enough to revisit it.
 
 The theme adds a fourth background of its own, **Copper**. `registry.xml`
-registers it in Blicca's `block_backgrounds` record, and `backgrounds.css`
-styles it on `.has--backgroundColor--copper`, with no `--aurora-block-*` hook:
+registers it second in Blicca's `block_backgrounds` record, after Grey, and
+`backgrounds.css` styles it on `.has--backgroundColor--copper`, with no
+`--aurora-block-*` hook:
 
 | background | value | measured |
 |---|---|---|
