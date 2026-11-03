@@ -2,6 +2,7 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Give the Dark background's code, callouts and table headers a brand colour, `--derico-brand-deeper`, through Blicca's `--aurora-block-inset-dark` hook; they fell back to a generic mix of the band colour.
 - Offer a Copper block background next to Grey, Accent and Dark, through Blicca's `block_backgrounds` record and the new `backgrounds.css`: the brand copper with near-white text, darker copper behind code, callouts, table headers and highlights, an inverted Promo CTA, and ink on ground in print. Upgrade step 1025 registers it and runs Blicca's upgrade 1006 first if a site has not; uninstalling derico removes it. Floor `plone.blicca.auroraeditor>=1.0.0a6`. e2e: `copper-background.e2e.js`.
 - Make room in the header for the shop's mini-cart (`derico.blicca.shopblocks`): the end lane gets a `--derico-header-cart` knob, 0 unless the viewlet renders, next to the toggle, language and login knobs. The cart sits left of the search toggle at its size and ring, the badge takes the copper accent, and below 64rem the language switch moves into the opened menu under the login link. At 390px the cart no longer overlaps the logo. e2e: `header-minicart.e2e.js`.
 - Ship the brand blocks' `static-blocks/blocks.css` minified: the blocks view links it outside Plone's resource registry, so nothing minified it on the way to the page. The build strips comments and whitespace and writes every value as authored; 11 KB instead of 19 KB, 2.6 KB instead of 4.8 KB gzipped. The JS bundles stay readable.

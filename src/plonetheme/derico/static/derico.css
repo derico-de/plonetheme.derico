@@ -19,6 +19,7 @@
   --derico-brand-hover:      oklch(0.42 0.085 215.55);     /* #00586a — deep cyan step */
   --derico-brand-fill-hover: oklch(0.74 0.10 215.55);      /* #55bbd3 — hover fill for cyan controls */
   --derico-brand-deep:       oklch(0.36 0.065 215.55);     /* #004553 — toolbar ground; ground on it 10.63:1 */
+  --derico-brand-deeper:     oklch(0.28 0.051 215.55);     /* #002f39 — insets on brand-deep; ground on it 14.33:1 */
   --derico-on-brand:         oklch(0.18 0.035 215);        /* #00151b — 5.94:1 on exact brand cyan */
 
   --derico-ground:    oklch(1 0 0);               /* #ffffff — page */
@@ -131,6 +132,7 @@ body:has(.aurora-blocks-view > .block:first-child.block-derico-hero) #section-by
   --aurora-block-accent-dark:  var(--derico-copper-light);
   --aurora-block-fg-soft-dark: var(--derico-ground-soft);
   --aurora-block-rule-dark:    var(--derico-rule-light);
+  --aurora-block-inset-dark:   var(--derico-brand-deeper);
 }
 
 /* Promo block seam. On :root, never on .promo: the block reads these as

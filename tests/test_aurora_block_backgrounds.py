@@ -51,10 +51,13 @@ def _effective():
 
 
 def _blicca_hooks():
-    """Every `--aurora-block-*` name Blicca's palette actually reads."""
+    """Every `--aurora-block-*` name Blicca's palette reads and leaves to a theme."""
     sheet = Path(blicca.__file__).parent / "browser/rendering/static/blocks_view.css"
-    rules = re.findall(r"\.has--backgroundColor--[\w-]+\s*\{[^}]*\}", sheet.read_text())
-    return set(re.findall(r"--aurora-block-[\w-]+", "".join(rules)))
+    rules = "".join(
+        re.findall(r"\.has--backgroundColor--[\w-]+\s*\{[^}]*\}", sheet.read_text())
+    )
+    named = set(re.findall(r"--aurora-block-[\w-]+", rules))
+    return named - set(re.findall(r"(--aurora-block-[\w-]+)\s*:", rules))
 
 
 # --------------------------------------------------------------------------
@@ -103,6 +106,8 @@ EXPECTED_ALIASES = {
     "--aurora-block-accent-dark": "--derico-copper-light",
     "--aurora-block-fg-soft-dark": "--derico-ground-soft",
     "--aurora-block-rule-dark": "--derico-rule-light",
+    # what Blicca paints behind code, callouts and table headers on the dark slot
+    "--aurora-block-inset-dark": "--derico-brand-deeper",
 }
 
 
@@ -135,6 +140,11 @@ SLOT_PAIRS = [
     ("--aurora-block-accent-dark", "--aurora-block-bg-dark", 4.5),
     ("--aurora-block-fg-soft-dark", "--aurora-block-bg-dark", 4.5),
     ("--aurora-block-rule-dark", "--aurora-block-bg-dark", 3.0),
+    # the same inks on the insets inside the dark slot
+    ("--aurora-block-fg-dark", "--aurora-block-inset-dark", 4.5),
+    ("--aurora-block-accent-dark", "--aurora-block-inset-dark", 4.5),
+    ("--aurora-block-fg-soft-dark", "--aurora-block-inset-dark", 4.5),
+    ("--aurora-block-rule-dark", "--aurora-block-inset-dark", 3.0),
     # Links, on every light slot. This is the pair that decided the accent
     # value: the theme's own table tests links on --clara-band-soft and
     # deliberately does not test them on --clara-band, and a picker slot has
