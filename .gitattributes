@@ -1,0 +1,5 @@
+# Committed build output: binary in diffs, collapsed on GitHub.
+# static/ also holds the hand-written stylesheets the theme sheet is built from.
+src/plonetheme/derico/static-blocks/** -diff linguist-generated
+src/plonetheme/derico/static/*.min.css -diff linguist-generated
+src/plonetheme/derico/static/*.min.css.map -diff linguist-generated
