@@ -2,6 +2,9 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Keep compiled CSS and JavaScript out of Git diffs; the generated files
+  remain tracked and ship with the package.
+
 - Offer Copper as the second block background: Grey, Copper, Accent, Dark. Upgrade step 1026 reorders the `block_backgrounds` record.
 - Require Python 3.11, as `plone.blicca.auroraeditor` does; `uv` could not resolve the project on `>=3.10`.
 - Give the Dark background's code, callouts and table headers a brand colour, `--derico-brand-deeper`, through Blicca's `--aurora-block-inset-dark` hook; they fell back to a generic mix of the band colour.
