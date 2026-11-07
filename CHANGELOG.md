@@ -2,6 +2,8 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Update the rhythm contract tests for Blicca's separating-gap and flow
+  tokens and its add-on frame fallback; allow additional scoped frame rules.
 - Keep compiled CSS and JavaScript out of Git diffs; the generated files
   remain tracked and ship with the package.
 

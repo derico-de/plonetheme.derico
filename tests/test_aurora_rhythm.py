@@ -192,9 +192,9 @@ EXPECTED_LITERALS = {
 def test_each_root_token_aliases_a_step_rather_than_restating_a_value(token, target):
     root = _derico_root()
     assert token in root, f"derico.css does not declare {token} on :root"
-    assert re.fullmatch(
-        rf"var\(\s*{re.escape(target)}\s*\)", root[token]
-    ), f"{token} must alias {target} verbatim; it declares {root[token]!r}"
+    assert re.fullmatch(rf"var\(\s*{re.escape(target)}\s*\)", root[token]), (
+        f"{token} must alias {target} verbatim; it declares {root[token]!r}"
+    )
 
 
 @pytest.mark.parametrize(("token", "value"), sorted(EXPECTED_LITERALS.items()))
@@ -213,7 +213,7 @@ def test_the_root_sets_no_rhythm_token_beyond_the_expected_ones():
     }
     expected = set(EXPECTED_ALIASES) | set(EXPECTED_LITERALS)
     assert root == expected, (
-        f"unexpected: {sorted(root - expected)}, " f"missing: {sorted(expected - root)}"
+        f"unexpected: {sorted(root - expected)}, missing: {sorted(expected - root)}"
     )
 
 
@@ -303,32 +303,49 @@ def test_the_theme_leaves_text_in_a_run_to_blicca():
     assert all("--aurora-space-passage" not in tokens for _, tokens in _frame_rules())
 
 
-def test_text_in_a_run_keeps_the_l_reading_gap():
-    """Blicca's passage gap is the root frame, which derico sets to l."""
-    assert _derico_root()["--aurora-space-block"] == "var(--plone-space-l)"
+def test_the_theme_keeps_bliccas_default_reading_gap():
+    """The passage uses Blicca's flow step, independently of the band inset."""
+    root = _derico_root()
+    assert "--aurora-space-flow" not in root
+    assert "--aurora-space-passage" not in root
 
 
 @needs_blicca
 def test_blicca_reads_the_run_gaps_at_their_points_of_use():
-    """Why the band rule above reaches the right blocks.
-
-    `--aurora-space-continued` is not declared on Blicca's root: there it
-    would resolve against the ROOT's frame and ignore the band's. It is read
-    at the point of use, falling back to two of the block's own frames, and
-    text never reads it. The passage gap is the opposite case, declared on the
-    root on purpose so text keeps the root's l while its band is on xl.
-    """
-    sheet = re.sub(r"\s+", "", _blicca_sheet())
-    assert "--aurora-space-continued:" not in sheet, (
-        "blocks_view.css now DECLARES --aurora-space-continued; a root "
-        "declaration cannot fall back to a frame the block scopes itself"
+    """Run overrides resolve on the block; the passage keeps its flow gap."""
+    sheet = _blicca_sheet()
+    root = css_tools.declarations(sheet, (":where(:root)", ":root", "body"))
+    assert "--aurora-space-continued" not in root
+    assert "--aurora-separate-half" not in root
+    assert re.sub(r"\s+", "", root["--aurora-space-passage"]) == (
+        "calc(2*var(--aurora-space-flow))"
     )
-    for frame in ("--aurora-space-block", "--aurora-space-bleed"):
-        assert (
-            "padding-block-end:var(--aurora-space-continued," f"calc(2*var({frame})))"
-        ) in sheet, f"a run's gap no longer falls back to two {frame} frames"
-    assert "--aurora-space-passage:var(--aurora-space-block)" in sheet
-    assert "padding-block-end:var(--aurora-space-passage)" in sheet
+    for selector in (
+        ".aurora-blocks-view :is(.block, .aurora-float-run)",
+        "[data-slate-editor] .block:where([data-slate-node])",
+    ):
+        values = css_tools.values_for(sheet, selector, "--aurora-separate-half")
+        assert [re.sub(r"\s+", "", value) for value in values] == [
+            "calc(var(--aurora-space-separate,calc(3*var(--aurora-space-block)))/2)"
+        ]
+    selector = (
+        ":is(.aurora-blocks-view, [data-slate-editor]) "
+        '.block[class*="has--backgroundColor--"].is-background-continued'
+    )
+    values = css_tools.values_for(sheet, selector, "padding-block-end")
+    expected = "var(--aurora-space-continued,calc(2*var(--aurora-separate-half)))"
+    assert [re.sub(r"\s+", "", value) for value in values] == [
+        expected,
+        f"{expected}!important",
+    ]
+    full_selector = selector.replace(".block[", ".block.has--block-width--full[")
+    values = css_tools.values_for(sheet, full_selector, "padding-block-end")
+    expected = f"calc({expected}+var(--aurora-separate-wide))"
+    assert [re.sub(r"\s+", "", value) for value in values] == [
+        expected,
+        f"{expected}!important",
+    ]
+    assert "padding-block-end:var(--aurora-space-passage)" in re.sub(r"\s+", "", sheet)
 
 
 def test_a_promo_in_a_run_takes_the_band_s_gap():
@@ -348,26 +365,45 @@ def test_an_unbanded_promo_gets_the_same_step_from_the_frame_token():
     """
     bare = [tokens for selector, tokens in _frame_rules() if selector == ".block-promo"]
     assert bare, "no frame rule keys on a bare `.block-promo`"
-    assert bare == [
-        {"--aurora-space-frame": "var(--plone-space-xl)"}
-    ], "the bare .block-promo rule must carry the frame and nothing else"
+    assert bare == [{"--aurora-space-frame": "var(--plone-space-xl)"}], (
+        "the bare .block-promo rule must carry the frame and nothing else"
+    )
 
 
 @needs_blicca
-def test_the_frame_token_is_read_under_every_background_rule():
-    """Why the frame rule needs no `:not([background])`: it cannot double.
-
-    Blicca reads `--aurora-space-frame` on the bare `.block`, which every
-    background and full-width rule outranks — so a banded promo keeps its
-    band's frame and an unbanded one is the only reader.
-    """
+def test_the_frame_fallbacks_precede_the_background_rules():
+    """Generic and add-on frames leave the later band insets in control."""
     sheet = _blicca_sheet()
-    readers = [
-        css_tools.normalise_selector(selector)
-        for selector, body in css_tools._blocks(sheet)
-        if "--aurora-space-frame" in body and "padding" in body
+    for selector in (
+        ".aurora-blocks-view .block",
+        "[data-slate-editor] .block:where([data-slate-node])",
+    ):
+        assert css_tools.values_for(sheet, selector, "padding-block") == [
+            "var(--aurora-space-frame, 0px)"
+        ]
+    rules = list(css_tools.style_rules(sheet))
+    addon_frames = [
+        index
+        for index, (selector, properties) in enumerate(rules)
+        if properties.get("padding-block")
+        == "var(--aurora-space-frame, var(--aurora-separate-half))"
+        and ".block:where(" in selector
     ]
-    assert readers == [":is(.aurora-blocks-view, [data-slate-editor]) .block"], (
-        f"blocks_view.css reads the frame token from {readers}; the theme's "
-        "rule assumes the weakest possible one"
-    )
+    assert addon_frames, "add-on blocks no longer read the theme's frame hook"
+    for selector, inset in (
+        ('.block[class*="has--backgroundColor--"]', "--aurora-space-block"),
+        (
+            '.block.has--block-width--full[class*="has--backgroundColor--"]',
+            "--aurora-space-bleed",
+        ),
+    ):
+        selector = f":is(.aurora-blocks-view, [data-slate-editor]) {selector}"
+        band_rules = [
+            index
+            for index, (part, properties) in enumerate(rules)
+            if part == selector and properties.get("padding-block") == f"var({inset})"
+        ]
+        assert band_rules, f"{selector} no longer applies its band inset"
+        assert max(addon_frames) < min(band_rules), (
+            "the add-on frame fallback must precede the background overrides"
+        )
