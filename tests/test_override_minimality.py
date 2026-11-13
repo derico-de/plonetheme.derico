@@ -196,9 +196,9 @@ def test_sheet_declares_nothing_but_custom_properties():
                 )
             continue
         for declaration in declarations:
-            assert declaration.startswith(
-                "--"
-            ), f"non-token declaration in derico.css: {declaration!r}"
+            assert declaration.startswith("--"), (
+                f"non-token declaration in derico.css: {declaration!r}"
+            )
 
 
 def test_the_chrome_rule_is_present_and_stays_narrow():
@@ -286,7 +286,7 @@ def test_published_aliases_are_aliases_of_claras_own_tokens():
     light = _derico_light()
     for name in sorted(PUBLISHED_ALIASES):
         assert name in light, (
-            f"{name} is published for the block sheets but derico.css does " "not declare it"
+            f"{name} is published for the block sheets but derico.css does not declare it"
         )
         assert re.fullmatch(r"var\(\s*--clara-[\w-]+\s*\)", light[name]), (
             f"{name} must alias a --clara-* token verbatim, not restate a "
@@ -579,9 +579,9 @@ def test_compile_time_blue_is_overridden_by_the_token_bridge(selector, prop):
         "blue — Clara's bridge lost the rebind, and no token override can "
         "reach it. Fix plonetheme.clara/theme/scss/_clara-bridge.scss."
     )
-    assert (
-        "var(--plone-" in value
-    ), f"{selector} {{{prop}: {value}}} is a literal; it must read a token"
+    assert "var(--plone-" in value, (
+        f"{selector} {{{prop}: {value}}} is a literal; it must read a token"
+    )
 
 
 @needs_clara

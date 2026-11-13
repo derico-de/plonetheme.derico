@@ -157,9 +157,9 @@ def test_each_property_aliases_a_ladder_step_rather_than_restating_a_value(prop,
     """A literal here would fork the brand palette where nobody looks."""
     declared = _declared()
     assert prop in declared, f"derico.css does not declare {prop}"
-    assert re.fullmatch(
-        rf"var\(\s*{re.escape(target)}\s*\)", declared[prop]
-    ), f"{prop} must alias {target} verbatim; it declares {declared[prop]!r}"
+    assert re.fullmatch(rf"var\(\s*{re.escape(target)}\s*\)", declared[prop]), (
+        f"{prop} must alias {target} verbatim; it declares {declared[prop]!r}"
+    )
 
 
 @needs_clara
@@ -244,7 +244,7 @@ def test_promo_contrast(foreground, background, minimum):
     assert bg, f"{background} does not resolve to a colour"
     ratio = css_tools.contrast(fg, bg)
     assert ratio >= minimum, (
-        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, " f"needs {minimum}:1"
+        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, needs {minimum}:1"
     )
 
 

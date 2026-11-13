@@ -93,7 +93,7 @@ def _check(pairs, backdrop, label):
         ratio = css_tools.contrast(ink, backdrop)
         if ratio < minimum:
             failures.append(
-                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {backdrop}, " f"needs {minimum}:1"
+                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {backdrop}, needs {minimum}:1"
             )
     assert not failures, f"{label} does not carry its ink:\n  " + "\n  ".join(failures)
 
@@ -149,7 +149,7 @@ def test_the_legend_ground_carries_every_colour_the_legend_wears():
         ratio = css_tools.contrast(ink, under)
         if ratio < minimum:
             failures.append(
-                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {under}, " f"needs {minimum}:1"
+                f"{role} ({ink_name} {ink}) is {ratio:.2f}:1 on {under}, needs {minimum}:1"
             )
     assert not failures, "the legend ground does not carry its ink:\n  " + "\n  ".join(failures)
 
@@ -281,8 +281,7 @@ def test_the_scrim_would_go_red_if_it_were_softened():
 
     assert 0.0 < floor < 1.0, "the floor is degenerate, so the guarantee above is vacuous"
     assert alpha >= floor, (
-        f"the plateau is {alpha}, below the {floor:.4f} its own inks need over "
-        "a white photograph"
+        f"the plateau is {alpha}, below the {floor:.4f} its own inks need over a white photograph"
     )
     # And the assertion is live: one step under the floor must fail.
     softened = _over(hex_base, floor - 0.01, WHITE)
@@ -327,6 +326,6 @@ def test_the_marker_chips_carry_their_own_backdrop():
         ratio = css_tools.contrast(ink, ground)
         if ratio < minimum:
             failures.append(
-                f"{role} ({ink_name} on {ground_name}) is {ratio:.2f}:1, " f"needs {minimum}:1"
+                f"{role} ({ink_name} on {ground_name}) is {ratio:.2f}:1, needs {minimum}:1"
             )
     assert not failures, "the marker chips do not carry their ink:\n  " + "\n  ".join(failures)
