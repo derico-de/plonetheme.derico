@@ -199,9 +199,9 @@ class TestLanguageSwitch:
         ]
 
     def test_the_sheet_dresses_the_element(self):
-        assert self._bodies(
-            ".element-language"
-        ), "the header sheet no longer dresses the language switch"
+        assert self._bodies(".element-language"), (
+            "the header sheet no longer dresses the language switch"
+        )
 
     def test_the_slash_is_drawn_not_written(self):
         """The mockup ships `<li aria-hidden="true">/</li>`; Clara's markup
@@ -243,9 +243,9 @@ class TestLanguageSwitch:
         text = css_tools.strip_comments(HEADER_CSS.read_text())
         base = css_tools.declarations(HEADER_CSS.read_text(), [".plone-layout"])
         assert base["--derico-header-lang"] == "0rem"
-        assert (
-            ".plone-layout:has(#portal-top > .element-language)" in text
-        ), "nothing asks whether the switch is actually there"
+        assert ".plone-layout:has(#portal-top > .element-language)" in text, (
+            "nothing asks whether the switch is actually there"
+        )
 
     def test_the_narrow_bar_folds_the_switch_into_the_menu(self):
         """Below 64rem the switch stands in the opened menu with the login

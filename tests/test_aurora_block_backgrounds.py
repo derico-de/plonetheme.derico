@@ -53,9 +53,7 @@ def _effective():
 def _blicca_hooks():
     """Every `--aurora-block-*` name Blicca's palette reads and leaves to a theme."""
     sheet = Path(blicca.__file__).parent / "browser/rendering/static/blocks_view.css"
-    rules = "".join(
-        re.findall(r"\.has--backgroundColor--[\w-]+\s*\{[^}]*\}", sheet.read_text())
-    )
+    rules = "".join(re.findall(r"\.has--backgroundColor--[\w-]+\s*\{[^}]*\}", sheet.read_text()))
     named = set(re.findall(r"--aurora-block-[\w-]+", rules))
     return named - set(re.findall(r"(--aurora-block-[\w-]+)\s*:", rules))
 
@@ -116,9 +114,9 @@ def test_each_slot_aliases_a_ladder_step_rather_than_restating_a_value(hook, tar
     """A literal here would fork the brand palette where nobody looks."""
     light = _derico_light()
     assert hook in light, f"derico.css does not declare {hook}"
-    assert re.fullmatch(
-        rf"var\(\s*{re.escape(target)}\s*\)", light[hook]
-    ), f"{hook} must alias {target} verbatim; it declares {light[hook]!r}"
+    assert re.fullmatch(rf"var\(\s*{re.escape(target)}\s*\)", light[hook]), (
+        f"{hook} must alias {target} verbatim; it declares {light[hook]!r}"
+    )
 
 
 # --------------------------------------------------------------------------
@@ -169,7 +167,7 @@ def test_slot_contrast(foreground, background, minimum):
     assert bg, f"{background} does not resolve to a colour"
     ratio = css_tools.contrast(fg, bg)
     assert ratio >= minimum, (
-        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, " f"needs {minimum}:1"
+        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, needs {minimum}:1"
     )
 
 
