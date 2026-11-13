@@ -10,4 +10,4 @@
 
 ## Coupled to the editor
 
-`pyproject.toml` installs `../plone.blicca.auroraeditor` editable, so the tests read the editor's main checkout, from a worktree too. `test_aurora_rhythm.py` and `test_aurora_block_backgrounds.py` hold this sheet to the editor's `blocks_view.css`: an editor change can break them without touching this repo, so run them after merging one.
+`pyproject.toml` installs `../plone.blicca.auroraeditor` editable, so the tests read the editor's main checkout, from a worktree too. `test_aurora_rhythm.py` and `test_aurora_block_backgrounds.py` hold this sheet to the editor's `blocks_view.css`: an editor change can break them without touching this repo. Run them against an editor worktree before it merges with `PYTHONPATH=<editor worktree>/src`, or after merging.
