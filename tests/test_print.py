@@ -72,9 +72,9 @@ class TestPrintSheet:
                 depth += 1
             elif char == "}":
                 depth -= 1
-                assert (
-                    depth > 0 or position == len(text) - 1
-                ), "a rule sits outside the @media print block"
+                assert depth > 0 or position == len(text) - 1, (
+                    "a rule sits outside the @media print block"
+                )
         assert depth == 0
 
     def test_the_chrome_goes(self):

@@ -86,9 +86,9 @@ LIGHT_PAIRS = [
 def test_light_mode_contrast(foreground, background, minimum):
     props = _effective()
     ratio, fg, bg = _ratio(props, foreground, background)
-    assert (
-        ratio >= minimum
-    ), f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, needs {minimum}:1"
+    assert ratio >= minimum, (
+        f"{foreground} {fg} on {background} {bg} is {ratio:.2f}:1, needs {minimum}:1"
+    )
 
 
 @needs_clara
