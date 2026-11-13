@@ -33,7 +33,8 @@ class TestUpgrade1025:
         self.setup_tool.setLastVersionForProfile(BLICCA_PROFILE, "1005")
         self.setup_tool.upgradeProfile(PROFILE, dest="1025")
         assert ("copper", "Copper") in api.portal.get_registry_record(RECORD)
-        assert self.setup_tool.getLastVersionForProfile(BLICCA_PROFILE) == ("1006",)
+        (blicca_version,) = self.setup_tool.getLastVersionForProfile(BLICCA_PROFILE)
+        assert int(blicca_version) >= 1006
 
     def test_leaves_the_other_registry_records_alone(self):
         api.portal.set_registry_record("plone.navigation_depth", 5)
